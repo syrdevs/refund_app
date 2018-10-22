@@ -12,7 +12,7 @@ import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
 import SettingDrawer from '@/components/SettingDrawer';
-import logo from '../assets/logo.svg';
+import logo from '../assets/kartinka_21.png';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
@@ -178,13 +178,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'Фонд социального медицинского страхования';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - Ant Design Pro`;
+    return `${message} - 'Фонд социального медицинского страхования`;
   };
 
   getLayoutStyle = () => {
@@ -232,6 +232,9 @@ class BasicLayout extends React.PureComponent {
       location: { pathname },
     } = this.props;
     const { isMobile, menuData } = this.state;
+
+    console.log(menuData);
+
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.matchParamsPath(pathname);
     const layout = (
@@ -256,7 +259,7 @@ class BasicLayout extends React.PureComponent {
           <Header
             menuData={menuData}
             handleMenuCollapse={this.handleMenuCollapse}
-            logo={'http://refund.eisz.kz:8080/refund/img/kartinka_21.png'}
+            logo={logo}
             isMobile={isMobile}
             {...this.props}
           />

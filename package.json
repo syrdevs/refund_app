@@ -109,5 +109,6 @@
     "hooks": {
       "pre-commit": "npm run lint-staged"
     }
-  }
+  },
+  "proxy": "http://localhost:3001"
 }

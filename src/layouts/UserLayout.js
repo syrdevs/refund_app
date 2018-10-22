@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import GlobalFooter from '@/components/GlobalFooter';
 import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.svg';
+import logo from '../assets/kartinka_21.png';
 
 const links = [
   {
@@ -58,7 +58,7 @@ class UserLayout extends React.PureComponent {
                     <img
                       alt="logo"
                       className={styles.logo}
-                      src={'http://refund.eisz.kz:8080/refund/img/kartinka_21.png'}
+                      src={logo}
                     />
                   }
                   <span className={styles.title}>Фонд социального медицинского страхования</span>

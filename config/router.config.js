@@ -4,10 +4,10 @@ export default [
     path: '/user',
     component: '../layouts/UserLayout',
     routes: [
-      { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login' },
-      { path: '/user/register', component: './User/Register' },
-      { path: '/user/register-result', component: './User/RegisterResult' },
+      {path: '/user', redirect: '/user/login'},
+      {path: '/user/login', component: './User/Login'},
+      //{path: '/user/register', component: './User/Register'},
+      //{path: '/user/register-result', component: './User/RegisterResult'},
     ],
   },
   // app
@@ -18,42 +18,51 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/main/home' },
-
+      {path: '/', redirect: '/main/home'},
+      {path: '/main/profile', component: './User/Profile'},
+      {path:'/main/list',component:'./List/TableList'},
       {
         path: '/main/home',
         name: 'home',
-        icon: 'home',
+        icon: 'form',
         component: './Main/MainView',
       },
       {
         path: '/refunds',
+        icon: 'form',
         name: 'refunds',
       },
       {
         path: '/requests',
-        name: 'requests',
+        icon: 'form',
+        name: 'requests'
       },
       {
         path: '/payments',
+        icon: 'form',
         name: 'payments',
       },
       {
         path: '/reports',
+        icon: 'form',
         name: 'reports',
       },
       {
         path: '/journal',
+        icon: 'form',
         name: 'journal',
       },
       {
         path: '/calendar',
+        icon: 'form',
         name: 'calendar',
       },
       {
         path: '/templates_view',
+        icon: 'form',
         name: 'templates_view',
       },
+
       /*{
         path: '/dashboard',
         name: 'dashboard',
@@ -80,5 +89,5 @@ export default [
         component: '404',
       },
     ],
-  },
+  }
 ];

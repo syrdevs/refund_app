@@ -4,8 +4,8 @@ export default [
     path: '/user',
     component: '../layouts/UserLayout',
     routes: [
-      {path: '/user', redirect: '/user/login'},
-      {path: '/user/login', component: './User/Login'},
+      { path: '/user', redirect: '/user/login' },
+      { path: '/user/login', component: './User/Login' },
       //{path: '/user/register', component: './User/Register'},
       //{path: '/user/register-result', component: './User/RegisterResult'},
     ],
@@ -18,9 +18,9 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      {path: '/', redirect: '/main/home'},
-      {path: '/main/profile', component: './User/Profile'},
-      {path:'/main/list',component:'./List/TableList'},
+      { path: '/', redirect: '/main/home' },
+      { path: '/main/profile', component: './User/Profile' },
+      { path: '/main/list', component: './List/TableList' },
       {
         path: '/main/home',
         name: 'home',
@@ -31,11 +31,23 @@ export default [
         path: '/refunds',
         icon: 'form',
         name: 'refunds',
+        routes: [
+          { path: '/refunds', redirect: '/refunds/reestr' },
+          {
+          path: '/refunds/reestr',
+          icon: 'form',
+          name: 'reestr',
+          component: './List/Articles',
+        },{
+          path: '/refunds/stat',
+          icon: 'form',
+          name: 'stat',
+        }],
       },
       {
         path: '/requests',
         icon: 'form',
-        name: 'requests'
+        name: 'requests',
       },
       {
         path: '/payments',
@@ -56,6 +68,7 @@ export default [
         path: '/calendar',
         icon: 'form',
         name: 'calendar',
+        component: './Calendar/CalendarView'
       },
       {
         path: '/templates_view',
@@ -89,5 +102,5 @@ export default [
         component: '404',
       },
     ],
-  }
+  },
 ];

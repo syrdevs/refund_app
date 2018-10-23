@@ -117,6 +117,8 @@ export default {
   'menu.account.settings': 'Настройки',
   'menu.account.trigger': 'Trigger Error',
   'menu.account.logout': 'Выход',
+  'menu.refunds.reestr':'Реестр возвратов',
+  'menu.refunds.stat':'Статистические данные',
   'app.login.message-invalid-credentials': 'Неверное имя пользователя или пароль (admin / 888888)',
   'app.login.message-invalid-verification-code': 'Недопустимый код проверки',
   'app.login.tab-login-credentials': 'Credentials',

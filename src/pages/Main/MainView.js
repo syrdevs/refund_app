@@ -99,12 +99,12 @@ class MainView extends Component {
 
     const {selectedRows, columns, dataSource} = this.state;
 
-    const menuItems = columns.map(function (column) {
-      return (<Menu.Item>
+    const menuItems = columns.map((column,index)=>{
+      return <Menu.Item key={index.toString()}>
         <Checkbox onChange={this.handleSelectColumn.bind(this, column)}
                   checked={column.isVisible}>{column.title}</Checkbox>
-      </Menu.Item>);
-    }, this);
+      </Menu.Item>;
+    });
 
 
     const menu = (

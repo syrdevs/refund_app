@@ -1,31 +1,53 @@
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, Tabs, Table } from 'antd';
+
+const TabPane = Tabs.TabPane;
 
 export default class ModalGridView extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      dataSource: [],
+      isVisible: false,
+    };
   }
 
-  componentDidMount() {
-
+  componentWillReceiveProps(props, prevProps) {
+    if (props != null) {
+      this.setState({
+        isVisible: props.visible,
+        dataSource: props.dataSource,
+      });
+    }
   }
 
-  componentWillReceiveProps(props) {
-
-  }
+  handleCancel = (e) => {
+    this.setState({
+      isVisible: false,
+    });
+  };
 
   render() {
+
+    const { dataSource, isVisible } = this.state;
+
     return (<Modal
+      width={1000}
       centered
-      title="20px to Top"
-      style={{ top: 20 }}
-      visible={}
-      onOk={}
-      onCancel={}
-    >
-      <p>some contents...</p>
-      <p>some contents...</p>
-      <p>some contents...</p>
+      onCancel={this.handleCancel}
+      footer={[null, null]}
+      visible={isVisible}>
+      <Tabs type="card">
+        {dataSource.map((tabItem) => {
+          return (<TabPane tab={tabItem.id} key={tabItem.id}>
+            <Table pagination={false} dataSource={tabItem.data.values} columns={tabItem.data.columns}
+                   scroll={{ y: 450 }}/>
+          </TabPane>);
+        })}
+      </Tabs>
     </Modal>);
   }
 }
+
+

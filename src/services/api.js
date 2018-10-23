@@ -124,3 +124,10 @@ export async function queryNotices() {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+export async function LoginUser(params) {
+  return request('http://localhost:3001/api/user/login', {
+    method: 'POST',
+    body: params,
+  });
+}

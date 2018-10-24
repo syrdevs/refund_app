@@ -17,6 +17,7 @@ import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
+import setAuth from '../utils/setAuth';
 
 const { Content } = Layout;
 
@@ -118,6 +119,9 @@ class BasicLayout extends React.PureComponent {
   }
 
   componentDidUpdate(preProps) {
+    // auth user checkkkkkk
+    setAuth();
+
     // After changing to phone mode,
     // if collapsed is true, you need to click twice to display
     this.breadcrumbNameMap = this.getBreadcrumbNameMap();

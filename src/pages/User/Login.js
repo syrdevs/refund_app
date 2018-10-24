@@ -77,10 +77,10 @@ class LoginPage extends Component {
           }}
         >
           <br />
-          <UserName name="userName" placeholder="admin/user" />
+          <UserName name="email" placeholder="Логин" />
           <Password
             name="password"
-            placeholder="888888/123456"
+            placeholder="Пароль"
             onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
           />
 

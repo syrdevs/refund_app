@@ -60,6 +60,10 @@ export default {
   externals: {
     '@antv/data-set': 'DataSet',
   },
+  proxy: {
+    '/api': 'http://192.168.50.173:3001',
+  },
+
   // proxy: {
   //   '/server/api/': {
   //     target: 'https://preview.pro.ant.design/',

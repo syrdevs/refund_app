@@ -1,8 +1,10 @@
 import ajax from 'axios';
 import jwtdecode from 'jwt-decode';
-
+import { setAuthority } from '@/utils/authority';
+import { reloadAuthorized } from '@/utils/Authorized';
 export default function() {
   const token = localStorage.getItem('token');
+
   if (token) {
     const decoded = jwtdecode(token);
     if (decoded.exp > Date.now() / 1000) {
@@ -14,6 +16,9 @@ export default function() {
       // })
     } else {
       localStorage.removeItem('token');
+      localStorage.removeItem('antd-pro-authority');
+      setAuthority('guest');
+      reloadAuthorized();
     }
   } else {
     delete ajax.defaults.headers.common['Authorization'];

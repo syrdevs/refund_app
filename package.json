@@ -107,10 +107,5 @@
     "last 2 versions",
     "not ie <= 10"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  },
   "proxy": "http://192.168.50.173:3001"
 }

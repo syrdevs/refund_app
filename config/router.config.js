@@ -10,6 +10,16 @@ export default [
       //{path: '/user/register-result', component: './User/RegisterResult'},
     ],
   },
+  //exceptions
+  {
+    path: '/exception',
+    routes: [
+      { path: '/exception', component: '/Exception/404' },
+      { path: '/exception/404', component: '/Exception/404' },
+      { path: '/exception/403', component: '/Exception/403' },
+      { path: '/exception/500', component: '/Exception/500' },
+    ],
+  },
   // app
   {
     path: '/',
@@ -34,15 +44,17 @@ export default [
         routes: [
           { path: '/refunds', redirect: '/refunds/reestr' },
           {
-          path: '/refunds/reestr',
-          icon: 'form',
-          name: 'reestr',
-          component: './List/Articles',
-        },{
-          path: '/refunds/stat',
-          icon: 'form',
-          name: 'stat',
-        }],
+            path: '/refunds/reestr',
+            icon: 'form',
+            name: 'reestr',
+            component: './List/Articles',
+          },
+          {
+            path: '/refunds/stat',
+            icon: 'form',
+            name: 'stat',
+          },
+        ],
       },
       {
         path: '/requests',
@@ -63,19 +75,22 @@ export default [
         path: '/journal',
         icon: 'form',
         name: 'journal',
+        component: './Result/TestPage',
       },
       {
         path: '/calendar',
         icon: 'form',
         name: 'calendar',
-        component: './Calendar/CalendarView'
+        component: './Calendar/CalendarView',
       },
       {
         path: '/templates_view',
         icon: 'form',
         name: 'templates_view',
       },
-
+      {
+        component: '404',
+      },
       /*{
         path: '/dashboard',
         name: 'dashboard',
@@ -98,9 +113,6 @@ export default [
           },
         ],
       },*/
-      {
-        component: '404',
-      },
     ],
   },
 ];

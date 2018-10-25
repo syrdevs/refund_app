@@ -3,6 +3,7 @@ import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
+import setAuth from './setAuth';
 
 const codeMessage = {
   200: 'Сервер успешно возвратил запрошенные данные. ',
@@ -27,10 +28,10 @@ const checkStatus = response => {
     return response;
   }
   const errortext = codeMessage[response.status] || response.statusText;
-  /*notification.error({
+  notification.error({
     message: `Информация ${response.status}: ${response.url}`,
     description: errortext,
-  });*/
+  });
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -65,7 +66,7 @@ const cachedSave = (response, hashcode) => {
  */
 export default function request(url, option) {
   const options = {
-    expirys: isAntdPro(),
+    // expirys: isAntdPro(),
     ...option,
   };
   /**
@@ -103,7 +104,18 @@ export default function request(url, option) {
     }
   }
 
-  const expirys = options.expirys && 60;
+  const authToken = setAuth(true);
+
+  if (authToken) {
+    newOptions.headers = {
+      Authorization: authToken,
+      ...newOptions.headers,
+    };
+  } else {
+    delete newOptions.headers.Authorization;
+  }
+
+  /*const expirys = options.expirys && 60;
   // options.expirys !== false, return the cache,
   if (options.expirys !== false) {
     const cached = sessionStorage.getItem(hashcode);
@@ -118,6 +130,8 @@ export default function request(url, option) {
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
   }
+*/
+
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => cachedSave(response, hashcode))
@@ -134,9 +148,9 @@ export default function request(url, option) {
       if (status === 401) {
         // @HACK
         /* eslint-disable no-underscore-dangle */
-        window.g_app._store.dispatch({
+        /*window.g_app._store.dispatch({
           type: 'login/logout',
-        });
+        });*/
         return;
       }
       // environment should not be used

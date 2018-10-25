@@ -62,8 +62,10 @@ export default {
   },
   proxy: {
     '/api': 'http://192.168.50.173:3001',
+    '/data': 'https://samples.openweathermap.org',
   },
 
+  exportStatic: {},
   // proxy: {
   //   '/server/api/': {
   //     target: 'https://preview.pro.ant.design/',

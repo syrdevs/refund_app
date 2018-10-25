@@ -16,12 +16,14 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(LoginUser, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
-      if (response.status === 'ok') {
+
+      if (response && response.status === 'ok') {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+
         localStorage.setItem('token', response.token);
         setAuthToken();
         reloadAuthorized();
@@ -41,6 +43,10 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
+      } else {
+        yield put({
+          type: 'incorrectLogin',
+        });
       }
     },
 
@@ -69,6 +75,11 @@ export default {
   },
 
   reducers: {
+    incorrectLogin(state, { payload }) {
+      return {
+        msg: 'ne pravilni',
+      };
+    },
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
       return {

@@ -29,7 +29,7 @@ const checkStatus = response => {
   }
   const errortext = codeMessage[response.status] || response.statusText;
   notification.error({
-    message: `Информация ${response.status}: ${response.url}`,
+    message: `Ошибка ${response.status}: ${response.url}`,
     description: errortext,
   });
   const error = new Error(errortext);
@@ -112,7 +112,8 @@ export default function request(url, option) {
       ...newOptions.headers,
     };
   } else {
-    delete newOptions.headers.Authorization;
+    if (newOptions.headers && newOptions.headers.Authorization)
+      delete newOptions.headers.Authorization;
   }
 
   /*const expirys = options.expirys && 60;
@@ -144,6 +145,7 @@ export default function request(url, option) {
       return response.json();
     })
     .catch(e => {
+
       const status = e.name;
       if (status === 401) {
         // @HACK

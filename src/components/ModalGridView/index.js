@@ -23,9 +23,7 @@ export default class ModalGridView extends Component {
   }
 
   handleCancel = (e) => {
-    this.setState({
-      isVisible: false,
-    });
+    this.props.resetshow();
   };
 
   render() {

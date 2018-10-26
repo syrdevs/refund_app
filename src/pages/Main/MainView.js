@@ -4031,7 +4031,9 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
-        <ModalGridView visible={this.state.ShowModal} resetshow={this.setState({ ShowModal: false })}
+        <ModalGridView visible={this.state.ShowModal} resetshow={(e) => {
+          this.setState({ ShowModal: false });
+        }}
                        dataSource={modalGridView}/>
         <Row type="flex" justify="end">
           <Button style={buttons}>Обновить</Button>

@@ -56,76 +56,33 @@ export default class PaymentsPage2 extends Component {
 
   render() {
     const testcolumns = [
-      { title: 'Full Name', dataIndex: 'name', key: 'name', fixed: 'left' },
-      { title: 'Column 3', dataIndex: 'address', key: '3' },
-      { title: 'Column 4', dataIndex: 'address', key: '4' },
-      { title: 'Column 5', dataIndex: 'address', key: '5' },
-      { title: 'Column 6', dataIndex: 'address', key: '6' },
-      { title: 'Column 7', dataIndex: 'address', key: '7' },
-      { title: 'Column 8', dataIndex: 'address', key: '8' },
+      { title: 'Референс', dataIndex: 'referance', fixed: 'left' },
+      { title: 'Дата платежа', dataIndex: 'date_payment' },
+      { title: 'Сумма', dataIndex: 'summa' },
+      { title: 'КНП', dataIndex: 'knp' },
+      { title: 'Отправитель(БИН)', dataIndex: 'sender_bin' },
+      { title: 'Отправитель(БИК)', dataIndex: 'sender_bik' },
+      { title: 'Получатель(Наименование)', dataIndex: 'receiver_name' },
+      { title: 'Получатель(БИН)', dataIndex: 'receiver_bin' },
     ];
-    const testdata = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York Park',
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 40,
-        address: 'London Park',
-      },
-      {
-        key: '3',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York Park',
-      },
-      {
-        key: '4',
-        name: 'Jim Green',
-        age: 40,
-        address: 'London Park',
-      },
-      {
-        key: '5',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York Park',
-      },
-      {
-        key: '6',
-        name: 'Jim Green',
-        age: 40,
-        address: 'London Park',
-      },
-      {
-        key: '7',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York Park',
-      },
-      {
-        key: '8',
-        name: 'Jim Green',
-        age: 40,
-        address: 'London Park',
-      },
-      {
-        key: '9',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York Park',
-      },
-      {
-        key: '10',
-        name: 'Jim Green',
-        age: 40,
-        address: 'London Park',
-      },
-    ];
+
+    const testdata = [];
+
+    for (let i = 0; i < 50; i++) {
+      var itemRow = {};
+      itemRow.referance = 'GCVP_4515' + i;
+      itemRow.date_payment = '26.10.2018';
+      itemRow.summa = '15119181.644';
+      itemRow.knp = '12' + i;
+      itemRow.sender_bin = '132131232132' + i;
+      itemRow.sender_bik = '12312321' + i;
+      itemRow.receiver_name = '13123212' + i;
+      itemRow.receiver_bin = '122312321' + i;
+      itemRow.receiver_bik = '131231232' + i;
+      itemRow.receiver_amount = 'KZ15151515KZT2515';
+
+      testdata.push(itemRow);
+    }
 
     const SearcherDiv = (prop) => (
       <Card
@@ -135,21 +92,17 @@ export default class PaymentsPage2 extends Component {
         extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
       >
         <Form layout={'vertical'}>
-          <FormItem label="Дата платежа">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="БИН">
-            <Input style={{ width: '100%' }}/>
-          </FormItem>
-          <FormItem label="Реферанс">
-            <Input style={{ width: '100%' }}/>
-          </FormItem>
-          <FormItem label="КНП">
-            <Input style={{ width: '100%' }}/>
-          </FormItem>
+          Дата платежа:
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+          БИН:
+          <Input style={{ width: '100%' }}/>
+          Реферанс
+          <Input style={{ width: '100%' }}/>
+          КНП
+          <Input style={{ width: '100%' }}/>
           <FormItem>
             <Button style={{ margin: '10px 0 0 15px' }} size={'small'} type="primary" icon="search">
               Искать
@@ -159,22 +112,24 @@ export default class PaymentsPage2 extends Component {
         </Form>
       </Card>
     );
+
     const DataDiv = () => (
       <Card
         bodyStyle={{ padding: 0 }}
         type="inner"
-        title="Платежи РПМУ"
-      >
+        title="Платежи РПМУ">
         <div>
           <Button type={this.state.filterContainer != 6 ? 'default ' : 'primary'} onClick={this.filterPanelState}
-                  style={{ margin: '10px 0 0 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
+                  style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
 
-          <Button style={{ margin: '10px 0 0 15px' }} size="small"><Icon type="redo" theme="outlined"/>Обновить</Button>
-          <Button style={{ margin: '10px 15px 0 15px', float: 'right' }} size="small"><Icon type="export"
-                                                                                            theme="outlined"/>Выгрузка в
+          <Button style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
+                                                                            theme="outlined"/>Обновить</Button>
+          <Button style={{ margin: '10px 15px 10px 15px', float: 'right' }} size="small"><Icon type="export"
+                                                                                               theme="outlined"/>Выгрузка
+            в
             Excel</Button>
         </div>
-        <Table columns={testcolumns} dataSource={testdata} scroll={{ x: 1300 }}/>
+        <Table size={'small'} columns={testcolumns} dataSource={testdata} scroll={{ x: 1300 }}/>
       </Card>
     );
 

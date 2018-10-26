@@ -29,6 +29,7 @@ class MainView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ShowModal: false,
       modalVisible: false,
       updateModalVisible: false,
       expandForm: false,
@@ -46,7 +47,6 @@ class MainView extends Component {
       SelectKNPItems: [],
       SelectRefundItems: [],
       SelectRefusalItems: [],
-      ShowModal: false,
       DataTable: {
         number: 0,
         size: 15, // in one page
@@ -3653,7 +3653,7 @@ class MainView extends Component {
             };
           },
           render: () => (
-            <Button size={"small"}>
+            <Button size={'small'}>
               <Icon type="database" theme="outlined"/>
             </Button>
           ),
@@ -3931,7 +3931,7 @@ class MainView extends Component {
         title="Платежи РПМУ"
         extra={<Button onClick={event => this.hideleft()}>х</Button>}
       >
-        <Table size={"small"} columns={testcolumns} dataSource={testdata} scroll={{ x: 1100 }}/>
+        <Table size={'small'} columns={testcolumns} dataSource={testdata} scroll={{ x: 1100 }}/>
       </Card>
     );
 
@@ -4031,7 +4031,8 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
-        <ModalGridView visible={this.state.ShowModal} dataSource={modalGridView}/>
+        <ModalGridView visible={this.state.ShowModal} resetshow={this.setState({ ShowModal: false })}
+                       dataSource={modalGridView}/>
         <Row type="flex" justify="end">
           <Button style={buttons}>Обновить</Button>
           <Button
@@ -4077,7 +4078,7 @@ class MainView extends Component {
 
                   <Row style={{ marginBottom: 20 }}>
                     <Table
-                      size={"small"}
+                      size={'small'}
                       rowKey={'key'}
                       dataSource={dataSource}
                       columns={columns.filter(column => column.isVisible)}

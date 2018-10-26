@@ -21,12 +21,15 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
+
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
+
 class MainView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ShowModal: false,
       modalVisible: false,
       updateModalVisible: false,
       expandForm: false,
@@ -44,7 +47,6 @@ class MainView extends Component {
       SelectKNPItems: [],
       SelectRefundItems: [],
       SelectRefusalItems: [],
-      ShowModal: false,
       DataTable: {
         number: 0,
         size: 15, // in one page
@@ -3651,8 +3653,8 @@ class MainView extends Component {
             };
           },
           render: () => (
-            <Button>
-              <Icon type="database" theme="outlined" />
+            <Button size={'small'}>
+              <Icon type="database" theme="outlined"/>
             </Button>
           ),
         },
@@ -3689,6 +3691,7 @@ class MainView extends Component {
       SelectRefusalItems: children,
     });
   }
+
   componentWillReceiveProps(props) {
     console.log(props);
   }
@@ -3707,6 +3710,7 @@ class MainView extends Component {
       columns: filteredColumn,
     });
   }
+
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -3733,6 +3737,7 @@ class MainView extends Component {
       tablecont: 18,
     });
   }
+
   toggleItems() {
     this.setState({
       isHidden: false,
@@ -3742,6 +3747,7 @@ class MainView extends Component {
       tablecont: 16,
     });
   }
+
   hideleft() {
     if (!this.state.isHidden) {
       this.setState({
@@ -3832,6 +3838,12 @@ class MainView extends Component {
       },
     ];
 
+    const styleLabel = {
+      margin: '10px 0px 5px 0px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+    };
+
     const SearcherDiv = () => (
       <Card
         type="inner"
@@ -3839,65 +3851,64 @@ class MainView extends Component {
         extra={<Button onClick={event => this.hideleft()}>х</Button>}
       >
         <Form layout={'vertical'}>
-          <FormItem>
-            <Divider orientation="left">Номер заявки</Divider>
-            <Input />
-          </FormItem>
-          <FormItem>
-            <Divider orientation="left">ИИН Потребителя</Divider>
-            <Input />
-          </FormItem>
-          <FormItem label="Статус заявки на возврат">
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder=""
-              defaultValue={['a10', 'c12']}
-            >
-              {this.state.SelectStatusItems}
-            </Select>
-          </FormItem>
-          <FormItem label="Крайная дата">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="Дата заявления плательщика">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="Дата поступление заявки на возврат">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="Дата поступления заявление в Фонд">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="Дата осуществления возврата">
-            <RangePicker
-              defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-              format={dateFormat}
-            />
-          </FormItem>
-          <FormItem label="КНП">
-            <Select mode="multiple" style={{ width: '100%' }} placeholder="" defaultValue={[]}>
-              {this.state.SelectKNPItems}
-            </Select>
-          </FormItem>
-          <FormItem label="Причина возврата">
-            <Select size={'default'}>{this.state.SelectRefundItems}</Select>
-          </FormItem>
-          <FormItem label="Причина отказа">
-            <Select size={'default'}>{this.state.SelectRefusalItems}</Select>
-          </FormItem>
+
+          <div style={styleLabel}>Номер заявки:</div>
+          <Input placeholder={'Номер заявки'}/>
+
+          <div style={styleLabel}>ИИН Потребителя:</div>
+          <Input placeholder={'ИИН Потребителя'}/>
+
+          <div style={styleLabel}>Статус заявки на возврат:</div>
+          <Select
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder=""
+            defaultValue={['a10', 'c12']}
+          >
+            {this.state.SelectStatusItems}
+          </Select>
+
+          <div style={styleLabel}>Крайная дата:</div>
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+
+          <div style={styleLabel}>Дата заявления плательщика:</div>
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+
+          <div style={styleLabel}>Дата поступление заявки на возврат:</div>
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+
+          <div style={styleLabel}>Дата поступления заявление в Фонд:</div>
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+
+          <div style={styleLabel}>Дата осуществления возврата:</div>
+          <RangePicker
+            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+            format={dateFormat}
+          />
+
+          <div style={styleLabel}>КНП:</div>
+          <Select mode="multiple" style={{ width: '100%' }} placeholder="" defaultValue={[]}>
+            {this.state.SelectKNPItems}
+          </Select>
+
+          <div style={styleLabel}>Причина возврата:</div>
+          <Select size={'default'}>{this.state.SelectRefundItems}</Select>
+
+          <div style={styleLabel}>Причина отказа:</div>
+          <Select size={'default'}>{this.state.SelectRefusalItems}</Select>
+          <div style={styleLabel}></div>
           <FormItem>
             <Row>
               <Col span={12}>
@@ -3920,7 +3931,7 @@ class MainView extends Component {
         title="Платежи РПМУ"
         extra={<Button onClick={event => this.hideleft()}>х</Button>}
       >
-        <Table columns={testcolumns} dataSource={testdata} scroll={{ x: 1300 }} />
+        <Table size={'small'} columns={testcolumns} dataSource={testdata} scroll={{ x: 1100 }}/>
       </Card>
     );
 
@@ -3947,15 +3958,15 @@ class MainView extends Component {
     const actionmenu = (
       <Menu>
         <Menu.Item key="1">
-          <Icon type="user" />
+          <Icon type="user"/>
           1st{' '}
         </Menu.Item>
         <Menu.Item key="2">
-          <Icon type="user" />
+          <Icon type="user"/>
           2nd{' '}
         </Menu.Item>
         <Menu.Item key="3">
-          <Icon type="user" />
+          <Icon type="user"/>
           3rd{' '}
         </Menu.Item>
       </Menu>
@@ -4020,7 +4031,8 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
-        <ModalGridView visible={this.state.ShowModal} dataSource={modalGridView} />
+        <ModalGridView visible={this.state.ShowModal} resetshow={this.setState({ ShowModal: false })}
+                       dataSource={modalGridView}/>
         <Row type="flex" justify="end">
           <Button style={buttons}>Обновить</Button>
           <Button
@@ -4049,28 +4061,30 @@ class MainView extends Component {
             <Row>
               <Col sm={24} md={this.state.searchercont}>
                 <div>
-                  {!this.state.isSearcher && <SearcherDiv />}
-                  {!this.state.isItems && <DataDiv />}
+                  {!this.state.isSearcher && <SearcherDiv/>}
+                  {!this.state.isItems && <DataDiv/>}
                 </div>
               </Col>
               <Col sm={24} md={this.state.tablecont}>
-                <Card bordered={true}>
+                <Card bodyStyle={{ padding: 0 }} bordered={true}>
                   <Button style={{ margin: 5 }} onClick={this.toggleSearcher.bind(this)}>
-                    <Icon type="search" theme="outlined" />
+                    <Icon type="search" theme="outlined"/>
                   </Button>
                   <Dropdown overlay={menu} placement="bottomLeft">
                     <Button>
-                      <Icon type="setting" theme="outlined" />
+                      <Icon type="setting" theme="outlined"/>
                     </Button>
                   </Dropdown>
 
                   <Row style={{ marginBottom: 20 }}>
                     <Table
+                      size={'small'}
                       rowKey={'key'}
                       dataSource={dataSource}
                       columns={columns.filter(column => column.isVisible)}
                       onChange={this.handleStandardTableChange}
                       pagination={false}
+                      scroll={{ x: 1100 }}
                     />
                   </Row>
                   <Row>

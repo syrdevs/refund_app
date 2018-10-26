@@ -65,6 +65,21 @@ export default [
         path: '/payments',
         icon: 'form',
         name: 'payments',
+        routes: [
+          { path: '/payments', redirect: '/payments/payment1' },
+          {
+            path: '/payments/payment1',
+            icon: 'form',
+            name: 'payment100',
+            component: './Payments/PaymentsPage1'
+          },
+          {
+            path: '/payments/payment2',
+            icon: 'form',
+            name: 'payment102',
+            component: './Payments/PaymentsPage2'
+          },
+        ],
       },
       {
         path: '/reports',

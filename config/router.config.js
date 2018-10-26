@@ -58,8 +58,9 @@ export default [
       },
       {
         path: '/requests',
-        icon: 'form',
         name: 'requests',
+        icon: 'form',
+        component: './Requests/Requests',
       },
       {
         path: '/payments',

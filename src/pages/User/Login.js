@@ -15,7 +15,7 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 class LoginPage extends Component {
   state = {
     type: 'account',
-    autoLogin: true,
+    autoLogin: false,
   };
 
   onTabChange = type => {
@@ -55,7 +55,7 @@ class LoginPage extends Component {
 
   changeAutoLogin = e => {
     this.setState({
-      autoLogin: e.target.checked,
+      autoLogin: false,
     });
   };
 
@@ -83,12 +83,11 @@ class LoginPage extends Component {
             placeholder="Пароль"
             onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
           />
-
-          <div>
+         {/* <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="app.login.remember-me" />
             </Checkbox>
-          </div>
+          </div>*/}
           <Submit loading={submitting}>
             <FormattedMessage id="app.login.login" />
           </Submit>

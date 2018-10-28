@@ -42,6 +42,8 @@ export default class CalendarView extends Component {
       modalForm: {
         selectedDayType: '',
         description: '',
+        deleteBtnVisible: false,
+        eventDescriptionVisible: false,
       },
     };
   }
@@ -52,7 +54,6 @@ export default class CalendarView extends Component {
         date: '23.10.2018',
         EventID: {
           id: '1',
-          name: 'Lorem ipsum dolor sit amet 2222',
           code: '10',
         },
       }, {
@@ -69,9 +70,20 @@ export default class CalendarView extends Component {
   }
 
   showModal = (data) => {
+
+    const { modalForm } = this.state;
+
+    if (Object.keys(data).length) {
+      modalForm.eventDescriptionVisible = data.id === '2';
+      modalForm.deleteBtnVisible = true;
+      modalForm.description = data.name;
+      modalForm.selectedDayType = data.id;
+    }
+
     this.setState({
       modalVisible: true,
       modalData: data ? data : {},
+      modalForm: modalForm,
     });
   };
   handleOk = (e) => {
@@ -80,9 +92,9 @@ export default class CalendarView extends Component {
 
     console.log(modalForm.description, modalForm.selectedDayType);
 
-    this.setState({
-      modalVisible: false,
-    });
+    // this. save
+
+    this.handleCancel();
   };
   handleCancel = (e) => {
     this.setState({
@@ -91,6 +103,8 @@ export default class CalendarView extends Component {
       modalForm: {
         selectedDay: '',
         description: '',
+        deleteBtnVisible: false,
+        eventDescriptionVisible: false,
       },
     });
   };
@@ -143,7 +157,6 @@ export default class CalendarView extends Component {
     ) : null;
   }
 
-
   onSelectDate(e) {
     let _date = moment(e, 'DD.MM.YYYY');
 
@@ -158,7 +171,7 @@ export default class CalendarView extends Component {
     let month = moment(e).format('MM');
     let year = moment(e).format('YYYY');
 
-    /// send to server is redux
+    /// send to server is redux init
 
     if (e)
       this.setState({
@@ -168,7 +181,9 @@ export default class CalendarView extends Component {
 
   render() {
 
-    const { modalVisible, currentDate, modalData, modalForm } = this.state;
+    const { modalVisible, currentDate, modalForm } = this.state;
+    const { eventDescriptionVisible, deleteBtnVisible } = modalForm;
+
 
     return (<PageHeaderWrapper title="Календарь">
       <Modal centered
@@ -177,31 +192,41 @@ export default class CalendarView extends Component {
              onCancel={this.handleCancel.bind(this)}
              visible={modalVisible}
              footer={[
-               <Button key="delete" onClick={this.handleDelete} type="danger">Удалить</Button>,
+               <Button style={{ display: deleteBtnVisible ? '' : 'none' }} key="delete"
+                       onClick={this.handleDelete}
+                       type="danger">Удалить</Button>,
                <Button key="submit" onClick={this.handleOk} type="primary">Сохранить</Button>,
                <Button key="cancel" onClick={this.handleCancel}>Отмена</Button>,
              ]}>
         <Select
           style={{ width: '100%' }}
           placeholder="Выберите"
+          value={modalForm.selectedDayType}
           onChange={(value, option) => {
-            modalForm.selectedDayType = value;
+            this.setState(({ modalForm }) => ({
+              modalForm: {
+                ...modalForm,
+                selectedDayType: value,
+                description: '',
+                eventDescriptionVisible: value === '2',
+              },
+            }));
           }}
           optionFilterProp="children">
           <Option value="1">Выходной день</Option>
           <Option value="2">Праздничный день</Option>
         </Select>
         <br/><br/>
-        <Input value={modalData.name} onChange={(e) => {
-          modalData.name = e.target.value;
-          modalForm.description = e.target.value;
+        <Input value={modalForm.description} onChange={(({ target }) => {
 
-          this.setState({
-            modalData: modalData,
-            modalForm: modalForm
-          });
-
-        }} style={{ width: '100%' }} placeholder='Событие'/>
+          this.setState(({ modalForm }) => ({
+            modalForm: {
+              ...modalForm,
+              description: target.value,
+            },
+          }));
+        })} style={{ width: '100%', display: eventDescriptionVisible ? '' : 'none' }}
+               placeholder='Событие'/>
       </Modal>
 
 

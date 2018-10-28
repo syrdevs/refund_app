@@ -28,8 +28,12 @@ const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const dateFormat = 'YYYY/MM/DD';
+const formItemLayout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 18 },
+};
 
-export default class PaymentsPage2 extends Component {
+export default class PaymentsPage extends Component {
   constructor(props) {
     super(props);
 
@@ -64,6 +68,8 @@ export default class PaymentsPage2 extends Component {
       { title: 'Отправитель(БИК)', dataIndex: 'sender_bik' },
       { title: 'Получатель(Наименование)', dataIndex: 'receiver_name' },
       { title: 'Получатель(БИН)', dataIndex: 'receiver_bin' },
+      { title: 'Получатель(БИК)', dataIndex: 'receiver_bik' },
+      { title: 'Получатель(Счет)', dataIndex: 'receiver_amount' },
     ];
 
     const testdata = [];
@@ -89,7 +95,7 @@ export default class PaymentsPage2 extends Component {
         bodyStyle={{ padding: 10 }}
         type="inner"
         title="Фильтр"
-        extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
+        extra={<Button  size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
       >
         <Form layout={'vertical'}>
           Дата платежа:
@@ -135,19 +141,37 @@ export default class PaymentsPage2 extends Component {
 
 
     return (
-      <PageHeaderWrapper title="Платежи МТ102">
-        <Row>
-          <Col sm={24} md={this.state.filterContainer}>
-            <Card bodyStyle={{ padding: 0 }} bordered={true}>
-              <SearcherDiv/>
-            </Card>
-          </Col>
-          <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-            <Card bodyStyle={{ padding: 0 }} bordered={true}>
-              <DataDiv/>
-            </Card>
-          </Col>
-        </Row>
+      <PageHeaderWrapper title="Платежи МТ100">
+        <Tabs size={"small"} type="card">
+          <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
+            <Row>
+            <Col sm={24} md={this.state.filterContainer}>
+              <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <SearcherDiv/>
+              </Card>
+            </Col>
+            <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+              <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <DataDiv/>
+              </Card>
+            </Col>
+          </Row>
+          </TabPane>
+          <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
+            <Row>
+            <Col sm={24} md={this.state.filterContainer}>
+              <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <SearcherDiv/>
+              </Card>
+            </Col>
+            <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+              <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <DataDiv/>
+              </Card>
+            </Col>
+          </Row>
+          </TabPane>
+        </Tabs>
       </PageHeaderWrapper>
     );
   }

@@ -3837,7 +3837,6 @@ class MainView extends Component {
         address: 'London Park',
       },
     ];
-
     const styleLabel = {
       margin: '10px 0px 5px 0px',
       fontSize: '12px',
@@ -3846,6 +3845,7 @@ class MainView extends Component {
 
     const SearcherDiv = () => (
       <Card
+        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
         type="inner"
         title="Фильтр"
         extra={<Button onClick={event => this.hideleft()}>х</Button>}
@@ -3926,6 +3926,7 @@ class MainView extends Component {
     );
     const DataDiv = () => (
       <Card
+        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
         bodyStyle={{ padding: 0 }}
         type="inner"
         title="Платежи РПМУ"
@@ -3958,19 +3959,14 @@ class MainView extends Component {
     const actionmenu = (
       <Menu>
         <Menu.Item key="1">
-          <Icon type="user"/>
-          1st{' '}
+          Сверить с РПМУ
         </Menu.Item>
         <Menu.Item key="2">
-          <Icon type="user"/>
-          2nd{' '}
-        </Menu.Item>
-        <Menu.Item key="3">
-          <Icon type="user"/>
-          3rd{' '}
+          Выгрузка в Excell
         </Menu.Item>
       </Menu>
     );
+
     const buttons = { margin: 3 };
     const dataSourcex = [];
     for (let i = 0; i < 15; i++) {
@@ -4035,29 +4031,9 @@ class MainView extends Component {
           this.setState({ ShowModal: false });
         }}
                        dataSource={modalGridView}/>
-        <Row type="flex" justify="end">
-          <Button style={buttons}>Обновить</Button>
-          <Button
-            type="primary"
-            style={buttons}
-            onClick={() => {
-              console.log('oibay');
-              this.showModal();
-            }}
-          >
-            Одобрить
-          </Button>
-          <Button type="danger" style={buttons}>
-            Отклонить
-          </Button>
-          <Button style={buttons}>Сохранить</Button>
-          <Button style={buttons}>Выполнить</Button>
-          <Button style={buttons}>Сверить с РПМУ</Button>
-          <Dropdown overlay={actionmenu}>
-            <Button style={buttons}>Дейстие</Button>
-          </Dropdown>
-          <Button style={buttons}>Выгрузка в Excell</Button>
-        </Row>
+        {/*<Row type="flex" justify="end">
+
+        </Row>*/}
         <div>
           <div>
             <Row>
@@ -4068,16 +4044,43 @@ class MainView extends Component {
                 </div>
               </Col>
               <Col sm={24} md={this.state.tablecont}>
-                <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                  <Button style={{ margin: 5 }} onClick={this.toggleSearcher.bind(this)}>
-                    <Icon type="search" theme="outlined"/>
-                  </Button>
-                  <Dropdown overlay={menu} placement="bottomLeft">
-                    <Button>
-                      <Icon type="setting" theme="outlined"/>
-                    </Button>
-                  </Dropdown>
-
+                <Card style={{borderRadius: '5px', marginBottom:'10px'}} bodyStyle={{ padding: 0 }} bordered={true}>
+                  <Row>
+                    <Col span={22}>
+                      <Button style={{ margin: 5 }} onClick={this.toggleSearcher.bind(this)}>
+                        <Icon type="search" theme="outlined"/>
+                      </Button>
+                      <Button style={buttons}>Обновить</Button>
+                      <Button
+                        className={'btn-success'}
+                        onClick={() => {
+                          console.log('oibay');
+                          this.showModal();
+                        }}
+                      >
+                        Одобрить
+                      </Button>
+                      <Button
+                        className={'btn-danger'}
+                        style={buttons}>
+                        Отклонить
+                      </Button>
+                      <Button style={buttons}>Сохранить</Button>
+                      <Button style={buttons}>Выполнить</Button>
+                      <Dropdown overlay={actionmenu}>
+                        <Button style={buttons}>Дейстие</Button>
+                      </Dropdown>
+                    </Col>
+                    <Col span={2}>
+                      <div style={{ margin: '5px', float:'right'}}>
+                        <Dropdown overlay={menu} placement="bottomRight" >
+                          <Button>
+                            <Icon type="setting" theme="outlined"/>
+                          </Button>
+                        </Dropdown>
+                      </div>
+                    </Col>
+                  </Row>
                   <Row style={{ marginBottom: 20 }}>
                     <Table
                       size={'small'}
@@ -4089,7 +4092,7 @@ class MainView extends Component {
                       scroll={{ x: 1100 }}
                     />
                   </Row>
-                  <Row>
+                  <Row style={{marginBottom:'10px'}}>
                     <Pagination
                       style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                       showSizeChanger

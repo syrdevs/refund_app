@@ -2618,85 +2618,93 @@ class MainView extends Component {
   }
 
   componentDidMount() {
+
+    const columns = [
+      {
+        title: 'Номер заявки',
+        width: 100,
+        dataIndex: 'applicationId.appNumber',
+      },
+      {
+        title: 'Дата заявки',
+        dataIndex: 'refundEntryDate',
+      },
+      {
+        title: 'Дата поступление',
+        dataIndex: 'appPayerDate',
+        render: text => <a href="javascript:;">{text}</a>,
+      },
+      {
+        title: 'Крайняя дата',
+        dataIndex: 'gcvpOrderDate',
+        render: text => <a href="javascript:;">{text}</a>,
+      },
+      ,
+      {
+        title: 'Номер платежа',
+        dataIndex: 'outPayOrderNum',
+      },
+      {
+        title: 'Дата платежа',
+        dataIndex: 'applicationId.payOrderDate',
+      },
+      {
+        title: 'Референс',
+        dataIndex: 'gcvpReference',
+      },
+      ,
+      {
+        title: 'КНП',
+        dataIndex: 'applicationId.dknpId.id',
+      },
+      ,
+      {
+        title: 'Возврат',
+        dataIndex: 'appRefundStatus',
+      },
+      {
+        title: 'МТ 102',
+        fixed: 'right',
+        width: 50,
+        onCell: record => {
+          return {
+            onClick: () => {
+              console.log(record);
+            },
+          };
+        },
+        render: () => (
+          <Button>
+            <Icon type="database" theme="outlined" />
+          </Button>
+        ),
+      },
+      {
+        title: 'XML',
+        fixed: 'right',
+        width: 50,
+        onCell: record => {
+          return {
+            onClick: () => {
+              console.log(record);
+            },
+          };
+        },
+        render: () => (
+          <Button>
+            <Icon type="database" theme="outlined" />
+          </Button>
+        ),
+      },
+    ];
+
+    columns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+
+
     this.setState({
-      columns: [
-        {
-          title: 'Номер заявки',
-          width: 100,
-          dataIndex: 'applicationId.appNumber',
-        },
-        {
-          title: 'Дата заявки',
-          dataIndex: 'refundEntryDate',
-        },
-        {
-          title: 'Дата поступление',
-          dataIndex: 'appPayerDate',
-          render: text => <a href="javascript:;">{text}</a>,
-        },
-        {
-          title: 'Крайняя дата',
-          dataIndex: 'gcvpOrderDate',
-          render: text => <a href="javascript:;">{text}</a>,
-        },
-        ,
-        {
-          title: 'Номер платежа',
-          dataIndex: 'outPayOrderNum',
-        },
-        {
-          title: 'Дата платежа',
-          dataIndex: 'applicationId.payOrderDate',
-        },
-        {
-          title: 'Референс',
-          dataIndex: 'gcvpReference',
-        },
-        ,
-        {
-          title: 'КНП',
-          dataIndex: 'applicationId.dknpId.id',
-        },
-        ,
-        {
-          title: 'Возврат',
-          dataIndex: 'appRefundStatus',
-        },
-        {
-          title: 'МТ 102',
-          fixed: 'right',
-          width: 50,
-          onCell: record => {
-            return {
-              onClick: () => {
-                console.log(record);
-              },
-            };
-          },
-          render: () => (
-            <Button>
-              <Icon type="database" theme="outlined" />
-            </Button>
-          ),
-        },
-        {
-          title: 'XML',
-          fixed: 'right',
-          width: 50,
-          onCell: record => {
-            return {
-              onClick: () => {
-                console.log(record);
-              },
-            };
-          },
-          render: () => (
-            <Button>
-              <Icon type="database" theme="outlined" />
-            </Button>
-          ),
-        },
-      ],
+      columns: columns,
       dataSource: this.state.DataTable.content.slice(0, 9),
     });
   }

@@ -60,17 +60,21 @@ export default class PaymentsPage extends Component {
 
   render() {
     const testcolumns = [
-      { title: 'Референс', dataIndex: 'referance', fixed: 'left' },
+      { title: 'Референс', dataIndex: 'referance'},
       { title: 'Дата платежа', dataIndex: 'date_payment' },
       { title: 'Сумма', dataIndex: 'summa' },
-      { title: 'КНП', dataIndex: 'knp' },
-      { title: 'Отправитель(БИН)', dataIndex: 'sender_bin' },
-      { title: 'Отправитель(БИК)', dataIndex: 'sender_bik' },
-      { title: 'Получатель(Наименование)', dataIndex: 'receiver_name' },
-      { title: 'Получатель(БИН)', dataIndex: 'receiver_bin' },
-      { title: 'Получатель(БИК)', dataIndex: 'receiver_bik' },
-      { title: 'Получатель(Счет)', dataIndex: 'receiver_amount' },
+      { title: 'КНП', width: 80, dataIndex: 'knp' },
+      { title: 'Отправитель (БИН)',width: 120, dataIndex: 'sender_bin' },
+      { title: 'Отправитель (БИК)',width: 120, dataIndex: 'sender_bik' },
+      { title: 'Получатель (Наименование)',width: 130, dataIndex: 'receiver_name' },
+      { title: 'Получатель (БИН)',width: 120, dataIndex: 'receiver_bin' },
+      { title: 'Получатель (БИК)',width: 120, dataIndex: 'receiver_bik' },
+      { title: 'Получатель (Счет)',width: 120, dataIndex: 'receiver_amount' },
     ];
+
+    testcolumns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
 
     const testdata = [];
 
@@ -95,7 +99,7 @@ export default class PaymentsPage extends Component {
         bodyStyle={{ padding: 10 }}
         type="inner"
         title="Фильтр"
-        extra={<Button  size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
+        extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
       >
         <Form layout={'vertical'}>
           Дата платежа:
@@ -142,36 +146,37 @@ export default class PaymentsPage extends Component {
 
     return (
       <PageHeaderWrapper title="Платежи МТ100">
-        <Tabs size={"small"} type="card">
+        <Tabs size={'small'} type="card">
           <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
             <Row>
-            <Col sm={24} md={this.state.filterContainer}>
-              <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                <SearcherDiv/>
-              </Card>
-            </Col>
-            <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-              <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                <DataDiv/>
-              </Card>
-            </Col>
-          </Row>
+              <Col sm={24} md={this.state.filterContainer}>
+                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                  <SearcherDiv/>
+                </Card>
+              </Col>
+              <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                  <DataDiv/>
+                </Card>
+              </Col>
+            </Row>
           </TabPane>
           <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
             <Row>
-            <Col sm={24} md={this.state.filterContainer}>
-              <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                <SearcherDiv/>
-              </Card>
-            </Col>
-            <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-              <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                <DataDiv/>
-              </Card>
-            </Col>
-          </Row>
+              <Col sm={24} md={this.state.filterContainer}>
+                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                  <SearcherDiv/>
+                </Card>
+              </Col>
+              <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                  <DataDiv/>
+                </Card>
+              </Col>
+            </Row>
           </TabPane>
         </Tabs>
+        <br/>
       </PageHeaderWrapper>
     );
   }

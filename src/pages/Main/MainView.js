@@ -3637,47 +3637,54 @@ class MainView extends Component {
   }
 
   componentDidMount() {
+
+    const columns =  [
+      {
+        title: 'Действие',
+        key: 'operation',
+        isVisible: true,
+        width: 100,
+        onCell: record => {
+          return {
+            onClick: () => {
+              this.toggleItems(record);
+            },
+          };
+        },
+        render: () => (
+          <Button size={'small'}>
+            <Icon type="database" theme="outlined"/>
+          </Button>
+        ),
+      },
+      {
+        title: 'Платеж',
+        isVisible: true,
+        dataIndex: 'payAmount',
+      },
+      {
+        title: 'Фамилия',
+        isVisible: true,
+        dataIndex: 'personSurname',
+      },
+      {
+        title: 'Имя',
+        isVisible: true,
+        dataIndex: 'personFirstname',
+      },
+      {
+        title: 'Отчество',
+        dataIndex: 'personPatronname',
+      },
+    ];
+
+    columns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+
+
     this.setState({
-      columns: [
-        {
-          title: 'Действие',
-          key: 'operation',
-          isVisible: true,
-          fixed: 'left',
-          width: 100,
-          onCell: record => {
-            return {
-              onClick: () => {
-                this.toggleItems(record);
-              },
-            };
-          },
-          render: () => (
-            <Button size={'small'}>
-              <Icon type="database" theme="outlined"/>
-            </Button>
-          ),
-        },
-        {
-          title: 'Платеж',
-          isVisible: true,
-          dataIndex: 'payAmount',
-        },
-        {
-          title: 'Фамилия',
-          isVisible: true,
-          dataIndex: 'personSurname',
-        },
-        {
-          title: 'Имя',
-          isVisible: true,
-          dataIndex: 'personFirstname',
-        },
-        {
-          title: 'Отчество',
-          dataIndex: 'personPatronname',
-        },
-      ],
+      columns:columns,
       dataSource: this.state.DataTable.content.slice(0, 9),
     });
     const children = [];
@@ -3764,7 +3771,7 @@ class MainView extends Component {
     const dateFormat = 'YYYY/MM/DD';
     const { columns, dataSource } = this.state;
     const testcolumns = [
-      { title: 'Full Name', dataIndex: 'name', key: 'name', fixed: 'left' },
+      { title: 'Full Name', dataIndex: 'name', key: 'name' },
       { title: 'Age', dataIndex: 'age', key: 'age' },
       { title: 'Column 1', dataIndex: 'age', key: '1' },
       { title: 'Column 2', dataIndex: 'age', key: '2' },
@@ -3775,6 +3782,11 @@ class MainView extends Component {
       { title: 'Column 7', dataIndex: 'address', key: '7' },
       { title: 'Column 8', dataIndex: 'address', key: '8' },
     ];
+    testcolumns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+
+
     const testdata = [
       {
         key: '1',

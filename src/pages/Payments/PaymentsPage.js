@@ -22,16 +22,19 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import paymentsData from './paymentsData';
 import moment from 'moment/moment';
+import classNames from 'classnames';
 
-
+const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 const dateFormat = 'YYYY/MM/DD';
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
 };
+
+const EditableContext = React.createContext();
+
 
 export default class PaymentsPage extends Component {
   constructor(props) {
@@ -39,7 +42,6 @@ export default class PaymentsPage extends Component {
 
     this.state = {
       count: 0,
-
       filterContainer: 6,
     };
   }
@@ -59,17 +61,18 @@ export default class PaymentsPage extends Component {
   };
 
   render() {
+
     const testcolumns = [
-      { title: 'Референс', dataIndex: 'referance'},
+      { title: 'Референс', dataIndex: 'referance' },
       { title: 'Дата платежа', dataIndex: 'date_payment' },
       { title: 'Сумма', dataIndex: 'summa' },
       { title: 'КНП', width: 80, dataIndex: 'knp' },
-      { title: 'Отправитель (БИН)',width: 120, dataIndex: 'sender_bin' },
-      { title: 'Отправитель (БИК)',width: 120, dataIndex: 'sender_bik' },
-      { title: 'Получатель (Наименование)',width: 130, dataIndex: 'receiver_name' },
-      { title: 'Получатель (БИН)',width: 120, dataIndex: 'receiver_bin' },
-      { title: 'Получатель (БИК)',width: 120, dataIndex: 'receiver_bik' },
-      { title: 'Получатель (Счет)',width: 120, dataIndex: 'receiver_amount' },
+      { title: 'Отправитель (БИН)', width: 120, dataIndex: 'sender_bin' },
+      { title: 'Отправитель (БИК)', width: 120, dataIndex: 'sender_bik' },
+      { title: 'Получатель (Наименование)', width: 130, dataIndex: 'receiver_name' },
+      { title: 'Получатель (БИН)', width: 120, dataIndex: 'receiver_bin' },
+      { title: 'Получатель (БИК)', width: 120, dataIndex: 'receiver_bik' },
+      { title: 'Получатель (Счет)', width: 120, dataIndex: 'receiver_amount' },
     ];
 
     testcolumns.forEach((column) => {
@@ -94,9 +97,29 @@ export default class PaymentsPage extends Component {
       testdata.push(itemRow);
     }
 
+    let lastActiveRow = false;
+    const SelectableRow = ({ form, index, ...props }) => {
+
+      const trRef = React.createRef();
+
+      return (<EditableContext.Provider value={form}>
+        <tr {...props} ref={trRef} onClick={(e) => {
+
+          if (lastActiveRow) {
+            lastActiveRow.style.backgroundColor = '';
+          }
+
+          lastActiveRow = trRef.current;
+          lastActiveRow.style.backgroundColor = '#e6f7ff';
+
+        }}/>
+      </EditableContext.Provider>);
+    };
+
+
     const SearcherDiv = (prop) => (
       <Card
-        bodyStyle={{ padding: 10 }}
+        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
         type="inner"
         title="Фильтр"
         extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
@@ -123,9 +146,10 @@ export default class PaymentsPage extends Component {
       </Card>
     );
 
+
     const DataDiv = () => (
       <Card
-        bodyStyle={{ padding: 0 }}
+        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
         type="inner"
         title="Платежи РПМУ">
         <div>
@@ -139,7 +163,13 @@ export default class PaymentsPage extends Component {
             в
             Excel</Button>
         </div>
-        <Table size={'small'} columns={testcolumns} dataSource={testdata} scroll={{ x: 1300 }}/>
+        <Table components={{
+          body: {
+            row: SelectableRow,
+          },
+        }} bordered={true} size={'small'} columns={testcolumns} dataSource={testdata}
+               scroll={{ x: 1300 }}
+        />
       </Card>
     );
 
@@ -150,26 +180,22 @@ export default class PaymentsPage extends Component {
           <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
-                <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                  <SearcherDiv/>
-                </Card>
+                <SearcherDiv/>
               </Col>
               <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                <Card bodyStyle={{ padding: 0 }} bordered={true}>
-                  <DataDiv/>
-                </Card>
+                <DataDiv/>
               </Col>
             </Row>
           </TabPane>
           <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
-                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <Card bodyStyle={{ padding: 5 }} bordered={true}>
                   <SearcherDiv/>
                 </Card>
               </Col>
               <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                <Card bodyStyle={{ padding: 0 }} bordered={true}>
+                <Card bodyStyle={{ padding: 5 }} bordered={true}>
                   <DataDiv/>
                 </Card>
               </Col>

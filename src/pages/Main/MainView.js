@@ -43,6 +43,7 @@ class MainView extends Component {
       isItems: false,
       isSearcher: false,
       searchercont: 0,
+      selectedRowKeys: [],
       tablecont: 24,
       filterForm: [],
       DataTable: {
@@ -3815,10 +3816,15 @@ class MainView extends Component {
       });
     }
   }
+  //count of selectTable
+  selectTable = (selectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({ selectedRowKeys });
+  }
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
-    const { columns, dataSource } = this.state;
+    const { columns, dataSource, selectedRowKeys } = this.state;
     //stili
     const buttons = { margin: 3 };
     //bokovaya tablica
@@ -3927,15 +3933,6 @@ class MainView extends Component {
         </Menu.Item>
         {menuItems}
       </Menu>);
-    //knopka deistya
-    const actionmenu = (<Menu>
-        <Menu.Item key="1">
-          Сверить с РПМУ
-        </Menu.Item>
-        <Menu.Item key="2">
-          Выгрузка в Excell
-        </Menu.Item>
-      </Menu>);
     //tablica modalki
     const dataSourcex = [];
     for (let i = 0; i < 15; i++) {
@@ -3993,6 +3990,21 @@ class MainView extends Component {
         },
       },
     ];
+    // Row select of table
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.selectTable,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
+    //knopka deistya
+    const actionmenu = (<Menu>
+      <Menu.Item key="1">
+        Сверить с РПМУ {hasSelected ? `(${selectedRowKeys.length})` : ''}
+      </Menu.Item>
+      <Menu.Item key="2">
+        Выгрузка в Excell {hasSelected ? `(${selectedRowKeys.length})` : ''}
+      </Menu.Item>
+    </Menu>);
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
@@ -4035,15 +4047,15 @@ class MainView extends Component {
                           this.showModal();
                         }}
                       >
-                        Одобрить
+                        Одобрить {hasSelected ? `(${selectedRowKeys.length})` : ''}
                       </Button>
                       <Button
                         className={'btn-danger'}
                         style={buttons}>
-                        Отклонить
+                        Отклонить {hasSelected ? `(${selectedRowKeys.length})` : ''}
                       </Button>
-                      <Button style={buttons}>Сохранить</Button>
-                      <Button style={buttons}>Выполнить</Button>
+                      <Button style={buttons}>Сохранить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
+                      <Button style={buttons}>Выполнить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
                       <Dropdown overlay={actionmenu}>
                         <Button style={buttons}>Дейстие</Button>
                       </Dropdown>
@@ -4060,6 +4072,7 @@ class MainView extends Component {
                   </Row>
                   <Row style={{ marginBottom: 20 }}>
                     <Table
+                      rowSelection={rowSelection}
                       size={'small'}
                       rowKey={'key'}
                       dataSource={dataSource}

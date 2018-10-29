@@ -23,7 +23,11 @@ import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-class MainView extends Component {
+
+
+const EditableContext = React.createContext();
+
+class Requests extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -2730,6 +2734,24 @@ class MainView extends Component {
   render() {
     const { columns, dataSource } = this.state;
 
+    let lastActiveRow = false;
+    const SelectableRow = ({ form, index, ...props }) => {
+
+      const trRef = React.createRef();
+
+      return (<EditableContext.Provider value={form}>
+        <tr {...props} ref={trRef} onClick={(e) => {
+
+          if (lastActiveRow) {
+            lastActiveRow.style.backgroundColor = '';
+          }
+
+          lastActiveRow = trRef.current;
+          lastActiveRow.style.backgroundColor = '#e6f7ff';
+
+        }}/>
+      </EditableContext.Provider>);
+    };
 
     return (
       <PageHeaderWrapper title="ЗАЯВКИ">
@@ -2747,6 +2769,11 @@ class MainView extends Component {
         <Card>
         <Row style={{ marginBottom: 20 }}>
           <Table
+            components={{
+              body: {
+                row: SelectableRow,
+              },
+            }}
             rowKey={'key'}
             dataSource={dataSource}
             columns={columns}
@@ -2772,4 +2799,4 @@ class MainView extends Component {
   }
 }
 
-export default MainView;
+export default Requests;

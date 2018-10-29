@@ -21,6 +21,7 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
+import GridFilter from '@/components/GridFilter';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -43,10 +44,7 @@ class MainView extends Component {
       isSearcher: false,
       searchercont: 0,
       tablecont: 24,
-      SelectStatusItems: [],
-      SelectKNPItems: [],
-      SelectRefundItems: [],
-      SelectRefusalItems: [],
+      filterForm: [],
       DataTable: {
         number: 0,
         size: 15, // in one page
@@ -3637,7 +3635,6 @@ class MainView extends Component {
   }
 
   componentDidMount() {
-
     const columns =  [
       {
         title: 'Действие',
@@ -3677,39 +3674,96 @@ class MainView extends Component {
         dataIndex: 'personPatronname',
       },
     ];
-
     columns.forEach((column) => {
       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
     });
-
-
     this.setState({
       columns:columns,
       dataSource: this.state.DataTable.content.slice(0, 9),
     });
+
+
     const children = [];
     for (let i = 10; i < 36; i++) {
-      children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+      children.push({
+        id: i,
+        name: 'a' + i,
+      });
     }
     this.setState({
-      SelectStatusItems: children,
-      SelectKNPItems: children,
-      SelectRefundItems: children,
-      SelectRefusalItems: children,
-    });
+      filterForm: [
+        {
+          name: 'number',
+          label: 'Номер заявки:',
+          type: 'text',
+        },
+        {
+          name: 'iin',
+          label: 'ИИН Потребителя:',
+          type: 'text',
+        },
+        {
+          name: 'RefundStatus',
+          label: 'Статус заявки на возврат:',
+          type: 'multibox',
+          store: children,
+        },
+        {
+          name: 'lastDate',
+          label: 'Крайная дата:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'payerDate',
+          label: 'Дата заявления плательщика:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'RefundComeDate',
+          label: 'Дата поступление заявки на возврат:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'RefundFundDate',
+          label: 'Дата поступления заявление в Фонд:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'RefusalDate',
+          label: 'Дата осуществления возврата:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'knp',
+          label: 'КНП:',
+          type: 'multibox',
+          store: children,
+        },
+        {
+          name: 'RefundReason',
+          label: 'Причина возврата:',
+          type: 'combobox',
+          store: children,
+        },
+        {
+          name: 'RefusalReason',
+          label: 'Причина отказа:',
+          type: 'combobox',
+          store: children,
+        },
+      ]
+    })
   }
-
   componentWillReceiveProps(props) {
     console.log(props);
   }
-
+  //to add row for table
   handleSelectColumn(column, e) {
     const { columns } = this.state;
     let filteredColumn = columns.map(function(item) {
       if (item.dataIndex === column.dataIndex) {
         item.isVisible = !item.isVisible;
       }
-
       return item;
     });
 
@@ -3717,24 +3771,21 @@ class MainView extends Component {
       columns: filteredColumn,
     });
   }
-
+  //paginaciya kastomnaya
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
-    console.log('max = ' + max);
-    console.log('min = ' + min);
-    console.log(this.state.DataTable);
     this.setState({
       dataSource: this.state.DataTable.content.slice(min, max),
     });
   };
+  //otkritye modalnogo okna
   showModal = () => {
     this.setState({
       ShowModal: true,
     });
-    console.log(this.state.ShowModal);
   };
-
+  //bokovaya storka
   toggleSearcher() {
     this.setState({
       isHidden: false,
@@ -3744,7 +3795,6 @@ class MainView extends Component {
       tablecont: 18,
     });
   }
-
   toggleItems() {
     this.setState({
       isHidden: false,
@@ -3754,7 +3804,6 @@ class MainView extends Component {
       tablecont: 16,
     });
   }
-
   hideleft() {
     if (!this.state.isHidden) {
       this.setState({
@@ -3768,8 +3817,11 @@ class MainView extends Component {
   }
 
   render() {
-    const dateFormat = 'YYYY/MM/DD';
+    const dateFormat = 'DD.MM.YYYY';
     const { columns, dataSource } = this.state;
+    //stili
+    const buttons = { margin: 3 };
+    //bokovaya tablica
     const testcolumns = [
       { title: 'Full Name', dataIndex: 'name', key: 'name' },
       { title: 'Age', dataIndex: 'age', key: 'age' },
@@ -3782,11 +3834,6 @@ class MainView extends Component {
       { title: 'Column 7', dataIndex: 'address', key: '7' },
       { title: 'Column 8', dataIndex: 'address', key: '8' },
     ];
-    testcolumns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
-    });
-
-
     const testdata = [
       {
         key: '1',
@@ -3849,95 +3896,10 @@ class MainView extends Component {
         address: 'London Park',
       },
     ];
-    const styleLabel = {
-      margin: '10px 0px 5px 0px',
-      fontSize: '12px',
-      fontWeight: 'bold',
-    };
-
-    const SearcherDiv = () => (
-      <Card
-        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-        type="inner"
-        title="Фильтр"
-        extra={<Button onClick={event => this.hideleft()}>х</Button>}
-      >
-        <Form layout={'vertical'}>
-
-          <div style={styleLabel}>Номер заявки:</div>
-          <Input placeholder={'Номер заявки'}/>
-
-          <div style={styleLabel}>ИИН Потребителя:</div>
-          <Input placeholder={'ИИН Потребителя'}/>
-
-          <div style={styleLabel}>Статус заявки на возврат:</div>
-          <Select
-            mode="multiple"
-            style={{ width: '100%' }}
-            placeholder=""
-            defaultValue={['a10', 'c12']}
-          >
-            {this.state.SelectStatusItems}
-          </Select>
-
-          <div style={styleLabel}>Крайная дата:</div>
-          <RangePicker
-            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-            format={dateFormat}
-          />
-
-          <div style={styleLabel}>Дата заявления плательщика:</div>
-          <RangePicker
-            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-            format={dateFormat}
-          />
-
-          <div style={styleLabel}>Дата поступление заявки на возврат:</div>
-          <RangePicker
-            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-            format={dateFormat}
-          />
-
-          <div style={styleLabel}>Дата поступления заявление в Фонд:</div>
-          <RangePicker
-            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-            format={dateFormat}
-          />
-
-          <div style={styleLabel}>Дата осуществления возврата:</div>
-          <RangePicker
-            defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-            format={dateFormat}
-          />
-
-          <div style={styleLabel}>КНП:</div>
-          <Select mode="multiple" style={{ width: '100%' }} placeholder="" defaultValue={[]}>
-            {this.state.SelectKNPItems}
-          </Select>
-
-          <div style={styleLabel}>Причина возврата:</div>
-          <Select size={'default'}>{this.state.SelectRefundItems}</Select>
-
-          <div style={styleLabel}>Причина отказа:</div>
-          <Select size={'default'}>{this.state.SelectRefusalItems}</Select>
-          <div style={styleLabel}></div>
-          <FormItem>
-            <Row>
-              <Col span={12}>
-                <Button type="primary" icon="search">
-                  Искать
-                </Button>
-              </Col>
-              <Col span={12}>
-                <Button icon="delete">Очистить</Button>
-              </Col>
-            </Row>
-          </FormItem>
-        </Form>
-      </Card>
-    );
-    const DataDiv = () => (
-      <Card
+    testcolumns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+    const DataDiv = () => (<Card
         style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
         bodyStyle={{ padding: 0 }}
         type="inner"
@@ -3945,9 +3907,8 @@ class MainView extends Component {
         extra={<Button onClick={event => this.hideleft()}>х</Button>}
       >
         <Table size={'small'} columns={testcolumns} dataSource={testdata} scroll={{ x: 1100 }}/>
-      </Card>
-    );
-
+      </Card>);
+    //колонки таблиц
     const menuItems = columns.map(function(column, index) {
       return (
         <Menu.Item key={index.toString()}>
@@ -3960,26 +3921,22 @@ class MainView extends Component {
         </Menu.Item>
       );
     }, this);
-    const menu = (
-      <Menu>
+    const menu = (<Menu>
         <Menu.Item>
           <div>Выберите столбцов:</div>
         </Menu.Item>
         {menuItems}
-      </Menu>
-    );
-    const actionmenu = (
-      <Menu>
+      </Menu>);
+    //knopka deistya
+    const actionmenu = (<Menu>
         <Menu.Item key="1">
           Сверить с РПМУ
         </Menu.Item>
         <Menu.Item key="2">
           Выгрузка в Excell
         </Menu.Item>
-      </Menu>
-    );
-
-    const buttons = { margin: 3 };
+      </Menu>);
+    //tablica modalki
     const dataSourcex = [];
     for (let i = 0; i < 15; i++) {
       dataSourcex.push({
@@ -4039,19 +3996,27 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
-        <ModalGridView visible={this.state.ShowModal} resetshow={(e) => {
-          this.setState({ ShowModal: false });
-        }}
+        <ModalGridView visible={this.state.ShowModal}
+                       resetshow={(e) => {this.setState({ ShowModal: false });}}
                        dataSource={modalGridView}/>
-        {/*<Row type="flex" justify="end">
-
-        </Row>*/}
-        <div>
-          <div>
             <Row>
               <Col sm={24} md={this.state.searchercont}>
                 <div>
-                  {!this.state.isSearcher && <SearcherDiv/>}
+                  {/* {!this.state.isSearcher && <SearcherDiv/>}*/}
+                  {!this.state.isSearcher &&
+                  <Card
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    type="inner"
+                    title="Фильтр"
+                    extra={<Button onClick={event => this.hideleft()}>х</Button>}
+                  >
+                  <GridFilter
+                    clearFilter={()=>{}}
+                    applyFilter={()=>{}}
+                    filterForm={this.state.filterForm}
+                    dateFormat={dateFormat}/>
+                  </Card>}
+
                   {!this.state.isItems && <DataDiv/>}
                 </div>
               </Col>
@@ -4059,7 +4024,7 @@ class MainView extends Component {
                 <Card style={{borderRadius: '5px', marginBottom:'10px'}} bodyStyle={{ padding: 0 }} bordered={true}>
                   <Row>
                     <Col span={22}>
-                      <Button style={{ margin: 5 }} onClick={this.toggleSearcher.bind(this)}>
+                      <Button style={buttons} onClick={this.toggleSearcher.bind(this)}>
                         <Icon type="search" theme="outlined"/>
                       </Button>
                       <Button style={buttons}>Обновить</Button>
@@ -4117,8 +4082,6 @@ class MainView extends Component {
                 </Card>
               </Col>
             </Row>
-          </div>
-        </div>
       </PageHeaderWrapper>
     );
   }

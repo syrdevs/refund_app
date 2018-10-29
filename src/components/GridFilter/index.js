@@ -35,32 +35,32 @@ export default class GridFilter extends Component {
     };
   }
 
-  componentDidMount() {
-
-    const { fields } = this.state;
-
-    this.props.filterForm.map((filterItem, idx) => {
-      fields[filterItem.name] = {
-        disabled: false,
-      };
-    });
-
-    this.setState({
-      fields: fields,
-    });
-
-  }
 
   componentDidUpdate() {
-    const { isClearFilter } = this.state;
+    const { isClearFilter, fields } = this.state;
 
     if (isClearFilter) {
       this.setState({
         isClearFilter: false,
       });
     }
-  }
 
+    if (Object.keys(fields).length === 0) {
+
+      let _fields = {};
+
+      this.props.filterForm.forEach((filterItem, idx) => {
+        _fields[filterItem.name] = {
+          disabled: false,
+        };
+      });
+
+      this.setState({
+        fields: _fields,
+      });
+    }
+
+  }
 
   fieldOnChange = (filterItem, value) => {
 

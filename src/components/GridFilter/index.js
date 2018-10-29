@@ -144,7 +144,7 @@ export default class GridFilter extends Component {
       }
       case 'text': {
         return (<div key={_index}>{filterItem.label}:
-          <Input onChange={(e) => {
+          <Input onKeyDown={this.onKeyPress} onChange={(e) => {
             this.fieldOnChange(filterItem, e.target.value);
           }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
       }
@@ -180,6 +180,7 @@ export default class GridFilter extends Component {
           params.value = [];
         }
 
+
         return (<div key={_index}>{filterItem.label}:
           <Select
             {...params}
@@ -189,6 +190,7 @@ export default class GridFilter extends Component {
               this.fieldOnChange(filterItem, value);
             }}
           >
+            <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
             {filterItem.store.map((item) => {
               return <Select.Option key={item.id}>{item.name}</Select.Option>;
             })}
@@ -199,6 +201,12 @@ export default class GridFilter extends Component {
         break;
     }
 
+  };
+
+  onKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      this.applyFilters();
+    }
   };
 
   render() {
@@ -215,12 +223,12 @@ export default class GridFilter extends Component {
     >
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-        <FormItem>
-          <Button style={{ margin: '10px 0 0 15px' }} size={'small'} type="primary" icon="search"
+        <FormItem style={{ margin: '10px 0 0 0', border: '1px solid #d9d9d9', borderRadius: '5px' }}>
+          <Button style={{ margin: '10px 0 0 15px' }} type='primary' icon='search'
                   onClick={this.applyFilters}>
             Искать
           </Button>
-          <Button style={{ margin: '10px 0 0 15px' }} size={'small'} icon="delete"
+          <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
                   onClick={this.clearFilters}>Очистить</Button>
         </FormItem>
       </Form>

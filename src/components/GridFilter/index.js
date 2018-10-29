@@ -215,12 +215,7 @@ export default class GridFilter extends Component {
     const { filterForm } = this.props;
 
 
-    return (<Card
-      style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-      type="inner"
-      title="Фильтр"
-      extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close" theme="outlined"/></Button>}
-    >
+    return (
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
         <FormItem style={{ margin: '10px 0 0 0', border: '1px solid #d9d9d9', borderRadius: '5px' }}>
@@ -231,7 +226,6 @@ export default class GridFilter extends Component {
           <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
                   onClick={this.clearFilters}>Очистить</Button>
         </FormItem>
-      </Form>
-    </Card>);
+      </Form>);
   }
 }

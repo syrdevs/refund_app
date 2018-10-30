@@ -3755,9 +3755,6 @@ class MainView extends Component {
       ]
     })
   }
-  componentWillReceiveProps(props) {
-    console.log(props);
-  }
   //to add row for table
   handleSelectColumn(column, e) {
     const { columns } = this.state;
@@ -4014,7 +4011,6 @@ class MainView extends Component {
             <Row>
               <Col sm={24} md={this.state.searchercont}>
                 <div>
-                  {/* {!this.state.isSearcher && <SearcherDiv/>}*/}
                   {!this.state.isSearcher &&
                   <Card
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
@@ -4043,7 +4039,6 @@ class MainView extends Component {
                       <Button
                         className={'btn-success'}
                         onClick={() => {
-                          console.log('oibay');
                           this.showModal();
                         }}
                       >

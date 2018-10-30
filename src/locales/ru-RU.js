@@ -77,6 +77,7 @@ export default {
   'menu.home': 'Главная',
   'menu.refunds': 'Возвраты',
   'menu.requests': 'Заявки',
+  'menu.options': 'Настройки',
   'menu.payments': 'Платежи',
   'menu.reports': 'Отчёты',
   'menu.journal': 'Журнал',

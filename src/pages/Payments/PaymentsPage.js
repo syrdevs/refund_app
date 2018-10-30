@@ -270,10 +270,9 @@ export default class PaymentsPage extends Component {
 
     const DataDiv = () => (
       <Spin tip="Загрузка..." spinning={false}>
-        <Card
+        <Card bordered={false}
           style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-          type="inner"
-          title="Платежи РПМУ">
+          type="inner">
           <div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
                     style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
@@ -316,52 +315,56 @@ export default class PaymentsPage extends Component {
 
 
     return (
-      <PageHeaderWrapper title="Платежи МТ100">
-        <Tabs>
-          <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
-            <Row>
-              <Col sm={24} md={this.state.filterContainer}>
+      <PageHeaderWrapper title="Платежи">
+        <Card bodyStyle={{ padding: 5 }}>
+          <Tabs>
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
+              <Row>
+                <Col sm={24} md={this.state.filterContainer}>
+                  <Card
+                    bordered={false}
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    type="inner"
+                    headStyle={{background:'white'}}
+                    title="Фильтр"
+                    extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
+                                                                                      theme="outlined"/></Button>}
+                  >
+                    <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
+                                filterForm={this.state.filterForm}
+                                dateFormat={dateFormat}/>
+                  </Card>
 
-                <Card
-
-                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                  type="inner"
-                  title="Фильтр"
-                  extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
-                                                                                    theme="outlined"/></Button>}
-                >
-                  <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
-                              filterForm={this.state.filterForm}
-                              dateFormat={dateFormat}/>
-                </Card>
-
-              </Col>
-              <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                <DataDiv/>
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
-            <Row>
-              <Col sm={24} md={this.state.filterContainer}>
-                <Card
-                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                  type="inner"
-                  title="Фильтр"
-                  extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
-                                                                                    theme="outlined"/></Button>}
-                >
-                  <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
-                              filterForm={this.state.filterForm}
-                              dateFormat={dateFormat}/>
-                </Card>
-              </Col>
-              <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                <DataDiv/>
-              </Col>
-            </Row>
-          </TabPane>
-        </Tabs>
+                </Col>
+                <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+                  <DataDiv/>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
+              <Row>
+                <Col sm={24} md={this.state.filterContainer}>
+                  <Card
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    type="inner"
+                    title="Фильтр"
+                    headStyle={{background:'white'}}
+                    bordered={false}
+                    extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
+                                                                                      theme="outlined"/></Button>}
+                  >
+                    <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
+                                filterForm={this.state.filterForm}
+                                dateFormat={dateFormat}/>
+                  </Card>
+                </Col>
+                <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
+                  <DataDiv/>
+                </Col>
+              </Row>
+            </TabPane>
+          </Tabs>
+        </Card>
         <br/>
       </PageHeaderWrapper>
     );

@@ -22,137 +22,51 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
+import { connect } from 'dva';
 
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
 
+
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/data'],
+}))
 export default class JournalPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      testdata: [],
-      testcolumns: [],
+      columns: [],
       filterContainer: 0,
-
 
       dataContent: {
         'size': 15,
         'totalElements': 8921,
         'totalPages': 595,
-        'content':
-          [{
-            'id': 'B801E0B235D64CC88D1352623AA4DA2C',
-            'entryDate': '26.10.2018 20:07',
-            'refundId': {
-              'id': '382A1F1FE0054D7BBC1141564A87DAE7',
-              'gcvpReference': 'GCVP-00037961656',
-              'gcvpOrderNum': '35080497 ',
-              'gcvpOrderDate': '21.02.2018',
-              'personIin': '910716302376',
-              'personSurname': 'УАЛИЕВ',
-              'personFirstname': 'БАУЫРЖАН',
-              'personPatronname': 'АБАЕВИЧ',
-              'applicationId': '0606516516515',
-            },
-            'userId': {
-              'username': 'fsms2',
-              'iin': '760531401445',
-              'surname': 'Сейткалиева',
-              'firstname': 'Жанаргуль',
-              'patronname': 'Омерхановна',
-            },
-            'dactionId': {
-              'nameRu': 'Исполнено- одобрено',
-              'nameKz': null,
-            },
-          }],
+        'content': [],
       },
 
       filterForm: [],
     };
   }
 
-  recurseFormatter() {
-
-  }
 
   componentDidMount() {
 
-
-    const testcolumns = [
-      {
-        'title': 'Дата и время',
-        'dataIndex': 'entryDate',
-        'isVisible': true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/columns',
+      payload: {
+        table: 'journal',
       },
-      {
-        'title': 'Номер заяки',
-        'dataIndex': 'refundId.applicationId',
-        'isVisible': true,
-      },
-      {
-        'title': 'Референс ГК',
-        'dataIndex': 'refundId.gcvpReference',
-        'isVisible': true,
-      },
-      {
-        'title': 'Номер ПП ГК',
-        'dataIndex': 'refundId.gcvpOrderNum',
-        'isVisible': true,
-      },
-      {
-        'title': 'Дата ПП ГК',
-        'width': 120,
-        'dataIndex': 'refundId.gcvpOrderDate',
-        'isVisible': true,
-      },
-      {
-        'title': 'Потребитель',
-        'width': 120,
-        'dataIndex': 'refundId.personIin',
-        'isVisible': true,
-      },
-      {
-        'title': 'Логин',
-        'width': 130,
-        'dataIndex': 'userId.username',
-      },
-      {
-        'title': 'Пользователь',
-        'width': 120,
-        'dataIndex': 'userId.surname',
-      },
-      {
-        'title': 'Получатель (БИК)',
-        'width': 120,
-        'dataIndex': 'receiver_bik',
-      },
-      {
-        'title': 'Действие',
-        'width': 120,
-        'dataIndex': 'Действие',
-      },
-    ];
-
-
-    testcolumns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
     });
-
-    this.setState({
-      testcolumns: testcolumns,
-      dataSource: this.state.dataContent.content.slice(0, 10),
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'journal',
+      },
     });
-
-
-    const children = [];
-    for (let i = 10; i < 36; i++) {
-      children.push({
-        id: i,
-        name: 'a' + i,
-      });
-    }
 
     this.setState({
       filterForm: [
@@ -189,10 +103,6 @@ export default class JournalPage extends Component {
     });
   }
 
-  componentDidUpdate() {
-
-  }
-
   applyFilter(dataFilter) {
     console.log(dataFilter);
   }
@@ -205,26 +115,45 @@ export default class JournalPage extends Component {
 
     const max = current * pageSize;
     const min = max - pageSize;
-    this.setState({
+    /*this.setState({
       dataSource: this.state.testdata.content.slice(min, max),
-    });
+    });*/
 
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'payment',
+      },
+    });
   };
 
   handleSelectColumn(column, e) {
-    const { testcolumns } = this.state;
-    let filteredColumn = testcolumns.map(function(item) {
+    let local_helper = this.StorageHelper();
+    const { columns } = this.props.universal2;
+    let filteredColumn = columns.map(function(item) {
       if (item.dataIndex === column.dataIndex) {
-        item.isVisible = !item.isVisible;
+        item.isVisible = item.isVisible === 'true' ? 'false' : 'true';
       }
-
       return item;
     });
 
+    local_helper.set('journalColumns', filteredColumn, true);
+
     this.setState({
-      testcolumns: filteredColumn,
+      columns: filteredColumn,
     });
   }
+
+  refreshTable = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'journal',
+      },
+    });
+  };
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
@@ -232,17 +161,60 @@ export default class JournalPage extends Component {
     }));
   };
 
+
+  componentDidUpdate() {
+
+  }
+
+  StorageHelper() {
+    return {
+      clear: function(name) {
+        localStorage.setItem(name, null);
+      },
+      set: function(name, value, isReplace = true) {
+
+        if (isReplace) {
+          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+        } else {
+          if (!localStorage.getItem(name)) {
+            console.log('replaceddd///////////////');
+            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+          }
+        }
+
+      },
+      get: function(name) {
+        let result = localStorage.getItem(name);
+
+        if (result) {
+          return JSON.parse(result);
+        }
+
+        return false;
+      },
+    };
+  }
+
   render() {
 
-    const { dataSource, testcolumns } = this.state;
+    const { dataStore, columns } = this.props.universal2;
 
-    const menuItems = testcolumns.map(function(column, index) {
+    let local_helper = this.StorageHelper();
+    let journalColumns = local_helper.get('journalColumns');
+    local_helper.set('journalColumns', columns, journalColumns.length === 0 && columns.length !== 0);
+    let _columns = local_helper.get('journalColumns');
+
+
+    _columns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+
+    const menuItems = _columns.map(function(column, index) {
       return (
         <Menu.Item key={index.toString()}>
           <Checkbox
             onChange={this.handleSelectColumn.bind(this, column)}
-            checked={column.isVisible}
-          >
+            checked={column.isVisible === 'true'}>
             {column.title}
           </Checkbox>
         </Menu.Item>
@@ -258,14 +230,14 @@ export default class JournalPage extends Component {
     );
 
     const DataDiv = () => (
-      <Spin tip="Загрузка..." spinning={false}>
+      <Spin tip="Загрузка..." spinning={this.props.loadingData}>
         <div>
           <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
                   style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
 
-          <Button style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
-                                                                            theme="outlined"/>Обновить</Button>
-          <div style={{ float: 'right', margin: '10px 0 10px 5px' }}>Количество записей: 8429</div>
+          <Button onClick={this.refreshTable} style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
+                                                                                                        theme="outlined"/>Обновить</Button>
+          <div style={{ float: 'right', margin: '10px 0 10px 5px' }}>Количество записей: 15</div>
           <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
             <Dropdown overlay={menu} placement="bottomRight">
               <Button size={'small'}>
@@ -274,8 +246,8 @@ export default class JournalPage extends Component {
             </Dropdown>
           </div>
         </div>
-        <Table bordered={true} size={'small'} columns={testcolumns.filter(column => column.isVisible)}
-               dataSource={dataSource}
+        <Table bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
+               dataSource={dataStore}
                scroll={{ x: 1300 }} pagination={false}
         />
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>

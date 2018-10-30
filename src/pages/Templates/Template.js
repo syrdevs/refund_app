@@ -20,7 +20,13 @@ import {
 } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { connect } from 'dva/index';
 
+
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/data'],
+}))
 export default class Template extends Component {
   constructor(props) {
     super(props);
@@ -31,15 +37,23 @@ export default class Template extends Component {
   }
 
   componentDidMount() {
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/columns',
+      payload: {
+        table: 'templates',
+      },
+    });
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'templates',
+      },
+    });
+
     this.setState({
       columns: [{
-        width: 60,
-        title: '№',
-        dataIndex: 'number',
-      }, {
-        title: 'Описание шаблона',
-        dataIndex: 'templateDescription',
-      }, {
         title: 'Шаблон',
         width: 50,
         onCell: record => {
@@ -72,22 +86,18 @@ export default class Template extends Component {
           </Upload>
         ),
       }],
-      dataSource: [{
-        key: 1,
-        number: 1,
-        templateDescription: 'Письмо об отказе',
-      }],
     });
   }
 
   render() {
-
-    const { columns, dataSource } = this.state;
+    const { dataStore, columns } = this.props.universal2;
 
     return (
       <PageHeaderWrapper title="ШАБЛОНЫ">
         <Card bordered={false} bodyStyle={{ padding: 5 }}>
-          <Table size={'small'} bordered={true} rowKey={'key'} columns={columns} dataSource={dataSource}/>
+          <Table size={'small'} bordered={true} rowKey={'key'}
+                 columns={columns.length > 0 ? columns.concat(this.state.columns) : []}
+                 dataSource={dataStore}/>
         </Card>
       </PageHeaderWrapper>
     );

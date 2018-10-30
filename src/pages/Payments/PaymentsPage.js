@@ -16,6 +16,7 @@ import {
   DatePicker,
   Select,
   Checkbox,
+  Spin,
   Divider,
 } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
@@ -24,6 +25,7 @@ import GridFilter from '@/components/GridFilter';
 import paymentsData from './paymentsData';
 import moment from 'moment/moment';
 import classNames from 'classnames';
+import { connect } from 'dva/index';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -35,8 +37,11 @@ const formItemLayout = {
 };
 
 const EditableContext = React.createContext();
-
-
+/*
+@connect(({ payment, loading }) => ({
+  payment,
+  loadData: loading.effects['payment/columns'],
+}))*/
 export default class PaymentsPage extends Component {
   constructor(props) {
     super(props);
@@ -57,19 +62,62 @@ export default class PaymentsPage extends Component {
   }
 
   componentDidMount() {
-
     const testcolumns = [
-      { title: 'Референс', dataIndex: 'referance', isVisible: true },
-      { title: 'Дата платежа', dataIndex: 'date_payment', isVisible: true },
-      { title: 'Сумма', dataIndex: 'summa', isVisible: true },
-      { title: 'КНП', width: 80, dataIndex: 'knp' , isVisible: true},
-      { title: 'Отправитель (БИН)', width: 120, dataIndex: 'sender_bin' , isVisible: true},
-      { title: 'Отправитель (БИК)', width: 120, dataIndex: 'sender_bik' , isVisible: true},
-      { title: 'Получатель (Наименование)', width: 130, dataIndex: 'receiver_name' },
-      { title: 'Получатель (БИН)', width: 120, dataIndex: 'receiver_bin' },
-      { title: 'Получатель (БИК)', width: 120, dataIndex: 'receiver_bik' },
-      { title: 'Получатель (Счет)', width: 120, dataIndex: 'receiver_amount' },
+      {
+        'title': 'Референс',
+        'dataIndex': 'referance',
+        'isVisible': true,
+      },
+      {
+        'title': 'Дата платежа',
+        'dataIndex': 'date_payment',
+        'isVisible': true,
+      },
+      {
+        'title': 'Сумма',
+        'dataIndex': 'summa',
+        'isVisible': true,
+      },
+      {
+        'title': 'КНП',
+        'width': 80,
+        'dataIndex': 'knp',
+        'isVisible': true,
+      },
+      {
+        'title': 'Отправитель (БИН)',
+        'width': 120,
+        'dataIndex': 'sender_bin',
+        'isVisible': true,
+      },
+      {
+        'title': 'Отправитель (БИК)',
+        'width': 120,
+        'dataIndex': 'sender_bik',
+        'isVisible': true,
+      },
+      {
+        'title': 'Получатель (Наименование)',
+        'width': 130,
+        'dataIndex': 'receiver_name',
+      },
+      {
+        'title': 'Получатель (БИН)',
+        'width': 120,
+        'dataIndex': 'receiver_bin',
+      },
+      {
+        'title': 'Получатель (БИК)',
+        'width': 120,
+        'dataIndex': 'receiver_bik',
+      },
+      {
+        'title': 'Получатель (Счет)',
+        'width': 120,
+        'dataIndex': 'receiver_amount',
+      },
     ];
+
 
     testcolumns.forEach((column) => {
       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
@@ -95,14 +143,8 @@ export default class PaymentsPage extends Component {
 
 
     this.setState({
+      testdata: testdata,
       testcolumns: testcolumns,
-      testdata: {
-        number: 0,
-        size: 15, // in one page
-        totalElements: 47983, //total of data
-        totalPages: 3199,
-        content: testdata,
-      },
       dataSource: testdata.slice(0, 10),
     });
 
@@ -183,7 +225,8 @@ export default class PaymentsPage extends Component {
 
   render() {
 
-    const { testdata, testcolumns, dataSource } = this.state;
+    const { dataSource, testcolumns } = this.state;
+
 
     const menuItems = testcolumns.map(function(column, index) {
       return (
@@ -225,59 +268,62 @@ export default class PaymentsPage extends Component {
       </EditableContext.Provider>);
     };
 
-
     const DataDiv = () => (
-      <Card
-        style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-        type="inner"
-        title="Платежи РПМУ">
-        <div>
-          <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
-                  style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
+      <Spin tip="Загрузка..." spinning={false}>
+        <Card
+          style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+          type="inner"
+          title="Платежи РПМУ">
+          <div>
+            <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
+                    style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
 
-          <Button style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
-                                                                            theme="outlined"/>Обновить</Button>
-          <Button style={{ margin: '10px 15px 10px 15px', float: 'right' }} size="small"><Icon type="export"
-                                                                                               theme="outlined"/>Выгрузка
-            в
-            Excel</Button>
-          <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
-            <Dropdown overlay={menu} placement="bottomRight">
-              <Button size={'small'}>
-                <Icon type="setting" theme="outlined"/>
-              </Button>
-            </Dropdown>
+            <Button style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
+                                                                              theme="outlined"/>Обновить</Button>
+            <Button style={{ margin: '10px 15px 10px 15px', float: 'right' }} size="small"><Icon type="export"
+                                                                                                 theme="outlined"/>Выгрузка
+              в
+              Excel</Button>
+            <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
+              <Dropdown overlay={menu} placement="bottomRight">
+                <Button size={'small'}>
+                  <Icon type="setting" theme="outlined"/>
+                </Button>
+              </Dropdown>
+            </div>
           </div>
-        </div>
-        <Table components={{
-          body: {
-            row: SelectableRow,
-          },
-        }} bordered={true} size={'small'} columns={testcolumns.filter(column => column.isVisible)} dataSource={dataSource}
-               scroll={{ x: 1300 }} pagination={false}
-        />
-        <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-          <Pagination
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            showSizeChanger
-            onShowSizeChange={this.onShowSizeChange}
-            onChange={this.onShowSizeChange}
-            defaultCurrent={1}
-            total={50}
+          <Table components={{
+            body: {
+              row: SelectableRow,
+            },
+          }} bordered={true} size={'small'} columns={testcolumns.filter(column => column.isVisible)}
+                 dataSource={dataSource}
+                 scroll={{ x: 1300 }} pagination={false}
           />
-        </Row>
-      </Card>
+          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <Pagination
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              showSizeChanger
+              onShowSizeChange={this.onShowSizeChange}
+              onChange={this.onShowSizeChange}
+              defaultCurrent={1}
+              total={50}
+            />
+          </Row>
+        </Card>
+      </Spin>
     );
 
 
     return (
       <PageHeaderWrapper title="Платежи МТ100">
-        <Tabs type="card">
+        <Tabs>
           <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
 
                 <Card
+
                   style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                   type="inner"
                   title="Фильтр"

@@ -1,5 +1,29 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
+import storeData from '@/utils/tempData';
+
+function sleepF(ms) {
+  var start = new Date().getTime();
+  var end = start;
+  while (end < start + ms) {
+    end = new Date().getTime();
+  }
+
+}
+
+export async function getColumns(params) {
+
+  sleepF(1000);
+
+  var result = storeData.find(x => x.table === params.tableName);
+  return result.columns;
+}
+
+export async function getData(params) {
+  var result = storeData.find(x => x.table === params.tableName);
+  return result.data;
+}
+
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

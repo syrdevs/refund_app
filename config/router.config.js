@@ -77,7 +77,7 @@ export default [
         path: '/journal',
         icon: 'form',
         name: 'journal',
-        component: './Result/TestPage',
+        component: './Journal/JournalPage',
       },
       {
         path: '/calendar',
@@ -89,6 +89,7 @@ export default [
         path: '/templates_view',
         icon: 'form',
         name: 'templates_view',
+        component: './Templates/Template',
       },
       {
         component: '404',

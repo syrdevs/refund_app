@@ -1,6 +1,5 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
-import storeData from '@/utils/tempData';
 
 function sleepF(ms) {
   var start = new Date().getTime();
@@ -12,17 +11,13 @@ function sleepF(ms) {
 }
 
 export async function getColumns(params) {
-
-  sleepF(1000);
-
-  var result = storeData.find(x => x.table === params.tableName);
-  return result.columns;
+  return request(`/api/refund/${params.payload.table}column`);
 }
 
 export async function getData(params) {
-  var result = storeData.find(x => x.table === params.tableName);
-  return result.data;
+  return request(`/api/refund/${params.payload.table}data`);
 }
+
 
 
 export async function queryProjectNotice() {

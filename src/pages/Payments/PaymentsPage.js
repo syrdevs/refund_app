@@ -37,11 +37,11 @@ const formItemLayout = {
 };
 
 const EditableContext = React.createContext();
-/*
-@connect(({ payment, loading }) => ({
-  payment,
-  loadData: loading.effects['payment/columns'],
-}))*/
+
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/data'],
+}))
 export default class PaymentsPage extends Component {
   constructor(props) {
     super(props);
@@ -62,90 +62,19 @@ export default class PaymentsPage extends Component {
   }
 
   componentDidMount() {
-    const testcolumns = [
-      {
-        'title': 'Референс',
-        'dataIndex': 'referance',
-        'isVisible': true,
-      },
-      {
-        'title': 'Дата платежа',
-        'dataIndex': 'date_payment',
-        'isVisible': true,
-      },
-      {
-        'title': 'Сумма',
-        'dataIndex': 'summa',
-        'isVisible': true,
-      },
-      {
-        'title': 'КНП',
-        'width': 80,
-        'dataIndex': 'knp',
-        'isVisible': true,
-      },
-      {
-        'title': 'Отправитель (БИН)',
-        'width': 120,
-        'dataIndex': 'sender_bin',
-        'isVisible': true,
-      },
-      {
-        'title': 'Отправитель (БИК)',
-        'width': 120,
-        'dataIndex': 'sender_bik',
-        'isVisible': true,
-      },
-      {
-        'title': 'Получатель (Наименование)',
-        'width': 130,
-        'dataIndex': 'receiver_name',
-      },
-      {
-        'title': 'Получатель (БИН)',
-        'width': 120,
-        'dataIndex': 'receiver_bin',
-      },
-      {
-        'title': 'Получатель (БИК)',
-        'width': 120,
-        'dataIndex': 'receiver_bik',
-      },
-      {
-        'title': 'Получатель (Счет)',
-        'width': 120,
-        'dataIndex': 'receiver_amount',
-      },
-    ];
 
-
-    testcolumns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/columns',
+      payload: {
+        table: 'payment',
+      },
     });
-
-    const testdata = [];
-
-    for (let i = 0; i < 50; i++) {
-      var itemRow = {};
-      itemRow.referance = 'GCVP_4515' + i;
-      itemRow.date_payment = '26.10.2018';
-      itemRow.summa = '15119181.644';
-      itemRow.knp = '12' + i;
-      itemRow.sender_bin = '132131232132' + i;
-      itemRow.sender_bik = '12312321' + i;
-      itemRow.receiver_name = '13123212' + i;
-      itemRow.receiver_bin = '122312321' + i;
-      itemRow.receiver_bik = '131231232' + i;
-      itemRow.receiver_amount = 'KZ15151515KZT2515';
-
-      testdata.push(itemRow);
-    }
-
-
-    this.setState({
-      testdata: testdata,
-      testcolumns: testcolumns,
-      dataSource: testdata.slice(0, 10),
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'payment',
+      },
     });
 
 
@@ -179,9 +108,6 @@ export default class PaymentsPage extends Component {
 
   }
 
-  componentDidUpdate() {
-
-  }
 
   applyFilter(dataFilter) {
     console.log(dataFilter);
@@ -196,24 +122,31 @@ export default class PaymentsPage extends Component {
 
     const max = current * pageSize;
     const min = max - pageSize;
-    this.setState({
-      dataSource: this.state.testdata.content.slice(min, max),
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/data',
+      payload: {
+        table: 'payment',
+      },
     });
 
   };
 
   handleSelectColumn(column, e) {
-    const { testcolumns } = this.state;
-    let filteredColumn = testcolumns.map(function(item) {
+    let local_helper = this.StorageHelper();
+    const { columns } = this.props.universal2;
+    let filteredColumn = columns.map(function(item) {
       if (item.dataIndex === column.dataIndex) {
-        item.isVisible = !item.isVisible;
+        item.isVisible = item.isVisible === 'true' ? 'false' : 'true';
       }
-
       return item;
     });
 
+    local_helper.set('paymentColumns', filteredColumn, true);
+
     this.setState({
-      testcolumns: filteredColumn,
+      columns: filteredColumn,
     });
   }
 
@@ -223,18 +156,54 @@ export default class PaymentsPage extends Component {
     }));
   };
 
+  StorageHelper() {
+    return {
+      clear: function(name) {
+        localStorage.setItem(name, null);
+      },
+      set: function(name, value, isReplace = true) {
+
+        if (isReplace) {
+          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+        } else {
+          if (!localStorage.getItem(name)) {
+            console.log('replaceddd///////////////');
+            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+          }
+        }
+
+      },
+      get: function(name) {
+        let result = localStorage.getItem(name);
+
+        if (result) {
+          return JSON.parse(result);
+        }
+
+        return false;
+      },
+    };
+  }
+
   render() {
 
-    const { dataSource, testcolumns } = this.state;
+    const { dataStore, columns } = this.props.universal2;
 
+    let local_helper = this.StorageHelper();
+    let StorageColumns = local_helper.get('paymentColumns');
+    local_helper.set('paymentColumns', columns, StorageColumns.length === 0 && columns.length !== 0);
+    let _columns = local_helper.get('paymentColumns');
 
-    const menuItems = testcolumns.map(function(column, index) {
+    _columns.forEach((column) => {
+      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    });
+
+    const menuItems = _columns.map(function(column, index) {
       return (
         <Menu.Item key={index.toString()}>
           <Checkbox
             onChange={this.handleSelectColumn.bind(this, column)}
-            checked={column.isVisible}
-          >
+            checked={column.isVisible === 'true'}>
             {column.title}
           </Checkbox>
         </Menu.Item>
@@ -269,7 +238,7 @@ export default class PaymentsPage extends Component {
     };
 
     const DataDiv = () => (
-      <Spin tip="Загрузка..." spinning={false}>
+      <Spin tip="Загрузка..." spinning={this.props.loadingData}>
         <Card bordered={false}
           style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
           type="inner">
@@ -295,8 +264,8 @@ export default class PaymentsPage extends Component {
             body: {
               row: SelectableRow,
             },
-          }} bordered={true} size={'small'} columns={testcolumns.filter(column => column.isVisible)}
-                 dataSource={dataSource}
+          }} bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
+                 dataSource={dataStore}
                  scroll={{ x: 1300 }} pagination={false}
           />
           <Row style={{ marginTop: '10px', marginBottom: '10px' }}>

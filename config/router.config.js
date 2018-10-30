@@ -63,6 +63,12 @@ export default [
         component: './Requests/Requests',
       },
       {
+        path: '/options',
+        name: 'options',
+        icon: 'form',
+        component: './Options/Options',
+      },
+      {
         path: '/payments',
         icon: 'form',
         name: 'payments',

@@ -155,3 +155,25 @@ export async function LoginUser(params) {
     body: params,
   });
 }
+
+
+export async function getmainViewTable(params) {
+  return request('/api/refund/maintable', {
+    method: 'POST',
+    body: params
+  });
+}
+export async function getmainViewColumn(params) {
+  return request('/api/refund/maindata');
+}
+export async function getRPMUTable(params) {
+  return request('/api/refund/secondTable');
+}
+export async function getMainModal(params) {
+  return request('/api/refund/mainmodal');
+}
+export async function getMainSelect1(params) {
+  return request('/api/refund/mainselect1');
+}
+
+

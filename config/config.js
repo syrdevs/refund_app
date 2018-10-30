@@ -61,7 +61,7 @@ export default {
     '@antv/data-set': 'DataSet',
   },
   proxy: {
-    '/api': 'http://192.168.50.173:3001',
+    '/api': 'http://localhost:3001',
     '/data': 'https://samples.openweathermap.org',
   },
 

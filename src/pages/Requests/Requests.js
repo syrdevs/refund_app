@@ -23,6 +23,8 @@ import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
+import GridFilter from '@/components/GridFilter';
+import ModalChangeDate from '@/components/ModalChangeDate';
 
 
 const EditableContext = React.createContext();
@@ -33,6 +35,16 @@ class Requests extends Component {
     this.state = {
       modalVisible: false,
       columns: [],
+      searchercont: 0,
+      tablecont: 24,
+      isSearcher: false,
+      filterForm:[],
+      ModalData:{
+        id:null,
+        key:null,
+        value:null
+      },
+      ShowModal: false,
       DataTable: {
         number: 0,
         size: 15, // in one page
@@ -2636,12 +2648,30 @@ class Requests extends Component {
       {
         title: 'Дата поступление',
         dataIndex: 'appPayerDate',
-        render: text => <a href="javascript:;">{text}</a>,
+        render: (text, row) => <a
+          onClick={()=> {
+                this.setState({
+                  ShowModal:true,
+                  ModalData:{id: row.id,
+                    key:'appPayerDate',
+                    value:text
+                  }
+                });
+              }}>{text}</a>,
       },
       {
         title: 'Крайняя дата',
         dataIndex: 'gcvpOrderDate',
-        render: text => <a href="javascript:;">{text}</a>,
+        render: (text, row) => <a
+                            onClick={()=> {
+                                    this.setState({
+                                      ShowModal:true,
+                                      ModalData:{id: row.id,
+                                                  key:'gcvpOrderDate',
+                                                    value:text
+                                                }});
+                                              }}
+                                >{text}</a>,
       },
       ,
       {
@@ -2711,16 +2741,54 @@ class Requests extends Component {
       columns: columns,
       dataSource: this.state.DataTable.content.slice(0, 9),
     });
+    const children = [];
+    for (let i = 10; i < 36; i++) {
+      children.push({
+        id: i,
+        name: 'a' + i,
+      });
+    }
+    this.setState({
+      filterForm: [
+        {
+          name: 'number',
+          label: 'Номер заявки:',
+          type: 'text',
+        },
+        {
+          name: 'reference',
+          label: 'Референс:',
+          type: 'text',
+        },
+        {
+          name: 'payNumber',
+          label: 'Номер платежного поручения:',
+          type: 'text',
+        },
+        {
+          name: 'RefundComeDate',
+          label: 'Дата платежного поручения:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'RefundFundDate',
+          label: 'Дата поступления заявление в Фонд:',
+          type: 'betweenDate',
+        },
+        {
+          name: 'knp',
+          label: 'КНП:',
+          type: 'multibox',
+          store: children,
+        }
+      ]
+    })
   }
   componentWillReceiveProps(props) {
   }
-
-
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
-    console.log('max = ' + max);
-    console.log('min = ' + min);
     console.log(this.state.DataTable);
     this.setState({
       dataSource: this.state.DataTable.content.slice(min, max),
@@ -2729,9 +2797,26 @@ class Requests extends Component {
   handleStandardTableChange = (e) => {
     console.log(e);
   }
+  toggleSearcher = () => {
+    this.setState({
+      isSearcher: false,
+      searchercont: 6,
+      tablecont: 18
+    });
+  }
+  hideleft() {
+      this.setState({
+        searchercont: 0,
+        tablecont: 24
+      });
+  }
+  resetshow(e) {
+    console.log(e);
+  }
 
 
   render() {
+    const dateFormat = 'DD.MM.YYYY';
     const { columns, dataSource } = this.state;
 
     let lastActiveRow = false;
@@ -2755,8 +2840,28 @@ class Requests extends Component {
 
     return (
       <PageHeaderWrapper title="ЗАЯВКИ">
-        <Row >
-            <Button>
+        {<ModalChangeDate visible={this.state.ShowModal}
+                         resetshow={(e) => {this.resetshow(e)}}
+                         dataSource={this.state.ModalData}/>}
+        <Col sm={24} md={this.state.searchercont}>
+          {!this.state.isSearcher &&
+          <Card
+            style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+            type="inner"
+            title="Фильтр"
+            extra={<Button onClick={event => this.hideleft()}>х</Button>}
+          >
+            <GridFilter
+              clearFilter={()=>{}}
+              applyFilter={()=>{}}
+              filterForm={this.state.filterForm}
+              dateFormat={dateFormat}/>
+          </Card>}
+        </Col>
+        <Col sm={24} md={this.state.tablecont}>
+        <Card style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}>
+          <Row >
+            <Button onClick={()=>{this.toggleSearcher()}}>
               <Icon type="search"/>
             </Button>
             <Button>
@@ -2765,35 +2870,35 @@ class Requests extends Component {
             <div style={{textAlign: 'right', display: 'inline-block', float: 'right'}}>
               Количество записей:8580
             </div>
-        </Row>
-        <Card>
-        <Row style={{ marginBottom: 20 }}>
-          <Table
-            components={{
-              body: {
-                row: SelectableRow,
-              },
-            }}
-            rowKey={'key'}
-            dataSource={dataSource}
-            columns={columns}
-            size={'small'}
-            scroll={{ x: 1100 }}
-            onChange={this.handleStandardTableChange}
-            pagination={false}
-          />
-        </Row>
-        <Row>
-          <Pagination
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            showSizeChanger
-            onShowSizeChange={this.onShowSizeChange}
-            onChange={this.onShowSizeChange}
-            defaultCurrent={1}
-            total={50}
-          />
-        </Row>
+          </Row>
+          <Row style={{ marginBottom: 20 }}>
+            <Table
+              components={{
+                body: {
+                  row: SelectableRow,
+                },
+              }}
+              rowKey={'key'}
+              dataSource={dataSource}
+              columns={columns}
+              size={'small'}
+              scroll={{ x: 1100 }}
+              onChange={this.handleStandardTableChange}
+              pagination={false}
+            />
+          </Row>
+          <Row>
+            <Pagination
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              showSizeChanger
+              onShowSizeChange={this.onShowSizeChange}
+              onChange={this.onShowSizeChange}
+              defaultCurrent={1}
+              total={50}
+            />
+          </Row>
         </Card>
+        </Col>
       </PageHeaderWrapper>
     );
   }

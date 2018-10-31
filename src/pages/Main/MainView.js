@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Table, Icon, Menu, Dropdown, Button, Label, Pagination, Row, Col, Form, Input, DatePicker, Select, Checkbox, Divider, } from 'antd';
+import { Card, Table, Icon, Menu, Dropdown, Button, Label, Pagination, Row, Col, Form, Input, DatePicker, Select, Checkbox, Divider, Spin } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
@@ -13,7 +13,8 @@ const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
 @connect(({ universal, loading }) => ({
-  universal
+  universal,
+  loadingData: loading.effects['universal/mainviewtable'],
 }))
 class MainView extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class MainView extends Component {
       selectedRows: [],
       formValues: {},
       stepFormValues: {},
-      columns: [{
+      fcolumn: [{
         title: 'Действие',
         key: 'operation',
         isVisible: true,
@@ -44,6 +45,7 @@ class MainView extends Component {
           </Button>
         ),
       }],
+      columns:[],
       dataSource: [],
       isHidden: true,
       isItems: false,
@@ -51,7 +53,8 @@ class MainView extends Component {
       searchercont: 0,
       selectedRowKeys: [],
       tablecont: 24,
-      filterForm: []
+      filterForm: [],
+      xsize:1300
     }
   }
   componentDidMount() {
@@ -77,8 +80,38 @@ class MainView extends Component {
       payload: {},
     });
   }
+
+
+  StorageHelper() {
+    return {
+      clear: function(name) {
+        localStorage.setItem(name, null);
+      },
+      set: function(name, value, isReplace = true) {
+
+        if (isReplace) {
+          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+        } else {
+          if (!localStorage.getItem(name)) {
+            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+          }
+        }
+
+      },
+      get: function(name) {
+        let result = localStorage.getItem(name);
+
+        if (result) {
+          return JSON.parse(result);
+        }
+
+        return false;
+      },
+    };
+  }
   handleSelectColumn(column, e) {
-    const { columns } = this.state;
+    let local_helper = this.StorageHelper();
+    const { columns } = this.props.universal;
     let filteredColumn = columns.map(function(item) {
       if (item.dataIndex === column.dataIndex) {
         item.isVisible = !item.isVisible;
@@ -86,9 +119,12 @@ class MainView extends Component {
       return item;
     });
 
+    local_helper.set('maintableColumns', filteredColumn, true);
+
     this.setState({
-      columns: filteredColumn,
+      columns: filteredColumn
     });
+
   }
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
@@ -200,9 +236,16 @@ class MainView extends Component {
     ];
   }
 
+
   render() {
     const dateFormat = 'DD.MM.YYYY';
     const { universal} = this.props;
+
+    let local_helper = this.StorageHelper();
+    let journalColumns = local_helper.get('maintableColumns');
+    local_helper.set('maintableColumns', universal.columns, journalColumns.length === 0 && universal.columns.length !== 0);
+    let _columns = local_helper.get('maintableColumns');
+
     universal.columns.forEach((column) => {
       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
     });
@@ -245,10 +288,10 @@ class MainView extends Component {
     const hasSelected = selectedRowKeys.length > 0;
     const actionmenu = (<Menu>
       <Menu.Item key="1">
-        Сверить с РПМУ {hasSelected ? `(${selectedRowKeys.length})` : ''}
+        Сверить с РПМУ {hasSelected ? ` (${selectedRowKeys.length})` : ''}
       </Menu.Item>
       <Menu.Item key="2">
-        Выгрузка в Excell {hasSelected ? `(${selectedRowKeys.length})` : ''}
+        Выгрузка в Excell {hasSelected ? ` (${selectedRowKeys.length})` : ''}
       </Menu.Item>
     </Menu>);
 
@@ -291,15 +334,15 @@ class MainView extends Component {
                           this.showModal();
                         }}
                       >
-                        Одобрить {hasSelected ? `(${selectedRowKeys.length})` : ''}
+                        Одобрить {hasSelected ? ` (${selectedRowKeys.length})` : ''}
                       </Button>
                       <Button
                         className={'btn-danger'}
                         style={buttons}>
-                        Отклонить {hasSelected ? `(${selectedRowKeys.length})` : ''}
+                        Отклонить {hasSelected ? ` (${selectedRowKeys.length})` : ''}
                       </Button>
-                      <Button style={buttons}>Сохранить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
-                      <Button style={buttons}>Выполнить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
+                      <Button style={buttons}>Сохранить {hasSelected ? ` (${selectedRowKeys.length})` : ''}</Button>
+                      <Button style={buttons}>Выполнить {hasSelected ? ` (${selectedRowKeys.length})` : ''}</Button>
                       <Dropdown overlay={actionmenu}>
                         <Button style={buttons}>Дейстие</Button>
                       </Dropdown>
@@ -314,28 +357,30 @@ class MainView extends Component {
                       </div>
                     </Col>
                   </Row>
-                  <Row style={{ marginBottom: 20 }}>
+                  <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+                    <Row style={{ marginBottom: 20 }}>
                     <Table
                       rowSelection={rowSelection}
                       size={'small'}
                       rowKey={'key'}
                       dataSource={universal.table.content}
-                      columns={(this.state.columns.concat(universal.columns)).filter(column => column.isVisible)}
+                      columns={(this.state.fcolumn.concat(_columns)).filter(column => column.isVisible)}
                       onChange={this.handleStandardTableChange}
                       pagination={false}
-                      scroll={{ x: 1100 }}
+                      scroll={{ x: this.state.xsize }}
                     />
-                  </Row>
-                  <Row style={{marginBottom:'10px'}}>
-                    <Pagination
-                      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                      showSizeChanger
-                      onShowSizeChange={this.onShowSizeChange}
-                      onChange={this.onShowSizeChange}
-                      defaultCurrent={1}
-                      total={50}
-                    />
-                  </Row>
+                    </Row>
+                    <Row style={{marginBottom:'10px'}}>
+                      <Pagination
+                        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        showSizeChanger
+                        onShowSizeChange={this.onShowSizeChange}
+                        onChange={this.onShowSizeChange}
+                        defaultCurrent={1}
+                        total={50}
+                      />
+                    </Row>
+                  </Spin>
                 </Card>
               </Col>
             </Row>
@@ -343,5 +388,4 @@ class MainView extends Component {
     );
   }
 }
-
 export default MainView;

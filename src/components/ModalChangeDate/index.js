@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Tabs, Table, Input, DatePicker, Card } from 'antd';
 import moment from 'moment';
+
 const InputGroup = Input.Group;
 const TabPane = Tabs.TabPane;
 
@@ -22,8 +23,9 @@ export default class ModalChangeDate extends Component {
     }
   }
 
-  handleOk = (e) => {
-    this.props.resetshow(e);
+  handleOk = (e, isOk = false) => {
+    this.setState({ isVisible: false });
+    this.props.resetshow(e, isOk);
   };
 
   render() {
@@ -31,12 +33,16 @@ export default class ModalChangeDate extends Component {
     const { dataSource, isVisible } = this.state;
     return (<Modal
       title="Установка даты"
-      onOk={()=>{this.handleOk(dataSource);this.setState({isVisible:false})}}
-      onCancel={()=>{this.setState({isVisible:false})}}
+      onOk={() => {
+        this.handleOk(dataSource, true);
+      }}
+      onCancel={() => {
+        this.handleOk(dataSource,false);
+      }}
       width={700}
       centered
       visible={isVisible}>
-        <DatePicker value={moment(dataSource.value, dateFormat)}/>
+      <DatePicker value={moment(dataSource.value, dateFormat)}/>
     </Modal>);
   }
 }

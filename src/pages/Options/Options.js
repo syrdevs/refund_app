@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { Card, Label, Row, Col, Input, Button, Table, Tabs } from 'antd';
+import { Card, Label, Row, Col, Input, Button, Table, Tabs, Spin } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { connect } from 'dva/index';
 const TabPane = Tabs.TabPane;
 
+@connect(({ universal, loading }) => ({
+  universal,
+  loadingData: loading.effects['universal/optionsData'],
+}))
 class Options extends Component {
   constructor(props) {
     super(props);
@@ -278,15 +283,24 @@ class Options extends Component {
       ]
     };
   }
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal/optionsData',
+      payload: {},
+    });
+  }
 
 
 
   fieldOnChange = (value,index, childindex) => {
-    const { datasource } = this.state;
+      const datasource = this.props.universal.options;
       datasource[index].groupOptionList[childindex].optionValue = value;
-    this.setState({
-      datasource: datasource,
-    });
+          const { dispatch } = this.props;
+          dispatch({
+            type: 'universal/optionsDatachange',
+            payload: datasource,
+          });
   };
   saveChanges = () => {
     console.log(this.state.datasource);
@@ -294,9 +308,10 @@ class Options extends Component {
 
 
   render() {
-    const { datasource } = this.state;
+    const { datasource } = this.props.universal.options;
     return (
       <PageHeaderWrapper title="Настройки" children={'Serik'}>
+        <Spin tip="Загрузка..." spinning={this.props.loadingData}>
         <Card style={{borderRadius: '5px', marginBottom:'10px'}} bodyStyle={{ padding: 0 }} bordered={true}>
           <Row>
             <Button
@@ -308,7 +323,7 @@ class Options extends Component {
           </Row>
           <Row>
             <Tabs defaultActiveKey="0">
-              {datasource.map((tabItem, index) => {
+              {this.props.universal.options.map((tabItem, index) => {
                 return (
                 <TabPane tab={tabItem.groupNameRu} key={index}>
                   {tabItem.groupOptionList
@@ -316,7 +331,7 @@ class Options extends Component {
                       return (
                         <Row style={{ margin: '0px 10px 10px 10px'}} key={index+""+childindex}>
                           <Col span={24} key={index+""+childindex}>
-                            <Input addonBefore={inputs.optionName} key={index+""+childindex} value={inputs.optionValue} onChange={(e) => {this.fieldOnChange(e.target.value,index,childindex)}}/>
+                            <Input addonBefore={inputs.optionName} key={index+""+childindex} defaultValue={inputs.optionValue} onChange={(e) => {this.fieldOnChange(e.target.value,index,childindex)}}/>
                           </Col>
                         </Row>
                       )
@@ -327,6 +342,7 @@ class Options extends Component {
             </Tabs>
           </Row>
         </Card>
+        </Spin>
       </PageHeaderWrapper>
     );
   }

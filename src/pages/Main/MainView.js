@@ -7,7 +7,6 @@ import ModalGridView from '@/components/ModalGridView';
 import GridFilter from '@/components/GridFilter';
 import TableData from './mainView';
 import { connect } from 'dva';
-import axios from "axios";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;

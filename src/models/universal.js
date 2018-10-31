@@ -1,5 +1,5 @@
 import { testMethod } from '../services/user';
-import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1 } from '../services/api';
+import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata } from '../services/api';
 
 export default {
   namespace: 'universal',
@@ -17,7 +17,8 @@ export default {
       data:[]
     },
     mainmodal:[],
-    select1: []
+    select1: [],
+    options: []
   },
   effects: {
     * mainviewtable(payload, { call, put }) {
@@ -60,6 +61,19 @@ export default {
         payload: response,
       });
     },
+    * optionsData(payload, { call, put }) {
+          const response = yield call(getOptionsdata, payload);
+          yield put({
+            type: 'OptionReducer',
+            payload: response,
+          });
+        },
+    * optionsDatachange(payload, { put }) {
+      yield put({
+        type: 'OptionChangeReducer',
+        payload: payload,
+      });
+    },
   },
 
   reducers: {
@@ -91,6 +105,18 @@ export default {
       return {
         ...state,
         select1:payload
+      };
+    },
+    OptionReducer(state, { payload }) {
+      return {
+        ...state,
+        options:payload
+      };
+    },
+    OptionChangeReducer(state, { payload }) {
+      return {
+        ...state,
+        options:payload.payload
       };
     },
 

@@ -288,10 +288,10 @@ class MainView extends Component {
     const hasSelected = selectedRowKeys.length > 0;
     const actionmenu = (<Menu>
       <Menu.Item key="1">
-        Сверить с РПМУ {hasSelected ? `(${selectedRowKeys.length})` : ''}
+        Сверить с РПМУ {hasSelected ? ` (${selectedRowKeys.length})` : ''}
       </Menu.Item>
       <Menu.Item key="2">
-        Выгрузка в Excell {hasSelected ? `(${selectedRowKeys.length})` : ''}
+        Выгрузка в Excell {hasSelected ? ` (${selectedRowKeys.length})` : ''}
       </Menu.Item>
     </Menu>);
 
@@ -334,15 +334,15 @@ class MainView extends Component {
                           this.showModal();
                         }}
                       >
-                        Одобрить {hasSelected ? `(${selectedRowKeys.length})` : ''}
+                        Одобрить {hasSelected ? ` (${selectedRowKeys.length})` : ''}
                       </Button>
                       <Button
                         className={'btn-danger'}
                         style={buttons}>
-                        Отклонить {hasSelected ? `(${selectedRowKeys.length})` : ''}
+                        Отклонить {hasSelected ? ` (${selectedRowKeys.length})` : ''}
                       </Button>
-                      <Button style={buttons}>Сохранить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
-                      <Button style={buttons}>Выполнить {hasSelected ? `(${selectedRowKeys.length})` : ''}</Button>
+                      <Button style={buttons}>Сохранить {hasSelected ? ` (${selectedRowKeys.length})` : ''}</Button>
+                      <Button style={buttons}>Выполнить {hasSelected ? ` (${selectedRowKeys.length})` : ''}</Button>
                       <Dropdown overlay={actionmenu}>
                         <Button style={buttons}>Дейстие</Button>
                       </Dropdown>

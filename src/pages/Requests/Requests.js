@@ -25,6 +25,8 @@ import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
 import GridFilter from '@/components/GridFilter';
 import ModalChangeDate from '@/components/ModalChangeDate';
+import SmartGridView from '@/components/SmartGridView';
+
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -41,8 +43,8 @@ class Requests extends Component {
       columnFiltered: [],
       modalVisible: false,
       columns: [{
+        dataIndex:"102",
         title: 'МТ 102',
-        fixed: 'right',
         width: 50,
         onCell: record => {
           return {
@@ -52,14 +54,14 @@ class Requests extends Component {
           };
         },
         render: () => (
-          <Button>
+          <Button key={"102"}>
             <Icon type="database" theme="outlined"/>
           </Button>
         ),
       },
         {
+          dataIndex:"xml",
           title: 'XML',
-          fixed: 'right',
           width: 50,
           onCell: record => {
             return {
@@ -69,7 +71,7 @@ class Requests extends Component {
             };
           },
           render: () => (
-            <Button>
+            <Button key={"xml"}>
               <Icon type="database" theme="outlined"/>
             </Button>
           ),
@@ -84,6 +86,7 @@ class Requests extends Component {
         value: null,
       },
       ShowModal: false,
+      searchButton: false,
     };
   }
 
@@ -163,6 +166,7 @@ class Requests extends Component {
   };
   toggleSearcher = () => {
     this.setState({
+      searchButton: true,
       isSearcher: false,
       searchercont: 6,
       tablecont: 18,
@@ -171,6 +175,7 @@ class Requests extends Component {
 
   hideleft() {
     this.setState({
+      searchButton: false,
       searchercont: 0,
       tablecont: 24,
     });
@@ -187,23 +192,6 @@ class Requests extends Component {
     });
   }
 
-  handleSelectColumn(column, e) {
-
-    let local_helper = this.StorageHelper();
-    const { columns } = this.props.universal2;
-    let filteredColumn = columns.map(function(item) {
-      if (item.dataIndex === column.dataIndex) {
-        item.isVisible = !item.isVisible;
-      }
-      return item;
-    });
-
-    local_helper.set('requestsColumns', filteredColumn, true);
-
-    this.setState({
-      columnFiltered: filteredColumn,
-    });
-  }
 
   refreshTable = () => {
     const { dispatch } = this.props;
@@ -215,48 +203,17 @@ class Requests extends Component {
     });
   };
 
-  StorageHelper() {
-    return {
-      clear: function(name) {
-        localStorage.setItem(name, null);
-      },
-      set: function(name, value, isReplace = true) {
-
-        if (isReplace) {
-          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-        } else {
-          if (!localStorage.getItem(name)) {
-            console.log('replaceddd///////////////');
-            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-          }
-        }
-
-      },
-      get: function(name) {
-        let result = localStorage.getItem(name);
-
-        if (result) {
-          return JSON.parse(result);
-        }
-
-        return false;
-      },
-    };
-  }
-
   render() {
     const dateFormat = 'DD.MM.YYYY';
-    const { columns, dataStore } = this.props.universal2;
+    let { columns, dataStore } = this.props.universal2;
 
-    let local_helper = this.StorageHelper();
-    let StorageColumns = local_helper.get('requestsColumns');
-    local_helper.set('requestsColumns', columns, StorageColumns.length === 0 && columns.length !== 0);
-    let _columns = local_helper.get('requestsColumns');
 
-    _columns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+    let actionColumns = [];
 
+    columns.forEach((column) => {
       if (['receiptAppdateToFsms', 'appEndDate'].indexOf(column.dataIndex) !== -1) {
+
+        column.dataIndex = column.dataIndex + '_';
         column.render = (text, row) => <a
           onClick={() => {
             this.setState({
@@ -269,49 +226,11 @@ class Requests extends Component {
             });
           }}
         >{text}</a>;
+
+        actionColumns.push(column);
       }
-
-
     });
 
-    let lastActiveRow = false;
-    const SelectableRow = ({ form, index, ...props }) => {
-
-      const trRef = React.createRef();
-
-      return (<EditableContext.Provider value={form}>
-        <tr {...props} ref={trRef} onClick={(e) => {
-
-          if (lastActiveRow) {
-            lastActiveRow.style.backgroundColor = '';
-          }
-
-          lastActiveRow = trRef.current;
-          lastActiveRow.style.backgroundColor = '#e6f7ff';
-
-        }}/>
-      </EditableContext.Provider>);
-    };
-
-    const menuItems = _columns.map(function(column, index) {
-      return (
-        <Menu.Item key={index.toString()}>
-          <Checkbox
-            onChange={this.handleSelectColumn.bind(this, column)}
-            checked={column.isVisible}>
-            {column.title}
-          </Checkbox>
-        </Menu.Item>
-      );
-    }, this);
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <div>Выберите столбцов:</div>
-        </Menu.Item>
-        {menuItems}
-      </Menu>
-    );
 
     return (
       <PageHeaderWrapper title="ЗАЯВКИ">
@@ -338,57 +257,48 @@ class Requests extends Component {
           </Card>}
         </Col>
         <Col sm={24} md={this.state.tablecont}>
-          <Spin tip="Загрузка..." spinning={this.props.loadingData}>
-            <Card style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}>
-              <Row>
-                <Button onClick={() => {
-                  this.toggleSearcher();
-                }}>
-                  <Icon type="search"/>
-                </Button>
-                <Button onClick={this.refreshTable}>
-                  <Icon type="redo"/>Обновить
-                </Button>
+          <Card>
+            <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+              <SmartGridView
+                name={'RequestPageColumns'}
+                scroll={{ x: 1300 }}
+                searchButton={this.state.searchButton}
+                fixedBody={true}
+                rowKey={'id'}
+                loading={this.props.loadingData}
+                fixedHeader={true}
+                rowSelection={true}
+                actionColumns={this.state.columns.concat(actionColumns)}
+                columns={columns}
+                sorted={true}
+                showTotal={false}
+                dataSource={{
+                  total: 50,
+                  pageSize: 10,
+                  page: 1,
+                  data: dataStore,
+                }}
+                onShowSizeChange={(pageNumber, pageSize) => {
+                  console.log(pageNumber, pageSize);
+                }}
+                onSelectCell={(cellIndex, cell) => {
 
-                <div style={{ float: 'right' }}>
-                  Количество записей:8580
-                </div>
-                <div style={{ margin: '0px 15px', float: 'right' }}>
-                  <Dropdown overlay={menu} placement="bottomRight">
-                    <Button size={'small'}>
-                      <Icon type="setting" theme="outlined"/>
-                    </Button>
-                  </Dropdown>
-                </div>
-              </Row>
-              <Row style={{ marginBottom: 20 }}>
-                <Table
-                  components={{
-                    body: {
-                      row: SelectableRow,
-                    },
-                  }}
-                  rowKey={'id'}
-                  dataSource={dataStore}
-                  columns={_columns.concat(this.state.columns).filter((column) => column.isVisible)}
-                  size={'small'}
-                  scroll={{ x: 1300, y: 500 }}
-                  onChange={this.handleStandardTableChange}
-                  pagination={false}
-                />
-              </Row>
-              <Row>
-                <Pagination
-                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                  showSizeChanger
-                  onShowSizeChange={this.onShowSizeChange}
-                  onChange={this.onShowSizeChange}
-                  defaultCurrent={1}
-                  total={50}
-                />
-              </Row>
-            </Card>
-          </Spin>
+                }}
+                onSelectRow={() => {
+
+                }}
+                onFilter={(filters) => {
+
+                }}
+                onRefresh={() => {
+                  this.refreshTable();
+                }}
+                onSearch={() => {
+                  this.toggleSearcher();
+                }}
+              />
+            </Spin>
+          </Card>
         </Col>
       </PageHeaderWrapper>
     );

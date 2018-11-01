@@ -22,6 +22,7 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
+import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva';
 
 const TabPane = Tabs.TabPane;
@@ -39,7 +40,7 @@ export default class JournalPage extends Component {
     this.state = {
       columns: [],
       filterContainer: 0,
-
+      searchButton: false,
       dataContent: {
         'size': 15,
         'totalElements': 8921,
@@ -128,22 +129,6 @@ export default class JournalPage extends Component {
     });
   };
 
-  handleSelectColumn(column, e) {
-    let local_helper = this.StorageHelper();
-    const { columns } = this.props.universal2;
-    let filteredColumn = columns.map(function(item) {
-      if (item.dataIndex === column.dataIndex) {
-        item.isVisible = item.isVisible === 'true' ? 'false' : 'true';
-      }
-      return item;
-    });
-
-    local_helper.set('journalColumns', filteredColumn, true);
-
-    this.setState({
-      columns: filteredColumn,
-    });
-  }
 
   refreshTable = () => {
     const { dispatch } = this.props;
@@ -157,109 +142,54 @@ export default class JournalPage extends Component {
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
+      searchButton: filterContainer == 6 ? 0 : 6,
       filterContainer: filterContainer == 6 ? 0 : 6,
     }));
   };
-
-
-  componentDidUpdate() {
-
-  }
-
-  StorageHelper() {
-    return {
-      clear: function(name) {
-        localStorage.setItem(name, null);
-      },
-      set: function(name, value, isReplace = true) {
-
-        if (isReplace) {
-          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-        } else {
-          if (!localStorage.getItem(name)) {
-            console.log('replaceddd///////////////');
-            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-          }
-        }
-
-      },
-      get: function(name) {
-        let result = localStorage.getItem(name);
-
-        if (result) {
-          return JSON.parse(result);
-        }
-
-        return false;
-      },
-    };
-  }
 
   render() {
 
     const { dataStore, columns } = this.props.universal2;
 
-    let local_helper = this.StorageHelper();
-    let journalColumns = local_helper.get('journalColumns');
-    local_helper.set('journalColumns', columns, journalColumns.length === 0 && columns.length !== 0);
-    let _columns = local_helper.get('journalColumns');
-
-
-    _columns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
-    });
-
-    const menuItems = _columns.map(function(column, index) {
-      return (
-        <Menu.Item key={index.toString()}>
-          <Checkbox
-            onChange={this.handleSelectColumn.bind(this, column)}
-            checked={column.isVisible === 'true'}>
-            {column.title}
-          </Checkbox>
-        </Menu.Item>
-      );
-    }, this);
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <div>Выберите столбцов:</div>
-        </Menu.Item>
-        {menuItems}
-      </Menu>
-    );
-
     const DataDiv = () => (
       <Spin tip="Загрузка..." spinning={this.props.loadingData}>
-        <div>
-          <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
-                  style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
+        <SmartGridView
+          name={'journalPageColumns'}
+          scroll={{ x: 1300 }}
+          searchButton={this.state.searchButton}
+          fixedBody={true}
+          rowKey={'id'}
+          loading={this.props.loadingData}
+          fixedHeader={true}
+          rowSelection={true}
+          columns={columns}
+          sorted={true}
+          showTotal={false}
+          dataSource={{
+            total: 50,
+            pageSize: 10,
+            page: 1,
+            data: dataStore,
+          }}
+          onShowSizeChange={(pageNumber, pageSize) => {
+            console.log(pageNumber, pageSize);
+          }}
+          onSelectCell={(cellIndex, cell) => {
 
-          <Button onClick={this.refreshTable} style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
-                                                                                                        theme="outlined"/>Обновить</Button>
-          <div style={{ float: 'right', margin: '10px 0 10px 5px' }}>Количество записей: 15</div>
-          <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
-            <Dropdown trigger={'click'} overlay={menu} placement="bottomRight">
-              <Button size={'small'}>
-                <Icon type="setting" theme="outlined"/>
-              </Button>
-            </Dropdown>
-          </div>
-        </div>
-        <Table bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
-               dataSource={dataStore}
-               scroll={{ x: 1300, y: 260 }} pagination={false}
+          }}
+          onSelectRow={() => {
+
+          }}
+          onFilter={(filters) => {
+
+          }}
+          onRefresh={() => {
+            this.refreshTable();
+          }}
+          onSearch={() => {
+            this.filterPanelState();
+          }}
         />
-        <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-          <Pagination
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            showSizeChanger
-            onShowSizeChange={this.onShowSizeChange}
-            onChange={this.onShowSizeChange}
-            defaultCurrent={1}
-            total={50}
-          />
-        </Row>
       </Spin>
     );
 

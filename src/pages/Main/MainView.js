@@ -287,7 +287,7 @@ class MainView extends Component {
                   actionColumns={this.state.fcolumn}
                   columns={universal.columns}
                   sorted={true}
-                  showTotal={true}
+                  showTotal={false}
                   dataSource={{
                     total: 50,
                     pageSize: 10,

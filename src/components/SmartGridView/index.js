@@ -219,7 +219,7 @@ export default class SmartGridView extends Component {
 
     if (this.props.scroll) {
       tableOptions.scroll = {
-        scroll: this.props.scroll,
+        ...this.props.scroll,
       };
     }
 

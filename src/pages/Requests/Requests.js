@@ -372,7 +372,7 @@ class Requests extends Component {
                   dataSource={dataStore}
                   columns={_columns.concat(this.state.columns).filter((column) => column.isVisible)}
                   size={'small'}
-                  scroll={{ x: 1300 }}
+                  scroll={{ x: 1300, y: 500 }}
                   onChange={this.handleStandardTableChange}
                   pagination={false}
                 />

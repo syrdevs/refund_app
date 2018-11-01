@@ -22,6 +22,9 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
+
+import SmartGridView from '@/components/SmartGridView';
+
 import paymentsData from './paymentsData';
 import moment from 'moment/moment';
 import classNames from 'classnames';
@@ -48,7 +51,7 @@ export default class PaymentsPage extends Component {
 
 
     this.state = {
-
+      selectedRowKeys: [],
       testcolumns: [],
       testdata: [],
       dataSource: [],
@@ -189,60 +192,60 @@ export default class PaymentsPage extends Component {
 
     const { dataStore, columns } = this.props.universal2;
 
-    let local_helper = this.StorageHelper();
-    let StorageColumns = local_helper.get('paymentColumns');
-    local_helper.set('paymentColumns', columns, StorageColumns.length === 0 && columns.length !== 0);
-    let _columns = local_helper.get('paymentColumns');
+    /* let local_helper = this.StorageHelper();
+     let StorageColumns = local_helper.get('paymentColumns');
+     local_helper.set('paymentColumns', columns, StorageColumns.length === 0 && columns.length !== 0);
+     let _columns = local_helper.get('paymentColumns');
 
-    _columns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
-    });
+     _columns.forEach((column) => {
+       column.width = 150;
+       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+     });
 
-    const menuItems = _columns.map(function(column, index) {
-      return (
-        <Menu.Item key={index.toString()}>
-          <Checkbox
-            onChange={this.handleSelectColumn.bind(this, column)}
-            checked={column.isVisible === 'true'}>
-            {column.title}
-          </Checkbox>
-        </Menu.Item>
-      );
-    }, this);
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <div>Выберите столбцов:</div>
-        </Menu.Item>
-        {menuItems}
-      </Menu>
-    );
+     const menu = (
+       <Menu>
+         <Menu.Item>
+           <div>Выберите столбцов:</div>
+         </Menu.Item>
+         {_columns.map(function(column, index) {
+           return (
+             <Menu.Item key={index.toString()}>
+               <Checkbox
+                 onChange={this.handleSelectColumn.bind(this, column)}
+                 checked={column.isVisible === 'true'}>
+                 {column.title}
+               </Checkbox>
+             </Menu.Item>
+           );
+         }, this)}
+       </Menu>
+     );
 
-    let lastActiveRow = false;
-    const SelectableRow = ({ form, index, ...props }) => {
+     let lastActiveRow = false;
+     const SelectableRow = ({ form, index, ...props }) => {
 
-      const trRef = React.createRef();
+       const trRef = React.createRef();
 
-      return (<EditableContext.Provider value={form}>
-        <tr {...props} ref={trRef} onClick={(e) => {
+       return (<EditableContext.Provider value={form}>
+         <tr {...props} ref={trRef} onClick={(e) => {
 
-          if (lastActiveRow) {
-            lastActiveRow.style.backgroundColor = '';
-          }
+           if (lastActiveRow) {
+             lastActiveRow.style.backgroundColor = '';
+           }
 
-          lastActiveRow = trRef.current;
-          lastActiveRow.style.backgroundColor = '#e6f7ff';
+           lastActiveRow = trRef.current;
+           lastActiveRow.style.backgroundColor = '#e6f7ff';
 
-        }}/>
-      </EditableContext.Provider>);
-    };
+         }}/>
+       </EditableContext.Provider>);
+     };*/
 
     const DataDiv = () => (
       <Spin tip="Загрузка..." spinning={this.props.loadingData}>
         <Card bordered={false}
-          style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-          type="inner">
-          <div>
+              style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+              type="inner">
+          {/*<div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
                     style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
 
@@ -253,20 +256,71 @@ export default class PaymentsPage extends Component {
               в
               Excel</Button>
             <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
-              <Dropdown overlay={menu} placement="bottomRight">
+              <Dropdown trigger={['click']} overlay={menu} placement="bottomRight">
                 <Button size={'small'}>
                   <Icon type="setting" theme="outlined"/>
                 </Button>
               </Dropdown>
             </div>
-          </div>
-          <Table components={{
+          </div>*/}
+
+          <SmartGridView
+            name={'PaymentPageColumns'}
+            fixedBody={true}
+            selectedRowCheckBox={true}
+            searchButton={false}
+            selectedRowKeys={this.state.selectedRowKeys}
+            rowKey={'id'}
+            loading={this.props.loadingData}
+            fixedHeader={true}
+            rowSelection={true}
+            columns={columns}
+            sorted={true}
+            dataSource={{
+              total: 50,
+              pageSize: 10,
+              page: 1,
+              data: dataStore,
+            }}
+            addonButtons={[<Button
+              key={1}>Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+              <Button
+                key={2}>Принять {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>]}
+
+            onShowSizeChange={(pageNumber, pageSize) => {
+              console.log(pageNumber, pageSize);
+            }}
+            onSelectCell={(cellIndex, cell) => {
+
+            }}
+            onSelectRow={() => {
+
+            }}
+
+            onFilter={(filters) => {
+
+            }}
+            onRefresh={() => {
+              console.log('refresh');
+            }}
+            onSearch={() => {
+              console.log('search');
+            }}
+            onSelectCheckboxChange={(selectedRowKeys) => {
+              this.setState({
+                selectedRowKeys: selectedRowKeys,
+              });
+            }}
+          />
+
+
+          {/*<Table components={{
             body: {
               row: SelectableRow,
             },
           }} bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
                  dataSource={dataStore}
-                 scroll={{ x: 1300 }} pagination={false}
+                 scroll={{ y: 360 }} pagination={false}
           />
           <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
             <Pagination
@@ -277,7 +331,7 @@ export default class PaymentsPage extends Component {
               defaultCurrent={1}
               total={50}
             />
-          </Row>
+          </Row>*/}
         </Card>
       </Spin>
     );
@@ -294,7 +348,7 @@ export default class PaymentsPage extends Component {
                     bordered={false}
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
-                    headStyle={{background:'white'}}
+                    headStyle={{ background: 'white' }}
                     title="Фильтр"
                     extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
                                                                                       theme="outlined"/></Button>}
@@ -317,7 +371,7 @@ export default class PaymentsPage extends Component {
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
                     title="Фильтр"
-                    headStyle={{background:'white'}}
+                    headStyle={{ background: 'white' }}
                     bordered={false}
                     extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
                                                                                       theme="outlined"/></Button>}

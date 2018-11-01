@@ -33,16 +33,21 @@ export default class ModalChangeDate extends Component {
     const { dataSource, isVisible } = this.state;
     return (<Modal
       title="Установка даты"
+
       onOk={() => {
         this.handleOk(dataSource, true);
       }}
       onCancel={() => {
         this.handleOk(dataSource,false);
       }}
-      width={700}
-      centered
+      width={300}
+      centered={true}
       visible={isVisible}>
-      <DatePicker value={moment(dataSource.value, dateFormat)}/>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <DatePicker value={moment(dataSource.value, dateFormat)}
+                  format={moment().format('DD.MM.YYYY')}
+      />
+      </div>
     </Modal>);
   }
 }

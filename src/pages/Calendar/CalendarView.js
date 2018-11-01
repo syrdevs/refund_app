@@ -87,13 +87,7 @@ export default class CalendarView extends Component {
     });
   };
   handleOk = (e) => {
-
     const { modalForm } = this.state;
-
-    console.log(modalForm.description, modalForm.selectedDayType);
-
-    // this. save
-
     this.handleCancel();
   };
   handleCancel = (e) => {
@@ -183,12 +177,13 @@ export default class CalendarView extends Component {
 
     const { modalVisible, currentDate, modalForm } = this.state;
     const { eventDescriptionVisible, deleteBtnVisible } = modalForm;
+    const spantitle = {fontSize:"13px", fontWeight:"bold"};
 
 
     return (<PageHeaderWrapper title="Календарь">
       <Modal centered
              className={style.modal_buttons}
-             title="Информация"
+             title={"Создание события на "+moment(this.state.selectedDate).format('DD.MM.YYYY')}
              onCancel={this.handleCancel.bind(this)}
              visible={modalVisible}
              footer={[
@@ -198,6 +193,7 @@ export default class CalendarView extends Component {
                <Button key="submit" onClick={this.handleOk} type="primary">Сохранить</Button>,
                <Button key="cancel" onClick={this.handleCancel}>Отмена</Button>,
              ]}>
+        <div><span style={spantitle}>Тип:</span>
         <Select
           style={{ width: '100%' }}
           placeholder="Выберите"
@@ -216,8 +212,10 @@ export default class CalendarView extends Component {
           <Option value="1">Выходной день</Option>
           <Option value="2">Праздничный день</Option>
         </Select>
+        </div>
         <br/><br/>
-        <Input value={modalForm.description} onChange={(({ target }) => {
+        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>Событие:</span>:
+        <Input value={modalForm.description} title={"asdasd"} onChange={(({ target }) => {
 
           this.setState(({ modalForm }) => ({
             modalForm: {
@@ -225,8 +223,9 @@ export default class CalendarView extends Component {
               description: target.value,
             },
           }));
-        })} style={{ width: '100%', display: eventDescriptionVisible ? '' : 'none' }}
+        })} style={{ width: '100%'}}
                placeholder='Событие'/>
+        </div>
       </Modal>
 
 

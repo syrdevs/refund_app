@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 import React, { Component } from 'react';
 import {
   Card,
@@ -151,6 +162,7 @@ export default class GridFilter extends Component {
         }
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
+
           <Row>
             <Col md={22}>
               <RangePicker   {...RangeDateProps}
@@ -172,8 +184,6 @@ export default class GridFilter extends Component {
               </div>
             </Col>
           </Row>
-
-
         </div>);
       }
       case 'text': {
@@ -258,6 +268,7 @@ export default class GridFilter extends Component {
         </Button>
         <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
                 onClick={this.clearFilters}>Очистить</Button>
+        <Divider/>
       </Form>);
   }
 }

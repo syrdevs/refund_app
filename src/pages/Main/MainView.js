@@ -1,3 +1,7 @@
+
+
+
+
 import React, { Component } from 'react';
 import {
   Card,
@@ -26,8 +30,6 @@ import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
-import axios from 'axios';
-
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 

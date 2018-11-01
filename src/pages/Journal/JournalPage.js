@@ -239,7 +239,7 @@ export default class JournalPage extends Component {
                                                                                                         theme="outlined"/>Обновить</Button>
           <div style={{ float: 'right', margin: '10px 0 10px 5px' }}>Количество записей: 15</div>
           <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
-            <Dropdown overlay={menu} placement="bottomRight">
+            <Dropdown trigger={'click'} overlay={menu} placement="bottomRight">
               <Button size={'small'}>
                 <Icon type="setting" theme="outlined"/>
               </Button>
@@ -248,7 +248,7 @@ export default class JournalPage extends Component {
         </div>
         <Table bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
                dataSource={dataStore}
-               scroll={{ x: 1300 }} pagination={false}
+               scroll={{ x: 1300, y: 260 }} pagination={false}
         />
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
           <Pagination

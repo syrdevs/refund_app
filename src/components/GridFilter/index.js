@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import moment from 'moment/moment';
 
+
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
@@ -35,8 +36,28 @@ export default class GridFilter extends Component {
     };
   }
 
+  componentDidMount() {
+
+    const { isClearFilter, fields } = this.state;
+
+    if (Object.keys(fields).length === 0) {
+
+      let _fields = {};
+
+      this.props.filterForm.forEach((filterItem, idx) => {
+        _fields[filterItem.name] = {
+          disabled: false,
+        };
+      });
+
+      this.setState({
+        fields: _fields,
+      });
+    }
+  }
 
   componentDidUpdate() {
+
     const { isClearFilter, fields } = this.state;
 
     if (isClearFilter) {
@@ -108,6 +129,7 @@ export default class GridFilter extends Component {
 
     const { dateFormat } = this.props;
     const { fields, formFilters, isClearFilter } = this.state;
+    const mBottom = { marginBottom: '5px' };
 
     switch (filterItem.type) {
       case 'betweenDate': {
@@ -128,22 +150,34 @@ export default class GridFilter extends Component {
           });*/
         }
 
-        return (<div key={_index}>{filterItem.label}:
-          <RangePicker  {...RangeDateProps}
-                        disabled={fields[filterItem.name].disabled}/>
-          <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
-            fields[filterItem.name].disabled = e.target.checked;
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+          <Row>
+            <Col md={22}>
+              <RangePicker   {...RangeDateProps}
+                             placeholder={[
+                               'c',
+                               'по',
+                             ]}
+                             disabled={fields[filterItem.name].disabled}/>
+            </Col>
+            <Col md={2}>
+              <div style={{ margin: '3px' }}>
+                <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
+                  fields[filterItem.name].disabled = e.target.checked;
+                  this.setState({
+                    fields: fields,
+                    formFilters: formFilters,
+                  });
+                }}></Checkbox>
+              </div>
+            </Col>
+          </Row>
 
-            this.setState({
-              fields: fields,
-              formFilters: formFilters,
-            });
 
-          }}>Без значения</Checkbox>
         </div>);
       }
       case 'text': {
-        return (<div key={_index}>{filterItem.label}:
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Input onKeyDown={this.onKeyPress} onChange={(e) => {
             this.fieldOnChange(filterItem, e.target.value);
           }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
@@ -156,7 +190,7 @@ export default class GridFilter extends Component {
           params.value = [];
         }
 
-        return (<div key={_index}>{filterItem.label}:
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
             {...params}
             mode="multiple"
@@ -181,7 +215,7 @@ export default class GridFilter extends Component {
         }
 
 
-        return (<div key={_index}>{filterItem.label}:
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
             {...params}
             style={{ width: '100%' }}
@@ -214,18 +248,16 @@ export default class GridFilter extends Component {
     const { fields, isClearFilter } = this.state;
     const { filterForm } = this.props;
 
-
     return (
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-        <FormItem style={{ margin: '10px 0 0 0', border: '1px solid #d9d9d9', borderRadius: '5px' }}>
-          <Button style={{ margin: '10px 0 0 15px' }} type='primary' icon='search'
-                  onClick={this.applyFilters}>
-            Искать
-          </Button>
-          <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
-                  onClick={this.clearFilters}>Очистить</Button>
-        </FormItem>
+        <Divider/>
+        <Button style={{ margin: '10px 0 0 15px' }} type='primary' icon='search'
+                onClick={this.applyFilters}>
+          Искать
+        </Button>
+        <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
+                onClick={this.clearFilters}>Очистить</Button>
       </Form>);
   }
 }

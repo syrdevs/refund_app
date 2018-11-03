@@ -22,6 +22,7 @@ import {
 import styles from './index.less';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
 
 
 const SmartColumnsSelect = props => {
@@ -49,7 +50,7 @@ const SmartColumnsSelect = props => {
 
   return (<Dropdown trigger={['click']} overlay={menu} placement="bottomRight">
     <Button style={{ float: 'right' }}>
-      <Icon type="setting" theme="outlined"/>
+      <Icon><FontAwesomeIcon icon={faColumns} /></Icon>
     </Button>
   </Dropdown>);
 };

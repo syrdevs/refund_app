@@ -26,6 +26,9 @@ import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faColumns } from '@fortawesome/free-solid-svg-icons';
+
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;

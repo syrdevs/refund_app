@@ -46,7 +46,7 @@ export const getMenuMatchKeys = (flatMenuKeys, paths) =>
   paths.reduce(
     (matchKeys, path) =>
       matchKeys.concat(flatMenuKeys.filter(item => pathToRegexp(item).test(path))),
-    []
+    [],
   );
 
 export default class SiderMenu extends PureComponent {
@@ -109,8 +109,8 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} id="logo">
           <Link to="/">
-            <img src={logo} alt="logo" />
-            <h1 >Фонд социального медицинского страхования</h1>
+            <img src={logo} alt="logo"/>
+            <h1 style={{ color: '#80983e' }}>ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЯ</h1>
           </Link>
         </div>
         <BaseMenu

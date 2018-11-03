@@ -57,15 +57,11 @@ const SmartColumnsSelect = props => {
 const SmartGridHeader = props => {
   return (<div>
     <Row>
-      <Col sm={4} md={4} xs={4}>
+      <Col sm={24} md={24} xs={24}>
         <div className={styles.headerButton}>
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>
           <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt} /></Button>
-        </div>
-      </Col>
-      <Col sm={20} md={20} xs={20}>
-        <div className={styles.headerButton}>
           {props.addonButtons}
           <div className={styles.smart_grid_controls_right}>
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}

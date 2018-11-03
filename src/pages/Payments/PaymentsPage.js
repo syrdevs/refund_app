@@ -252,9 +252,7 @@ export default class PaymentsPage extends Component {
 
     const DataDiv = () => (
       <Spin tip="Загрузка..." spinning={this.props.loadingData}>
-        <Card bordered={false}
-              style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-              type="inner">
+
           {/*<div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
                     style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
@@ -342,7 +340,6 @@ export default class PaymentsPage extends Component {
               total={50}
             />
           </Row>*/}
-        </Card>
       </Spin>
     );
 

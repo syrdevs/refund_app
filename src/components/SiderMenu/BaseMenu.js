@@ -8,7 +8,22 @@ import pathToRegexp from 'path-to-regexp';
 import { urlToList } from '../_utils/pathTools';
 import styles from './index.less';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faCreditCard, faListAlt, faFileExcel, faHome, faBookOpen, faCalendarAlt, faFileInvoice, faUserCog, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDatabase,
+  faSyncAlt,
+  faCreditCard,
+  faListAlt,
+  faFileExcel,
+  faHome,
+  faBookOpen,
+  faCalendarAlt,
+  faFileInvoice,
+  faUserCog,
+  faMoneyBill,
+  faUserMd,
+  faCoins,
+  faChartBar
+} from '@fortawesome/free-solid-svg-icons';
 
 const { SubMenu } = Menu;
 
@@ -18,30 +33,38 @@ const { SubMenu } = Menu;
 //   icon: <Icon type="setting" />,
 const getIcon = icon => {
   if (typeof icon === 'string' && icon.indexOf('http') === 0) {
-    return <img src={icon} alt="icon" className={styles.icon} />;
+    return <img src={icon} alt="icon" className={styles.icon}/>;
   }
   if (typeof icon === 'string') {
-    switch(icon) {
+    switch (icon) {
+      case 'faChartBar':
+        return <Icon><FontAwesomeIcon icon={faChartBar}/></Icon>;
+      case 'faCoins':
+        return <Icon><FontAwesomeIcon icon={faCoins}/></Icon>;
       case 'faCreditCard':
-        return <Icon><FontAwesomeIcon icon={faCreditCard} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faCreditCard}/></Icon>;
       case 'faListAlt':
-        return <Icon><FontAwesomeIcon icon={faListAlt} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faListAlt}/></Icon>;
       case 'faFileExcel':
-        return <Icon><FontAwesomeIcon icon={faFileExcel} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faFileExcel}/></Icon>;
       case 'faHome':
-        return <Icon><FontAwesomeIcon icon={faHome} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faHome}/></Icon>;
       case 'faBookOpen':
-        return <Icon><FontAwesomeIcon icon={faBookOpen} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faBookOpen}/></Icon>;
       case 'faCalendarAlt':
-        return <Icon><FontAwesomeIcon icon={faCalendarAlt} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faCalendarAlt}/></Icon>;
       case 'faFileInvoice':
-        return <Icon><FontAwesomeIcon icon={faFileInvoice} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faFileInvoice}/></Icon>;
       case 'faUserCog':
-        return <Icon><FontAwesomeIcon icon={faUserCog} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faUserCog}/></Icon>;
       case 'faMoneyBill':
-        return <Icon><FontAwesomeIcon icon={faMoneyBill} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faMoneyBill}/></Icon>;
+      case 'faDatabase':
+        return <Icon><FontAwesomeIcon icon={faDatabase}/></Icon>;
+      case 'faUserMd':
+        return <Icon><FontAwesomeIcon icon={faUserMd}/></Icon>;
       default:
-        return <Icon><FontAwesomeIcon icon={faSyncAlt} /></Icon>;
+        return <Icon><FontAwesomeIcon icon={faSyncAlt}/></Icon>;
     }
 
 
@@ -51,7 +74,7 @@ const getIcon = icon => {
 
 export const getMenuMatches = memoizeOne(
   (flatMenuKeys, path) => flatMenuKeys.filter(item => item && pathToRegexp(item).test(path)),
-  isEqual
+  isEqual,
 );
 
 export default class BaseMenu extends PureComponent {
@@ -155,8 +178,8 @@ export default class BaseMenu extends PureComponent {
         onClick={
           isMobile
             ? () => {
-                onCollapse(true);
-              }
+              onCollapse(true);
+            }
             : undefined
         }
       >

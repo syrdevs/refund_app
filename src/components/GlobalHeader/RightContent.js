@@ -7,9 +7,6 @@ import NoticeIcon from '../NoticeIcon';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
-import { faCreditCard, faUserShield } from '@fortawesome/free-solid-svg-icons/index';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -59,10 +56,6 @@ export default class GlobalHeaderRight extends PureComponent {
           <FormattedMessage id="menu.account.center" defaultMessage="user profile" />
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="changepassword">
-          <Icon><FontAwesomeIcon icon={faUserShield} /></Icon>
-          <FormattedMessage id="menu.account.changepassword" defaultMessage="changepassword" />
-        </Menu.Item>
         <Menu.Item key="logout">
           <Icon type="logout" />
           <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
@@ -81,7 +74,68 @@ export default class GlobalHeaderRight extends PureComponent {
     }
     return (
       <div className={className}>
-
+        {/*<HeaderSearch
+          className={`${styles.action} ${styles.search}`}
+          placeholder={formatMessage({ id: 'component.globalHeader.search' })}
+          dataSource={[
+            formatMessage({ id: 'component.globalHeader.search.example1' }),
+            formatMessage({ id: 'component.globalHeader.search.example2' }),
+            formatMessage({ id: 'component.globalHeader.search.example3' }),
+          ]}
+          onSearch={value => {
+            console.log('input', value); // eslint-disable-line
+          }}
+          onPressEnter={value => {
+            console.log('enter', value); // eslint-disable-line
+          }}
+        />*/}
+        {/*<Tooltip title={formatMessage({ id: 'component.globalHeader.help' })}>
+          <a
+            target="_blank"
+            href="https://pro.ant.design/docs/getting-started"
+            rel="noopener noreferrer"
+            className={styles.action}
+          >
+            <Icon type="question-circle-o" />
+          </a>
+        </Tooltip>*/}
+        {/*<NoticeIcon
+          className={styles.action}
+          count={currentUser.notifyCount}
+          onItemClick={(item, tabProps) => {
+            console.log(item, tabProps); // eslint-disable-line
+          }}
+          locale={{
+            emptyText: formatMessage({ id: 'component.noticeIcon.empty' }),
+            clear: formatMessage({ id: 'component.noticeIcon.clear' }),
+          }}
+          onClear={onNoticeClear}
+          onPopupVisibleChange={onNoticeVisibleChange}
+          loading={fetchingNotices}
+          popupAlign={{ offset: [20, -16] }}
+        >
+          <NoticeIcon.Tab
+            list={noticeData.notification}
+            title={formatMessage({ id: 'component.globalHeader.notification' })}
+            name="notification"
+            emptyText={formatMessage({ id: 'component.globalHeader.notification.empty' })}
+            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
+          />
+          <NoticeIcon.Tab
+            list={noticeData.message}
+            title={formatMessage({ id: 'component.globalHeader.message' })}
+            name="message"
+            emptyText={formatMessage({ id: 'component.globalHeader.message.empty' })}
+            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
+          />
+          <NoticeIcon.Tab
+            list={noticeData.event}
+            title={formatMessage({ id: 'component.globalHeader.event' })}
+            name="event"
+            emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
+            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
+          />
+        </NoticeIcon>*/}
         {currentUser.name ? (
           <Dropdown trigger={["click"]} overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>

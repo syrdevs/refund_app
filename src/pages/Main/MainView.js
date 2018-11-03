@@ -51,7 +51,7 @@ class MainView extends Component {
       formValues: {},
       stepFormValues: {},
       fcolumn: [{
-        title: 'Платежи',
+        title: 'Действия',
         order: 1,
         key: 'operation',
         isVisible: true,
@@ -344,7 +344,7 @@ class MainView extends Component {
                         Excell
                       </Menu.Item>
                     </Menu>}>
-                      <Button key={'action'}>Действия <Icon type="down"/></Button>
+                      <Button key={'action'}>Дейстие <Icon type="down"/></Button>
                     </Dropdown>,
                   ]}
 

@@ -20,6 +20,8 @@ import {
   Divider,
 } from 'antd';
 import styles from './index.less';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 
 const SmartColumnsSelect = props => {
@@ -59,7 +61,7 @@ const SmartGridHeader = props => {
         <div className={styles.headerButton}>
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>
-          <Button onClick={props.onRefresh}>Обновить</Button>
+          <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt} /></Button>
         </div>
       </Col>
       <Col sm={20} md={20} xs={20}>

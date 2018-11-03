@@ -22,7 +22,8 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
-
+import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 
 import paymentsData from './paymentsData';
@@ -253,7 +254,7 @@ export default class PaymentsPage extends Component {
     const DataDiv = () => (
       <Spin tip="Загрузка..." spinning={this.props.loadingData}>
 
-          {/*<div>
+        {/*<div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
                     style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
 
@@ -272,57 +273,57 @@ export default class PaymentsPage extends Component {
             </div>
           </div>*/}
 
-          <SmartGridView
-            name={'PaymentPageColumns'}
-            fixedBody={true}
-            selectedRowCheckBox={true}
-            searchButton={false}
-            selectedRowKeys={this.state.selectedRowKeys}
-            rowKey={'id'}
-            loading={this.props.loadingData}
-            fixedHeader={true}
-            rowSelection={true}
-            columns={columns}
-            sorted={true}
-            dataSource={{
-              total: 50,
-              pageSize: 10,
-              page: 1,
-              data: dataStore,
-            }}
-            addonButtons={[<Button
-              key={1}>Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-              <Button
-                key={2}>Принять {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>]}
+        <SmartGridView
+          name={'PaymentPageColumns'}
+          fixedBody={true}
+          selectedRowCheckBox={true}
+          searchButton={false}
+          selectedRowKeys={this.state.selectedRowKeys}
+          rowKey={'id'}
+          loading={this.props.loadingData}
+          fixedHeader={true}
+          rowSelection={true}
+          columns={columns}
+          sorted={true}
+          dataSource={{
+            total: 50,
+            pageSize: 10,
+            page: 1,
+            data: dataStore,
+          }}
+          addonButtons={[<Button
+            key={1}>Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+            <Button
+              key={2}>Принять {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>]}
 
-            onShowSizeChange={(pageNumber, pageSize) => {
-              console.log(pageNumber, pageSize);
-            }}
-            onSelectCell={(cellIndex, cell) => {
+          onShowSizeChange={(pageNumber, pageSize) => {
+            console.log(pageNumber, pageSize);
+          }}
+          onSelectCell={(cellIndex, cell) => {
 
-            }}
-            onSelectRow={() => {
+          }}
+          onSelectRow={() => {
 
-            }}
+          }}
 
-            onFilter={(filters) => {
+          onFilter={(filters) => {
 
-            }}
-            onRefresh={() => {
-              console.log('refresh');
-            }}
-            onSearch={() => {
-              console.log('search');
-            }}
-            onSelectCheckboxChange={(selectedRowKeys) => {
-              this.setState({
-                selectedRowKeys: selectedRowKeys,
-              });
-            }}
-          />
+          }}
+          onRefresh={() => {
+            console.log('refresh');
+          }}
+          onSearch={() => {
+            this.filterPanelState();
+          }}
+          onSelectCheckboxChange={(selectedRowKeys) => {
+            this.setState({
+              selectedRowKeys: selectedRowKeys,
+            });
+          }}
+        />
 
 
-          {/*<Table components={{
+        {/*<Table components={{
             body: {
               row: SelectableRow,
             },
@@ -352,13 +353,14 @@ export default class PaymentsPage extends Component {
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
                   <Card
-                    bordered={false}
+                    headStyle={{
+                      padding: '0 14px',
+                    }}
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
-                    headStyle={{ background: 'white' }}
                     title="Фильтр"
-                    extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
-                                                                                      theme="outlined"/></Button>}
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}
                   >
                     <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
                                 filterForm={this.state.filterForm}
@@ -378,11 +380,8 @@ export default class PaymentsPage extends Component {
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
                     title="Фильтр"
-                    headStyle={{ background: 'white' }}
-                    bordered={false}
-                    extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
-                                                                                      theme="outlined"/></Button>}
-                  >
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}>
                     <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
                                 filterForm={this.state.filterForm}
                                 dateFormat={dateFormat}/>

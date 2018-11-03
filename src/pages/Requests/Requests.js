@@ -127,32 +127,32 @@ class Requests extends Component {
       filterForm: [
         {
           name: 'number',
-          label: 'Номер заявки:',
+          label: 'Номер заявки',
           type: 'text',
         },
         {
           name: 'reference',
-          label: 'Референс:',
+          label: 'Референс',
           type: 'text',
         },
         {
           name: 'payNumber',
-          label: 'Номер платежного поручения:',
+          label: 'Номер платежного поручения',
           type: 'text',
         },
         {
           name: 'RefundComeDate',
-          label: 'Дата платежного поручения:',
+          label: 'Дата платежного поручения',
           type: 'betweenDate',
         },
         {
           name: 'RefundFundDate',
-          label: 'Дата поступления заявление в Фонд:',
+          label: 'Дата поступления заявление в Фонд',
           type: 'betweenDate',
         },
         {
           name: 'knp',
-          label: 'КНП:',
+          label: 'КНП',
           type: 'multibox',
           store: children,
         },

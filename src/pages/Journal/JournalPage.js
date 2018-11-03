@@ -99,7 +99,7 @@ export default class JournalPage extends Component {
           type: 'text',
         }, {
           name: 'action',
-          label: 'Действие',
+          label: 'Действия',
           type: 'combobox',
           store: [{
             id: '0',

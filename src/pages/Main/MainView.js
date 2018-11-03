@@ -1,7 +1,3 @@
-
-
-
-
 import React, { Component } from 'react';
 import {
   Card,
@@ -30,6 +26,7 @@ import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
+
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
@@ -252,41 +249,42 @@ class MainView extends Component {
                          this.setState({ ShowModal: false });
                        }}
                        dataSource={universal.mainmodal}/>
-        <Row>
-          <Col sm={24} md={this.state.searchercont}>
-            <div>
+        <Card bodyStyle={{ padding: 5 }}>
+          <Row>
+            <Col sm={24} md={this.state.searchercont}>
+              <div>
 
-              {this.state.searchercont === 7 && <Card
-                style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                type="inner"
-                title="Фильтр"
-                extra={<Button onClick={event => this.hideleft()}>х</Button>}
-              >
+                {this.state.searchercont === 7 && <Card
+                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                  type="inner"
+                  title="Фильтр"
+                  extra={<Button onClick={event => this.hideleft()}>х</Button>}
+                >
 
-                <GridFilter
-                  clearFilter={() => {
-                  }}
-                  applyFilter={(filters) => {
-                    console.log(filters);
-                  }}
-                  filterForm={GridFilterData}
-                  dateFormat={dateFormat}/>
+                  <GridFilter
+                    clearFilter={() => {
+                    }}
+                    applyFilter={(filters) => {
+                      console.log(filters);
+                    }}
+                    filterForm={GridFilterData}
+                    dateFormat={dateFormat}/>
 
 
-              </Card>}
+                </Card>}
 
-              {this.state.searchercont === 8 &&
-              <DataDiv/>
-              }
+                {this.state.searchercont === 8 &&
+                <DataDiv/>
+                }
 
-            </div>
-          </Col>
-          <Col sm={24} md={this.state.tablecont}>
-            <Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>
+              </div>
+            </Col>
+            <Col sm={24} md={this.state.tablecont}>
+              {/*<Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>*/}
               <Spin tip="Загрузка..." spinning={this.props.loadingData}>
                 <SmartGridView
                   name={'RefundsPageColumns'}
-                  scroll={{ x: this.state.xsize}}
+                  scroll={{ x: this.state.xsize }}
                   fixedBody={true}
                   selectedRowCheckBox={true}
                   searchButton={this.state.searchButton}
@@ -362,9 +360,10 @@ class MainView extends Component {
                 />
                 <br/>
               </Spin>
-            </Card>
-          </Col>
-        </Row>
+              {/*</Card>*/}
+            </Col>
+          </Row>
+        </Card>
       </PageHeaderWrapper>
     );
   }

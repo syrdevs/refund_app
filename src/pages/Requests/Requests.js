@@ -238,7 +238,7 @@ class Requests extends Component {
         >{text}</a>;
 
         actionColumns.push(column);
-      }else{
+      } else {
         propColumns.push(column);
       }
     });
@@ -251,67 +251,69 @@ class Requests extends Component {
                             this.resetshow(e);
                           }}
                           dataSource={this.state.ModalData}/>}
-        <Col sm={24} md={this.state.searchercont}>
-          {!this.state.isSearcher &&
-          <Card
-            style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-            type="inner"
-            title="Фильтр"
-            extra={<Button onClick={event => this.hideleft()}>х</Button>}
-          >
-            <GridFilter
-              clearFilter={() => {
-              }}
-              applyFilter={() => {
-              }}
-              filterForm={this.state.filterForm}
-              dateFormat={dateFormat}/>
-          </Card>}
-        </Col>
-        <Col sm={24} md={this.state.tablecont}>
-          <Card>
-            <Spin tip="Загрузка..." spinning={this.props.loadingData}>
-              <SmartGridView
-                name={'RequestPageColumns'}
-                scroll={{ x: 1300 }}
-                searchButton={this.state.searchButton}
-                fixedBody={true}
-                rowKey={'id'}
-                loading={this.props.loadingData}
-                fixedHeader={true}
-                rowSelection={true}
-                actionColumns={this.state.columns.concat(actionColumns)}
-                columns={propColumns}
-                sorted={true}
-                showTotal={false}
-                dataSource={{
-                  total: 50,
-                  pageSize: 10,
-                  page: 1,
-                  data: dataStore,
-                }}
-                onShowSizeChange={(pageNumber, pageSize) => {
-                  console.log(pageNumber, pageSize);
-                }}
-                onSelectCell={(cellIndex, cell) => {
+        <Card bodyStyle={{ padding: 5 }}>
+          <Row>
+            <Col sm={24} md={this.state.searchercont}>
+              {!this.state.isSearcher &&
+              <Card
+                style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                type="inner"
+                title="Фильтр"
+                extra={<Button onClick={event => this.hideleft()}>х</Button>}
+              >
+                <GridFilter
+                  clearFilter={() => {
+                  }}
+                  applyFilter={() => {
+                  }}
+                  filterForm={this.state.filterForm}
+                  dateFormat={dateFormat}/>
+              </Card>}
+            </Col>
+            <Col sm={24} md={this.state.tablecont}>
+                <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+                  <SmartGridView
+                    name={'RequestPageColumns'}
+                    scroll={{ x: 1300 }}
+                    searchButton={this.state.searchButton}
+                    fixedBody={true}
+                    rowKey={'id'}
+                    loading={this.props.loadingData}
+                    fixedHeader={true}
+                    rowSelection={true}
+                    actionColumns={this.state.columns.concat(actionColumns)}
+                    columns={propColumns}
+                    sorted={true}
+                    showTotal={false}
+                    dataSource={{
+                      total: 50,
+                      pageSize: 10,
+                      page: 1,
+                      data: dataStore,
+                    }}
+                    onShowSizeChange={(pageNumber, pageSize) => {
+                      console.log(pageNumber, pageSize);
+                    }}
+                    onSelectCell={(cellIndex, cell) => {
 
-                }}
-                onSelectRow={() => {
+                    }}
+                    onSelectRow={() => {
 
-                }}
-                onFilter={(filters) => {
+                    }}
+                    onFilter={(filters) => {
 
-                }}
-                onRefresh={() => {
-                  this.refreshTable();
-                }}
-                onSearch={() => {
-                  this.toggleSearcher();
-                }}
-              />
-            </Spin>
-          </Card>
-        </Col>
+                    }}
+                    onRefresh={() => {
+                      this.refreshTable();
+                    }}
+                    onSearch={() => {
+                      this.toggleSearcher();
+                    }}
+                  />
+                </Spin>
+            </Col>
+          </Row>
+        </Card>
       </PageHeaderWrapper>
     );
   }

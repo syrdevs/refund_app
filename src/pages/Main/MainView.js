@@ -246,7 +246,7 @@ class MainView extends Component {
     const GridFilterData = this.stateFilter();
 
     return (
-      <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТА">
+      <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТОВ">
         <ModalGridView visible={this.state.ShowModal}
                        resetshow={(e) => {
                          this.setState({ ShowModal: false });

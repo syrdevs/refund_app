@@ -80,7 +80,6 @@ const SmartGridHeader = props => {
 
 const EditableContext = React.createContext();
 
-
 export default class SmartGridView extends Component {
   constructor(props) {
     super(props);

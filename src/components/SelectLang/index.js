@@ -13,7 +13,7 @@ export default class SelectLang extends PureComponent {
     const { className } = this.props;
     const selectedLang = getLocale();
     const langMenu = (
-      <Menu className={styles.menu} selectedKeys={[selectedLang]} onClick={this.changLang}>
+      <Menu  className={styles.menu} selectedKeys={[selectedLang]} onClick={this.changLang}>
         <Menu.Item key="en-US">
           <FormattedMessage id="lang.english" />
         </Menu.Item>
@@ -23,7 +23,7 @@ export default class SelectLang extends PureComponent {
       </Menu>
     );
     return (
-      <Dropdown overlay={langMenu} placement="bottomRight">
+      <Dropdown trigger={['click']} overlay={langMenu} placement="bottomRight">
         <Icon
           type="global"
           className={classNames(styles.dropDown, className)}

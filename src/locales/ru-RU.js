@@ -1,5 +1,3 @@
-
-
 export default {
   'navBar.lang': 'Языки',
   'lang.simplified-chinese': '🇨🇳 简体 中文',

@@ -276,6 +276,7 @@ export default class PaymentsPage extends Component {
         <SmartGridView
           name={'PaymentPageColumns'}
           fixedBody={true}
+          showTotal={true}
           selectedRowCheckBox={true}
           searchButton={false}
           selectedRowKeys={this.state.selectedRowKeys}

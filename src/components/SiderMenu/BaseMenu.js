@@ -8,7 +8,7 @@ import pathToRegexp from 'path-to-regexp';
 import { urlToList } from '../_utils/pathTools';
 import styles from './index.less';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faCreditCard, faListAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt, faCreditCard, faListAlt, faFileExcel, faHome, faBookOpen, faCalendarAlt, faFileInvoice, faUserCog, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
 
 const { SubMenu } = Menu;
 
@@ -26,6 +26,20 @@ const getIcon = icon => {
         return <Icon><FontAwesomeIcon icon={faCreditCard} /></Icon>;
       case 'faListAlt':
         return <Icon><FontAwesomeIcon icon={faListAlt} /></Icon>;
+      case 'faFileExcel':
+        return <Icon><FontAwesomeIcon icon={faFileExcel} /></Icon>;
+      case 'faHome':
+        return <Icon><FontAwesomeIcon icon={faHome} /></Icon>;
+      case 'faBookOpen':
+        return <Icon><FontAwesomeIcon icon={faBookOpen} /></Icon>;
+      case 'faCalendarAlt':
+        return <Icon><FontAwesomeIcon icon={faCalendarAlt} /></Icon>;
+      case 'faFileInvoice':
+        return <Icon><FontAwesomeIcon icon={faFileInvoice} /></Icon>;
+      case 'faUserCog':
+        return <Icon><FontAwesomeIcon icon={faUserCog} /></Icon>;
+      case 'faMoneyBill':
+        return <Icon><FontAwesomeIcon icon={faMoneyBill} /></Icon>;
       default:
         return <Icon><FontAwesomeIcon icon={faSyncAlt} /></Icon>;
     }

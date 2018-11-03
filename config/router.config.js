@@ -34,7 +34,7 @@ export default [
       {
         path: '/main/home',
         name: 'home',
-        icon: 'faSyncAlt',
+        icon: 'faHome',
         component: './Main/MainView',
       },
       {
@@ -65,35 +65,35 @@ export default [
       {
         path: '/options',
         name: 'options',
-        icon: 'faSyncAlt',
+        icon: 'faUserCog',
         component: './Options/Options',
       },
       {
         path: '/payments',
-        icon: 'faSyncAlt',
+        icon: 'faMoneyBill',
         name: 'payments',
         component: './Payments/PaymentsPage',
       },
       {
         path: '/reports',
-        icon: 'faSyncAlt',
+        icon: 'faFileExcel',
         name: 'reports',
       },
       {
         path: '/journal',
-        icon: 'faSyncAlt',
+        icon: 'faBookOpen',
         name: 'journal',
         component: './Journal/JournalPage',
       },
       {
         path: '/calendar',
-        icon: 'faSyncAlt',
+        icon: 'faCalendarAlt',
         name: 'calendar',
         component: './Calendar/CalendarView',
       },
       {
         path: '/templates_view',
-        icon: 'faSyncAlt',
+        icon: 'faFileInvoice',
         name: 'templates_view',
         component: './Templates/Template',
       },

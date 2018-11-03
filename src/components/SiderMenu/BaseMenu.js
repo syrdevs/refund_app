@@ -7,8 +7,8 @@ import { formatMessage } from 'umi/locale';
 import pathToRegexp from 'path-to-regexp';
 import { urlToList } from '../_utils/pathTools';
 import styles from './index.less';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyncAlt, faCreditCard, faListAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSyncAlt, faCreditCard, faListAlt } from '@fortawesome/free-solid-svg-icons';
 
 const { SubMenu } = Menu;
 
@@ -23,11 +23,11 @@ const getIcon = icon => {
   if (typeof icon === 'string') {
     switch(icon) {
       case 'faCreditCard':
-        return <FontAwesomeIcon style={{marginRight:'13px'}} icon={faCreditCard} />;
+        return <Icon><FontAwesomeIcon icon={faCreditCard} /></Icon>;
       case 'faListAlt':
-        return <FontAwesomeIcon style={{marginRight:'13px'}} icon={faListAlt} />;
+        return <Icon><FontAwesomeIcon icon={faListAlt} /></Icon>;
       default:
-        return <FontAwesomeIcon style={{marginRight:'13px'}} icon={faSyncAlt} />;
+        return <Icon><FontAwesomeIcon icon={faSyncAlt} /></Icon>;
     }
 
 

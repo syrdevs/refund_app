@@ -8,12 +8,15 @@ import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
 import styles from './Header.less';
 import Authorized from '@/utils/Authorized';
+import ModalChangePassword from '@/components/ModalChangePassword';
+
 
 const { Header } = Layout;
 
 class HeaderView extends PureComponent {
   state = {
     visible: true,
+    ShowModal: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -70,6 +73,14 @@ class HeaderView extends PureComponent {
         type: 'login/logout',
       });
     }
+    if (key === 'changepassword') {
+      console.log("test");
+      console.log(this.state.ShowModal);
+      this.setState({
+        ShowModal: true,
+      })
+      console.log(this.state.ShowModal);
+    }
   };
 
   handleNoticeVisibleChange = visible => {
@@ -113,6 +124,11 @@ class HeaderView extends PureComponent {
     }
     this.ticking = false;
   };
+  resetshow(e) {
+    this.setState({
+      ShowModal: false,
+    });
+  }
 
   render() {
     const { isMobile, handleMenuCollapse, setting } = this.props;
@@ -122,6 +138,11 @@ class HeaderView extends PureComponent {
     const width = this.getHeadWidth();
     const HeaderDom = visible ? (
       <Header style={{ padding: 0, width }} className={fixedHeader ? styles.fixedHeader : ''}>
+        {<ModalChangePassword  visible={this.state.ShowModal}
+                               resetshow={(e) => {
+                                 this.resetshow(e);
+                               }}
+        />}
         {isTop && !isMobile ? (
           <TopNavHeader
             theme={navTheme}

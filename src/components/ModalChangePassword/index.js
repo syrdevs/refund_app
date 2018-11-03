@@ -14,6 +14,12 @@ export default class ModalChangePassword extends Component {
     super(props);
     this.state = {
       isVisible: false,
+      pass1:'',
+      pass2:'',
+      pass3:'',
+      showhide1: 'none',
+      showhide2: 'none',
+      showhide3: 'none'
     };
   }
   componentWillReceiveProps(props, prevProps) {
@@ -47,6 +53,7 @@ export default class ModalChangePassword extends Component {
    }
     else {
       this.setState({ isVisible: false });
+     this.props.resetshow();
     }
   };
 
@@ -63,6 +70,11 @@ export default class ModalChangePassword extends Component {
       [e.target.name]: e.target.value
     })
   }
+  formfield = (e) => {
+    this.setState({
+      [e.target.name]:e.target.value
+    })
+  }
 
   render() {
     const spantitle = {fontSize:"13px", fontWeight:"bold"};
@@ -77,21 +89,27 @@ export default class ModalChangePassword extends Component {
         this.handleOk(e);
       }}
       onCancel={(e) => {
-        this.props.resetshow(e);
+        this.props.resetshow();
       }}
       width={500}
       visible={isVisible}>
       <Form onSubmit={this.handleSubmit} className="login-form">
           <div><span style={spantitle}>Текущий пароль:</span>
-            <Input name="pass1" onChange={(e) =>{ console.log(e); this.setState({[e.target.name]: e.target.value})}} value={this.state.pass1} id={'pass1'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />
+            <Input name="pass1" onChange={(e) => {
+              this.formfield(e);
+            }} value={this.state.pass1} name={'pass1'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />
             <div style={showHide1}>Это поле обязательное к заполнению</div>
           </div>
           <div><span style={spantitle}>Пароль:</span>
-            <Input value={this.state.pass2}  id={'pass1'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
+            <Input value={this.state.pass2} onChange={(e) => {
+              this.formfield(e);
+            }} name={'pass2'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
             <div style={showHide2}>Это поле обязательное к заполнению</div>
           </div>
           <div><span style={spantitle}>Пароль(повтор):</span>
-            <Input value={this.state.pass3}  id={'pass1'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
+            <Input value={this.state.pass3} onChange={(e) => {
+              this.formfield(e);
+            }} name={'pass3'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
             <div style={showHide3}>Это поле обязательное к заполнению</div>
           </div>
       </Form>

@@ -52,7 +52,7 @@ export default [
           },
           {
             path: '/rpmu/searcher',
-            icon: 'faMoneyBill',
+            icon: 'faSearch',
             name: 'searcher',
             component: './SearchPhysical/Searcher',
           },
@@ -72,7 +72,7 @@ export default [
           },//Заявки
           {
             path: '/refunds/reestr',
-            icon: 'faCoins',
+            icon: 'faListAlt',
             name: 'reestr',
             component: './Main/MainView',
           },

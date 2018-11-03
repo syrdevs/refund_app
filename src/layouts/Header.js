@@ -8,6 +8,7 @@ import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
 import styles from './Header.less';
 import Authorized from '@/utils/Authorized';
+import ModalChangePassword from '../components/ModalChangePassword';
 
 const { Header } = Layout;
 
@@ -20,6 +21,7 @@ class HeaderView extends PureComponent {
     if (!props.autoHideHeader && !state.visible) {
       return {
         visible: true,
+        ShowModal: false
       };
     }
     return null;
@@ -57,6 +59,10 @@ class HeaderView extends PureComponent {
       router.push('/main/profile');
       return;
     }
+    if (key === 'changepassword') {
+      this.setState({ShowModal: true});
+      return;
+    }
     if (key === 'triggerError') {
       router.push('/exception/trigger');
       return;
@@ -72,6 +78,7 @@ class HeaderView extends PureComponent {
     }
   };
 
+
   handleNoticeVisibleChange = visible => {
     if (visible) {
       const { dispatch } = this.props;
@@ -80,6 +87,12 @@ class HeaderView extends PureComponent {
       });
     }
   };
+  resetshow() {
+    this.setState({
+      ShowModal: false,
+    });
+  }
+
 
   handScroll = () => {
     const { autoHideHeader } = this.props;
@@ -126,6 +139,9 @@ class HeaderView extends PureComponent {
     const width = this.getHeadWidth();
     const HeaderDom = visible ? (
       <Header style={{ padding: 0, width }} className={fixedHeader ? styles.fixedHeader : ''}>
+        <ModalChangePassword visible={this.state.ShowModal} resetshow={() => {
+          this.resetshow();
+        }}/>
         {isTop && !isMobile ? (
           <TopNavHeader
             theme={navTheme}
@@ -149,6 +165,7 @@ class HeaderView extends PureComponent {
       </Header>
     ) : null;
     return (
+
       <Animate component="" transitionName="fade">
         {HeaderDom}
       </Animate>

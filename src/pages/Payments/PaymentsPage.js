@@ -292,10 +292,7 @@ export default class PaymentsPage extends Component {
             page: 1,
             data: dataStore,
           }}
-          addonButtons={[<Button
-            key={1}>Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-            <Button
-              key={2}>Принять {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>]}
+          addonButtons={[]}
 
           onShowSizeChange={(pageNumber, pageSize) => {
             console.log(pageNumber, pageSize);

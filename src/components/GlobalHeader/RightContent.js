@@ -7,6 +7,9 @@ import NoticeIcon from '../NoticeIcon';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import { faFileInvoice } from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -54,6 +57,11 @@ export default class GlobalHeaderRight extends PureComponent {
         <Menu.Item key="userCenter">
           <Icon type="user" />
           <FormattedMessage id="menu.account.center" defaultMessage="user profile" />
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="changepassword">
+          <Icon><FontAwesomeIcon icon={faUserShield}/></Icon>
+          <FormattedMessage id="menu.account.changepassword" defaultMessage="changepassword" />
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="logout">

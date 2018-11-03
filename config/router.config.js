@@ -52,7 +52,7 @@ export default [
           },
           {
             path: '/rpmu/searcher',
-            icon: 'faMoneyBill',
+            icon: 'faSearch',
             name: 'searcher',
             component: './SearchPhysical/Searcher',
           },

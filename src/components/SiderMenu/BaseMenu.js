@@ -22,7 +22,8 @@ import {
   faMoneyBill,
   faUserMd,
   faCoins,
-  faChartBar
+  faChartBar,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
 const { SubMenu } = Menu;
@@ -63,6 +64,8 @@ const getIcon = icon => {
         return <Icon><FontAwesomeIcon icon={faDatabase}/></Icon>;
       case 'faUserMd':
         return <Icon><FontAwesomeIcon icon={faUserMd}/></Icon>;
+      case 'faSearch':
+        return <Icon><FontAwesomeIcon icon={faSearch}/></Icon>;
       default:
         return <Icon><FontAwesomeIcon icon={faSyncAlt}/></Icon>;
     }

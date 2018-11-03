@@ -18,7 +18,7 @@ import {
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import style from './CalendarView.less';
 import moment from 'moment';
-import 'moment/locale/ru';
+import locale from 'antd/lib/date-picker/locale/ru_RU';
 import ModalGridView from '@/components/ModalGridView';
 
 moment.locale('ru-ru');
@@ -213,8 +213,7 @@ export default class CalendarView extends Component {
           <Option value="2">Праздничный день</Option>
         </Select>
         </div>
-        <br/><br/>
-        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>Событие:</span>:
+        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>Событие:</span>
         <Input value={modalForm.description} title={"asdasd"} onChange={(({ target }) => {
 
           this.setState(({ modalForm }) => ({
@@ -231,7 +230,7 @@ export default class CalendarView extends Component {
 
       <Card bordered={false}>
         <div>
-          <MonthPicker value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder="Выберите"/>
+          <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder="Выберите"/>
           <Calendar value={currentDate} className={style.customCalendar} onSelect={this.onSelectDate.bind(this)}
                     dateCellRender={this.dateCellRender.bind(this)}
                     monthCellRender={this.monthCellRender.bind(this)}/>

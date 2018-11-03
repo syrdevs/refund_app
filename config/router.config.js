@@ -72,7 +72,7 @@ export default [
           },//Заявки
           {
             path: '/refunds/reestr',
-            icon: 'faCoins',
+            icon: 'faListAlt',
             name: 'reestr',
             component: './Main/MainView',
           },

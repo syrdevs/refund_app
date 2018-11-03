@@ -80,7 +80,7 @@ export default {
   'menu.refunds.requests': 'Заявки',
   'menu.options': 'Настройки',
   'menu.rpmu.payments': 'Платежи',
-  'menu.reports': 'Отчёты',
+  'menu.reports': 'Отчеты',
   'menu.journal': 'Журнал',
   'menu.refunds.calendar': 'Календарь',
   'menu.refunds.templates_view': 'Шаблоны',

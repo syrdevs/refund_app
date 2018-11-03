@@ -100,6 +100,7 @@ export default [
         path: '/reports',
         icon: 'faFileExcel',
         name: 'reports',
+        component: './Reports/ReportsPage',
       },
       {
         path: '/journal',

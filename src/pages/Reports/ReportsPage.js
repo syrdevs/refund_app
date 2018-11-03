@@ -57,14 +57,14 @@ export default class ReportsPage extends Component {
       dataSource: [{
         id: '1',
         index: 1,
-        name_ru: 'Количество договоров в разрезе',
-        name_kk: 'Количество договоров в разрезе',
+        name_ru: 'Количество договоров в разрезе1',
+        name_kk: 'Количество договоров в разрезе1',
         file_type: 'PDF',
       }, {
         id: '2',
         index: 2,
-        name_ru: 'Количество договоров в разрезе',
-        name_kk: 'Количество договоров в разрезе',
+        name_ru: 'Количество договоров в разрезе2',
+        name_kk: 'Количество договоров в разрезе2',
         file_type: 'PDF',
       }],
     },
@@ -73,30 +73,47 @@ export default class ReportsPage extends Component {
 
 
   onRowClick = (record) => {
-
-    this.setState((prevState, props) => {
-      return {
-        reportForm: {
-          reportName: record.name_ru,
-          buttonIsDisabled: false,
-          data: record,
-        },
-      };
+    this.setState({
+      reportForm: {
+        formingReport: false,
+        reportName: record.name_ru,
+        buttonIsDisabled: false,
+        data: record,
+      },
     });
 
 
   };
 
+  unReport = () => {
+    this.setState((prevState, props) => {
+      return {
+        reportForm: {
+          ...prevState.reportForm,
+          formingReport: false,
+        },
+      };
+    });
+  };
 
   reportForming = () => {
     let orderRecord = this.state.reportForm.data;
-
-    console.log(orderRecord);
+    this.setState((prevState, props) => {
+      return {
+        reportForm: {
+          ...prevState.reportForm,
+          formingReport: true,
+        },
+        tabs: {
+          activeKey: '2',
+        },
+      };
+    });
   };
 
 
   tabOnChange = (activeKey) => {
-
+    if (this.state.tabs.activeKey === activeKey) return;
     this.setState((prevState, props) => {
       return {
         tabs: {
@@ -121,12 +138,13 @@ export default class ReportsPage extends Component {
                         onClick: () => this.onRowClick(record),
                       };
                     }}
+                    pagination={false}
                     columns={this.state.reportsData.columns}
                     bordered={true}
                     dataSource={this.state.reportsData.dataSource}/>
                 </TabPane>
                 <TabPane tab={'Сформированные отчеты'} key="2">
-                  <ReportGrid/>
+                  <ReportGrid  {...this.state.reportForm} unReport={this.unReport}/>
                 </TabPane>
               </Tabs>
 

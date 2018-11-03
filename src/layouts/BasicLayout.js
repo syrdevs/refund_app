@@ -173,7 +173,7 @@ class BasicLayout extends React.PureComponent {
 
   matchParamsPath = pathname => {
     const pathKey = Object.keys(this.breadcrumbNameMap).find(key =>
-      pathToRegexp(key).test(pathname)
+      pathToRegexp(key).test(pathname),
     );
     return this.breadcrumbNameMap[pathKey];
   };
@@ -225,7 +225,7 @@ class BasicLayout extends React.PureComponent {
     if ((rendering || process.env.NODE_ENV === 'production') && APP_TYPE !== 'site') {
       return null;
     }
-    return <SettingDrawer />;
+    return <SettingDrawer/>;
   }
 
   render() {
@@ -256,6 +256,8 @@ class BasicLayout extends React.PureComponent {
           style={{
             ...this.getLayoutStyle(),
             minHeight: '100vh',
+
+            backgroundColor: '#87CEFA',
           }}
         >
           <Header
@@ -268,12 +270,12 @@ class BasicLayout extends React.PureComponent {
           <Content style={this.getContentStyle()}>
             <Authorized
               authority={routerConfig && routerConfig.authority}
-              noMatch={<Exception403 />}
+              noMatch={<Exception403/>}
             >
               {children}
             </Authorized>
           </Content>
-          <Footer />
+          <Footer/>
         </Layout>
       </Layout>
     );

@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 import React, { Component } from 'react';
 import {
   Card,
@@ -173,7 +162,7 @@ export default class GridFilter extends Component {
                              disabled={fields[filterItem.name].disabled}/>
             </Col>
             <Col md={2}>
-              <div style={{ margin: '3px' }}>
+              <div style={{ margin: '5px' }}>
                 <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
                   fields[filterItem.name].disabled = e.target.checked;
                   this.setState({
@@ -261,14 +250,13 @@ export default class GridFilter extends Component {
     return (
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-        <Divider/>
-        <Button style={{ margin: '10px 0 0 15px' }} type='primary' icon='search'
+        <Divider style={{ margin: '16px 10px 0 0' }}/>
+        <Button style={{ margin: '10px 0 0 0px' }} type='primary'
                 onClick={this.applyFilters}>
-          Искать
+          Поиск
         </Button>
-        <Button style={{ margin: '10px 0 0 5px' }} icon="delete"
+        <Button style={{ margin: '10px 0 0 5px' }}
                 onClick={this.clearFilters}>Очистить</Button>
-        <Divider/>
       </Form>);
   }
 }

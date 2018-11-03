@@ -31,11 +31,26 @@ export default [
       { path: '/', redirect: '/main/home' },
       { path: '/main/profile', component: './User/Profile' },
       { path: '/main/list', component: './List/TableList' },
+
       {
         path: '/main/home',
         name: 'home',
         icon: 'faHome',
-        component: './Main/MainView',
+        component: './HomePage/HomePage',
+      },
+      {
+        path: '/rpmu',
+        icon: 'faUserMd',
+        name: 'rpmu',
+        routes: [
+          { path: '/rpmu', redirect: '/rpmu/payments' },
+          {
+            path: '/rpmu/payments',
+            icon: 'faMoneyBill',
+            name: 'payments',
+            component: './Payments/PaymentsPage',
+          },
+        ],
       },
       {
         path: '/refunds',
@@ -44,35 +59,42 @@ export default [
         routes: [
           { path: '/refunds', redirect: '/refunds/reestr' },
           {
+            path: '/refunds/requests',
+            name: 'requests',
+            icon: 'faListAlt',
+            component: './Requests/Requests',
+          },//Заявки
+          {
             path: '/refunds/reestr',
-            icon: 'faSyncAlt',
+            icon: 'faCoins',
             name: 'reestr',
-            component: './List/Articles',
+            component: './Main/MainView',
+          },
+          {
+            path: '/refunds/calendar',
+            icon: 'faCalendarAlt',
+            name: 'calendar',
+            component: './Calendar/CalendarView',
+          },
+          {
+            path: '/refunds/templates_view',
+            icon: 'faFileInvoice',
+            name: 'templates_view',
+            component: './Templates/Template',
           },
           {
             path: '/refunds/stat',
-            icon: 'faSyncAlt',
+            icon: 'faChartBar',
             name: 'stat',
+            component: './Main/MainView',
           },
         ],
-      },
-      {
-        path: '/requests',
-        name: 'requests',
-        icon: 'faListAlt',
-        component: './Requests/Requests',
       },
       {
         path: '/options',
         name: 'options',
         icon: 'faUserCog',
         component: './Options/Options',
-      },
-      {
-        path: '/payments',
-        icon: 'faMoneyBill',
-        name: 'payments',
-        component: './Payments/PaymentsPage',
       },
       {
         path: '/reports',
@@ -85,18 +107,7 @@ export default [
         name: 'journal',
         component: './Journal/JournalPage',
       },
-      {
-        path: '/calendar',
-        icon: 'faCalendarAlt',
-        name: 'calendar',
-        component: './Calendar/CalendarView',
-      },
-      {
-        path: '/templates_view',
-        icon: 'faFileInvoice',
-        name: 'templates_view',
-        component: './Templates/Template',
-      },
+
       {
         component: '404',
       },

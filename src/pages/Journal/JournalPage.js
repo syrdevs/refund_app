@@ -22,6 +22,8 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
+import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva';
 
@@ -211,11 +213,14 @@ export default class JournalPage extends Component {
                 <Col xs={this.state.filterContainer !== 6 ? 0 : 24} sm={this.state.filterContainer !== 6 ? 0 : 24}
                      md={this.state.filterContainer}>
                   <Card
+                    headStyle={{
+                      padding: '0 14px',
+                    }}
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
                     title="Фильтр"
-                    extra={<Button size="small" onClick={this.filterPanelState}><Icon type="close"
-                                                                                      theme="outlined"/></Button>}
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}
                   >
                     <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
                                 filterForm={this.state.filterForm}

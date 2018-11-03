@@ -50,6 +50,9 @@ export default class ModalChangePassword extends Component {
     }
   };
 
+
+
+  //tested
   inputchange(e){
     console.log(e);
     console.log("asdasdasd");

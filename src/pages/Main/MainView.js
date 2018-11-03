@@ -158,6 +158,13 @@ class MainView extends Component {
     }
   }
 
+
+
+
+
+
+  //tested
+
   selectTable = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };

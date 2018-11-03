@@ -130,6 +130,10 @@ class HeaderView extends PureComponent {
     });
   }
 
+
+
+
+  //tested
   render() {
     const { isMobile, handleMenuCollapse, setting } = this.props;
     const { navTheme, layout, fixedHeader } = setting;

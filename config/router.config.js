@@ -50,6 +50,12 @@ export default [
             name: 'payments',
             component: './Payments/PaymentsPage',
           },
+          {
+            path: '/rpmu/searcher',
+            icon: 'faMoneyBill',
+            name: 'searcher',
+            component: './SearchPhysical/Searcher',
+          },
         ],
       },
       {

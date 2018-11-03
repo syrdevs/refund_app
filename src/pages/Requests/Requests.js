@@ -26,7 +26,8 @@ import ModalGridView from '@/components/ModalGridView';
 import GridFilter from '@/components/GridFilter';
 import ModalChangeDate from '@/components/ModalChangeDate';
 import SmartGridView from '@/components/SmartGridView';
-
+import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -258,8 +259,11 @@ class Requests extends Component {
               <Card
                 style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                 type="inner"
+                headStyle={{
+                  padding: '0 14px',
+                }}
                 title="Фильтр"
-                extra={<Button onClick={event => this.hideleft()}>х</Button>}
+                extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
               >
                 <GridFilter
                   clearFilter={() => {

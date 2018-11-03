@@ -27,7 +27,8 @@ import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar } from '@fortawesome/free-solid-svg-icons/index';
 
 
 const FormItem = Form.Item;
@@ -238,7 +239,7 @@ class MainView extends Component {
       bodyStyle={{ padding: 0 }}
       type="inner"
       title="Платежи РПМУ"
-      extra={<Button onClick={event => this.hideleft()}>х</Button>}
+      extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
     >
       <Table size={'small'} columns={universal.rpmu.columns} dataSource={universal.rpmu.data} scroll={{ x: 1100 }}/>
     </Card>);
@@ -261,7 +262,10 @@ class MainView extends Component {
                   style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                   type="inner"
                   title="Фильтр"
-                  extra={<Button onClick={event => this.hideleft()}>х</Button>}
+                  headStyle={{
+                    padding: '0 14px',
+                  }}
+                  extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
                 >
 
                   <GridFilter

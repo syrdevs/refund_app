@@ -173,7 +173,7 @@ export default class GridFilter extends Component {
                              disabled={fields[filterItem.name].disabled}/>
             </Col>
             <Col md={2}>
-              <div style={{ margin: '3px' }}>
+              <div style={{ margin: '5px' }}>
                 <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
                   fields[filterItem.name].disabled = e.target.checked;
                   this.setState({

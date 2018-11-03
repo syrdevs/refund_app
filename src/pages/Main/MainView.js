@@ -26,6 +26,9 @@ import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faColumns } from '@fortawesome/free-solid-svg-icons';
+
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -47,7 +50,7 @@ class MainView extends Component {
       formValues: {},
       stepFormValues: {},
       fcolumn: [{
-        title: 'Действие',
+        title: 'Действия',
         order: 1,
         key: 'operation',
         isVisible: true,
@@ -161,43 +164,43 @@ class MainView extends Component {
     return [
       {
         name: 'number',
-        label: 'Номер заявки:',
+        label: 'Номер заявки',
         type: 'text',
       },
       {
         name: 'iin',
-        label: 'ИИН Потребителя:',
+        label: 'ИИН Потребителя',
         type: 'text',
       },
       {
         name: 'RefundStatus',
-        label: 'Статус заявки на возврат:',
+        label: 'Статус заявки на возврат',
         type: 'multibox',
         store: this.props.universal.select1,
       },
       {
         name: 'lastDate',
-        label: 'Крайная дата:',
+        label: 'Крайная дата',
         type: 'betweenDate',
       },
       {
         name: 'payerDate',
-        label: 'Дата заявления плательщика:',
+        label: 'Дата заявления плательщика',
         type: 'betweenDate',
       },
       {
         name: 'RefundComeDate',
-        label: 'Дата поступление заявки на возврат:',
+        label: 'Дата поступление заявки на возврат',
         type: 'betweenDate',
       },
       {
         name: 'RefundFundDate',
-        label: 'Дата поступления заявление в Фонд:',
+        label: 'Дата поступления заявление в Фонд',
         type: 'betweenDate',
       },
       {
         name: 'RefusalDate',
-        label: 'Дата осуществления возврата:',
+        label: 'Дата осуществления возврата',
         type: 'betweenDate',
       },
       {
@@ -208,13 +211,13 @@ class MainView extends Component {
       },
       {
         name: 'RefundReason',
-        label: 'Причина возврата:',
+        label: 'Причина возврата',
         type: 'combobox',
         store: this.props.universal.select1,
       },
       {
         name: 'RefusalReason',
-        label: 'Причина отказа:',
+        label: 'Причина отказа',
         type: 'combobox',
         store: this.props.universal.select1,
       },
@@ -327,7 +330,7 @@ class MainView extends Component {
                       </Menu.Item>
                       <Menu.Item key="2">
                         Выгрузка в
-                        Excell {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                        Excell
                       </Menu.Item>
                     </Menu>}>
                       <Button key={'action'}>Дейстие <Icon type="down"/></Button>

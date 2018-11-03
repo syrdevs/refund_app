@@ -344,7 +344,7 @@ class MainView extends Component {
                         Excell
                       </Menu.Item>
                     </Menu>}>
-                      <Button key={'action'}>Дейстие <Icon type="down"/></Button>
+                      <Button key={'action'}>Действия <Icon type="down"/></Button>
                     </Dropdown>,
                   ]}
 

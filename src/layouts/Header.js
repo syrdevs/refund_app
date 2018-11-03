@@ -114,6 +114,10 @@ class HeaderView extends PureComponent {
     this.ticking = false;
   };
 
+
+
+
+  //tested
   render() {
     const { isMobile, handleMenuCollapse, setting } = this.props;
     const { navTheme, layout, fixedHeader } = setting;

@@ -64,6 +64,16 @@ export default class PaymentsPage extends Component {
     };
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {
+        table: 'requests',
+      },
+    });
+  }
+
   componentDidMount() {
 
     const { dispatch } = this.props;

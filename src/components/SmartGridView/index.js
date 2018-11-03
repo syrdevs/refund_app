@@ -237,10 +237,10 @@ export default class SmartGridView extends Component {
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         showSizeChanger
         onShowSizeChange={(page, pageSize) => {
-          console.log(page, pageSize);
+          this.props.onShowSizeChange(page - 1, pageSize);
         }}
         onChange={(page, pageSize) => {
-          console.log(page, pageSize);
+          this.props.onShowSizeChange(page - 1, pageSize);
         }}
         defaultCurrent={this.props.dataSource.page}
         total={this.props.dataSource.total}

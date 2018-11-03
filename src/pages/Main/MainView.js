@@ -79,6 +79,16 @@ class MainView extends Component {
     };
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {
+        table: 'requests',
+      },
+    });
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -122,8 +132,8 @@ class MainView extends Component {
     this.setState({
       searchButton: true,
       isHidden: false,
-      searchercont: 6,
-      tablecont: 18,
+      searchercont: 7,
+      tablecont: 17,
     });
   }
 
@@ -246,7 +256,7 @@ class MainView extends Component {
           <Col sm={24} md={this.state.searchercont}>
             <div>
 
-              {this.state.searchercont === 6 && <Card
+              {this.state.searchercont === 7 && <Card
                 style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                 type="inner"
                 title="Фильтр"
@@ -256,7 +266,8 @@ class MainView extends Component {
                 <GridFilter
                   clearFilter={() => {
                   }}
-                  applyFilter={() => {
+                  applyFilter={(filters) => {
+                    console.log(filters);
                   }}
                   filterForm={GridFilterData}
                   dateFormat={dateFormat}/>
@@ -275,7 +286,7 @@ class MainView extends Component {
               <Spin tip="Загрузка..." spinning={this.props.loadingData}>
                 <SmartGridView
                   name={'RefundsPageColumns'}
-                  scroll={{ x: this.state.xsize, y: 360 }}
+                  scroll={{ x: this.state.xsize}}
                   fixedBody={true}
                   selectedRowCheckBox={true}
                   searchButton={this.state.searchButton}

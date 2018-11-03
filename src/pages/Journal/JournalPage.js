@@ -52,6 +52,15 @@ export default class JournalPage extends Component {
     };
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {
+        table: 'requests',
+      },
+    });
+  }
 
   componentDidMount() {
 

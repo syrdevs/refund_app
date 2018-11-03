@@ -7,6 +7,13 @@ export default {
     columns: [],
   },
   effects: {
+
+    * clear(payload, { call, put }) {
+      yield put({
+        type: 'clearData',
+      });
+    },
+
     * data(payload, { call, put }) {
 
       const response = yield call(getData, payload);
@@ -27,6 +34,12 @@ export default {
     },
   },
   reducers: {
+    clearData(state, { payload }) {
+      return {
+        columns: [],
+        dataStore: [],
+      };
+    },
     getData(state, { payload }) {
       return {
         ...state,

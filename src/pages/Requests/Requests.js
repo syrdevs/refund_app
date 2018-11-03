@@ -43,7 +43,7 @@ class Requests extends Component {
       columnFiltered: [],
       modalVisible: false,
       columns: [{
-        dataIndex:"102",
+        dataIndex: '102',
         title: 'МТ 102',
         width: 50,
         onCell: record => {
@@ -54,13 +54,13 @@ class Requests extends Component {
           };
         },
         render: () => (
-          <Button key={"102"}>
+          <Button key={'102'}>
             <Icon type="database" theme="outlined"/>
           </Button>
         ),
       },
         {
-          dataIndex:"xml",
+          dataIndex: 'xml',
           title: 'XML',
           width: 50,
           onCell: record => {
@@ -71,7 +71,7 @@ class Requests extends Component {
             };
           },
           render: () => (
-            <Button key={"xml"}>
+            <Button key={'xml'}>
               <Icon type="database" theme="outlined"/>
             </Button>
           ),
@@ -88,6 +88,16 @@ class Requests extends Component {
       ShowModal: false,
       searchButton: false,
     };
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {
+        table: 'requests',
+      },
+    });
   }
 
   componentDidMount() {
@@ -209,11 +219,11 @@ class Requests extends Component {
 
 
     let actionColumns = [];
+    let propColumns = [];
 
     columns.forEach((column) => {
       if (['receiptAppdateToFsms', 'appEndDate'].indexOf(column.dataIndex) !== -1) {
-
-        column.dataIndex = column.dataIndex + '_';
+        //column.dataIndex = column.dataIndex;
         column.render = (text, row) => <a
           onClick={() => {
             this.setState({
@@ -228,6 +238,8 @@ class Requests extends Component {
         >{text}</a>;
 
         actionColumns.push(column);
+      }else{
+        propColumns.push(column);
       }
     });
 
@@ -269,7 +281,7 @@ class Requests extends Component {
                 fixedHeader={true}
                 rowSelection={true}
                 actionColumns={this.state.columns.concat(actionColumns)}
-                columns={columns}
+                columns={propColumns}
                 sorted={true}
                 showTotal={false}
                 dataSource={{

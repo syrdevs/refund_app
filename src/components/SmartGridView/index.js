@@ -25,6 +25,7 @@ import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
 import { Resizable } from 'react-resizable';
 
+
 const ResizeableTitle = (props) => {
   const { onResize, width, ...restProps } = props;
 
@@ -217,7 +218,7 @@ export default class SmartGridView extends Component {
       onHeaderCell: column => ({
         width: column.width,
         onResize: this.handleResize(index),
-      })
+      }),
     }));
 
     // to do order column with actionColumns

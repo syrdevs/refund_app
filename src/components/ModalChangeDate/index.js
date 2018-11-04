@@ -138,14 +138,14 @@ export default class ModalChangeDate extends Component {
                     format={moment().format('DD.MM.YYYY')}
         />
       </Row>
-      <Row>
+        {this.state.ColType != 'appEndDate' && <Row>
       <Upload {...props}
               onChange={this.handleChange}>
         <Button size={'large'}>
           <Icon type="upload" /> Загрузить
         </Button>
       </Upload>
-      </Row>
+      </Row>}
     </Modal>);
   }
 }

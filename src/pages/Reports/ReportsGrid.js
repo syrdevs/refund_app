@@ -25,6 +25,8 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 export default class ReportsGrid extends Component {
   state = {
 
+    selectedRow: null,
+
     _configTimer: {
 
       second: 1000,
@@ -37,6 +39,9 @@ export default class ReportsGrid extends Component {
       {
         title: '№',
         dataIndex: 'index',
+        render: (e, record, index) => {
+          return index + 1;
+        },
       }, {
         title: 'Наименование на казахском',
         dataIndex: 'reportId.nameKz',
@@ -60,7 +65,15 @@ export default class ReportsGrid extends Component {
         onCell: record => {
           return {
             onClick: () => {
-              console.log(record.message);
+              if (record.status === 2) {
+                Modal.error({
+                  title: 'Ошибка',
+                  content: record.message,
+                });
+              }
+              if (record.status === 1) {
+                this.downloadFile(record);
+              }
             },
           };
         },
@@ -162,6 +175,7 @@ export default class ReportsGrid extends Component {
       {
         'id': 231,
         'status': 2,
+        'message': 'Lorem ipsum',
         'entryDate': '31.10.2018 21:16',
         'userId': {
           'id': '346DD7A796744F06A2593521D3935F12',
@@ -205,6 +219,15 @@ export default class ReportsGrid extends Component {
   /*shouldComponentUpdate(nextProps, nextState, nextContext) {
 
   }*/
+
+
+  downloadFile = async (param) => {
+    var link = document.createElement('a');
+    link.href = 'https://www.7-zip.org/a/7z1805.exe';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   createTask = async (result) => {
 
@@ -269,14 +292,14 @@ export default class ReportsGrid extends Component {
   };
 
   saveOrder = async () => {
-
+// to do filter send
     const res = await fetch('/api/refund/saveorder');
     let result = await res.json();
 
     result.message = '';
 
     this.setState(prevState => ({
-      dataSource: [...prevState.dataSource, result],
+      dataSource: [result, ...prevState.dataSource],
     }), () => {
       this.createTask(result);
     });
@@ -302,9 +325,21 @@ export default class ReportsGrid extends Component {
 
     return (<Table
       size={'small'}
-      rowKey={'id'}
-      columns={columns}
-      bordered={true}
-      dataSource={dataSource}/>);
-  }
+      rowClassName={(record, index) => {
+        return this.state.selectedRow === index ? 'active' : '';
+      }}
+      onRow={(record, index) => {
+        return {
+          onClick: () => {
+            this.setState({
+              selectedRow: index,
+            });
+          },
+        };
+      }}
+        rowKey={'id'}
+        columns={columns}
+        bordered={true}
+        dataSource={dataSource}/>);
+      }
 }

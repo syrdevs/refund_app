@@ -25,7 +25,7 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authority: ['ADMIN', 'FSMS1', 'FSMS2'],
     routes: [
       // dashboard
       { path: '/', redirect: '/main/home' },
@@ -49,12 +49,14 @@ export default [
             icon: 'faMoneyBill',
             name: 'payments',
             component: './Payments/PaymentsPage',
+            authority: ['ADMIN']
           },
           {
             path: '/rpmu/searcher',
             icon: 'faSearch',
             name: 'searcher',
             component: './SearchPhysical/Searcher',
+            authority: ['ADMIN', 'FSMS2']
           },
         ],
       },
@@ -69,30 +71,35 @@ export default [
             name: 'requests',
             icon: 'faListAlt',
             component: './Requests/Requests',
+            authority: ['ADMIN', 'FSMS1', 'FSMS2']
           },//Заявки
           {
             path: '/refunds/reestr',
             icon: 'faListAlt',
             name: 'reestr',
             component: './Main/MainView',
+            authority: ['admin', 'FSMS1', 'FSMS2']
           },
           {
             path: '/refunds/calendar',
             icon: 'faCalendarAlt',
             name: 'calendar',
             component: './Calendar/CalendarView',
+            authority: ['ADMIN','FSMS2']
           },
           {
             path: '/refunds/templates_view',
             icon: 'faFileInvoice',
             name: 'templates_view',
             component: './Templates/Template',
+            authority: ['ADMIN', 'FSMS2']
           },
           {
             path: '/refunds/stat',
             icon: 'faChartBar',
             name: 'stat',
             component: './Main/MainView',
+            authority: ['ADMIN', 'FSMS1', 'FSMS2']
           },
         ],
       },
@@ -101,18 +108,21 @@ export default [
         name: 'options',
         icon: 'faUserCog',
         component: './Options/Options',
+        authority: ['ADMIN']
       },
       {
         path: '/reports',
         icon: 'faFileExcel',
         name: 'reports',
         component: './Reports/ReportsPage',
+        authority: ['ADMIN', 'FSMS2']
       },
       {
         path: '/journal',
         icon: 'faBookOpen',
         name: 'journal',
         component: './Journal/JournalPage',
+        authority: ['ADMIN','FSMS2']
       },
 
       {

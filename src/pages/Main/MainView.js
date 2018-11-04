@@ -29,10 +29,16 @@ import { connect } from 'dva';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons/index';
-
+import { getAuthority } from '../../utils/authority';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
+
+function hasRole(roles) {
+  let userRoles = getAuthority();
+  return !userRoles.some(r => roles.indexOf(r) >= 0);
+}
+
 
 @connect(({ universal, loading }) => ({
   universal,
@@ -159,10 +165,6 @@ class MainView extends Component {
   }
 
 
-
-
-
-
   //tested
 
   selectTable = (selectedRowKeys) => {
@@ -246,7 +248,7 @@ class MainView extends Component {
       bodyStyle={{ padding: 0 }}
       type="inner"
       title="Платежи РПМУ"
-      extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
+      extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
     >
       <Table size={'small'} columns={universal.rpmu.columns} dataSource={universal.rpmu.data} scroll={{ x: 1100 }}/>
     </Card>);
@@ -272,7 +274,8 @@ class MainView extends Component {
                   headStyle={{
                     padding: '0 14px',
                   }}
-                  extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
+                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                    icon={faTimes}/></Icon>}
                 >
 
                   <GridFilter
@@ -318,33 +321,44 @@ class MainView extends Component {
                     data: universal.table.content,
                   }}
                   addonButtons={[
-                    <Button key={'odobrit'} className={'btn-success'} onClick={() => {
-                      this.showModal();
-                    }}>
+                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'odobrit'} className={'btn-success'}
+                            onClick={() => {
+                              this.showModal();
+                            }}>
                       Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button key={'cancel'}
+                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'cancel'}
                             className={'btn-danger'}>
                       Отклонить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button
-                      key={'save'}>Сохранить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-                    <Button
-                      key={'run'}>Выполнить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            key={'save'}>Сохранить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                    <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
+                            key={'run'}>Выполнить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-                      <Menu.Item key="1">
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="1">
                         Сверить с
                         РПМУ {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
                       <Menu.Item key="2">
-                        Выгрузка в
-                        Excell
+                        Выгрузить в
+                        Excel
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="3">
+                        Установить дату осуществления возврата
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4">
+                        Сформировать МТ102
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
+                        Импортировать выписку XML
                       </Menu.Item>
                     </Menu>}>
-                      <Button key={'action'}>Действия <Icon type="down"/></Button>
+                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>Действия <Icon
+                        type="down"/></Button>
                     </Dropdown>,
                   ]}
 

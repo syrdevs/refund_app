@@ -78,7 +78,7 @@ export default [
             icon: 'faListAlt',
             name: 'reestr',
             component: './Main/MainView',
-            authority: ['admin', 'FSMS1', 'FSMS2']
+            authority: ['ADMIN', 'FSMS1', 'FSMS2']
           },
           {
             path: '/refunds/calendar',

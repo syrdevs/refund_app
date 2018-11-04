@@ -29,12 +29,15 @@ export default class ReportsPage extends Component {
 
   state = {
 
+    selectedRow: null,
+
     tabs: {
       activeKey: '1',
     },
 
     reportForm: {
       data: {},
+      filterData: [],
       buttonIsDisabled: true,
       reportName: '',
     },
@@ -59,12 +62,34 @@ export default class ReportsPage extends Component {
         index: 1,
         name_ru: 'Количество договоров в разрезе1',
         name_kk: 'Количество договоров в разрезе1',
+        params: [{
+          type: 'RangePicker',
+          label: 'Дата',
+          placeHolder: ['С', 'ПО'],
+        }, {
+          type: 'MonthPicker',
+          label: 'Месяц',
+          placeHolder: ['С', 'ПО'],
+        }],
         file_type: 'PDF',
       }, {
         id: '2',
         index: 2,
         name_ru: 'Количество договоров в разрезе2',
         name_kk: 'Количество договоров в разрезе2',
+        params: [{
+          type: 'RangePicker',
+          label: 'Дата',
+          placeHolder: ['С', 'ПО'],
+        }, {
+          type: 'MonthPicker',
+          label: 'Месяц',
+          placeHolder: ['С', 'ПО'],
+        }, {
+          type: 'MonthPicker',
+          label: 'Месяц 1',
+          placeHolder: ['С', 'ПО'],
+        }],
         file_type: 'PDF',
       }],
     },
@@ -72,8 +97,9 @@ export default class ReportsPage extends Component {
   };
 
 
-  onRowClick = (record) => {
+  onRowClick = (record, index) => {
     this.setState({
+      selectedRow: index,
       reportForm: {
         formingReport: false,
         reportName: record.name_ru,
@@ -96,13 +122,27 @@ export default class ReportsPage extends Component {
     });
   };
 
-  reportForming = () => {
+  reportForming = (formFilter) => {
+
+    let filteredData = [];
+
+    Object.keys(formFilter).forEach((formItem) => {
+      if (formFilter[formItem].momentValue) {
+        filteredData.push({
+          index: formItem,
+          valueList: formFilter[formItem].value,
+        });
+      }
+
+    });
+
     let orderRecord = this.state.reportForm.data;
     this.setState((prevState, props) => {
       return {
         reportForm: {
           ...prevState.reportForm,
           formingReport: true,
+          filterData: filteredData,
         },
         tabs: {
           activeKey: '2',
@@ -131,11 +171,14 @@ export default class ReportsPage extends Component {
               <Tabs onChange={this.tabOnChange} activeKey={this.state.tabs.activeKey}>
                 <TabPane tab={'Список отчетов'} key="1">
                   <Table
+                    rowClassName={(record, index) => {
+                      return this.state.selectedRow === index ? 'active' : '';
+                    }}
                     size={'small'}
                     rowKey={'id'}
-                    onRow={(record) => {
+                    onRow={(record, index) => {
                       return {
-                        onClick: () => this.onRowClick(record),
+                        onClick: () => this.onRowClick(record, index),
                       };
                     }}
                     pagination={false}

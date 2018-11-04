@@ -257,7 +257,7 @@ class BasicLayout extends React.PureComponent {
             ...this.getLayoutStyle(),
             minHeight: '100vh',
 
-            backgroundColor: '#87CEFA',
+            //backgroundColor: '#87CEFA',
           }}
         >
           <Header

@@ -173,6 +173,9 @@ export async function getMainSelect1(params) {
 export async function getOptionsdata(params) {
   return request('/api/refund/optionsdata');
 }
+export async function setfile(params) {
+  return request('/api/refund/downloading');
+}
 
 
 

@@ -59,8 +59,7 @@ class Requests extends Component {
             <Icon type="database" theme="outlined"/>
           </Button>
         ),
-      },
-        {
+      },{
           dataIndex: 'xml',
           title: 'XML',
           width: 50,
@@ -80,6 +79,7 @@ class Requests extends Component {
       searchercont: 0,
       tablecont: 24,
       isSearcher: false,
+      ColType: null,
       filterForm: [],
       ModalData: {
         id: null,
@@ -88,6 +88,16 @@ class Requests extends Component {
       },
       ShowModal: false,
       searchButton: false,
+      serverFileList: [{
+        id: '1',
+        filename: '1xxx.png',
+      }, {
+        id: '2',
+        filename: '2yyy.png',
+      }, {
+        id: '3',
+        filename: '3zzz.png',
+      }]
     };
   }
 
@@ -102,7 +112,6 @@ class Requests extends Component {
   }
 
   componentDidMount() {
-
     const { dispatch } = this.props;
     dispatch({
       type: 'universal2/columns',
@@ -116,7 +125,6 @@ class Requests extends Component {
         table: 'requests',
       },
     });
-
     const children = [];
     for (let i = 10; i < 36; i++) {
       children.push({
@@ -163,7 +171,6 @@ class Requests extends Component {
 
   componentWillReceiveProps(props) {
   }
-
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -183,7 +190,6 @@ class Requests extends Component {
       tablecont: 18,
     });
   };
-
   hideleft() {
     this.setState({
       searchButton: false,
@@ -191,7 +197,6 @@ class Requests extends Component {
       tablecont: 24,
     });
   }
-
   resetshow(e, isOk) {
     this.setState({
       ModalData: {
@@ -202,9 +207,6 @@ class Requests extends Component {
       ShowModal: false,
     });
   }
-
-
-
   refreshTable = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -219,17 +221,17 @@ class Requests extends Component {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;
 
-
     let actionColumns = [];
     let propColumns = [];
 
     columns.forEach((column) => {
-      if (['receiptAppdateToFsms', 'appEndDate'].indexOf(column.dataIndex) !== -1) {
+      if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
         //column.dataIndex = column.dataIndex;
         column.render = (text, row) => <a
-          onClick={() => {
+          onClick={(e) => {
             this.setState({
               ShowModal: true,
+              ColType: "receiptAppdateToFsms",
               ModalData: {
                 id: row.id,
                 key: column.dataIndex,
@@ -240,7 +242,26 @@ class Requests extends Component {
         >{text}</a>;
 
         actionColumns.push(column);
-      } else {
+      }
+      else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
+        //column.dataIndex = column.dataIndex;
+        column.render = (text, row) => <a
+          onClick={(e) => {
+            this.setState({
+              ShowModal: true,
+              ColType: "appEndDate",
+              ModalData: {
+                id: row.id,
+                key: column.dataIndex,
+                value: text,
+              },
+            });
+          }}
+        >{text}</a>;
+
+        actionColumns.push(column);
+      }
+      else {
         propColumns.push(column);
       }
     });
@@ -249,6 +270,8 @@ class Requests extends Component {
     return (
       <PageHeaderWrapper title="ЗАЯВКИ">
         {<ModalChangeDate visible={this.state.ShowModal}
+                          serverFileList = {this.state.serverFileList}
+                          coltype={this.state.ColType}
                           resetshow={(e) => {
                             this.resetshow(e);
                           }}

@@ -20,10 +20,24 @@ import {
   Divider,
 } from 'antd';
 import styles from './index.less';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
+import { Resizable } from 'react-resizable';
 
+const ResizeableTitle = (props) => {
+  const { onResize, width, ...restProps } = props;
+
+  if (!width) {
+    return <th {...restProps} />;
+  }
+
+  return (
+    <Resizable width={width} height={0} onResize={onResize}>
+      <th {...restProps} />
+    </Resizable>
+  );
+};
 
 const SmartColumnsSelect = props => {
 
@@ -50,7 +64,7 @@ const SmartColumnsSelect = props => {
 
   return (<Dropdown trigger={['click']} overlay={menu} placement="bottomRight">
     <Button style={{ float: 'right' }}>
-      <Icon><FontAwesomeIcon icon={faColumns} /></Icon>
+      <Icon><FontAwesomeIcon icon={faColumns}/></Icon>
     </Button>
   </Dropdown>);
 };
@@ -62,7 +76,7 @@ const SmartGridHeader = props => {
         <div className={styles.headerButton}>
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>
-          <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt} /></Button>
+          <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>
           {props.addonButtons}
           <div className={styles.smart_grid_controls_right}>
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
@@ -86,14 +100,6 @@ export default class SmartGridView extends Component {
     this.state = {
       isColumnChanged: false,
     };
-  }
-
-  renderHeaders() {
-
-  }
-
-  setAutoSize() {
-
   }
 
   selectableRow() {
@@ -140,6 +146,17 @@ export default class SmartGridView extends Component {
 
   onSelectChange = (selectedRowKeys) => {
     this.props.onSelectCheckboxChange(selectedRowKeys);
+  };
+
+  handleResize = index => (e, { size }) => {
+    this.setState(({ columns }) => {
+      const nextColumns = [...columns];
+      nextColumns[index] = {
+        ...nextColumns[index],
+        width: size.width,
+      };
+      return { columns: nextColumns };
+    });
   };
 
   StorageHelper() {
@@ -190,18 +207,30 @@ export default class SmartGridView extends Component {
 
     if (this.props.sorted) {
       tableOptions.columns.forEach((column) => {
-        //column.width = 150;
+        column.width = 150;
         column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
       });
     }
+
+    tableOptions.columns = tableOptions.columns.map((col, index) => ({
+      ...col,
+      onHeaderCell: column => ({
+        width: column.width,
+        onResize: this.handleResize(index),
+      })
+    }));
 
     // to do order column with actionColumns
     if (this.props.actionColumns && this.props.actionColumns.length > 0) {
       tableOptions.columns = this.props.actionColumns.concat(tableOptions.columns);
     }
 
+
     if (this.props.rowSelection) {
       tableOptions.components = {
+        header: {
+          cell: ResizeableTitle,
+        },
         body: {
           row: this.selectableRow(),
         },

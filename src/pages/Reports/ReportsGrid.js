@@ -86,10 +86,10 @@ export default class ReportsGrid extends Component {
               return <Icon spin><FontAwesomeIcon icon={faSpinner}/></Icon>;
             }
             case 1: {
-              return <Button size={'small'}>Скачать</Button>;
+              return <Button>Скачать</Button>;
             }
             case 2: {
-              return <Button size={'small'} style={{ 'color': 'red' }}>Ошибка</Button>;
+              return <Button style={{ 'color': 'red' }}>Ошибка</Button>;
             }
             default:
               break;
@@ -337,9 +337,9 @@ export default class ReportsGrid extends Component {
           },
         };
       }}
-        rowKey={'id'}
-        columns={columns}
-        bordered={true}
-        dataSource={dataSource}/>);
-      }
+      rowKey={'id'}
+      columns={columns}
+      bordered={true}
+      dataSource={dataSource}/>);
+  }
 }

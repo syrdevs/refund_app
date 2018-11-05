@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, Tabs, Table, Input, DatePicker, Card, Form, Icon } from 'antd';
-import moment from 'moment';
+import { Modal, Input, Form, Icon } from 'antd';
 
-const InputGroup = Input.Group;
-const TabPane = Tabs.TabPane;
 
-const FormItem = Form.Item;
 
 export default class ModalChangePassword extends Component {
 
@@ -17,103 +13,107 @@ export default class ModalChangePassword extends Component {
       pass1:'',
       pass2:'',
       pass3:'',
-      showhide1: 'none',
-      showhide2: 'none',
-      showhide3: 'none'
+      errmsg: 'Это поле обязательное к заполнению',
+      ischeck: false
     };
   }
-  componentWillReceiveProps(props, prevProps) {
+
+  componentDidMount() {
+  }
+
+  componentWillReceiveProps(props) {
     if (props != null) {
       this.setState({
         isVisible: props.visible,
         pass1:'',
         pass2:'',
         pass3:'',
-        showhide1: 'none',
-        showhide2: 'none',
-        showhide3: 'none'
+        ischeck: false
       });
     }
   }
 
-  handleOk = () => {
-   if (this.state.pass1 === '' && this.state.pass1 === '' && this.state.pass1 === '') {
-     if (this.state.pass1 === '')
-       this.setState({
-         showhide1: 'block'
-       })
-     if (this.state.pass2 === '')
-       this.setState({
-         showhide2: 'block'
-       })
-     if (this.state.pass3 === '')
-       this.setState({
-         showhide3: 'block'
-       })
-   }
-    else {
-      this.setState({ isVisible: false });
-     this.props.resetshow();
-    }
-  };
-
-
-
-  //tested
-  inputchange(e){
-    console.log(e);
-    console.log("asdasdasd");
-  //  this.setState({ [e.target.id]: e.target.value });
-  }
-  onChange (e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
-  }
   formfield = (e) => {
     this.setState({
       [e.target.name]:e.target.value
     })
   }
 
+  handleOk = () => {
+    const {ischeck} = this.state;
+    const {resetshow} = this.props;
+    this.setState({
+      ischeck:true
+    }, ()=> {
+       if (ischeck) {
+         console.log("here we send refresh password");
+       }
+        else {
+          this.setState({ isVisible: false });
+         resetshow();
+        }
+    })
+  };
+
+
+
   render() {
-    const spantitle = {fontSize:"13px", fontWeight:"bold"};
-    const dateFormat = 'DD.MM.YYYY';
-    const { isVisible } = this.state;
-    const showHide1  = {display:this.state.showhide1, color: 'red'};
-    const showHide2  = {display:this.state.showhide2, color: 'red'};
-    const showHide3  = {display:this.state.showhide3, color: 'red'};
+    const spanTitleStyle = {fontSize:"13px", fontWeight:"bold"};
+    const showStyle = {display:'block', color: 'red'};
+    const hideStyle = {display:'none'};
+    const { isVisible, pass1, pass2, pass3, ischeck, errmsg } = this.state;
+    const { resetshow } = this.props;
+
     return (<Modal
       title="Сменить пароля"
       onOk={(e) => {
         this.handleOk(e);
       }}
       onCancel={(e) => {
-        this.props.resetshow();
+        resetshow(e);
       }}
       width={500}
-      visible={isVisible}>
-      <Form onSubmit={this.handleSubmit} className="login-form">
-          <div><span style={spantitle}>Текущий пароль:</span>
-            <Input name="pass1" onChange={(e) => {
-              this.formfield(e);
-            }} value={this.state.pass1} name={'pass1'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} />
-            <div style={showHide1}>Это поле обязательное к заполнению</div>
+      visible={isVisible}
+    >
+        <Form onSubmit={this.handleSubmit} className="login-form">
+          <div>
+            <span style={spanTitleStyle}>Текущий пароль:</span>
+            <Input
+              name="pass1"
+              onChange={(e) => {
+                this.formfield(e);
+              }}
+              value={pass1}
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+            />
+            <div style={(pass1 === '' && ischeck) ? showStyle : hideStyle}>{errmsg}</div>
           </div>
-          <div><span style={spantitle}>Пароль:</span>
-            <Input value={this.state.pass2} onChange={(e) => {
-              this.formfield(e);
-            }} name={'pass2'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
-            <div style={showHide2}>Это поле обязательное к заполнению</div>
+          <div>
+            <span style={spanTitleStyle}>Пароль:</span>
+            <Input
+              value={pass2}
+              onChange={(e) => {
+                this.formfield(e);
+              }}
+              name="pass2"
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+            />
+            <div style={(pass2 === '' && ischeck) ? showStyle : hideStyle}>{errmsg}</div>
           </div>
-          <div><span style={spantitle}>Пароль(повтор):</span>
-            <Input value={this.state.pass3} onChange={(e) => {
-              this.formfield(e);
-            }} name={'pass3'} prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}/>
-            <div style={showHide3}>Это поле обязательное к заполнению</div>
+          <div>
+            <span style={spanTitleStyle}>Пароль(повтор):</span>
+            <Input
+              value={pass3}
+              onChange={(e) => {
+                this.formfield(e);
+              }}
+              name="pass3"
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+            />
+            <div style={(pass3 === '' && ischeck) ? showStyle : hideStyle}>{errmsg}</div>
           </div>
-      </Form>
-    </Modal>);
+        </Form>
+      </Modal>);
   }
 }
 

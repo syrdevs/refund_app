@@ -1,48 +1,30 @@
 import React, { Component } from 'react';
 import {
   Card,
-  Table,
   Icon,
-  Menu,
-  Dropdown,
   Button,
-  Label,
-  Pagination,
   Row,
   Col,
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Checkbox,
   Spin,
-  Divider,
 } from 'antd';
-import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva';
-import moment from 'moment';
-import ModalGridView from '@/components/ModalGridView';
 import GridFilter from '@/components/GridFilter';
 import ModalChangeDate from '@/components/ModalChangeDate';
 import SmartGridView from '@/components/SmartGridView';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
-const EditableContext = React.createContext();
 
-@connect(({ universal2, loading }) => ({
+@connect(({ universal2, universal, loading }) => ({
   universal2,
+  universal,
   loadingData: loading.effects['universal2/data'],
 }))
 class Requests extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      columnFiltered: [],
-      modalVisible: false,
       columns: [{
         dataIndex: '102',
         title: 'МТ 102',
@@ -171,6 +153,7 @@ class Requests extends Component {
 
   componentWillReceiveProps(props) {
   }
+
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -179,9 +162,7 @@ class Requests extends Component {
       dataSource: this.state.DataTable.content.slice(min, max),
     });
   };
-  handleStandardTableChange = (e) => {
-    console.log(e);
-  };
+
   toggleSearcher = () => {
     this.setState({
       searchButton: true,
@@ -190,6 +171,7 @@ class Requests extends Component {
       tablecont: 18,
     });
   };
+
   hideleft() {
     this.setState({
       searchButton: false,
@@ -197,7 +179,8 @@ class Requests extends Component {
       tablecont: 24,
     });
   }
-  resetshow(e, isOk) {
+
+  resetshow() {
     this.setState({
       ModalData: {
         id: null,
@@ -207,6 +190,7 @@ class Requests extends Component {
       ShowModal: false,
     });
   }
+
   refreshTable = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -217,6 +201,45 @@ class Requests extends Component {
     });
   };
 
+  clearfile = () => {
+    this.setState({
+      serverFileList: [{
+        id: '1',
+        filename: '1xxx.png',
+      }, {
+        id: '2',
+        filename: '2yyy.png',
+      }, {
+        id: '3',
+        filename: '3zzz.png',
+      }]
+    })
+  }
+  addfile=(e) =>{
+    const {serverFileList} = this.state;
+    if (e.file.status === 'uploading') {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'universal/setfile',
+        payload: {e},
+      }) .then(() => {
+        e.file.uid = this.props.universal.setfile.id;
+        e.file.name = this.props.universal.setfile.filename;
+        e.file.status = 'done';
+        this.setState({
+          serverFileList:[
+            ...serverFileList,
+            {id: this.props.universal.setfile.id, filename: this.props.universal.setfile.filename}
+          ]
+        })
+
+      })
+    }
+    if (e.file.status === 'removed') {
+      this.setState({serverFileList: serverFileList.filter((obj)=>{return obj.id !== e.file.uid})})
+    }
+  }
+
   render() {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;
@@ -226,7 +249,6 @@ class Requests extends Component {
 
     columns.forEach((column) => {
       if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
-        //column.dataIndex = column.dataIndex;
         column.render = (text, row) => <a
           onClick={(e) => {
             this.setState({
@@ -244,7 +266,6 @@ class Requests extends Component {
         actionColumns.push(column);
       }
       else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
-        //column.dataIndex = column.dataIndex;
         column.render = (text, row) => <a
           onClick={(e) => {
             this.setState({
@@ -261,21 +282,21 @@ class Requests extends Component {
 
         actionColumns.push(column);
       }
-      else {
-        propColumns.push(column);
-      }
+      else {}
     });
 
 
     return (
       <PageHeaderWrapper title="ЗАЯВКИ">
-        {<ModalChangeDate visible={this.state.ShowModal}
-                          serverFileList = {this.state.serverFileList}
-                          coltype={this.state.ColType}
-                          resetshow={(e) => {
-                            this.resetshow(e);
-                          }}
-                          dataSource={this.state.ModalData}/>}
+        {<ModalChangeDate
+          visible={this.state.ShowModal}
+          serverFileList={this.state.serverFileList}
+          coltype={this.state.ColType}
+          addfile={(e) => {this.addfile(e);}}
+          clearfile={() => {this.clearfile();}}
+          resetshow={(e) => {this.resetshow(e);}}
+          dataSource={this.state.ModalData}
+        />}
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Col sm={24} md={this.state.searchercont}>
@@ -287,7 +308,7 @@ class Requests extends Component {
                   padding: '0 14px',
                 }}
                 title="Фильтр"
-                extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()} ><FontAwesomeIcon icon={faTimes}/></Icon>}
+                extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
               >
                 <GridFilter
                   clearFilter={() => {
@@ -295,50 +316,51 @@ class Requests extends Component {
                   applyFilter={() => {
                   }}
                   filterForm={this.state.filterForm}
-                  dateFormat={dateFormat}/>
+                  dateFormat={dateFormat}
+                />
               </Card>}
             </Col>
             <Col sm={24} md={this.state.tablecont}>
-                <Spin tip="Загрузка..." spinning={this.props.loadingData}>
-                  <SmartGridView
-                    name={'RequestPageColumns'}
-                    scroll={{ x: 1300 }}
-                    searchButton={this.state.searchButton}
-                    fixedBody={true}
-                    rowKey={'id'}
-                    loading={this.props.loadingData}
-                    fixedHeader={true}
-                    rowSelection={true}
-                    actionColumns={this.state.columns.concat(actionColumns)}
-                    columns={propColumns}
-                    sorted={true}
-                    showTotal={false}
-                    dataSource={{
+              <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+                <SmartGridView
+                  name='RequestPageColumns'
+                  scroll={{ x: 1300 }}
+                  searchButton={this.state.searchButton}
+                  fixedBody={true}
+                  rowKey={'id'}
+                  loading={this.props.loadingData}
+                  fixedHeader={true}
+                  rowSelection={true}
+                  actionColumns={this.state.columns.concat(actionColumns)}
+                  columns={propColumns}
+                  sorted={true}
+                  showTotal={false}
+                  dataSource={{
                       total: 50,
                       pageSize: 10,
                       page: 1,
                       data: dataStore,
                     }}
-                    onShowSizeChange={(pageNumber, pageSize) => {
+                  onShowSizeChange={(pageNumber, pageSize) => {
                       console.log(pageNumber, pageSize);
                     }}
-                    onSelectCell={(cellIndex, cell) => {
+                  onSelectCell={(cellIndex, cell) => {
 
                     }}
-                    onSelectRow={() => {
+                  onSelectRow={() => {
 
                     }}
-                    onFilter={(filters) => {
+                  onFilter={(filters) => {
 
                     }}
-                    onRefresh={() => {
+                  onRefresh={() => {
                       this.refreshTable();
                     }}
-                    onSearch={() => {
+                  onSearch={() => {
                       this.toggleSearcher();
                     }}
-                  />
-                </Spin>
+                />
+              </Spin>
             </Col>
           </Row>
         </Card>

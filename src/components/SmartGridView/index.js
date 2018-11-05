@@ -25,6 +25,27 @@ import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
 import { Resizable } from 'react-resizable';
 
+function getPropByName(obj, desc) {
+  var arr = desc.split(".");
+
+  while (arr.length && obj) {
+    var comp = arr.shift();
+    var match = new RegExp("(.+)\\[([0-9]*)\\]").exec(comp);
+    if ((match !== null) && (match.length == 3)) {
+      var arrayData = { arrName: match[1], arrIndex: match[2] };
+      if (obj[arrayData.arrName] != undefined) {
+        obj = obj[arrayData.arrName][arrayData.arrIndex];
+      } else {
+        obj = undefined;
+      }
+    } else {
+      obj = obj[comp]
+    }
+  }
+
+  return obj;
+}
+
 
 const ResizeableTitle = (props) => {
   const { onResize, width, ...restProps } = props;
@@ -208,18 +229,19 @@ export default class SmartGridView extends Component {
 
     if (this.props.sorted) {
       tableOptions.columns.forEach((column) => {
-        column.width = 150;
-        column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+        //column.width = 150;
+        column.sorter = (a, b) =>a[column.dataIndex].length - b[column.dataIndex].length;
       });
     }
 
-    tableOptions.columns = tableOptions.columns.map((col, index) => ({
+
+   /* tableOptions.columns = tableOptions.columns.map((col, index) => ({
       ...col,
       onHeaderCell: column => ({
         width: column.width,
         onResize: this.handleResize(index),
       }),
-    }));
+    }));*/
 
     // to do order column with actionColumns
     if (this.props.actionColumns && this.props.actionColumns.length > 0) {
@@ -229,9 +251,9 @@ export default class SmartGridView extends Component {
 
     if (this.props.rowSelection) {
       tableOptions.components = {
-        header: {
+       /* header: {
           cell: ResizeableTitle,
-        },
+        },*/
         body: {
           row: this.selectableRow(),
         },

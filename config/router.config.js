@@ -98,7 +98,7 @@ export default [
             path: '/refunds/stat',
             icon: 'faChartBar',
             name: 'stat',
-            component: './Main/MainView',
+            component: './StaticticsView/StaticticsView',
             authority: ['ADMIN', 'FSMS1', 'FSMS2']
           },
         ],

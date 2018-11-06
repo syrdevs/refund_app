@@ -47,7 +47,7 @@ class UserLayout extends React.PureComponent {
       // @TODO <DocumentTitle title={this.getPageTitle()}>
       <div className={styles.container}>
         <div className={styles.lang}>
-          <SelectLang />
+          <SelectLang/>
         </div>
         <div className={styles.content}>
           <div className={styles.top}>
@@ -61,7 +61,7 @@ class UserLayout extends React.PureComponent {
                       src={logo}
                     />
                   }
-                  <span className={styles.title}>Фонд социального медицинского страхования</span>
+                  <span className={styles.title}>{formatMessage({ id: 'app.title.main' })}</span>
                 </Link>
               }
             </div>

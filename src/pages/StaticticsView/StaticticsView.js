@@ -107,26 +107,27 @@ export default class StaticticsView extends Component {
 
     const { gridData } = this.state;
 
-    return (<PageHeaderWrapper title="СТАТИСТИЧЕСКИЕ ДАННЫЕ">
+    return (<PageHeaderWrapper title={formatMessage({ id: 'menu.refund.stat.title' })}>
       <Card bodyStyle={{ padding: 5 }}>
         <Row type="flex" justify="center">
           <Col>
             <Card bodyStyle={{ padding: 5 }}>
               <RangePicker
-                placeholder={["С","По"]}
-                format={"DD.MM.YYYY"}
+                //
+                placeholder={[formatMessage({id:"datepicker.start.label"}), formatMessage({id:"datepicker.start.end"})]}
+                format={'DD.MM.YYYY'}
                 onChange={(date, dateString) => {
-                this.setState((prevState) => ({
-                  filters: {
-                    ...prevState.filters,
-                    dateValues: dateString,
-                  },
-                }));
-              }}/>
+                  this.setState((prevState) => ({
+                    filters: {
+                      ...prevState.filters,
+                      dateValues: dateString,
+                    },
+                  }));
+                }}/>
               <Button style={{ margin: '10px' }} onClick={() => {
                 console.log(this.state.filters.dateValues);
               }
-              }>Применить</Button>
+              }>{formatMessage({id:"button.apply"})}</Button>
             </Card>
           </Col>
         </Row>

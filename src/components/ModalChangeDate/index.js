@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, DatePicker, Upload, Button, Icon, Row} from 'antd';
 import moment from 'moment';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 class ModalChangeDate extends Component {
 
@@ -56,7 +57,7 @@ class ModalChangeDate extends Component {
 
     return (
       <Modal
-        title="Установка даты"
+        title={formatMessage({id:"modalchangedate.title"})}
         onOk={() => {
           this.handleOk(dataSource);
         }}
@@ -86,7 +87,7 @@ class ModalChangeDate extends Component {
             onChange={addfile}
           >
             <Button size="large">
-              <Icon type="upload" />Загрузить
+              <Icon type="upload" />{formatMessage({id:"system.load"})}
             </Button>
           </Upload>
           }

@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
 import { Resizable } from 'react-resizable';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 function getPropByName(obj, desc) {
   var arr = desc.split('.');
@@ -66,7 +67,7 @@ const SmartColumnsSelect = props => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <div>Выберите столбцов:</div>
+        <div>{formatMessage({ id: 'app.table.column.select' })}:</div>
       </Menu.Item>
       {props.value.map(function(column, index) {
         return (
@@ -105,13 +106,13 @@ const SmartGridHeader = props => {
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>}
 
-          {refreshBtnShow &&<Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}
+          {refreshBtnShow && <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}
           {props.addonButtons}
           <div className={styles.smart_grid_controls_right}>
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
 
-            {props.showTotal && <div className={styles.total_label}>Количество записей: 2548462</div>}
+            {props.showTotal && <div className={styles.total_label}>{formatMessage({ id: 'app.table.column.total' })}: 2548462</div>}
           </div>
         </div>
 

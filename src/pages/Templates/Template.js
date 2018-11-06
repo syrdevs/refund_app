@@ -75,7 +75,7 @@ export default class Template extends Component {
         },
         render: () => (
           <Button key={'download'}>
-            Скачать шаблон
+            {formatMessage({ id: 'menu.refunds.templates_view.upload' })}
           </Button>
         ),
       }, {
@@ -92,14 +92,14 @@ export default class Template extends Component {
           <Upload key={'uploadForm'} onChange={(info) => {
             if (info.file.status === 'done') {
               notification.open({
-                message: 'Информация',
-                description: 'Файл успешно загружен',
+                message: formatMessage({ id: 'system.information' }),
+                description: formatMessage({ id: 'system.download.completed' }),
                 icon: <Icon type="check" style={{ color: 'green' }}/>,
               });
             }
           }} showUploadList={false} size={'small'} name="upload" action="#">
             <Button key={'upload'}>
-              Загрузить шаблон
+              {formatMessage({ id: 'menu.refunds.templates_view.download' })}
             </Button>
           </Upload>
         ),
@@ -111,7 +111,7 @@ export default class Template extends Component {
     const { dataStore, columns } = this.props.universal2;
 
     return (
-      <PageHeaderWrapper title="ШАБЛОНЫ">
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.templates_view.title' })}>
         <Card bordered={false} bodyStyle={{ padding: 5 }}>
           <Table size={'small'} bordered={true} rowKey={'id'}
                  columns={columns.length > 0 ? columns.concat(this.state.columns) : []}

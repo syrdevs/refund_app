@@ -6,7 +6,7 @@ import Link from 'umi/link';
 import styles from './index.less';
 import BaseMenu, { getMenuMatches } from './BaseMenu';
 import { urlToList } from '../_utils/pathTools';
-
+import { formatMessage, FormattedMessage } from 'umi/locale';
 const { Sider } = Layout;
 
 /**
@@ -110,7 +110,7 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} id="logo">
           <Link to="/">
             <img src={logo} alt="logo"/>
-            <h1 style={{ color: '#80983e' }}>ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЯ</h1>
+            <h1 style={{ color: '#80983e' }}>{formatMessage({id:"app.title.subtitle"})}</h1>
           </Link>
         </div>
         <BaseMenu

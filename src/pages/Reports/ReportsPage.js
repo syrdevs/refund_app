@@ -169,7 +169,7 @@ export default class ReportsPage extends Component {
           <Row gutter={16}>
             <Col sm={18} md={18}>
               <Tabs onChange={this.tabOnChange} activeKey={this.state.tabs.activeKey}>
-                <TabPane tab={'Список отчетов'} key="1">
+                <TabPane tab={formatMessage({ id: 'report.list' })} key="1">
                   <Table
                     rowClassName={(record, index) => {
                       return this.state.selectedRow === index ? 'active' : '';
@@ -186,7 +186,7 @@ export default class ReportsPage extends Component {
                     bordered={true}
                     dataSource={this.state.reportsData.dataSource}/>
                 </TabPane>
-                <TabPane tab={'Сформированные отчеты'} key="2">
+                <TabPane tab={formatMessage({ id: 'report.formingList' })} key="2">
                   <ReportGrid  {...this.state.reportForm} unReport={this.unReport}/>
                 </TabPane>
               </Tabs>

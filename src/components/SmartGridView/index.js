@@ -94,6 +94,7 @@ const SmartColumnsSelect = props => {
 const SmartGridHeader = props => {
 
   let filterBtnShow = props.hideFilterBtn !== true;
+  let refreshBtnShow = props.hideRefreshBtn !== true;
 
   return (<div>
     <Row>
@@ -104,7 +105,7 @@ const SmartGridHeader = props => {
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>}
 
-          <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>
+          {refreshBtnShow &&<Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}
           {props.addonButtons}
           <div className={styles.smart_grid_controls_right}>
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}

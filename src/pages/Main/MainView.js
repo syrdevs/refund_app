@@ -282,12 +282,6 @@ class MainView extends Component {
 
     const { universal } = this.props;
 
-    console.log(universal.rpmu.data);
-
-    universal.rpmu.columns.forEach((column) => {
-      column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
-    });
-
     const rpmuColumns = this.rpmuColumn();
 
     const DataDiv = () => (<Card
@@ -297,7 +291,7 @@ class MainView extends Component {
       title="Платежи РПМУ"
       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
     >
-      <Table size={'small'} columns={rpmuColumns} dataSource={universal.rpmu.data.content} scroll={{ x: 1100 }}/>
+      <Table size={'small'} columns={rpmuColumns} dataSource={universal.rpmu.content} scroll={{ x: 1100 }}/>
     </Card>);
 
     const GridFilterData = this.stateFilter();

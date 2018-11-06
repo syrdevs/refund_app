@@ -26,11 +26,11 @@ import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index
 import { Resizable } from 'react-resizable';
 
 function getPropByName(obj, desc) {
-  var arr = desc.split(".");
+  var arr = desc.split('.');
 
   while (arr.length && obj) {
     var comp = arr.shift();
-    var match = new RegExp("(.+)\\[([0-9]*)\\]").exec(comp);
+    var match = new RegExp('(.+)\\[([0-9]*)\\]').exec(comp);
     if ((match !== null) && (match.length == 3)) {
       var arrayData = { arrName: match[1], arrIndex: match[2] };
       if (obj[arrayData.arrName] != undefined) {
@@ -39,7 +39,7 @@ function getPropByName(obj, desc) {
         obj = undefined;
       }
     } else {
-      obj = obj[comp]
+      obj = obj[comp];
     }
   }
 
@@ -92,12 +92,18 @@ const SmartColumnsSelect = props => {
 };
 
 const SmartGridHeader = props => {
+
+  let filterBtnShow = props.hideFilterBtn !== true;
+
   return (<div>
     <Row>
       <Col sm={24} md={24} xs={24}>
         <div className={styles.headerButton}>
+
+          {filterBtnShow &&
           <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
-                                                                                                theme="outlined"/></Button>
+                                                                                                theme="outlined"/></Button>}
+
           <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>
           {props.addonButtons}
           <div className={styles.smart_grid_controls_right}>
@@ -217,6 +223,8 @@ export default class SmartGridView extends Component {
     local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
     let _columns = local_helper.get(this.props.name);
 
+    console.log(this.props.dataSource.data);
+
     let tableOptions = {
       bordered: true,
       rowClassName: styles.smart_grid_view_container,
@@ -230,18 +238,18 @@ export default class SmartGridView extends Component {
     if (this.props.sorted) {
       tableOptions.columns.forEach((column) => {
         //column.width = 150;
-        column.sorter = (a, b) =>a[column.dataIndex].length - b[column.dataIndex].length;
+        column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
       });
     }
 
 
-   /* tableOptions.columns = tableOptions.columns.map((col, index) => ({
-      ...col,
-      onHeaderCell: column => ({
-        width: column.width,
-        onResize: this.handleResize(index),
-      }),
-    }));*/
+    /* tableOptions.columns = tableOptions.columns.map((col, index) => ({
+       ...col,
+       onHeaderCell: column => ({
+         width: column.width,
+         onResize: this.handleResize(index),
+       }),
+     }));*/
 
     // to do order column with actionColumns
     if (this.props.actionColumns && this.props.actionColumns.length > 0) {
@@ -251,9 +259,9 @@ export default class SmartGridView extends Component {
 
     if (this.props.rowSelection) {
       tableOptions.components = {
-       /* header: {
-          cell: ResizeableTitle,
-        },*/
+        /* header: {
+           cell: ResizeableTitle,
+         },*/
         body: {
           row: this.selectableRow(),
         },

@@ -13,6 +13,7 @@ import {
   Form,
   Input,
   DatePicker,
+  notification,
   Select,
   Checkbox,
   Divider,
@@ -37,6 +38,14 @@ export default class Template extends Component {
     };
   }
 
+  downloadFile = async (param) => {
+    var link = document.createElement('a');
+    link.href = 'https://www.7-zip.org/a/7z1805.exe';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   componentDidMount() {
 
     const { dispatch } = this.props;
@@ -60,28 +69,36 @@ export default class Template extends Component {
         onCell: record => {
           return {
             onClick: () => {
-              console.log(record);
+              this.downloadFile();
             },
           };
         },
         render: () => (
-          <Button>
+          <Button key={'download'}>
             Скачать шаблон
           </Button>
         ),
       }, {
         title: 'Загрузка шаблона',
         width: 50,
-        onCell: record => {
+        /*onCell: record => {
           return {
             onClick: () => {
               console.log(record);
             },
           };
-        },
+        },*/
         render: () => (
-          <Upload size={'small'} name="logo" action="/upload.do" listType="picture">
-            <Button>
+          <Upload key={'uploadForm'} onChange={(info) => {
+            if (info.file.status === 'done') {
+              notification.open({
+                message: 'Информация',
+                description: 'Файл успешно загружен',
+                icon: <Icon type="check" style={{ color: 'green' }}/>,
+              });
+            }
+          }} showUploadList={false} size={'small'} name="upload" action="#">
+            <Button key={'upload'}>
               Загрузить шаблон
             </Button>
           </Upload>
@@ -96,7 +113,7 @@ export default class Template extends Component {
     return (
       <PageHeaderWrapper title="ШАБЛОНЫ">
         <Card bordered={false} bodyStyle={{ padding: 5 }}>
-          <Table size={'small'} bordered={true} rowKey={'key'}
+          <Table size={'small'} bordered={true} rowKey={'id'}
                  columns={columns.length > 0 ? columns.concat(this.state.columns) : []}
                  dataSource={dataStore}/>
         </Card>

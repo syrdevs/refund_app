@@ -10,6 +10,10 @@ function sleepF(ms) {
 
 }
 
+export async function getReference(params) {
+  return request('/api/refund/getreference');
+}
+
 export async function getColumns(params) {
   return request(`/api/refund/${params.payload.table}column`);
 }

@@ -17,13 +17,18 @@ import {
   Select,
   Checkbox,
   Divider,
+  Spin,
 } from 'antd';
 import moment from 'moment/moment';
-
+import { connect } from 'dva';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
+@connect(({ references, loading }) => ({
+  references,
+  loadingData: loading.effects['references/load'],
+}))
 export default class GridFilter extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +42,7 @@ export default class GridFilter extends Component {
   }
 
   componentDidMount() {
-
+    const { dispatch } = this.props;
     const { isClearFilter, fields } = this.state;
 
     if (Object.keys(fields).length === 0) {
@@ -47,7 +52,15 @@ export default class GridFilter extends Component {
       this.props.filterForm.forEach((filterItem, idx) => {
         _fields[filterItem.name] = {
           disabled: false,
+          type: filterItem.type,
         };
+
+        if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
+          dispatch({
+            type: 'references/load',
+            code: filterItem.name,
+          });
+        }
       });
 
       this.setState({
@@ -57,7 +70,7 @@ export default class GridFilter extends Component {
   }
 
   componentDidUpdate() {
-
+    const { dispatch } = this.props;
     const { isClearFilter, fields } = this.state;
 
     if (isClearFilter) {
@@ -73,7 +86,15 @@ export default class GridFilter extends Component {
       this.props.filterForm.forEach((filterItem, idx) => {
         _fields[filterItem.name] = {
           disabled: false,
+          type: filterItem.type,
         };
+
+        if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
+          dispatch({
+            type: 'references/load',
+            code: filterItem.name,
+          });
+        }
       });
 
       this.setState({
@@ -102,9 +123,24 @@ export default class GridFilter extends Component {
     let filterData = {};
     Object.keys(fields).forEach((field) => {
       if (formFilters[field]) {
+
+
+        if (['multibox', 'combobox'].indexOf(fields[field].type) !== -1) {
+          let properyName = fields[field].type == 'multibox' ? field + 'List' : field + 'Id';
+          let propertyValue = fields[field].type == 'multibox' ?
+            formFilters[field].map((valueId) => ({
+              id: valueId,
+            })) : { id: formFilters[field] };
+
+          filterData[properyName] =  fields[field].disabled ? null : propertyValue;
+
+          return;
+        }
+
         filterData[field] = fields[field].disabled ? null : formFilters[field];
       }
     });
+
 
     applyFilter(filterData);
   };
@@ -127,7 +163,7 @@ export default class GridFilter extends Component {
 
   renderFilter = (filterItem, _index) => {
 
-    const { dateFormat } = this.props;
+    const { dateFormat, references } = this.props;
     const { fields, formFilters, isClearFilter } = this.state;
     const mBottom = { marginBottom: '5px' };
 
@@ -189,6 +225,7 @@ export default class GridFilter extends Component {
           params.value = [];
         }
 
+
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
             {...params}
@@ -199,8 +236,8 @@ export default class GridFilter extends Component {
               this.fieldOnChange(filterItem, value);
             }}
           >
-            {filterItem.store.map((item) => {
-              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+            {references[filterItem.name] && references[filterItem.name].map((item) => {
+              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
             })}
           </Select>
         </div>);
@@ -224,8 +261,8 @@ export default class GridFilter extends Component {
             }}
           >
             <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
-            {filterItem.store.map((item) => {
-              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+            {references[filterItem.name] && references[filterItem.name].map((item) => {
+              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
             })}
           </Select>
         </div>);
@@ -247,7 +284,7 @@ export default class GridFilter extends Component {
     const { fields, isClearFilter } = this.state;
     const { filterForm } = this.props;
 
-    return (
+    return (<Spin tip="Загрузка..." spinning={this.props.loadingData}>
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
         <Divider style={{ margin: '16px 10px 0 0' }}/>
@@ -257,6 +294,7 @@ export default class GridFilter extends Component {
         </Button>
         <Button style={{ margin: '10px 0 0 5px' }}
                 onClick={this.clearFilters}>Очистить</Button>
-      </Form>);
+      </Form>
+    </Spin>);
   }
 }

@@ -113,6 +113,7 @@ export default class StaticticsView extends Component {
           <Col>
             <Card bodyStyle={{ padding: 5 }}>
               <RangePicker
+                placeholder={["С","По"]}
                 format={"DD.MM.YYYY"}
                 onChange={(date, dateString) => {
                 this.setState((prevState) => ({
@@ -134,6 +135,7 @@ export default class StaticticsView extends Component {
             <SmartGridView
               name={'StatisticsView'}
               hideFilterBtn={true}
+              hideRefreshBtn={true}
               columns={gridData.columns}
               dataSource={{
                 data: gridData.dataSource,

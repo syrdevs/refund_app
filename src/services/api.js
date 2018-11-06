@@ -180,6 +180,8 @@ export async function getOptionsdata(params) {
 export async function setfile(params) {
   return request('/api/refund/downloading');
 }
-
+export async function getmt102file(params) {
+  return request('/api/refund/getfile');
+}
 
 

@@ -30,6 +30,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons/index';
 import { getAuthority } from '../../utils/authority';
+import ModalGraphView from '../../components/ModalGraphView';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -49,6 +50,7 @@ class MainView extends Component {
     super(props);
     this.state = {
       ShowModal: false,
+      ShowGraph: false,
       modalVisible: false,
       updateModalVisible: false,
       expandForm: false,
@@ -156,9 +158,16 @@ class MainView extends Component {
       payload: { size: pageSize, page: 1 },
     });
   };
+
   showModal = () => {
     this.setState({
       ShowModal: true,
+    });
+  };
+
+  showGraphic = () => {
+    this.setState({
+      ShowGraph: true,
     });
   };
 
@@ -338,6 +347,11 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТОВ">
+        <ModalGraphView visible={this.state.ShowGraph}
+                        resetshow={(e) => {
+                         this.setState({ ShowGraph: false });
+                        }}
+                       dataSource={universal.mainmodal}/>
         <ModalGridView visible={this.state.ShowModal}
                        resetshow={(e) => {
                          this.setState({ ShowModal: false });
@@ -403,9 +417,7 @@ class MainView extends Component {
                   }}
                   addonButtons={[
                     <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'odobrit'} className={'btn-success'}
-                            onClick={() => {
-                              this.showModal();
-                            }}>
+                            >
                       Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
@@ -434,8 +446,15 @@ class MainView extends Component {
                       <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4">
                         Сформировать МТ102
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
+                        this.showModal();
+                      }}>
                         Импортировать выписку XML
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
+                        this.showGraphic();
+                      }}>
+                        Инфографика
                       </Menu.Item>
                     </Menu>}>
                       <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>Действия <Icon

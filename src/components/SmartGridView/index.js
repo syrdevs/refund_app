@@ -119,39 +119,14 @@ const SmartGridHeader = props => {
   </div>);
 };
 
-const EditableContext = React.createContext();
-
 export default class SmartGridView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      selectedRow: null,
       isColumnChanged: false,
     };
-  }
-
-  selectableRow() {
-
-    let lastActiveRow = false;
-    const SelectableRow = ({ form, index, ...props }) => {
-
-      const trRef = React.createRef();
-
-      return (<EditableContext.Provider value={form}>
-        <tr {...props} ref={trRef} onClick={(e) => {
-
-          if (lastActiveRow) {
-            lastActiveRow.style.backgroundColor = '';
-          }
-
-          lastActiveRow = trRef.current;
-          lastActiveRow.style.backgroundColor = '#e6f7ff';
-
-        }}/>
-      </EditableContext.Provider>);
-    };
-
-    return SelectableRow;
   }
 
   onSelectColumn = (columnIndex) => {
@@ -223,8 +198,6 @@ export default class SmartGridView extends Component {
     local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
     let _columns = local_helper.get(this.props.name);
 
-    console.log(this.props.dataSource.data);
-
     let tableOptions = {
       bordered: true,
       rowClassName: styles.smart_grid_view_container,
@@ -235,10 +208,25 @@ export default class SmartGridView extends Component {
       dataSource: this.props.dataSource.data,
     };
 
+
     if (this.props.sorted) {
       tableOptions.columns.forEach((column) => {
         //column.width = 150;
-        column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
+        column.sorter = (a, b) => {
+          let _a = getPropByName(a, column.dataIndex);
+          let _b = getPropByName(b, column.dataIndex);
+
+          _a = _a ? _a : '';
+          _b = _b ? _b : '';
+
+          if (_a < _b) {
+            return -1;
+          }
+          if (_a > _b) {
+            return 1;
+          }
+          return 0;
+        };
       });
     }
 
@@ -262,9 +250,9 @@ export default class SmartGridView extends Component {
         /* header: {
            cell: ResizeableTitle,
          },*/
-        body: {
+        /*body: {
           row: this.selectableRow(),
-        },
+        },*/
       };
     }
 
@@ -280,6 +268,33 @@ export default class SmartGridView extends Component {
         ...this.props.scroll,
       };
     }
+
+    tableOptions.rowClassName = (record, index) => {
+      return this.state.selectedRow === index ? 'active' : '';
+    };
+
+    tableOptions.onRow = (record, index) => ({
+      onClick: () => {
+        this.setState({
+          selectedRow: index,
+        });
+      },
+    });
+    /*
+
+     rowClassName={(record, index) => {
+        return this.state.selectedRow === index ? 'active' : '';
+      }}
+    *  onRow={(record, index) => {
+        return {
+          onClick: () => {
+            this.setState({
+              selectedRow: index,
+            });
+          },
+        };
+      }}
+    * */
 
 
     return (<div>

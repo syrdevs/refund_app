@@ -1,5 +1,5 @@
 import { testMethod } from '../services/user';
-import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata, setfile } from '../services/api';
+import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata, setfile, getmt102file } from '../services/api';
 
 export default {
   namespace: 'universal',
@@ -29,6 +29,15 @@ export default {
         payload: response,
       });
     },
+    * getmt102(payload, { call, put }) {
+      const response = yield call(getmt102file, payload);
+
+      yield put({
+        type: 'mt102',
+        payload: response,
+      });
+    },
+
     * mainviewtable(payload, { call, put }) {
       const response = yield call(getmainViewTable, payload);
 
@@ -85,6 +94,12 @@ export default {
   },
 
   reducers: {
+    mt102(state, { payload }) {
+      return {
+        ...state,
+        mt102file:payload
+      };
+    },
     setfileReduce(state, { payload }) {
       return {
         ...state,

@@ -27,7 +27,7 @@ import SmartGridView from '@/components/SmartGridView';
 import TableData from './mainView';
 import { connect } from 'dva';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons/index';
 import { getAuthority } from '../../utils/authority';
 
@@ -57,11 +57,11 @@ class MainView extends Component {
       formValues: {},
       stepFormValues: {},
       fcolumn: [{
-        title: 'Действия',
+        title: 'Платежи',
         order: 1,
         key: 'operation',
         isVisible: true,
-        width: 100,
+        width: 70,
         onCell: record => {
           return {
             onClick: () => {
@@ -74,7 +74,34 @@ class MainView extends Component {
             <Icon type="database" theme="outlined"/>
           </Button>
         ),
-      }],
+      },
+        {
+          title: 'МТ102',
+          order: 2,
+          key: 'mt102',
+          isVisible: true,
+          width: 70,
+          onCell: record => {
+            return {
+              onClick: () => {
+                console.log("test success")
+                /*const { dispatch } = this.props;
+                dispatch({
+                  type: 'universal2/getmt102',
+                  payload: {},
+                });*/
+                //this.toggleItems(record);
+              },
+            };
+          },
+          render: () => (
+            <Button size={'small'}>
+              <a href="/api/refund/getfile" download>
+              <Icon><FontAwesomeIcon icon={faFileAlt}/></Icon>
+              </a>
+            </Button>
+          ),
+        }],
       columns: [],
       dataSource: [],
       isHidden: true,
@@ -184,7 +211,7 @@ class MainView extends Component {
         type: 'text',
       },
       {
-        name: 'RefundStatus',
+        name: 'dappRefundStatusId.nameRu',
         label: 'Статус заявки на возврат',
         type: 'multibox',
         store: this.props.universal.select1,
@@ -291,7 +318,19 @@ class MainView extends Component {
       title="Платежи РПМУ"
       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
     >
-      <Table size={'small'} columns={rpmuColumns} dataSource={universal.rpmu.content} scroll={{ x: 1100 }}/>
+      <Table
+        size={'small'}
+        columns={rpmuColumns}
+        dataSource={universal.rpmu.content}
+        rowClassName={(record) => {
+
+          if(record.refundExist){
+            console.log(record.refundExist);
+            return "greenRow";
+          }
+        }
+        }
+        scroll={{ x: 1100 }}/>
     </Card>);
 
     const GridFilterData = this.stateFilter();

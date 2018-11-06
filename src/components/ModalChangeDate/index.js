@@ -50,8 +50,8 @@ class ModalChangeDate extends Component {
     const {serverFileList, addfile} = this.props;
 
     const props = {
-      //defaultFileList: serverFileList.map((file)=>({uid:file.id, name: file.filename})),
-      fileList: serverFileList.map((file)=>({uid:file.id, name: file.filename}))
+      defaultFileList: serverFileList.map((file)=>({uid:file.id, name: file.filename})),
+      //fileList: serverFileList.map((file)=>({uid:file.id, name: file.filename}))
     };
 
     return (
@@ -77,15 +77,19 @@ class ModalChangeDate extends Component {
         </Row>
         {ColType !== 'appEndDate' &&
         <Row>
+          {isVisible &&
           <Upload
             {...props}
-            beforeUpload={(e)=>{console.log(e)}}
+            beforeUpload={(e) => {
+              console.log(e)
+            }}
             onChange={addfile}
           >
             <Button size="large">
-              <Icon type="upload" /> Загрузить
+              <Icon type="upload" />Загрузить
             </Button>
           </Upload>
+          }
         </Row>}
       </Modal>);
   }

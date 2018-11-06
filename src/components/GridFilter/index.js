@@ -21,6 +21,7 @@ import {
 } from 'antd';
 import moment from 'moment/moment';
 import { connect } from 'dva';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -132,7 +133,7 @@ export default class GridFilter extends Component {
               id: valueId,
             })) : { id: formFilters[field] };
 
-          filterData[properyName] =  fields[field].disabled ? null : propertyValue;
+          filterData[properyName] = fields[field].disabled ? null : propertyValue;
 
           return;
         }
@@ -192,8 +193,8 @@ export default class GridFilter extends Component {
             <Col md={22}>
               <RangePicker   {...RangeDateProps}
                              placeholder={[
-                               'c',
-                               'по',
+                               formatMessage({ id: 'datepicker.start.label' }),
+                               formatMessage({ id: 'datepicker.end.label' }),
                              ]}
                              disabled={fields[filterItem.name].disabled}/>
             </Col>
@@ -284,16 +285,21 @@ export default class GridFilter extends Component {
     const { fields, isClearFilter } = this.state;
     const { filterForm } = this.props;
 
-    return (<Spin tip="Загрузка..." spinning={this.props.loadingData}>
+    let count = this.props.filterForm.map((filterItem) => {
+      return filterItem.type == 'multibox' || filterItem.type == 'combobox';
+    }).filter((f) => f);
+
+
+    return (<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
       <Form layout={'vertical'}>
         {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
         <Divider style={{ margin: '16px 10px 0 0' }}/>
         <Button style={{ margin: '10px 0 0 0px' }} type='primary'
                 onClick={this.applyFilters}>
-          Поиск
+          {formatMessage({ id: 'system.search' })}
         </Button>
         <Button style={{ margin: '10px 0 0 5px' }}
-                onClick={this.clearFilters}>Очистить</Button>
+                onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
       </Form>
     </Spin>);
   }

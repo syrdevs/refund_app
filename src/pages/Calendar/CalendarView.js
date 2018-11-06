@@ -11,10 +11,12 @@ import {
   Checkbox,
   Label,
   Select,
-  Calendar, Badge,
+  Calendar,
+  Badge,
   DatePicker,
   Modal,
 } from 'antd';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import style from './CalendarView.less';
 import moment from 'moment';
@@ -180,23 +182,23 @@ export default class CalendarView extends Component {
     const spantitle = {fontSize:"13px", fontWeight:"bold"};
 
 
-    return (<PageHeaderWrapper title="Календарь">
+    return (<PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.calendar' })}>
       <Modal centered
              className={style.modal_buttons}
-             title={"Создание события на "+moment(this.state.selectedDate).format('DD.MM.YYYY')}
+             title={formatMessage({ id: 'calendar.createEvent' })+" "+moment(this.state.selectedDate).format('DD.MM.YYYY')}
              onCancel={this.handleCancel.bind(this)}
              visible={modalVisible}
              footer={[
                <Button style={{ display: deleteBtnVisible ? '' : 'none' }} key="delete"
                        onClick={this.handleDelete}
-                       type="danger">Удалить</Button>,
-               <Button key="submit" onClick={this.handleOk} type="primary">Сохранить</Button>,
-               <Button key="cancel" onClick={this.handleCancel}>Отмена</Button>,
+                       type="danger">{formatMessage({ id: 'button.delete' })}</Button>,
+               <Button key="submit" onClick={this.handleOk} type="primary">{formatMessage({ id: 'form.save' })}</Button>,
+               <Button key="cancel" onClick={this.handleCancel}>{formatMessage({ id: 'button.cancel' })}</Button>,
              ]}>
-        <div><span style={spantitle}>Тип:</span>
+        <div><span style={spantitle}>{formatMessage({ id: 'label.type' })}:</span>
         <Select
           style={{ width: '100%' }}
-          placeholder="Выберите"
+          placeholder={formatMessage({ id: 'label.select' })}
           value={modalForm.selectedDayType}
           onChange={(value, option) => {
             this.setState(({ modalForm }) => ({
@@ -213,7 +215,7 @@ export default class CalendarView extends Component {
           <Option value="2">Праздничный день</Option>
         </Select>
         </div>
-        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>Событие:</span>
+        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>{formatMessage({ id: 'component.globalHeader.event' })}:</span>
         <Input value={modalForm.description} title={"asdasd"} onChange={(({ target }) => {
 
           this.setState(({ modalForm }) => ({
@@ -223,14 +225,14 @@ export default class CalendarView extends Component {
             },
           }));
         })} style={{ width: '100%'}}
-               placeholder='Событие'/>
+               placeholder={formatMessage({ id: 'component.globalHeader.event' })}/>
         </div>
       </Modal>
 
 
       <Card bordered={false}>
         <div>
-          <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder="Выберите"/>
+          <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder={formatMessage({ id: 'label.select' })}/>
           <Calendar value={currentDate} className={style.customCalendar} onSelect={this.onSelectDate.bind(this)}
                     dateCellRender={this.dateCellRender.bind(this)}
                     monthCellRender={this.monthCellRender.bind(this)}/>

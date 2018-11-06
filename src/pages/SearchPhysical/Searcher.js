@@ -76,9 +76,9 @@ class Searcher extends Component {
         <Row style={{ marginBottom:'10px' }}>
           <Col span={9}>
             <Card
-              title="Параметры поиска"
+              title={formatMessage({ id: 'report.param.searcher' })}
             >
-              <div style={mBottom}>ИИН:
+              <div style={mBottom}>{formatMessage({ id: 'profile.field.iin' })}:
                 <Input
                   value={iin}
                   name='iin'
@@ -87,7 +87,7 @@ class Searcher extends Component {
                 }}
                 />
               </div>
-              <div style={mBottom}>Фамилия:
+              <div style={mBottom}>{formatMessage({ id: 'profile.field.familya' })}:
                 <Input
                   value={surname}
                   name='surname'
@@ -96,7 +96,7 @@ class Searcher extends Component {
                 }}
                 />
               </div>
-              <div style={mBottom}>Имя:
+              <div style={mBottom}>{formatMessage({ id: 'profile.field.name' })}:
                 <Input
                   value={name}
                   name='name'
@@ -105,7 +105,7 @@ class Searcher extends Component {
                 }}
                 />
               </div>
-              <div style={mBottom}>Отчество:
+              <div style={mBottom}>{formatMessage({ id: 'profile.field.surname' })}:
                 <Input
                   type='text'
                   value={patronic}
@@ -115,7 +115,7 @@ class Searcher extends Component {
                   }}
                 />
               </div>
-              <div style={mBottom}><p>Дата рождения:</p>
+              <div style={mBottom}><p>{formatMessage({ id: 'profile.field.birthday' })}:</p>
                 <DatePicker
                   format="DD.MM.YYYY"
                   value={bdate}
@@ -128,7 +128,7 @@ class Searcher extends Component {
                   style={{marginRight:"7px"}}
                   onClick={()=>{ console.log(this.state)}}
                 >
-                  Поиск
+                  {formatMessage({ id: 'system.search' })}
                 </Button>
                 <Button
                   onClick={()=>{this.setState({
@@ -140,7 +140,7 @@ class Searcher extends Component {
                   })
                 }}
                 >
-                  Очистить
+                  {formatMessage({ id: 'system.clear' })}
                 </Button>
               </div>
             </Card>

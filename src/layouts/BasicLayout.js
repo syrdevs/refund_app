@@ -182,13 +182,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return 'Фонд социального медицинского страхования';
+      return formatMessage({ id: 'app.title.main' });
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - 'Фонд социального медицинского страхования`;
+    return `${message} -` + formatMessage({ id: 'app.title.main' });
   };
 
   getLayoutStyle = () => {

@@ -252,7 +252,7 @@ export default class PaymentsPage extends Component {
      };*/
 
     const DataDiv = () => (
-      <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+      <Spin tip="" spinning={this.props.loadingData}>
 
         {/*<div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
@@ -292,7 +292,11 @@ export default class PaymentsPage extends Component {
             page: 1,
             data: dataStore,
           }}
-          addonButtons={[]}
+          addonButtons={[<span style={{
+            color: '#002140',
+            fontSize: '12px',
+            paddingLeft: '10px',
+          }}>Общая сумма: 54658.00</span>]}
 
           onShowSizeChange={(pageNumber, pageSize) => {
             console.log(pageNumber, pageSize);
@@ -344,7 +348,7 @@ export default class PaymentsPage extends Component {
 
 
     return (
-      <PageHeaderWrapper title="Платежи">
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
         <Card bodyStyle={{ padding: 5 }}>
           <Tabs>
             <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
@@ -356,7 +360,7 @@ export default class PaymentsPage extends Component {
                     }}
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
-                    title="Фильтр"
+                    title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
@@ -377,7 +381,7 @@ export default class PaymentsPage extends Component {
                   <Card
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
-                    title="Фильтр"
+                    title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}>
                     <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}

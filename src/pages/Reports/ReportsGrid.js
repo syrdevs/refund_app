@@ -20,7 +20,7 @@ import {
 } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 export default class ReportsGrid extends Component {
   state = {
@@ -86,10 +86,10 @@ export default class ReportsGrid extends Component {
               return <Icon spin><FontAwesomeIcon icon={faSpinner}/></Icon>;
             }
             case 1: {
-              return <Button>Скачать</Button>;
+              return <Button>{formatMessage({ id: 'system.download' })}</Button>;
             }
             case 2: {
-              return <Button style={{ 'color': 'red' }}>Ошибка</Button>;
+              return <Button style={{ 'color': 'red' }}>{formatMessage({ id: 'system.error' })}</Button>;
             }
             default:
               break;
@@ -268,7 +268,7 @@ export default class ReportsGrid extends Component {
     if (json.status !== 0) {
       this.setStatus(taskItem, json, call);
     } else if (count === 0) {
-      this.setStatus(taskItem, { status: 2, message: 'Превышено время ожидания' }, call);
+      this.setStatus(taskItem, { status: 2, message: formatMessage({ id: 'system.system.timeout' }) }, call);
     }
   };
 

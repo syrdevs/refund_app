@@ -18,7 +18,7 @@ import {
   Modal,
 } from 'antd';
 import moment from 'moment/moment';
-
+import { formatMessage, FormattedMessage } from 'umi/locale';
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 export default class ReportForm extends Component {
@@ -124,12 +124,12 @@ export default class ReportForm extends Component {
     return (<Card bodyStyle={{ padding: 15 }}>
       {reportName}
       <hr/>
-      {data.params ? data.params.map((filterItem, idx) => this.generateForm(filterItem, idx)) : 'Параметры отсутсвуют'}
+      {data.params ? data.params.map((filterItem, idx) => this.generateForm(filterItem, idx)) : formatMessage({ id: 'system.outParameters' })}
       <br/>
       <br/>
       <Button onClick={() => {
         reportForming(this.state.formFilters);
-      }} type={'primary'} disabled={buttonIsDisabled}>Сформировать</Button>
+      }} type={'primary'} disabled={buttonIsDisabled}>{formatMessage({ id: 'system.forming' })}</Button>
     </Card>);
   }
 }

@@ -205,10 +205,10 @@ export default class JournalPage extends Component {
     );
 
     return (
-      <PageHeaderWrapper title="Журнал действий">
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.journal.title' })}>
         <Card bodyStyle={{ padding: 5 }}>
           <Tabs defaultActiveKey="1">
-            <TabPane tab={'Возвраты'} key="1">
+            <TabPane tab={formatMessage({ id: 'menu.journal.refunds' })} key="1">
               <Row>
                 <Col xs={this.state.filterContainer !== 6 ? 0 : 24} sm={this.state.filterContainer !== 6 ? 0 : 24}
                      md={this.state.filterContainer}>
@@ -218,7 +218,7 @@ export default class JournalPage extends Component {
                     }}
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
-                    title="Фильтр"
+                    title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
@@ -234,7 +234,7 @@ export default class JournalPage extends Component {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab={'Заявки'} key="2">
+            <TabPane tab={formatMessage({ id: 'menu.journal.requests' })} key="2">
               Заявки
             </TabPane>
           </Tabs>

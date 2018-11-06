@@ -170,6 +170,7 @@ class MainView extends Component {
   selectTable = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
+
   stateFilter = () => {
     return [
       {
@@ -234,14 +235,60 @@ class MainView extends Component {
     ];
   };
 
+  rpmuColumn =() => {
+    return  [
+      {
+        title: "Потребитель",
+        key: "lastname",
+        width: 100,
+        render: (text, record) => (<div>
+            {text.lastname + ' '+text.firstname+' '+text.secondname}
+          <br/>
+            {'(ИИН: '+text.iin+', ДР: '+text.birthdate+')'}
+          </div>
+        )
+      },
+      {
+        title: "Сумма",
+        dataIndex: "paymentsum",
+        key: "paymentsum",
+        width: 80
+      },
+      {
+        title: "Период",
+        dataIndex: "paymentperiod",
+        key: "paymentperiod",
+        width: 70
+      },
+      {
+        title: "КНП",
+        dataIndex: "knp",
+        key: "knp",
+        width: 50
+      },
+      {
+        title: "Референс",
+        dataIndex: "reference",
+        key: "reference",
+        width: 70
+      }
+    ]
+  }
+
 
   render() {
+
     const dateFormat = 'DD.MM.YYYY';
+
     const { universal } = this.props;
+
+    console.log(universal.rpmu.data);
 
     universal.rpmu.columns.forEach((column) => {
       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
     });
+
+    const rpmuColumns = this.rpmuColumn();
 
     const DataDiv = () => (<Card
       style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
@@ -250,10 +297,11 @@ class MainView extends Component {
       title="Платежи РПМУ"
       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
     >
-      <Table size={'small'} columns={universal.rpmu.columns} dataSource={universal.rpmu.data} scroll={{ x: 1100 }}/>
+      <Table size={'small'} columns={rpmuColumns} dataSource={universal.rpmu.data.content} scroll={{ x: 1100 }}/>
     </Card>);
 
     const GridFilterData = this.stateFilter();
+
 
     return (
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТОВ">

@@ -41,23 +41,23 @@ class Requests extends Component {
             <Icon type="database" theme="outlined"/>
           </Button>
         ),
-      },{
-          dataIndex: 'xml',
-          title: 'XML',
-          width: 50,
-          onCell: record => {
-            return {
-              onClick: () => {
-                console.log(record);
-              },
-            };
-          },
-          render: () => (
-            <Button key={'xml'}>
-              <Icon type="database" theme="outlined"/>
-            </Button>
-          ),
-        }],
+      }, {
+        dataIndex: 'xml',
+        title: 'XML',
+        width: 50,
+        onCell: record => {
+          return {
+            onClick: () => {
+              console.log(record);
+            },
+          };
+        },
+        render: () => (
+          <Button key={'xml'}>
+            <Icon type="database" theme="outlined"/>
+          </Button>
+        ),
+      }],
       searchercont: 0,
       tablecont: 24,
       isSearcher: false,
@@ -79,7 +79,7 @@ class Requests extends Component {
       }, {
         id: '3',
         filename: '3zzz.png',
-      }]
+      }],
     };
   }
 
@@ -107,45 +107,38 @@ class Requests extends Component {
         table: 'requests',
       },
     });
-    const children = [];
-    for (let i = 10; i < 36; i++) {
-      children.push({
-        id: i,
-        name: 'a' + i,
-      });
-    }
+
     this.setState({
       filterForm: [
         {
           name: 'number',
-          label: 'Номер заявки',
+          label: formatMessage({ id: 'menu.filter.numberrequest' }),
           type: 'text',
         },
         {
           name: 'reference',
-          label: 'Референс',
+          label: formatMessage({ id: 'menu.filter.reference' }),
           type: 'text',
         },
         {
           name: 'payNumber',
-          label: 'Номер платежного поручения',
+          label: formatMessage({ id: 'menu.filter.paymentnumber' }),
           type: 'text',
         },
         {
           name: 'RefundComeDate',
-          label: 'Дата платежного поручения',
+          label: formatMessage({ id: 'menu.filter.payment.date' }),
           type: 'betweenDate',
         },
         {
           name: 'RefundFundDate',
-          label: 'Дата поступления заявление в Фонд',
+          label: formatMessage({ id: 'menu.filter.refundadd' }),
           type: 'betweenDate',
         },
         {
           name: 'knp',
-          label: 'КНП',
-          type: 'multibox',
-          store: children,
+          label: formatMessage({ id: 'menu.filter.knp' }),
+          type: 'multibox'
         },
       ],
     });
@@ -212,33 +205,37 @@ class Requests extends Component {
       }, {
         id: '3',
         filename: '3zzz.png',
-      }]
-    })
-  }
-  addfile=(e) =>{
-    const {serverFileList} = this.state;
+      }],
+    });
+  };
+  addfile = (e) => {
+    const { serverFileList } = this.state;
     if (e.file.status === 'uploading') {
       const { dispatch } = this.props;
       dispatch({
         type: 'universal/setfile',
-        payload: {e},
-      }) .then(() => {
+        payload: { e },
+      }).then(() => {
         e.file.uid = this.props.universal.setfile.id;
         e.file.name = this.props.universal.setfile.filename;
         e.file.status = 'done';
         this.setState({
-          serverFileList:[
+          serverFileList: [
             ...serverFileList,
-            {id: this.props.universal.setfile.id, filename: this.props.universal.setfile.filename}
-          ]
-        })
+            { id: this.props.universal.setfile.id, filename: this.props.universal.setfile.filename },
+          ],
+        });
 
-      })
+      });
     }
     if (e.file.status === 'removed') {
-      this.setState({serverFileList: serverFileList.filter((obj)=>{return obj.id !== e.file.uid})})
+      this.setState({
+        serverFileList: serverFileList.filter((obj) => {
+          return obj.id !== e.file.uid;
+        }),
+      });
     }
-  }
+  };
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
@@ -253,7 +250,7 @@ class Requests extends Component {
           onClick={(e) => {
             this.setState({
               ShowModal: true,
-              ColType: "receiptAppdateToFsms",
+              ColType: 'receiptAppdateToFsms',
               ModalData: {
                 id: row.id,
                 key: column.dataIndex,
@@ -270,7 +267,7 @@ class Requests extends Component {
           onClick={(e) => {
             this.setState({
               ShowModal: true,
-              ColType: "appEndDate",
+              ColType: 'appEndDate',
               ModalData: {
                 id: row.id,
                 key: column.dataIndex,
@@ -282,7 +279,8 @@ class Requests extends Component {
 
         actionColumns.push(column);
       }
-      else {}
+      else {
+      }
     });
 
 
@@ -292,9 +290,15 @@ class Requests extends Component {
           visible={this.state.ShowModal}
           serverFileList={this.state.serverFileList}
           coltype={this.state.ColType}
-          addfile={(e) => {this.addfile(e);}}
-          clearfile={() => {this.clearfile();}}
-          resetshow={(e) => {this.resetshow(e);}}
+          addfile={(e) => {
+            this.addfile(e);
+          }}
+          clearfile={() => {
+            this.clearfile();
+          }}
+          resetshow={(e) => {
+            this.resetshow(e);
+          }}
           dataSource={this.state.ModalData}
         />}
         <Card bodyStyle={{ padding: 5 }}>
@@ -308,7 +312,8 @@ class Requests extends Component {
                   padding: '0 14px',
                 }}
                 title={formatMessage({ id: 'system.filter' })}
-                extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
+                extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                  icon={faTimes}/></Icon>}
               >
                 <GridFilter
                   clearFilter={() => {
@@ -321,7 +326,7 @@ class Requests extends Component {
               </Card>}
             </Col>
             <Col sm={24} md={this.state.tablecont}>
-              <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
                 <SmartGridView
                   name='RequestPageColumns'
                   scroll={{ x: 1300 }}
@@ -336,29 +341,29 @@ class Requests extends Component {
                   sorted={true}
                   showTotal={false}
                   dataSource={{
-                      total: 50,
-                      pageSize: 10,
-                      page: 1,
-                      data: dataStore,
-                    }}
+                    total: 50,
+                    pageSize: 10,
+                    page: 1,
+                    data: dataStore,
+                  }}
                   onShowSizeChange={(pageNumber, pageSize) => {
-                      console.log(pageNumber, pageSize);
-                    }}
+                    console.log(pageNumber, pageSize);
+                  }}
                   onSelectCell={(cellIndex, cell) => {
 
-                    }}
+                  }}
                   onSelectRow={() => {
 
-                    }}
+                  }}
                   onFilter={(filters) => {
 
-                    }}
+                  }}
                   onRefresh={() => {
-                      this.refreshTable();
-                    }}
+                    this.refreshTable();
+                  }}
                   onSearch={() => {
-                      this.toggleSearcher();
-                    }}
+                    this.toggleSearcher();
+                  }}
                 />
               </Spin>
             </Col>

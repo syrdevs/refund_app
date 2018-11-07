@@ -104,17 +104,17 @@ export default class PaymentsPage extends Component {
       filterForm: [
         {
           name: 'date_payment',
-          label: 'Дата платежа',
+          label: formatMessage({ id: 'menu.filter.payment.create_date' }),
           type: 'betweenDate',
         },
         {
           name: 'knp',
-          label: 'КНП',
+          label: formatMessage({ id: 'menu.filter.payment.knp' }),
           type: 'text',
         },
         {
           name: 'bin',
-          label: 'БИН',
+          label: formatMessage({ id: 'menu.filter.bin' }),
           type: 'text',
         },
       ],
@@ -296,7 +296,7 @@ export default class PaymentsPage extends Component {
             color: '#002140',
             fontSize: '12px',
             paddingLeft: '10px',
-          }}>Общая сумма: 54658.00</span>]}
+          }}>{formatMessage({ id: 'system.totalAmount' })}: 54658.00</span>]}
 
           onShowSizeChange={(pageNumber, pageSize) => {
             console.log(pageNumber, pageSize);

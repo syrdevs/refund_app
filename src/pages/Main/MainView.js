@@ -240,7 +240,7 @@ class MainView extends Component {
       },
       {
         name: 'knp',
-        label: 'КНП',
+        label: formatMessage({ id: 'menu.filter.knp' }),
         type: 'multibox',
       },
       {
@@ -352,7 +352,7 @@ class MainView extends Component {
                 {this.state.searchercont === 7 && <Card
                   style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                   type="inner"
-                  title="Фильтр"
+                  title={formatMessage({ id: 'system.filter' })}
                   headStyle={{
                     padding: '0 14px',
                   }}

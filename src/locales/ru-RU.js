@@ -96,6 +96,21 @@ export default {
   'menu.mainview.paymentperiod': 'Период',
   'menu.mainview.knp': 'КНП',
   'menu.mainview.reference': 'Референс',
+  'menu.mainview.approveBtn': 'Одобрить',
+  'menu.mainview.cancelBtn': 'Отклонить',
+  'menu.mainview.saveBtn': 'Сохранить',
+  'menu.mainview.performBtn': 'Выпонить',
+  'menu.mainview.verifyRPMUBtn': 'Сверить с РПМУ',
+  'menu.mainview.setDateBtn': 'Установить дату осуществления возврата',
+  'menu.mainview.excelBtn': 'Выгрузить в Excel',
+  'menu.mainview.mt102Btn': 'Сформировать МТ102',
+  'menu.mainview.xmlBtn': 'Импортировать выписку XML',
+  'menu.mainview.infographBtn': 'Инфографика',
+
+
+
+
+
   'menu.filter.requestnumber': 'МТ102',
   'menu.filter.iin': 'ИИН',
   'menu.filter.refundstatus': 'Статус заявки на возврат',

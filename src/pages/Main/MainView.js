@@ -405,43 +405,41 @@ class MainView extends Component {
                   addonButtons={[
                     <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'odobrit'} className={'btn-success'}
                     >
-                      Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                      {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'cancel'}
                             className={'btn-danger'}>
-                      Отклонить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                      {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
-                            key={'save'}>Сохранить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                            key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
                     <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
-                            key={'run'}>Выполнить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                            key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
                       <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="1">
-                        Сверить с
-                        РПМУ {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                        {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
                       <Menu.Item key="2">
-                        Выгрузить в
-                        Excel
+                        {formatMessage({ id: 'menu.mainview.excelBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="3">
-                        Установить дату осуществления возврата
+                        {formatMessage({ id: 'menu.mainview.setDateBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4">
-                        Сформировать МТ102
+                        {formatMessage({ id: 'menu.mainview.mt102Btn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
                         this.showModal();
                       }}>
-                        Импортировать выписку XML
+                        {formatMessage({ id: 'menu.mainview.xmlBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
                         this.showGraphic();
                       }}>
-                        Инфографика
+                        {formatMessage({ id: 'menu.mainview.infographBtn' })}
                       </Menu.Item>
                     </Menu>}>
                       <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>Действия <Icon

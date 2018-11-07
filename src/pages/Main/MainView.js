@@ -59,7 +59,7 @@ class MainView extends Component {
       formValues: {},
       stepFormValues: {},
       fcolumn: [{
-        title: 'Платежи',
+        title: formatMessage({ id: 'menu.mainview.paylists' }),
         order: 1,
         key: 'operation',
         isVisible: true,
@@ -78,16 +78,15 @@ class MainView extends Component {
         ),
       },
         {
-          title: 'МТ102',
+          title: formatMessage({ id: 'menu.mainview.mt102' }),
           order: 2,
           key: 'mt102',
           // to do hide for don't admin
-          isVisible: true,
+          isVisible: !hasRole(["ADMIN"]),
           width: 70,
           onCell: record => {
             return {
               onClick: () => {
-                console.log('test success');
                 /*const { dispatch } = this.props;
                 dispatch({
                   type: 'universal2/getmt102',
@@ -193,9 +192,6 @@ class MainView extends Component {
     }
   }
 
-
-  //tested
-
   selectTable = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
@@ -204,42 +200,42 @@ class MainView extends Component {
     return [
       {
         name: 'number',
-        label: 'Номер заявки',
+        label: formatMessage({ id: 'menu.filter.requestnumber' }),
         type: 'text',
       },
       {
         name: 'iin',
-        label: 'ИИН Потребителя',
+        label: formatMessage({ id: 'menu.filter.iin' }),
         type: 'text',
       },
       {
         name: 'dappRefundStatusId.nameRu',
-        label: 'Статус заявки на возврат',
+        label: formatMessage({ id: 'menu.filter.refundstatus' }),
         type: 'multibox',
       },
       {
         name: 'lastDate',
-        label: 'Крайная дата',
+        label: formatMessage({ id: 'menu.filter.lastdate' }),
         type: 'betweenDate',
       },
       {
         name: 'payerDate',
-        label: 'Дата заявления плательщика',
+        label: formatMessage({ id: 'menu.filter.payerdate' }),
         type: 'betweenDate',
       },
       {
         name: 'RefundComeDate',
-        label: 'Дата поступление заявки на возврат',
+        label: formatMessage({ id: 'menu.filter.RefundComeDate' }),
         type: 'betweenDate',
       },
       {
         name: 'RefundFundDate',
-        label: 'Дата поступления заявление в Фонд',
+        label: formatMessage({ id: 'menu.filter.RefundFundDate' }),
         type: 'betweenDate',
       },
       {
         name: 'RefusalDate',
-        label: 'Дата осуществления возврата',
+        label: formatMessage({ id: 'menu.filter.RefusalDate' }),
         type: 'betweenDate',
       },
       {
@@ -249,12 +245,12 @@ class MainView extends Component {
       },
       {
         name: 'RefundReason',
-        label: 'Причина возврата',
+        label: formatMessage({ id: 'menu.filter.RefundReason' }),
         type: 'combobox',
       },
       {
         name: 'RefusalReason',
-        label: 'Причина отказа',
+        label: formatMessage({ id: 'menu.filter.RefusalReason' }),
         type: 'combobox',
       },
     ];
@@ -263,7 +259,7 @@ class MainView extends Component {
   rpmuColumn = () => {
     return [
       {
-        title: 'Потребитель',
+        title: formatMessage({ id: 'menu.mainview.rpmuName' }),
         key: 'lastname',
         width: 100,
         render: (text, record) => (<div>
@@ -274,25 +270,25 @@ class MainView extends Component {
         ),
       },
       {
-        title: 'Сумма',
+        title: formatMessage({ id: 'menu.mainview.paymentsum' }),
         dataIndex: 'paymentsum',
         key: 'paymentsum',
         width: 80,
       },
       {
-        title: 'Период',
+        title: formatMessage({ id: 'menu.mainview.paymentperiod' }),
         dataIndex: 'paymentperiod',
         key: 'paymentperiod',
         width: 70,
       },
       {
-        title: 'КНП',
+        title: formatMessage({ id: 'menu.mainview.knp' }),
         dataIndex: 'knp',
         key: 'knp',
         width: 50,
       },
       {
-        title: 'Референс',
+        title: formatMessage({ id: 'menu.mainview.reference' }),
         dataIndex: 'reference',
         key: 'reference',
         width: 70,
@@ -335,7 +331,7 @@ class MainView extends Component {
 
 
     return (
-      <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТОВ">
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.mainview' })}>
         <ModalGraphView visible={this.state.ShowGraph}
                         resetshow={(e) => {
                           this.setState({ ShowGraph: false });
@@ -384,7 +380,7 @@ class MainView extends Component {
             </Col>
             <Col sm={24} md={this.state.tablecont}>
               {/*<Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>*/}
-              <Spin tip="Загрузка..." spinning={this.props.loadingData}>
+              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
                 <SmartGridView
                   name={'RefundsPageColumns'}
                   scroll={{ x: this.state.xsize }}

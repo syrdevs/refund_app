@@ -14,7 +14,7 @@ import ModalChangeDate from '@/components/ModalChangeDate';
 import SmartGridView from '@/components/SmartGridView';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 @connect(({ universal2, universal, loading }) => ({
   universal2,
@@ -287,7 +287,7 @@ class Requests extends Component {
 
 
     return (
-      <PageHeaderWrapper title="ЗАЯВКИ">
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.requests' })}>
         {<ModalChangeDate
           visible={this.state.ShowModal}
           serverFileList={this.state.serverFileList}
@@ -307,7 +307,7 @@ class Requests extends Component {
                 headStyle={{
                   padding: '0 14px',
                 }}
-                title="Фильтр"
+                title={formatMessage({ id: 'system.filter' })}
                 extra={<Icon style={{'cursor':'pointer'}} onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}
               >
                 <GridFilter

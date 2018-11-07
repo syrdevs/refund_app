@@ -1,19 +1,20 @@
 import React from 'react';
 import { Icon } from 'antd';
 import styles from './index.less';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 export default {
   UserName: {
     props: {
       size: 'large',
       prefix: <Icon type="user" className={styles.prefixIcon} />,
-      placeholder: 'admin',
+      placeholder: '',
     },
     rules: [
       {
         required: true,
-        message: 'Заполните поле!',
-      },
+        message: formatMessage({id:"app.form.field.required.text"})
+  },
     ],
   },
   Password: {
@@ -21,12 +22,12 @@ export default {
       size: 'large',
       prefix: <Icon type="lock" className={styles.prefixIcon} />,
       type: 'password',
-      placeholder: '888888',
+      placeholder: '',
     },
     rules: [
       {
         required: true,
-        message: 'Заполните поле!',
+        message: formatMessage({id:"app.form.field.required.text"}),
       },
     ],
   },

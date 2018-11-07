@@ -114,7 +114,7 @@ export default class StaticticsView extends Component {
             <Card bodyStyle={{ padding: 5 }}>
               <RangePicker
                 //
-                placeholder={[formatMessage({id:"datepicker.start.label"}), formatMessage({id:"datepicker.start.end"})]}
+                placeholder={[formatMessage({id:"datepicker.start.label"}), formatMessage({id:"datepicker.end.label"})]}
                 format={'DD.MM.YYYY'}
                 onChange={(date, dateString) => {
                   this.setState((prevState) => ({

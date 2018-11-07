@@ -60,7 +60,7 @@ class LoginPage extends Component {
   };
 
   renderMessage = content => (
-    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon/>
   );
 
   render() {
@@ -76,20 +76,20 @@ class LoginPage extends Component {
             this.loginForm = form;
           }}
         >
-          <br />
-          <UserName name="email" placeholder="Логин" />
+          <br/>
+          <UserName name="email" placeholder={formatMessage({ id: 'system.form.login' })}/>
           <Password
             name="password"
-            placeholder="Пароль"
+            placeholder={formatMessage({ id: 'system.form.password' })}
             onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
           />
-         {/* <div>
+          {/* <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="app.login.remember-me" />
             </Checkbox>
           </div>*/}
           <Submit loading={submitting}>
-            <FormattedMessage id="app.login.login" />
+            <FormattedMessage id="app.login.login"/>
           </Submit>
         </Login>
       </div>

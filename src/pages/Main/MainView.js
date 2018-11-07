@@ -58,7 +58,8 @@ class MainView extends Component {
       searchButton: false,
       formValues: {},
       stepFormValues: {},
-      fcolumn: [{
+      fcolumn: [
+        {
         title: formatMessage({ id: 'menu.mainview.paylists' }),
         order: 1,
         key: 'operation',
@@ -103,6 +104,17 @@ class MainView extends Component {
               </a>
             </Button>
           ),
+        },
+        {
+          title: formatMessage({ id: 'menu.mainview.fio' }),
+          order: 4,
+          key: 'fio',
+          isVisible: true,
+          width: 150,
+          render: (item) => {
+            //console.log(i);
+            return item.personSurname+' '+item.personFirstname+' '+item.personPatronname;
+          }
         }],
       columns: [],
       dataSource: [],
@@ -111,7 +123,7 @@ class MainView extends Component {
       selectedRowKeys: [],
       tablecont: 24,
       filterForm: [],
-      xsize: 1300,
+      xsize: 1600,
     };
   }
 
@@ -134,7 +146,11 @@ class MainView extends Component {
     dispatch({
       type: 'universal/mainviewcolumn',
       payload: {},
-    });
+    })
+      /*.then(()=> {
+      console.log(this.props);
+      this.props.universal.columns.concat(this.state.columns);
+    });*/
     dispatch({
       type: 'universal/rpmuTable',
       payload: {},

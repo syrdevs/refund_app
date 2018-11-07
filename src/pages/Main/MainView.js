@@ -81,12 +81,13 @@ class MainView extends Component {
           title: 'МТ102',
           order: 2,
           key: 'mt102',
+          // to do hide for don't admin
           isVisible: true,
           width: 70,
           onCell: record => {
             return {
               onClick: () => {
-                console.log("test success")
+                console.log('test success');
                 /*const { dispatch } = this.props;
                 dispatch({
                   type: 'universal2/getmt102',
@@ -99,7 +100,7 @@ class MainView extends Component {
           render: () => (
             <Button size={'small'}>
               <a href="/api/refund/getfile" download>
-              <Icon><FontAwesomeIcon icon={faFileAlt}/></Icon>
+                <Icon><FontAwesomeIcon icon={faFileAlt}/></Icon>
               </a>
             </Button>
           ),
@@ -137,14 +138,6 @@ class MainView extends Component {
     });
     dispatch({
       type: 'universal/rpmuTable',
-      payload: {},
-    });
-    dispatch({
-      type: 'universal/mainModal',
-      payload: {},
-    });
-    dispatch({
-      type: 'universal/mainSelect1',
       payload: {},
     });
   }
@@ -223,7 +216,6 @@ class MainView extends Component {
         name: 'dappRefundStatusId.nameRu',
         label: 'Статус заявки на возврат',
         type: 'multibox',
-        store: this.props.universal.select1,
       },
       {
         name: 'lastDate',
@@ -252,64 +244,61 @@ class MainView extends Component {
       },
       {
         name: 'knp',
-        label: 'КНП:',
+        label: 'КНП',
         type: 'multibox',
-        store: this.props.universal.select1,
       },
       {
         name: 'RefundReason',
         label: 'Причина возврата',
         type: 'combobox',
-        store: this.props.universal.select1,
       },
       {
         name: 'RefusalReason',
         label: 'Причина отказа',
         type: 'combobox',
-        store: this.props.universal.select1,
       },
     ];
   };
 
-  rpmuColumn =() => {
-    return  [
+  rpmuColumn = () => {
+    return [
       {
-        title: "Потребитель",
-        key: "lastname",
+        title: 'Потребитель',
+        key: 'lastname',
         width: 100,
         render: (text, record) => (<div>
-            {text.lastname + ' '+text.firstname+' '+text.secondname}
-          <br/>
-            {'(ИИН: '+text.iin+', ДР: '+text.birthdate+')'}
+            {text.lastname + ' ' + text.firstname + ' ' + text.secondname}
+            <br/>
+            {'(ИИН: ' + text.iin + ', ДР: ' + text.birthdate + ')'}
           </div>
-        )
+        ),
       },
       {
-        title: "Сумма",
-        dataIndex: "paymentsum",
-        key: "paymentsum",
-        width: 80
+        title: 'Сумма',
+        dataIndex: 'paymentsum',
+        key: 'paymentsum',
+        width: 80,
       },
       {
-        title: "Период",
-        dataIndex: "paymentperiod",
-        key: "paymentperiod",
-        width: 70
+        title: 'Период',
+        dataIndex: 'paymentperiod',
+        key: 'paymentperiod',
+        width: 70,
       },
       {
-        title: "КНП",
-        dataIndex: "knp",
-        key: "knp",
-        width: 50
+        title: 'КНП',
+        dataIndex: 'knp',
+        key: 'knp',
+        width: 50,
       },
       {
-        title: "Референс",
-        dataIndex: "reference",
-        key: "reference",
-        width: 70
-      }
-    ]
-  }
+        title: 'Референс',
+        dataIndex: 'reference',
+        key: 'reference',
+        width: 70,
+      },
+    ];
+  };
 
 
   render() {
@@ -333,9 +322,9 @@ class MainView extends Component {
         dataSource={universal.rpmu.content}
         rowClassName={(record) => {
 
-          if(record.refundExist){
+          if (record.refundExist) {
             console.log(record.refundExist);
-            return "greenRow";
+            return 'greenRow';
           }
         }
         }
@@ -349,14 +338,16 @@ class MainView extends Component {
       <PageHeaderWrapper title="РЕЕСТР ВОЗВРАТОВ">
         <ModalGraphView visible={this.state.ShowGraph}
                         resetshow={(e) => {
-                         this.setState({ ShowGraph: false });
+                          this.setState({ ShowGraph: false });
                         }}
-                       dataSource={universal.mainmodal}/>
-        <ModalGridView visible={this.state.ShowModal}
-                       resetshow={(e) => {
-                         this.setState({ ShowModal: false });
-                       }}
-                       dataSource={universal.mainmodal}/>
+                        dataSource={universal.mainmodal}/>
+
+        {this.state.ShowModal && <ModalGridView visible={this.state.ShowModal}
+                                                resetshow={(e) => {
+                                                  this.setState({ ShowModal: false });
+                                                }}
+                                                dataSource={universal.mainmodal}/>}
+
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Col sm={24} md={this.state.searchercont}>
@@ -417,7 +408,7 @@ class MainView extends Component {
                   }}
                   addonButtons={[
                     <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'odobrit'} className={'btn-success'}
-                            >
+                    >
                       Одобрить {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
@@ -451,7 +442,7 @@ class MainView extends Component {
                       }}>
                         Импортировать выписку XML
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
                         this.showGraphic();
                       }}>
                         Инфографика

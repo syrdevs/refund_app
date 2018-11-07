@@ -47,7 +47,6 @@ function getPropByName(obj, desc) {
   return obj;
 }
 
-
 const ResizeableTitle = (props) => {
   const { onResize, width, ...restProps } = props;
 
@@ -121,6 +120,19 @@ const SmartGridHeader = props => {
     </Row>
   </div>);
 };
+
+class BodyCell extends Component {
+
+  render() {
+
+    console.log(this);
+
+    return (
+      <td  {...this.props}/>
+    );
+  }
+}
+
 
 export default class SmartGridView extends Component {
   constructor(props) {
@@ -252,9 +264,9 @@ export default class SmartGridView extends Component {
         /* header: {
            cell: ResizeableTitle,
          },*/
-        /*body: {
-          row: this.selectableRow(),
-        },*/
+        body: {
+          cell: BodyCell,
+        },
       };
     }
 

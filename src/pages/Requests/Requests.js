@@ -329,7 +329,6 @@ class Requests extends Component {
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
                 <SmartGridView
                   name='RequestPageColumns'
-                  scroll={{ x: 1300 }}
                   searchButton={this.state.searchButton}
                   fixedBody={true}
                   rowKey={'id'}

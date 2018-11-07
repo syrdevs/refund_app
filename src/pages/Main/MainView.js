@@ -24,7 +24,6 @@ import moment from 'moment';
 import ModalGridView from '@/components/ModalGridView';
 import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
-import TableData from './mainView';
 import { connect } from 'dva';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -110,7 +109,7 @@ class MainView extends Component {
           order: 4,
           key: 'fio',
           isVisible: true,
-          width: 150,
+         width: 150,
           render: (item) => {
             //console.log(i);
             return item.personSurname+' '+item.personFirstname+' '+item.personPatronname;
@@ -123,7 +122,7 @@ class MainView extends Component {
       selectedRowKeys: [],
       tablecont: 24,
       filterForm: [],
-      xsize: 1600,
+      xsize: 'auto',
     };
   }
 

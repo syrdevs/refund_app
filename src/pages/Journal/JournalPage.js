@@ -166,7 +166,6 @@ export default class JournalPage extends Component {
       <Spin tip="Загрузка..." spinning={this.props.loadingData}>
         <SmartGridView
           name={'journalPageColumns'}
-          scroll={{ x: 1300 }}
           searchButton={this.state.searchButton}
           fixedBody={true}
           rowKey={'id'}

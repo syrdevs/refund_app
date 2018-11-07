@@ -21,9 +21,9 @@ const TabPane = Tabs.TabPane;
 
 
 export default class ModalGraphView extends Component {
+
   constructor(props) {
     super(props);
-
     this.state = {
       isVisible: false,
       dataSource: [

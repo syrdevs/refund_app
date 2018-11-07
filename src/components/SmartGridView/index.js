@@ -112,7 +112,8 @@ const SmartGridHeader = props => {
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
 
-            {props.showTotal && <div className={styles.total_label}>{formatMessage({ id: 'app.table.column.total' })}: 2548462</div>}
+            {props.showTotal &&
+            <div className={styles.total_label}>{formatMessage({ id: 'app.table.column.total' })}: 2548462</div>}
           </div>
         </div>
 
@@ -243,9 +244,8 @@ export default class SmartGridView extends Component {
 
     // to do order column with actionColumns
     if (this.props.actionColumns && this.props.actionColumns.length > 0) {
-      tableOptions.columns = this.props.actionColumns.concat(tableOptions.columns);
+      tableOptions.columns = this.props.actionColumns.filter(x => x.isVisible).concat(tableOptions.columns);
     }
-
 
     if (this.props.rowSelection) {
       tableOptions.components = {

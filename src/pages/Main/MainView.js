@@ -442,7 +442,7 @@ class MainView extends Component {
                         {formatMessage({ id: 'menu.mainview.infographBtn' })}
                       </Menu.Item>
                     </Menu>}>
-                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>Действия <Icon
+                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
                         type="down"/></Button>
                     </Dropdown>,
                   ]}

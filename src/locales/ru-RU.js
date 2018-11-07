@@ -106,11 +106,7 @@ export default {
   'menu.mainview.mt102Btn': 'Сформировать МТ102',
   'menu.mainview.xmlBtn': 'Импортировать выписку XML',
   'menu.mainview.infographBtn': 'Инфографика',
-
-
-
-
-
+  'menu.mainview.actionBtn': 'Действия',
   'menu.filter.requestnumber': 'МТ102',
   'menu.filter.iin': 'ИИН',
   'menu.filter.refundstatus': 'Статус заявки на возврат',

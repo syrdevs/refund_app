@@ -109,7 +109,7 @@ export default class PaymentsPage extends Component {
         },
         {
           name: 'knp',
-          label: formatMessage({ id: 'menu.filter.payment.knp' }),
+          label: formatMessage({ id: 'menu.filter.knp' }),
           type: 'text',
         },
         {

@@ -138,7 +138,7 @@ class Requests extends Component {
         {
           name: 'knp',
           label: formatMessage({ id: 'menu.filter.knp' }),
-          type: 'multibox'
+          type: 'multibox',
         },
       ],
     });
@@ -245,44 +245,27 @@ class Requests extends Component {
     let propColumns = [];
 
     columns.forEach((column) => {
-      if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
-        column.render = (text, row) => <a
-          onClick={(e) => {
-            this.setState({
-              ShowModal: true,
-              ColType: 'receiptAppdateToFsms',
-              ModalData: {
-                id: row.id,
-                key: column.dataIndex,
-                value: text,
-              },
-            });
-          }}
-        >{text}</a>;
-
-        actionColumns.push(column);
-      }
-      else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
-        column.render = (text, row) => <a
-          onClick={(e) => {
-            this.setState({
-              ShowModal: true,
-              ColType: 'appEndDate',
-              ModalData: {
-                id: row.id,
-                key: column.dataIndex,
-                value: text,
-              },
-            });
-          }}
-        >{text}</a>;
-
-        actionColumns.push(column);
-      }
-      else {
+      if (['receiptAppdateToFsms', 'appEndDate'].indexOf(column.dataIndex) !== -1) {
+        actionColumns.push({
+          ...column,
+          render: (text, row) => <a
+            onClick={(e) => {
+              this.setState({
+                ShowModal: true,
+                ColType: column.dataIndex,
+                ModalData: {
+                  id: row.id,
+                  key: column.dataIndex,
+                  value: text,
+                },
+              });
+            }}
+          >{text}</a>,
+        });
+      } else {
+        propColumns.push(column);
       }
     });
-
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.requests' })}>

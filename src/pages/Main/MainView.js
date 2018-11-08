@@ -60,7 +60,7 @@ class MainView extends Component {
       fcolumn: [
         {
         title: formatMessage({ id: 'menu.mainview.paylists' }),
-        order: 1,
+        order: 0,
         key: 'operation',
         isVisible: true,
         width: 70,
@@ -79,7 +79,7 @@ class MainView extends Component {
       },
         {
           title: formatMessage({ id: 'menu.mainview.mt102' }),
-          order: 2,
+          order: 1,
           key: 'mt102',
           // to do hide for don't admin
           isVisible: !hasRole(["ADMIN"]),
@@ -106,7 +106,7 @@ class MainView extends Component {
         },
         {
           title: formatMessage({ id: 'menu.mainview.fio' }),
-          order: 4,
+          order: 3,
           key: 'fio',
           isVisible: true,
          width: 150,

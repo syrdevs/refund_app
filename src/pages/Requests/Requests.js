@@ -245,9 +245,10 @@ class Requests extends Component {
     let propColumns = [];
 
     columns.forEach((column) => {
-      if (['receiptAppdateToFsms', 'appEndDate'].indexOf(column.dataIndex) !== -1) {
+      if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
         actionColumns.push({
           ...column,
+          order:2,
           render: (text, row) => <a
             onClick={(e) => {
               this.setState({
@@ -262,7 +263,27 @@ class Requests extends Component {
             }}
           >{text}</a>,
         });
-      } else {
+      }
+      else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
+        actionColumns.push({
+          ...column,
+          order:3,
+          render: (text, row) => <a
+            onClick={(e) => {
+              this.setState({
+                ShowModal: true,
+                ColType: column.dataIndex,
+                ModalData: {
+                  id: row.id,
+                  key: column.dataIndex,
+                  value: text,
+                },
+              });
+            }}
+          >{text}</a>,
+        });
+      }
+      else {
         propColumns.push(column);
       }
     });

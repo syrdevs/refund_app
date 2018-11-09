@@ -175,11 +175,11 @@ class Requests extends Component {
 
   resetshow() {
     this.setState({
-      ModalData: {
+     /* ModalData: {
         id: null,
         key: null,
         value: null,
-      },
+      },*/
       ShowModal: false,
     });
   }

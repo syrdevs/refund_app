@@ -85,9 +85,9 @@ class LoginPage extends Component {
                 }}
               >
                 <br/>
-                <UserName name="email" placeholder={formatMessage({ id: 'system.form.login' })}/>
+                <UserName name="Login" placeholder={formatMessage({ id: 'system.form.login' })}/>
                 <Password
-                  name="password"
+                  name="Password"
                   placeholder={formatMessage({ id: 'system.form.password' })}
                   onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
                 />

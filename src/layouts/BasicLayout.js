@@ -13,11 +13,11 @@ import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
 import SettingDrawer from '@/components/SettingDrawer';
 import logo from '../assets/kartinka_21.png';
+import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
 import setAuth from '../utils/setAuth';
-import GlobalFooter from '@/components/GlobalFooter';
 
 const { Content } = Layout;
 
@@ -120,7 +120,12 @@ class BasicLayout extends React.PureComponent {
 
   componentDidUpdate(preProps) {
     // auth user checkkkkkk
-    setAuth();
+    //setAuth();
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'user/checkToken',
+    });
 
     // After changing to phone mode,
     // if collapsed is true, you need to click twice to display
@@ -275,7 +280,7 @@ class BasicLayout extends React.PureComponent {
               {children}
             </Authorized>
           </Content>
-          <GlobalFooter/>
+          <Footer/>
         </Layout>
       </Layout>
     );

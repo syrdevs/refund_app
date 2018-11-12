@@ -1,9 +1,8 @@
 export default {
   'navBar.lang': 'Языки',
-  'lang.simplified-chinese': '🇨🇳 简体 中文',
-  'lang.traditional-chinese': '🇭🇰 繁体 中文',
-  'lang.english': '🇬🇧 English',
+  'lang.english': 'KZ Казахский',
   'lang.russian': 'RU Русский',
+  'lang.kazakh': 'KZ Казахский',
   'lang.portuguese': '🇵🇹 Португальский',
   'app.title.main': ' НАО «Фонд социального медицинского страхования»',
   'app.title.subtitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЯ',

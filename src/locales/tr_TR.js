@@ -1,9 +1,8 @@
 export default {
   'navBar.lang': 'Iazykı',
-  'lang.simplified-chinese': '🇨🇳 简体 中文',
-  'lang.traditional-chinese': '🇭🇰 繁体 中文',
   'lang.english': 'KZ Қазақша',
   'lang.russian': 'RU Орысша',
+  'lang.kazakh': 'KZ Қазақша',
   'lang.portuguese': '🇵🇹 Portýgalskıı',
   'app.title.main': ' NAO «Fond sotsıalnogo medıtsınskogo strahovanııa»',
   'app.title.subtitle': 'FOND MEDITsINSKOGO STRAHOVANIIa',

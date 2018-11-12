@@ -13,11 +13,11 @@ import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
 import SettingDrawer from '@/components/SettingDrawer';
 import logo from '../assets/kartinka_21.png';
-import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
 import setAuth from '../utils/setAuth';
+import GlobalFooter from '@/components/GlobalFooter';
 
 const { Content } = Layout;
 
@@ -275,7 +275,7 @@ class BasicLayout extends React.PureComponent {
               {children}
             </Authorized>
           </Content>
-          <Footer/>
+          <GlobalFooter/>
         </Layout>
       </Layout>
     );

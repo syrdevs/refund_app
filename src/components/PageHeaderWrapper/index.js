@@ -31,7 +31,9 @@ const PageHeaderWrapper = ({ children, contentWidth, wrapperClassName, top, ...r
     {children ? (
       <div className={styles.content}>
         <GridContent>{children}</GridContent>
+
       </div>
+
     ) : null}
   </div>
 );

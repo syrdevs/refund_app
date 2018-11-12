@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
-import { Checkbox, Alert, Icon } from 'antd';
+import { Checkbox, Alert, Icon, Card, Row, Col } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
+
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
@@ -68,30 +69,45 @@ class LoginPage extends Component {
     const { type, autoLogin } = this.state;
     return (
       <div className={styles.main}>
-        <Login
-          defaultActiveKey={type}
-          onTabChange={this.onTabChange}
-          onSubmit={this.handleSubmit}
-          ref={form => {
-            this.loginForm = form;
-          }}
-        >
-          <br/>
-          <UserName name="email" placeholder={formatMessage({ id: 'system.form.login' })}/>
-          <Password
-            name="password"
-            placeholder={formatMessage({ id: 'system.form.password' })}
-            onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
-          />
-          {/* <div>
+        <Card style={{ width: 900 }}>
+          <Row>
+            <Col
+              sm={0}
+              md={6}
+            />
+            <Col sm={24} md={12}>
+              <Login
+                defaultActiveKey={type}
+                onTabChange={this.onTabChange}
+                onSubmit={this.handleSubmit}
+                ref={form => {
+                  this.loginForm = form;
+                }}
+              >
+                <br/>
+                <UserName name="email" placeholder={formatMessage({ id: 'system.form.login' })}/>
+                <Password
+                  name="password"
+                  placeholder={formatMessage({ id: 'system.form.password' })}
+                  onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
+                />
+                {/* <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="app.login.remember-me" />
             </Checkbox>
           </div>*/}
-          <Submit loading={submitting}>
-            <FormattedMessage id="app.login.login"/>
-          </Submit>
-        </Login>
+                <Submit loading={submitting}>
+                  <FormattedMessage id="app.login.login"/>
+                </Submit>
+              </Login>
+            </Col>
+            <Col
+              sm={0}
+              md={6}
+            />
+
+          </Row>
+        </Card>
       </div>
     );
   }

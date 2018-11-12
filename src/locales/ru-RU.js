@@ -365,4 +365,11 @@ export default {
     'Панель настроек отображается только в среде разработки, пожалуйста, вручную измените',
   'app.table.column.select': 'Выберите столбцов',
   'app.table.column.total': 'Количество записей',
+  'app.footer.title1': '2017-2018 &#169;Некомерческое акцонерное общество',
+  'app.footer.title2': 'Фонд социального Медицинского Страхование',
+  'app.footer.suppordname': 'Служба технической поддержки',
+  'app.footer.suppordtel': '8(7172) 123-456',
+  'app.footer.suppordemail': 'support@med.kz'
+
+
 };

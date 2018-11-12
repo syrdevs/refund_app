@@ -369,7 +369,9 @@ export default {
   'app.footer.title2': 'Фонд социального Медицинского Страхование',
   'app.footer.suppordname': 'Служба технической поддержки',
   'app.footer.suppordtel': '8(7172) 123-456',
-  'app.footer.suppordemail': 'support@med.kz'
+  'app.footer.suppordemail': 'support@med.kz',
+  'app.login.entrу': 'Вход в систему',
+  'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЕ'
 
 
 };

@@ -63,7 +63,7 @@ class UserLayout extends React.PureComponent {
                   </Col>
                   <Col span={18}>
                     <div className={styles.lang} style={{backgroundColor:'white', display: 'table-caption'}}>
-                      <p className={styles.titlep}>ФОНД МЕДЕЦИНСКОГО СТРАХОВАНИЕ</p>
+                      <p className={styles.titlep}>{formatMessage({ id: 'app.login.headertitle' })}</p>
                     </div>
                   </Col>
                 </Row>
@@ -85,7 +85,7 @@ class UserLayout extends React.PureComponent {
             <div className={styles.header}>
               {
                 <Link to="/">
-                  <h1 className={styles.title}>Вход в систему</h1>
+                  <h1 className={styles.title}>{formatMessage({ id: 'app.login.entrу' })}</h1>
                 </Link>
               }
             </div>

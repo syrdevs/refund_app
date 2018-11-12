@@ -59,31 +59,31 @@ class MainView extends Component {
       stepFormValues: {},
       fcolumn: [
         {
-        title: formatMessage({ id: 'menu.mainview.paylists' }),
-        order: 0,
-        key: 'operation',
-        isVisible: true,
-        width: 70,
-        onCell: record => {
-          return {
-            onClick: () => {
-              this.toggleItems(record);
-            },
-          };
+          title: formatMessage({ id: 'menu.mainview.paylists' }),
+          order: 0,
+          key: 'operation',
+          className: 'action_column',
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+                this.toggleItems(record);
+              },
+            };
+          },
+          render: () => (
+            <Button size={'small'}>
+              <Icon type="database" theme="outlined"/>
+            </Button>
+          ),
         },
-        render: () => (
-          <Button size={'small'}>
-            <Icon type="database" theme="outlined"/>
-          </Button>
-        ),
-      },
         {
           title: formatMessage({ id: 'menu.mainview.mt102' }),
           order: 1,
           key: 'mt102',
+          className: 'action_column',
           // to do hide for don't admin
-          isVisible: !hasRole(["ADMIN"]),
-          width: 70,
+          isVisible: !hasRole(['ADMIN']),
           onCell: record => {
             return {
               onClick: () => {
@@ -109,13 +109,97 @@ class MainView extends Component {
           order: 3,
           key: 'fio',
           isVisible: true,
-         width: 150,
+          width: 150,
           render: (item) => {
             //console.log(i);
-            return item.personSurname+' '+item.personFirstname+' '+item.personPatronname;
-          }
+            return item.personSurname + ' ' + item.personFirstname + ' ' + item.personPatronname;
+          },
+        }, {
+          'title': 'Статус заявки на возврат',
+          isVisible: true,
+          'dataIndex': 'dappRefundStatusId.nameRu',
+          order: 7,
+          render: (record, value) => {
+            if (value.dappRefundStatusId.code === '00004') {
+              return <a style={{ color: 'green' }} href="#">{value.dappRefundStatusId.nameRu}</a>;
+            }
+
+            return value.dappRefundStatusId.nameRu;
+          },
         }],
-      columns: [],
+      columns: [{
+        'title': 'Номер заявки',
+        'isVisible': true,
+        'dataIndex': 'applicationId.appNumber',
+      }, {
+        'title': 'Дата заявления плательщика',
+        'isVisible': true,
+        'dataIndex': 'appPayerDate',
+      }, {
+        'title': 'Дата заявки',
+        'isVisible': true,
+        'dataIndex': 'applicationId.appDate',
+      }, {
+        'title': 'Дата поступления заявления в Фонд',
+        'isVisible': true,
+        'dataIndex': 'receiptAppdateToFsms',
+      }, {
+        'title': 'Дата поступления',
+        'isVisible': true,
+        'dataIndex': 'entryDate',
+      }, {
+        'title': 'Крайняя дата исполнения заявки',
+        'isVisible': true,
+        'dataIndex': 'appEndDate',
+      },
+        {
+          'title': 'Сумма возврата',
+          'isVisible': true,
+          'dataIndex': 'refundPayAmount',
+
+        },
+        {
+          'title': 'Референс ГК',
+          'isVisible': true,
+          'dataIndex': 'gcvpReference',
+        }, {
+          'title': 'Номер плат-го поручения ГК',
+          'isVisible': true,
+          'dataIndex': 'gcvpOrderNum',
+        }, { 'title': 'Дата плат-го поручения ГК', 'dataIndex': 'gcvpOrderDate' }, {
+          'title': 'Причина возврата',
+          'dataIndex': 'drefundReasonId.nameRu',
+        }, { 'title': 'ИИН Потребителя', 'dataIndex': 'personIin' }, {
+          'title': 'КНП',
+          'dataIndex': 'applicationId.dknpId.id',
+        }, {
+          'title': 'Номер платежного поручения',
+          'dataIndex': 'applicationId.payOrderNum',
+        }, {
+          'title': 'Дата платежного поручения',
+          'dataIndex': 'applicationId.payOrderDate',
+        }, { 'title': 'Сумма отчислений', 'dataIndex': 'payAmount' }, {
+          'title': 'Дата последнего взноса',
+          'dataIndex': 'lastPayDate',
+        }, {
+          'title': 'Дата осуществления возврата',
+          'dataIndex': 'refundDate',
+        }, {
+          'title': 'Кол-во отчислений и (или) взносов за последние 12 календарных месяцев',
+          'dataIndex': 'lastMedcarePayCount',
+        }, { 'title': 'Статус страхования', 'dataIndex': 'medinsStatus' }, {
+          'title': 'Референс',
+          'dataIndex': 'applicationId.reference',
+        }, { 'title': 'Причина отказа', 'dataIndex': 'ddenyReasonId.nameRu' }, {
+          'title': 'Отчет об отказе',
+          'dataIndex': 'refundStatus',
+        }, { 'title': 'Осталось дней', 'dataIndex': 'daysLeft' }, {
+          'title': 'Дата изменения статуса заявки',
+          'dataIndex': 'changeDate',
+        }, { 'title': 'Период', 'dataIndex': 'payPeriod' }, {
+          'title': 'Веб-сервис (сообщение) ',
+          'dataIndex': 'wsStatusMessage',
+        }],
       dataSource: [],
       isHidden: true,
       searchercont: 0,
@@ -123,6 +207,15 @@ class MainView extends Component {
       tablecont: 24,
       filterForm: [],
       xsize: 'auto',
+
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': false,
+          'data': {},
+        },
+      },
     };
   }
 
@@ -136,24 +229,31 @@ class MainView extends Component {
     });
   }
 
-  componentDidMount() {
+  loadMainGridData = () => {
+
     const { dispatch } = this.props;
+
     dispatch({
       type: 'universal/mainviewtable',
-      payload: { size: 10, page: 1 },
+      payload: this.state.pagingConfig,
     });
-    dispatch({
+  };
+
+  componentDidMount() {
+    this.loadMainGridData();
+
+    /*dispatch({
       type: 'universal/mainviewcolumn',
       payload: {},
-    })
-      /*.then(()=> {
-      console.log(this.props);
-      this.props.universal.columns.concat(this.state.columns);
     });*/
-    dispatch({
-      type: 'universal/rpmuTable',
-      payload: {},
-    });
+    /*.then(()=> {
+    console.log(this.props);
+    this.props.universal.columns.concat(this.state.columns);
+  });*/
+    /*  dispatch({
+        type: 'universal/rpmuTable',
+        payload: {},
+      });*/
   }
 
   onShowSizeChange = (current, pageSize) => {
@@ -162,7 +262,11 @@ class MainView extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/mainviewtable',
-      payload: { size: pageSize, page: 1 },
+      payload: {
+        ...this.state.pagingConfig,
+        start: current,
+        length: pageSize,
+      },
     });
   };
 
@@ -211,11 +315,45 @@ class MainView extends Component {
     this.setState({ selectedRowKeys });
   };
 
+  clearFilter = () => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': false,
+          'data': {},
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
+
+  setFilter = (filters) => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': true,
+          'data': filters,
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
+  };
+
   stateFilter = () => {
     return [
       {
-        name: 'number',
-        label: formatMessage({ id: 'menu.filter.requestnumber' }),
+        name: 'appNumber',
+        label: formatMessage({ id: 'menu.filter.numberrequest' }),
         type: 'text',
       },
       {
@@ -224,7 +362,7 @@ class MainView extends Component {
         type: 'text',
       },
       {
-        name: 'dappRefundStatusId.nameRu',
+        name: 'refund_status',
         label: formatMessage({ id: 'menu.filter.refundstatus' }),
         type: 'multibox',
       },
@@ -257,14 +395,15 @@ class MainView extends Component {
         name: 'knp',
         label: formatMessage({ id: 'menu.filter.knp' }),
         type: 'multibox',
+        hint: true,
       },
       {
-        name: 'RefundReason',
+        name: 'refund_reason',
         label: formatMessage({ id: 'menu.filter.RefundReason' }),
         type: 'combobox',
       },
       {
-        name: 'RefusalReason',
+        name: 'refund_deny_reason',
         label: formatMessage({ id: 'menu.filter.RefusalReason' }),
         type: 'combobox',
       },
@@ -377,9 +516,10 @@ class MainView extends Component {
 
                   <GridFilter
                     clearFilter={() => {
+                      this.clearFilter();
                     }}
                     applyFilter={(filters) => {
-                      console.log(filters);
+                      this.setFilter(filters);
                     }}
                     filterForm={GridFilterData}
                     dateFormat={dateFormat}/>
@@ -408,13 +548,13 @@ class MainView extends Component {
                   fixedHeader={true}
                   rowSelection={true}
                   actionColumns={this.state.fcolumn}
-                  columns={universal.columns}
+                  columns={this.state.columns}
                   sorted={true}
-                  showTotal={false}
+                  showTotal={true}
                   dataSource={{
-                    total: 50,
-                    pageSize: 10,
-                    page: 1,
+                    total: universal.table.totalElements,
+                    pageSize: this.state.pagingConfig.length,
+                    page: this.state.pagingConfig.start + 1,
                     data: universal.table.content,
                   }}
                   addonButtons={[
@@ -457,13 +597,14 @@ class MainView extends Component {
                         {formatMessage({ id: 'menu.mainview.infographBtn' })}
                       </Menu.Item>
                     </Menu>}>
-                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])} key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
+                              key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
                         type="down"/></Button>
                     </Dropdown>,
                   ]}
 
                   onShowSizeChange={(pageNumber, pageSize) => {
-                    console.log(pageNumber, pageSize);
+                    this.onShowSizeChange(pageNumber, pageSize);
                   }}
                   onSelectCell={(cellIndex, cell) => {
 
@@ -475,7 +616,7 @@ class MainView extends Component {
 
                   }}
                   onRefresh={() => {
-                    console.log('refresh');
+                    this.loadMainGridData();
                   }}
                   onSearch={() => {
                     this.toggleSearcher();

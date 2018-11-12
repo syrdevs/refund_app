@@ -11,7 +11,7 @@ function sleepF(ms) {
 }
 
 export async function getReference(params) {
-  return request('/api/refund/getreference');
+  return request('/api/dictionaryListByName?name=' + params.code);
 }
 
 export async function getColumns(params) {
@@ -19,9 +19,11 @@ export async function getColumns(params) {
 }
 
 export async function getData(params) {
-  return request(`/api/refund/${params.payload.table}data`);
+  return request(`/api/refund/${params.payload.table}`, {
+    method: 'POST',
+    body: params.payload
+  });
 }
-
 
 
 export async function queryProjectNotice() {
@@ -149,37 +151,47 @@ export async function getFakeCaptcha(mobile) {
 }
 
 export async function LoginUser(params) {
-  return request('/api/user/login', {
+  return request('/api/login', {
     method: 'POST',
     body: params,
   });
 }
 
+export async function CheckToken(params) {
+  return request('/api/CheckToken');
+}
 
 export async function getmainViewTable(params) {
-  return request('/api/refund/maintable', {
+  return request('/api/refund/getRefundPage', {
     method: 'POST',
-    body: params
+    body: params.payload,
   });
 }
+
 export async function getmainViewColumn(params) {
   return request('/api/refund/maindata');
 }
+
 export async function getRPMUTable(params) {
   return request('/api/refund/secondTable');
 }
+
 export async function getMainModal(params) {
   return request('/api/refund/mainmodal');
 }
+
 export async function getMainSelect1(params) {
   return request('/api/refund/mainselect1');
 }
+
 export async function getOptionsdata(params) {
   return request('/api/refund/optionsdata');
 }
+
 export async function setfile(params) {
   return request('/api/refund/downloading');
 }
+
 export async function getmt102file(params) {
   return request('/api/refund/getfile');
 }

@@ -363,7 +363,7 @@ export default {
   'app.setting.copyinfo': 'copy success, замените defaultSettings в src / models / setting.js',
   'App.setting.production.hint':
     'Панель настроек отображается только в среде разработки, пожалуйста, вручную измените',
-  'app.table.column.select': 'Выберите столбцов',
+  'app.table.column.select': 'Выберите столбцы',
   'app.table.column.total': 'Количество записей',
   'app.footer.title1': '2017-2018 Некомерческое акцонерное общество',
   'app.footer.title2': 'Фонд социального Медицинского Страхование',

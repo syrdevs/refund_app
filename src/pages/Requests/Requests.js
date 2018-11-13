@@ -15,6 +15,7 @@ import SmartGridView from '@/components/SmartGridView';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import {Animated} from "react-animated-css";
 
 @connect(({ universal2, universal, loading }) => ({
   universal2,
@@ -381,28 +382,30 @@ class Requests extends Component {
           <Row>
             <Col sm={24} md={this.state.searchercont}>
               {!this.state.isSearcher &&
-              <Card
-                style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                type="inner"
-                headStyle={{
-                  padding: '0 14px',
-                }}
-                title={formatMessage({ id: 'system.filter' })}
-                extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                  icon={faTimes}/></Icon>}
-              >
-                <GridFilter
-                  clearFilter={() => {
-                    this.clearFilter();
+              <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+                <Card
+                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                  type="inner"
+                  headStyle={{
+                    padding: '0 14px',
                   }}
-                  applyFilter={(filters) => {
-                    console.log(filters);
-                    //this.setFilter(filters);
-                  }}
-                  filterForm={this.state.filterForm}
-                  dateFormat={dateFormat}
-                />
-              </Card>}
+                  title={formatMessage({ id: 'system.filter' })}
+                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                    icon={faTimes}/></Icon>}
+                >
+                  <GridFilter
+                    clearFilter={() => {
+                      this.clearFilter();
+                    }}
+                    applyFilter={(filters) => {
+                      console.log(filters);
+                      //this.setFilter(filters);
+                    }}
+                    filterForm={this.state.filterForm}
+                    dateFormat={dateFormat}
+                  />
+                </Card>
+              </Animated>}
             </Col>
             <Col sm={24} md={this.state.tablecont}>
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>

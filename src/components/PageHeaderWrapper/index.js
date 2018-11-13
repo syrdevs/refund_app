@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import GridContent from './GridContent';
 import styles from './index.less';
 import MenuContext from '@/layouts/MenuContext';
+import {Animated} from "react-animated-css";
 
 const PageHeaderWrapper = ({ children, contentWidth, wrapperClassName, top, ...restProps }) => (
   <div style={{ margin: '-24px -24px 0' }} className={wrapperClassName}>
@@ -30,7 +31,9 @@ const PageHeaderWrapper = ({ children, contentWidth, wrapperClassName, top, ...r
     </MenuContext.Consumer>
     {children ? (
       <div className={styles.content}>
-        <GridContent>{children}</GridContent>
+        <Animated animationIn="bounceInRight" animationOut="fadeOut" isVisible={true}>
+          <GridContent>{children}</GridContent>
+        </Animated>
 
       </div>
 

@@ -22,6 +22,7 @@ import {
 import moment from 'moment/moment';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import {Animated} from "react-animated-css";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -297,17 +298,20 @@ export default class GridFilter extends Component {
     }).filter((f) => f);
 
 
-    return (<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
-      <Form layout={'vertical'}>
-        {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-        <Divider style={{ margin: '16px 10px 0 0' }}/>
-        <Button style={{ margin: '10px 0 0 0px' }} type='primary'
-                onClick={this.applyFilters}>
-          {formatMessage({ id: 'system.search' })}
-        </Button>
-        <Button style={{ margin: '10px 0 0 5px' }}
-                onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
-      </Form>
-    </Spin>);
+    return (
+
+        <Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
+          <Form layout={'vertical'}>
+            {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
+            <Divider style={{ margin: '16px 10px 0 0' }}/>
+            <Button style={{ margin: '10px 0 0 0px' }} type='primary'
+                    onClick={this.applyFilters}>
+              {formatMessage({ id: 'system.search' })}
+            </Button>
+            <Button style={{ margin: '10px 0 0 5px' }}
+                    onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
+          </Form>
+        </Spin>
+    );
   }
 }

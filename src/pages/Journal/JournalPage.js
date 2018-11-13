@@ -26,6 +26,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva';
+import {Animated} from "react-animated-css";
 
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
@@ -211,20 +212,22 @@ export default class JournalPage extends Component {
               <Row>
                 <Col xs={this.state.filterContainer !== 6 ? 0 : 24} sm={this.state.filterContainer !== 6 ? 0 : 24}
                      md={this.state.filterContainer}>
-                  <Card
-                    headStyle={{
-                      padding: '0 14px',
-                    }}
-                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                    type="inner"
-                    title={formatMessage({ id: 'system.filter' })}
-                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}
-                  >
-                    <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
-                                filterForm={this.state.filterForm}
-                                dateFormat={dateFormat}/>
-                  </Card>
+                  <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+                    <Card
+                      headStyle={{
+                        padding: '0 14px',
+                      }}
+                      style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                      type="inner"
+                      title={formatMessage({ id: 'system.filter' })}
+                      extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                        icon={faTimes}/></Icon>}
+                    >
+                      <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
+                                  filterForm={this.state.filterForm}
+                                  dateFormat={dateFormat}/>
+                    </Card>
+                  </Animated>
 
                 </Col>
                 <Col xs={24} sm={this.state.filterContainer !== 6 ? 0 : 24}

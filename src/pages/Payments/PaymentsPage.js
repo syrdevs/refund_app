@@ -30,6 +30,7 @@ import paymentsData from './paymentsData';
 import moment from 'moment/moment';
 import classNames from 'classnames';
 import { connect } from 'dva/index';
+import {Animated} from "react-animated-css";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -354,6 +355,7 @@ export default class PaymentsPage extends Component {
             <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
+                  <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
                     headStyle={{
                       padding: '0 14px',
@@ -368,6 +370,7 @@ export default class PaymentsPage extends Component {
                                 filterForm={this.state.filterForm}
                                 dateFormat={dateFormat}/>
                   </Card>
+                  </Animated>
 
                 </Col>
                 <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
@@ -378,6 +381,7 @@ export default class PaymentsPage extends Component {
             <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
+                  <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     type="inner"
@@ -388,6 +392,7 @@ export default class PaymentsPage extends Component {
                                 filterForm={this.state.filterForm}
                                 dateFormat={dateFormat}/>
                   </Card>
+                  </Animated>
                 </Col>
                 <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
                   <DataDiv/>

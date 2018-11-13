@@ -17,6 +17,7 @@ import {
   Select,
   Checkbox,
   Spin,
+  LocaleProvider,
   Divider,
 } from 'antd';
 import styles from './index.less';
@@ -24,7 +25,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
 import { Resizable } from 'react-resizable';
-import { formatMessage, FormattedMessage } from 'umi/locale';
+import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
+import componentLocal from '../../locales/components/componentLocal';
+
+import ru_RU from 'antd/lib/locale-provider/ru_RU';
 
 function getPropByName(obj, desc) {
   var arr = desc.split('.');
@@ -142,6 +146,10 @@ export default class SmartGridView extends Component {
       selectedRow: null,
       isColumnChanged: false,
     };
+  }
+
+  componentDidMount() {
+
   }
 
   onSelectColumn = (columnIndex) => {
@@ -328,20 +336,22 @@ export default class SmartGridView extends Component {
                        onSearch={this.props.onSearch}/>
       <Table {...tableOptions}/>
       <br/>
-      <Pagination
-        defaultPageSize={15}
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-        showSizeChanger
-        pageSizeOptions={['15', '30', '40', '50', '100']}
-        onShowSizeChange={(page, pageSize) => {
-          this.props.onShowSizeChange(page - 1, pageSize);
-        }}
-        onChange={(page, pageSize) => {
-          this.props.onShowSizeChange(page - 1, pageSize);
-        }}
-        defaultCurrent={this.props.dataSource.page}
-        total={this.props.dataSource.total}
-      />
+      <LocaleProvider locale={componentLocal}>
+        <Pagination
+          defaultPageSize={15}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          showSizeChanger
+          pageSizeOptions={['15', '30', '40', '50', '100']}
+          onShowSizeChange={(page, pageSize) => {
+            this.props.onShowSizeChange(page - 1, pageSize);
+          }}
+          onChange={(page, pageSize) => {
+            this.props.onShowSizeChange(page - 1, pageSize);
+          }}
+          defaultCurrent={this.props.dataSource.page}
+          total={this.props.dataSource.total}
+        />
+      </LocaleProvider>
     </div>);
   }
 

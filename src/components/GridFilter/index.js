@@ -18,93 +18,14 @@ import {
   Checkbox,
   Divider,
   Spin,
-  LocaleProvider,
 } from 'antd';
-import moment from 'moment';
+import moment from 'moment/moment';
 import { connect } from 'dva';
-import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-
-import componentLocal from '../../locales/components/componentLocal';
-
+import { formatMessage, FormattedMessage } from 'umi/locale';
+import {Animated} from "react-animated-css";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-
-function momentDefine() {
-  var suffixes = {
-    0: '-ші',
-    1: '-ші',
-    2: '-ші',
-    3: '-ші',
-    4: '-ші',
-    5: '-ші',
-    6: '-шы',
-    7: '-ші',
-    8: '-ші',
-    9: '-шы',
-    10: '-шы',
-    20: '-шы',
-    30: '-шы',
-    40: '-шы',
-    50: '-ші',
-    60: '-шы',
-    70: '-ші',
-    80: '-ші',
-    90: '-шы',
-    100: '-ші',
-  };
-
-  var kk = moment.defineLocale('en', {
-    months: 'қаңтар_ақпан_наурыз_сәуір_мамыр_маусым_шілде_тамыз_қыркүйек_қазан_қараша_желтоқсан'.split('_'),
-    monthsShort: 'қаң_ақп_нау_сәу_мам_мау_шіл_там_қыр_қаз_қар_жел'.split('_'),
-    weekdays: 'жексенбі_дүйсенбі_сейсенбі_сәрсенбі_бейсенбі_жұма_сенбі'.split('_'),
-    weekdaysShort: 'жек_дүй_сей_сәр_бей_жұм_сен'.split('_'),
-    weekdaysMin: 'жк_дй_сй_ср_бй_жм_сн'.split('_'),
-    longDateFormat: {
-      LT: 'HH:mm',
-      LTS: 'HH:mm:ss',
-      L: 'DD.MM.YYYY',
-      LL: 'D MMMM YYYY',
-      LLL: 'D MMMM YYYY HH:mm',
-      LLLL: 'dddd, D MMMM YYYY HH:mm',
-    },
-    calendar: {
-      sameDay: '[Бүгін сағат] LT',
-      nextDay: '[Ертең сағат] LT',
-      nextWeek: 'dddd [сағат] LT',
-      lastDay: '[Кеше сағат] LT',
-      lastWeek: '[Өткен аптаның] dddd [сағат] LT',
-      sameElse: 'L',
-    },
-    relativeTime: {
-      future: '%s ішінде',
-      past: '%s бұрын',
-      s: 'бірнеше секунд',
-      ss: '%d секунд',
-      m: 'бір минут',
-      mm: '%d минут',
-      h: 'бір сағат',
-      hh: '%d сағат',
-      d: 'бір күн',
-      dd: '%d күн',
-      M: 'бір ай',
-      MM: '%d ай',
-      y: 'бір жыл',
-      yy: '%d жыл',
-    },
-    dayOfMonthOrdinalParse: /\d{1,2}-(ші|шы)/,
-    ordinal: function(number) {
-      var a = number % 10,
-        b = number >= 100 ? 100 : null;
-      return number + (suffixes[number] || suffixes[a] || suffixes[b]);
-    },
-    week: {
-      dow: 1, // Monday is the first day of the week.
-      doy: 7,  // The week that contains Jan 1st is the first week of the year.
-    },
-  });
-
-}
 
 @connect(({ references, loading }) => ({
   references,
@@ -122,13 +43,7 @@ export default class GridFilter extends Component {
     };
   }
 
-
   componentDidMount() {
-
-    if (getLocale() === 'en-US') {
-      momentDefine();
-    }
-
     const { dispatch } = this.props;
     const { isClearFilter, fields } = this.state;
 
@@ -284,15 +199,12 @@ export default class GridFilter extends Component {
 
           <Row>
             <Col md={22}>
-              <LocaleProvider locale={componentLocal}>
-                <RangePicker
-                  {...RangeDateProps}
-                  placeholder={[
-                    formatMessage({ id: 'datepicker.start.label' }),
-                    formatMessage({ id: 'datepicker.end.label' }),
-                  ]}
-                  disabled={fields[filterItem.name].disabled}/>
-              </LocaleProvider>
+              <RangePicker   {...RangeDateProps}
+                             placeholder={[
+                               formatMessage({ id: 'datepicker.start.label' }),
+                               formatMessage({ id: 'datepicker.end.label' }),
+                             ]}
+                             disabled={fields[filterItem.name].disabled}/>
             </Col>
             <Col md={2}>
               <div style={{ margin: '5px' }}>
@@ -386,17 +298,20 @@ export default class GridFilter extends Component {
     }).filter((f) => f);
 
 
-    return (<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
-      <Form layout={'vertical'}>
-        {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-        <Divider style={{ margin: '16px 10px 0 0' }}/>
-        <Button style={{ margin: '10px 0 0 0px' }} type='primary'
-                onClick={this.applyFilters}>
-          {formatMessage({ id: 'system.search' })}
-        </Button>
-        <Button style={{ margin: '10px 0 0 5px' }}
-                onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
-      </Form>
-    </Spin>);
+    return (
+
+      <Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
+        <Form layout={'vertical'}>
+          {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
+          <Divider style={{ margin: '16px 10px 0 0' }}/>
+          <Button style={{ margin: '10px 0 0 0px' }} type='primary'
+                  onClick={this.applyFilters}>
+            {formatMessage({ id: 'system.search' })}
+          </Button>
+          <Button style={{ margin: '10px 0 0 5px' }}
+                  onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
+        </Form>
+      </Spin>
+    );
   }
 }

@@ -183,7 +183,7 @@ const kk = {
     'filterTitle': 'Фильтр',
     'filterConfirm': 'OK',
     'filterReset': 'Сбросить',
-    'emptyText': 'Нет данных',
+    'emptyText': 'Дерек жоқ',
     'selectAll': 'Выбрать всё',
     'selectInvert': 'Инвертировать выбор',
   },

@@ -92,7 +92,10 @@ class UserLayout extends React.PureComponent {
           </div>
           {children}
         </div>
-        <GlobalFooter/>
+        <GlobalFooter
+          color='#009CD7'
+          fontcolor='white'
+        />
       </div>
     );
   }

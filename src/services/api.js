@@ -7,7 +7,6 @@ function sleepF(ms) {
   while (end < start + ms) {
     end = new Date().getTime();
   }
-
 }
 
 export async function getReference(params) {
@@ -24,7 +23,6 @@ export async function getData(params) {
     body: params.payload
   });
 }
-
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

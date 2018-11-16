@@ -1,5 +1,5 @@
 import { testMethod } from '../services/user';
-import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata, setfile, getmt102file } from '../services/api';
+import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata, setfile, getmt102file, mt102preview,setRefundStatus } from '../services/api';
 
 export default {
   namespace: 'universal',
@@ -18,9 +18,15 @@ export default {
     },
     mainmodal:[],
     select1: [],
-    options: []
+    options: [],
+    refundKnpList:[],
+    modalgridviewdata:[]
   },
   effects: {
+    * changeRefundStatus(payload, { call }) {
+      yield call(setRefundStatus, payload);
+    },
+
     * setfile(payload, { call, put }) {
       const response = yield call(setfile, payload);
 
@@ -37,7 +43,30 @@ export default {
         payload: response,
       });
     },
+    * mt102preview(payload, { call, put }) {
 
+      const response = yield call(mt102preview, payload);
+      yield put({
+        type: 'mt102prevReducer',
+        payload: response,
+      });
+      if (response.refundKnpList.length>0) {
+        payload.payload.src.data['knpId'] = response.refundKnpList[0].knpId;
+        const data = yield call(getmainViewTable, payload);
+        yield put({
+          type: 'mt102dataReducer',
+          payload: data,
+        });
+      }
+    },
+    * mt102view(payload, { call, put }) {
+      console.log(payload);
+        const data = yield call(getmainViewTable, payload);
+        yield put({
+          type: 'mt102dataReducer',
+          payload: data,
+        });
+    },
     * mainviewtable(payload, { call, put }) {
       const response = yield call(getmainViewTable, payload);
 
@@ -99,6 +128,19 @@ export default {
         ...state,
         mt102file:payload
       };
+    },
+    mt102dataReducer (state, { payload }) {
+      console.log(payload);
+      return {
+        ...state,
+        modalgridviewdata: payload
+      }
+    },
+    mt102prevReducer (state, { payload }) {
+      return {
+        ...state,
+        refundKnpList: payload.refundKnpList
+      }
     },
     setfileReduce(state, { payload }) {
       return {

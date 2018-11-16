@@ -282,7 +282,7 @@ class BasicLayout extends React.PureComponent {
             </Authorized>
           </Content>
           <GlobalFooter
-            color='none'
+            color='white'
             fontcolor='black'
             />
         </Layout>

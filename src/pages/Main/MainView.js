@@ -240,11 +240,20 @@ class MainView extends Component {
       type: 'universal/mainviewtable',
       payload: this.state.pagingConfig,
     });
+
+
+
   };
 
   componentDidMount() {
     this.loadMainGridData();
 
+    const { dispatch } = this.props;
+
+    /*dispatch({
+      type: 'universal/mainviewtable',
+      payload: this.state.pagingConfig,
+    });*/
     /*dispatch({
       type: 'universal/mainviewcolumn',
       payload: {},
@@ -454,6 +463,31 @@ class MainView extends Component {
   };
 
 
+  setStatusRecord = (statusCode) => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+
+    if (selectedRowKeys.length === 0) return false;
+
+    dispatch({
+      type: 'universal/changeRefundStatus',
+      payload: {
+        'status': statusCode,
+        'denyReasonId': null,
+        'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+      },
+    }).then(() => {
+      this.setState({
+        selectedRowKeys: [],
+      }, () => {
+        this.loadMainGridData();
+      });
+    });
+
+    /**/
+  };
+
+
   render() {
 
     const dateFormat = 'DD.MM.YYYY';
@@ -504,7 +538,7 @@ class MainView extends Component {
                                                 resetshow={(e) => {
                                                   this.setState({ ShowModal: false });
                                                 }}
-                                                dataSource={universal.mainmodal}/>}
+                                                filter={this.state.pagingConfig}/>}
 
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
@@ -569,19 +603,21 @@ class MainView extends Component {
                     data: universal.table.content,
                   }}
                   addonButtons={[
-                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'odobrit'} className={'btn-success'}
+                    <Button onClick={() => this.setStatusRecord(1)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            key={'odobrit'} className={'btn-success'}
                     >
                       {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key={'cancel'}
+                    <Button onClick={() => this.setStatusRecord(2)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            key={'cancel'}
                             className={'btn-danger'}>
                       {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(3)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
                             key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-                    <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(4)} disabled={hasRole(['FSMS2', 'ADMIN'])}
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
@@ -594,12 +630,12 @@ class MainView extends Component {
                       <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="3">
                         {formatMessage({ id: 'menu.mainview.setDateBtn' })}
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4">
-                        {formatMessage({ id: 'menu.mainview.mt102Btn' })}
-                      </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
+                      <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4" onClick={() => {
                         this.showModal();
                       }}>
+                        {formatMessage({ id: 'menu.mainview.mt102Btn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" >
                         {formatMessage({ id: 'menu.mainview.xmlBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {

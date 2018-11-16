@@ -159,6 +159,13 @@ export async function CheckToken(params) {
   return request('/api/CheckToken');
 }
 
+export async function setRefundStatus(params) {
+  return request('/api/refund/refundStatus', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 export async function getmainViewTable(params) {
   return request('/api/refund/getRefundPage', {
     method: 'POST',
@@ -169,29 +176,31 @@ export async function getmainViewTable(params) {
 export async function getmainViewColumn(params) {
   return request('/api/refund/maindata');
 }
-
 export async function getRPMUTable(params) {
   return request('/api/refund/secondTable');
 }
-
 export async function getMainModal(params) {
   return request('/api/refund/mainmodal');
 }
-
 export async function getMainSelect1(params) {
   return request('/api/refund/mainselect1');
 }
-
 export async function getOptionsdata(params) {
   return request('/api/refund/optionsdata');
 }
-
 export async function setfile(params) {
   return request('/api/refund/downloading');
 }
-
 export async function getmt102file(params) {
   return request('/api/refund/getfile');
+}
+
+export async function mt102preview(params) {
+  console.log("api");
+  return request('/api/refund/mt102GroupByKnpPreview', {
+    method: 'POST',
+    body: params.payload.src,
+  });
 }
 
 

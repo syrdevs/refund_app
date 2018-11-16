@@ -262,6 +262,7 @@ class Requests extends Component {
       }],
     });
   };
+
   addfile = (e) => {
     const { serverFileList } = this.state;
     if (e.file.status === 'uploading') {

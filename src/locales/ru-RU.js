@@ -87,6 +87,7 @@ export default {
   'menu.rpmu': 'РПМУ',
   'menu.refunds.requests': 'Заявки',
   'menu.options': 'Настройки',
+  'menu.counteragent': 'Контрагент',
   'menu.mainview': 'РЕЕСТР ВОЗВРАТОВ',
   'menu.mainview.paylists': 'Платежи',
   'menu.mainview.mt102': 'МТ102',
@@ -366,14 +367,10 @@ export default {
   'app.table.column.total': 'Количество записей',
   'app.footer.titleyear': '2017-2018',
   'app.footer.title': 'Некомерческое акцонерное общество',
-  'app.footer.title2': 'Фонд социального Медицинского Страхование',
+  'app.footer.title2': 'Фонд социального медицинского страхование',
   'app.footer.suppordname': 'Служба технической поддержки',
   'app.footer.suppordtel': '8(7172) 123-456',
   'app.footer.suppordemail': 'support@med.kz',
   'app.login.entrу': 'Вход в систему',
   'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЕ'
-
-
 };
-
-/*&#169;*/

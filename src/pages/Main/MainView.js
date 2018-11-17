@@ -242,7 +242,6 @@ class MainView extends Component {
     });
 
 
-
   };
 
   componentDidMount() {
@@ -363,6 +362,11 @@ class MainView extends Component {
 
   stateFilter = () => {
     return [
+      {
+        name: 'test',
+        label: 'selectlist',
+        type: 'selectlist',
+      },
       {
         name: 'appNumber',
         label: formatMessage({ id: 'menu.filter.numberrequest' }),
@@ -635,7 +639,7 @@ class MainView extends Component {
                       }}>
                         {formatMessage({ id: 'menu.mainview.mt102Btn' })}
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" >
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
                         {formatMessage({ id: 'menu.mainview.xmlBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {

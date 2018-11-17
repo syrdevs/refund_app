@@ -23,6 +23,8 @@ import {
 import moment from 'moment/moment';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
+import SelectList from '@/components/SelectList';
+
 
 import componentLocal from '../../locales/components/componentLocal';
 import { Animated } from 'react-animated-css';
@@ -362,6 +364,15 @@ export default class GridFilter extends Component {
           </Select>
         </div>);
       }
+
+      case 'selectlist': {
+        let params = {};
+
+        return (<div key={_index}><SelectList name={filterItem.name} onSelect={(record) => {
+          console.log(record);
+        }}/></div>);
+      }
+
       default:
         break;
     }

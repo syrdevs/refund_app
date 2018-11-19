@@ -102,14 +102,17 @@ export default class ModalContent extends Component {
       }),
     });
 
-    return (<Modal title="Информация"
-                   okButtonProps={{
-                     disabled: this.state.okBtnDisabled,
-                   }}
-                   style={{ top: 60 }}
-                   visible={this.props.visible}
-                   onOk={this.handleOk}
-                   onCancel={this.handleCancel}>
+    return (<Modal
+      width={700}
+      title="Информация"
+      okButtonProps={{
+        disabled: this.state.okBtnDisabled,
+      }}
+      style={{ top: 40 }}
+      okText={'Выбрать'}
+      visible={this.props.visible}
+      onOk={this.handleOk}
+      onCancel={this.handleCancel}>
       <Search
         placeholder="введите текст"
         onSearch={value => this.onSearch(value)}

@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Form,
+  Modal,
   Input,
   DatePicker,
   LocaleProvider,
@@ -35,6 +36,7 @@ import { Animated } from 'react-animated-css';
 import componentLocal from '../../locales/components/componentLocal';
 
 const FormItem = Form.Item;
+const confirm = Modal.confirm;
 const { RangePicker } = DatePicker;
 
 function hasRole(roles) {
@@ -122,13 +124,8 @@ class MainView extends Component {
           isVisible: true,
           'dataIndex': 'dappRefundStatusId.nameRu',
           order: 7,
-          render: (record, value) => {
-            if (value.dappRefundStatusId.code === '00004') {
-              return <a style={{ color: 'green' }} href="#">{value.dappRefundStatusId.nameRu}</a>;
-            }
-
-            return value.dappRefundStatusId.nameRu;
-          },
+          render: (record, value) => <a style={{ color: value.isRefundConfirm === 'True' ? 'green' : 'red' }}
+                                        href="#">{value.dappRefundStatusId.nameRu}</a>,
         }],
       columns: [{
         'title': 'Номер заявки',
@@ -467,28 +464,40 @@ class MainView extends Component {
   };
 
 
-  setStatusRecord = (statusCode) => {
+  setStatusRecord = (statusCode, statusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
 
     if (selectedRowKeys.length === 0) return false;
 
-    dispatch({
-      type: 'universal/changeRefundStatus',
-      payload: {
-        'status': statusCode,
-        'denyReasonId': null,
-        'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+    confirm({
+      title: 'Подтверждение',
+      content: 'Вы действительно хотите ' + statusText.toLowerCase() + ' возврат? ',
+      okText: 'Да',
+      cancelText: 'Нет',
+      onOk: () => {
+        dispatch({
+          type: 'universal/changeRefundStatus',
+          payload: {
+            'status': statusCode,
+            'denyReasonId': null,
+            'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+          },
+        }).then(() => {
+          this.setState({
+            selectedRowKeys: [],
+          }, () => {
+            this.loadMainGridData();
+          });
+        });
       },
-    }).then(() => {
-      this.setState({
-        selectedRowKeys: [],
-      }, () => {
-        this.loadMainGridData();
-      });
+      onCancel: () => {
+        this.setState({
+          selectedRowKeys: [],
+        });
+      },
     });
 
-    /**/
   };
 
 
@@ -607,21 +616,25 @@ class MainView extends Component {
                     data: universal.table.content,
                   }}
                   addonButtons={[
-                    <Button onClick={() => this.setStatusRecord(1)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
                             key={'odobrit'} className={'btn-success'}
                     >
                       {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button onClick={() => this.setStatusRecord(2)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: 'menu.mainview.cancelBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
                             key={'cancel'}
                             className={'btn-danger'}>
                       {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
-                    <Button onClick={() => this.setStatusRecord(3)} disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
                             key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-                    <Button onClick={() => this.setStatusRecord(4)} disabled={hasRole(['FSMS2', 'ADMIN'])}
+                    <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
+                            disabled={hasRole(['FSMS2', 'ADMIN'])}
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>

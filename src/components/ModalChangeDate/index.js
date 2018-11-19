@@ -1,98 +1,131 @@
 import React, { Component } from 'react';
-import { Modal, DatePicker, Upload, Button, Icon, Row} from 'antd';
+import { Modal, DatePicker, Upload, Button, Icon, Row, Input, Spin } from 'antd';
 import moment from 'moment';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import { connect } from 'dva';
 
+@connect(({ universal, loading }) => ({
+  universal,
+  uploadFile: loading.effects['universal/setfile'],
+  loadingFiles: loading.effects['universal/getFilesRequestDate'],
+  deleteFile: loading.effects['universal/removeFileRequest'],
+}))
 class ModalChangeDate extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      dataSource: [],
-      isVisible: false,
-      ColType: null
-    };
-  }
 
-  componentWillReceiveProps(props) {
-    if (props != null) {
-      this.setState({
-        isVisible: props.visible,
-        dataSource: props.dataSource,
-        ColType: props.coltype,
-      });
-    }
-  }
+  state = {
+    changeDateValue: null,
+  };
 
   handleOk = () => {
-    const {dataSource, ColType} = this.state;
-    const {serverFileList, resetshow, clearfile} = this.props;
-    console.log({
-      id: dataSource.id,
-      files: serverFileList.map((file)=>file.id),
-      date: dataSource.value,
-      type: ColType
-    })
-    clearfile();
-    resetshow();
-    this.setState({ isVisible: false });
+
+    const { changeDateValue } = this.state;
+
+    if (changeDateValue !== null) {
+
+    }
+    //this.props.hideModal();
+  };
+
+
+  handleCancel = () => {
+    this.props.hideModal();
+  };
+
+  uploadFile = (data) => {
+
+    const { dispatch, dataSource } = this.props;
+
+    if (data.file.status === 'removed') {
+      this.removeFile(data.file);
+    }
+
+    if (data.file.status === 'uploading') {
+      dispatch({
+        type: 'universal/setfile',
+        payload: {
+          file: data.file,
+          id: dataSource.id,
+        },
+      }).then(() => {
+        if (this.props.uploadFile === false) {
+          console.log('loading file');
+        }
+      });
+    }
+  };
+  removeFile = (file) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/removeFileRequest',
+      payload: {
+        id: file.uid,
+      },
+    });
+  };
+
+  getFileList = () => {
+
+    const { dataSource, dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getFilesRequestDate',
+      payload: {
+        id: dataSource.id,
+      },
+    });
 
   };
 
-  handleCancel = () => {
-    const {resetshow, clearfile} = this.props;
-    clearfile();
-    resetshow();
+  componentDidMount() {
+    this.getFileList();
   }
 
   render() {
-    const dateFormat = 'DD.MM.YYYY';
-    const { dataSource, isVisible, ColType } = this.state;
-    const {serverFileList, addfile} = this.props;
 
-    const props = {
-      defaultFileList: serverFileList.map((file)=>({uid:file.id, name: file.filename})),
-      //fileList: serverFileList.map((file)=>({uid:file.id, name: file.filename}))
+    let uploadProps = {
+      defaultFileList: this.props.universal.files.map((file) => ({
+        uid: file.id,
+        name: file.filename,
+        status: 'done',
+      })),
+      onChange: this.uploadFile,
     };
 
     return (
       <Modal
-        title={formatMessage({id:"modalchangedate.title"})}
-        onOk={() => {
-          this.handleOk(dataSource);
-        }}
-        onCancel={() => {
-          this.handleCancel(dataSource);
-        }}
+        title={formatMessage({ id: 'modalchangedate.title' })}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
         width={500}
         centered
-        visible={isVisible}
-      >
-        <Row>
-          <DatePicker
-            value={moment(dataSource.value, dateFormat)}
-            size="large"
-            style={{marginBottom: '5px'}}
-            format={moment().format('DD.MM.YYYY')}
-          />
-        </Row>
-        {ColType !== 'appEndDate' &&
-        <Row>
-          {isVisible &&
-          <Upload
-            {...props}
-            beforeUpload={(e) => {
-              console.log(e)
-            }}
-            onChange={addfile}
-          >
-            <Button size="large">
-              <Icon type="upload" />{formatMessage({id:"system.load"})}
-            </Button>
-          </Upload>
-          }
-        </Row>}
-      </Modal>);
+        visible={true}>
+        <Spin spinning={this.props.loadingFiles}>
+          <Row>
+            <DatePicker
+              allowClear={false}
+              defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
+              size="large"
+              style={{ marginBottom: '5px' }}
+              format={this.props.dateFormat}
+              onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
+            />
+          </Row>
+          {this.props.coltype !== 'appEndDate' &&
+          <Row>
+            {this.props.loadingFiles === false &&
+            <Upload
+              {...uploadProps}>
+              <Button size="large">
+                <Icon type="upload"/>{formatMessage({ id: 'system.load' })}
+              </Button>
+            </Upload>
+            }
+          </Row>}
+        </Spin>
+      </Modal>
+    );
   }
 }
 

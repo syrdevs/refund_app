@@ -1,5 +1,18 @@
 import { testMethod } from '../services/user';
-import { getmainViewTable, getmainViewColumn, getRPMUTable, getMainModal, getMainSelect1, getOptionsdata, setfile, getmt102file, mt102preview,setRefundStatus } from '../services/api';
+import {
+  getmainViewTable,
+  getmainViewColumn,
+  getRPMUTable,
+  getMainModal,
+  getMainSelect1,
+  getOptionsdata,
+  setfile,
+  getmt102file,
+  mt102preview,
+  setRefundStatus,
+  getFilesRequest,
+  deleteFileRequest,
+} from '../services/api';
 
 export default {
   namespace: 'universal',
@@ -9,20 +22,34 @@ export default {
       size: null,
       totalElements: null,
       totalPages: null,
-      content: []
+      content: [],
     },
-    columns: [ ],
+    files: [],
+    columns: [],
     rpmu: {
-      columns:[],
-      data:[]
+      columns: [],
+      data: [],
     },
-    mainmodal:[],
+    mainmodal: [],
     select1: [],
     options: [],
-    refundKnpList:[],
-    modalgridviewdata:[]
+    refundKnpList: [],
+    modalgridviewdata: [],
   },
   effects: {
+
+    * removeFileRequest(payload, { call }) {
+      yield call(deleteFileRequest, payload);
+    },
+    * getFilesRequestDate(payload, { call, put }) {
+      const response = yield call(getFilesRequest, payload);
+
+      yield put({
+        type: 'files',
+        payload: response,
+      });
+    },
+
     * changeRefundStatus(payload, { call }) {
       yield call(setRefundStatus, payload);
     },
@@ -50,7 +77,7 @@ export default {
         type: 'mt102prevReducer',
         payload: response,
       });
-      if (response.refundKnpList.length>0) {
+      if (response.refundKnpList.length > 0) {
         payload.payload.src.data['knpId'] = response.refundKnpList[0].knpId;
         const data = yield call(getmainViewTable, payload);
         yield put({
@@ -61,11 +88,11 @@ export default {
     },
     * mt102view(payload, { call, put }) {
       console.log(payload);
-        const data = yield call(getmainViewTable, payload);
-        yield put({
-          type: 'mt102dataReducer',
-          payload: data,
-        });
+      const data = yield call(getmainViewTable, payload);
+      yield put({
+        type: 'mt102dataReducer',
+        payload: data,
+      });
     },
     * mainviewtable(payload, { call, put }) {
       const response = yield call(getmainViewTable, payload);
@@ -108,12 +135,12 @@ export default {
       });
     },
     * optionsData(payload, { call, put }) {
-          const response = yield call(getOptionsdata, payload);
-          yield put({
-            type: 'OptionReducer',
-            payload: response,
-          });
-        },
+      const response = yield call(getOptionsdata, payload);
+      yield put({
+        type: 'OptionReducer',
+        payload: response,
+      });
+    },
     * optionsDatachange(payload, { put }) {
       yield put({
         type: 'OptionChangeReducer',
@@ -123,71 +150,79 @@ export default {
   },
 
   reducers: {
+
+    files(state, { payload }) {
+      return {
+        ...state,
+        files: payload,
+      };
+    },
+
     mt102(state, { payload }) {
       return {
         ...state,
-        mt102file:payload
+        mt102file: payload,
       };
     },
-    mt102dataReducer (state, { payload }) {
+    mt102dataReducer(state, { payload }) {
       console.log(payload);
       return {
         ...state,
-        modalgridviewdata: payload
-      }
+        modalgridviewdata: payload,
+      };
     },
-    mt102prevReducer (state, { payload }) {
+    mt102prevReducer(state, { payload }) {
       return {
         ...state,
-        refundKnpList: payload.refundKnpList
-      }
+        refundKnpList: payload.refundKnpList,
+      };
     },
     setfileReduce(state, { payload }) {
       return {
         ...state,
-        setfile:payload
+        setfile: payload,
       };
     },
     maintable(state, { payload }) {
       return {
         ...state,
-        table:payload
+        table: payload,
       };
     },
     maincolumn(state, { payload }) {
       return {
         ...state,
-        columns:payload
+        columns: payload,
       };
     },
     rpmuReduce(state, { payload }) {
       return {
         ...state,
-        rpmu:payload
+        rpmu: payload,
       };
     },
     mainModalReducer(state, { payload }) {
       return {
         ...state,
-        mainmodal:payload
+        mainmodal: payload,
       };
     },
     mainSelect1Reduce(state, { payload }) {
       return {
         ...state,
-        select1:payload
+        select1: payload,
       };
     },
     OptionReducer(state, { payload }) {
       return {
         ...state,
-        options:payload
+        options: payload,
       };
     },
     OptionChangeReducer(state, { payload }) {
       return {
         ...state,
-        options:payload.payload
+        options: payload.payload,
       };
     },
 

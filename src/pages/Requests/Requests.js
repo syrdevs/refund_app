@@ -15,7 +15,7 @@ import SmartGridView from '@/components/SmartGridView';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import {Animated} from "react-animated-css";
+import { Animated } from 'react-animated-css';
 
 @connect(({ universal2, universal, loading }) => ({
   universal2,
@@ -72,17 +72,7 @@ class Requests extends Component {
       },
       ShowModal: false,
       searchButton: false,
-      serverFileList: [
-        {
-          id: '1',
-          filename: '1xxx.png',
-        }, {
-          id: '2',
-          filename: '2yyy.png',
-        }, {
-          id: '3',
-          filename: '3zzz.png',
-        }],
+      serverFileList: [],
       pagingConfig: {
         'start': 0,
         'length': 10,
@@ -233,7 +223,7 @@ class Requests extends Component {
     });
   }
 
-  resetshow() {
+  resetShow = () => {
     this.setState({
       /* ModalData: {
          id: null,
@@ -242,7 +232,7 @@ class Requests extends Component {
        },*/
       ShowModal: false,
     });
-  }
+  };
 
   refreshTable = () => {
     this.loadMainGridData();
@@ -264,55 +254,78 @@ class Requests extends Component {
   };
 
   addfile = (e) => {
-    const { serverFileList } = this.state;
+
+    const { serverFileList, ModalData } = this.state;
+
     if (e.file.status === 'uploading') {
       const { dispatch } = this.props;
       dispatch({
         type: 'universal/setfile',
-        payload: { e },
-      }).then(() => {
-        e.file.uid = this.props.universal.setfile.id;
-        e.file.name = this.props.universal.setfile.filename;
-        e.file.status = 'done';
-        this.setState({
-          serverFileList: [
-            ...serverFileList,
-            { id: this.props.universal.setfile.id, filename: this.props.universal.setfile.filename },
-          ],
-        });
-
-      });
+        payload: {
+          file: e.file,
+          id: ModalData.id,
+        },
+      })
+      /*console.log(e.file);*/
     }
-    if (e.file.status === 'removed') {
+    /*if (e.file.status === 'removed') {
       this.setState({
         serverFileList: serverFileList.filter((obj) => {
           return obj.id !== e.file.uid;
         }),
       });
-    }
+    }*/
   };
+
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;
 
-    columns = [{
-      'title': 'Номер заявки',
-      'width': 100,
-      'isVisible': true,
-      'dataIndex': 'appNumber',
-    }, { 'title': 'Дата заявки', 'isVisible': true, 'dataIndex': 'appDate' }, {
-      'title': 'Номер платежного поручения',
-      'isVisible': true,
-      'dataIndex': 'payOrderNum',
-    }, { 'title': 'Дата платежного поручения', 'dataIndex': 'payOrderDate', 'isVisible': true }, {
-      'title': 'Референс',
-      'dataIndex': 'reference',
-      'isVisible': true,
-    }, { 'title': 'КНП', 'dataIndex': 'dknpId.nameRu', 'isVisible': true }, {
-      'title': 'Возвратов',
-      'dataIndex': 'refundCount',
-    }];
+    columns = [
+      {
+        'title': 'Номер заявки',
+        'width': 100,
+        'isVisible': true,
+        'dataIndex': 'appNumber',
+      },
+      {
+        'title': 'Дата заявки',
+        'isVisible': true,
+        'dataIndex': 'appDate',
+      },
+      {
+        'title': 'Дата поступления заявления в Фонд',
+        'isVisible': true,
+        'dataIndex': 'receiptAppdateToFsms',
+      },
+      {
+        'title': 'Крайняя дата исполнения заявки',
+        'isVisible': true,
+        'dataIndex': 'appEndDate',
+      },
+      {
+        'title': 'Номер платежного поручения',
+        'isVisible': true,
+        'dataIndex': 'payOrderNum',
+      },
+      {
+        'title': 'Дата платежного поручения',
+        'dataIndex': 'payOrderDate',
+      },
+      {
+        'title': 'Референс',
+        'dataIndex': 'reference',
+      },
+      {
+        'title': 'КНП',
+        'dataIndex': 'dknpId.id',
+      },
+      {
+        'title': 'Возвратов',
+        'dataIndex': 'refundCount',
+      },
+    ];
 
     let actionColumns = [];
     let propColumns = [];
@@ -325,6 +338,8 @@ class Requests extends Component {
           order: 2,
           render: (text, row) => <a
             onClick={(e) => {
+
+
               this.setState({
                 ShowModal: true,
                 ColType: column.dataIndex,
@@ -364,20 +379,11 @@ class Requests extends Component {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.requests' })}>
-        {<ModalChangeDate
-          visible={this.state.ShowModal}
-          serverFileList={this.state.serverFileList}
+        {this.state.ShowModal && <ModalChangeDate
           coltype={this.state.ColType}
-          addfile={(e) => {
-            this.addfile(e);
-          }}
-          clearfile={() => {
-            this.clearfile();
-          }}
-          resetshow={(e) => {
-            this.resetshow(e);
-          }}
           dataSource={this.state.ModalData}
+          hideModal={this.resetShow}
+          dateFormat={dateFormat}
         />}
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
@@ -434,7 +440,7 @@ class Requests extends Component {
                   onSelectCell={(cellIndex, cell) => {
 
                   }}
-                  onSelectRow={() => {
+                  onSelectRow={(record) => {
 
                   }}
                   onFilter={(filters) => {

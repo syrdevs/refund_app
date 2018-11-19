@@ -28,7 +28,6 @@ import { Animated } from 'react-animated-css';
 import SampleForm from '../../components/SampleForm';
 
 
-
 function hasRole(roles) {
   let userRoles = getAuthority();
   return !userRoles.some(r => roles.indexOf(r) >= 0);
@@ -43,80 +42,38 @@ class CounterAgent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isForm:false,
-      columns: [{
-        'title': 'Номер заявки',
-        'isVisible': true,
-        'dataIndex': 'applicationId.appNumber',
-      }, {
-        'title': 'Дата заявления плательщика',
-        'isVisible': true,
-        'dataIndex': 'appPayerDate',
-      }, {
-        'title': 'Дата заявки',
-        'isVisible': true,
-        'dataIndex': 'applicationId.appDate',
-      }, {
-        'title': 'Дата поступления заявления в Фонд',
-        'isVisible': true,
-        'dataIndex': 'receiptAppdateToFsms',
-      }, {
-        'title': 'Дата поступления',
-        'isVisible': true,
-        'dataIndex': 'entryDate',
-      }, {
-        'title': 'Крайняя дата исполнения заявки',
-        'isVisible': true,
-        'dataIndex': 'appEndDate',
-      },
+      isForm: false,
+      columns: [
         {
-          'title': 'Сумма возврата',
-          'isVisible': true,
-          'dataIndex': 'refundPayAmount',
-
+          title: 'Код',
+          dataIndex: 'code',
+          isVisible: true,
+        }, {
+          title: 'Наименование/Имя',
+          dataIndex: 'name',
+          isVisible: true,
+        }, {
+          title: 'Идентификатор',
+          dataIndex: 'bin',
+          isVisible: true,
+        }, {
+          title: 'Адрес',
+          dataIndex: 'address',
+          isVisible: true,
+        }, {
+          title: 'Актуальные контакты',
+          dataIndex: 'currentContacts',
+          isVisible: true,
+        }, {
+          title: 'Банковские реквизиты',
+          dataIndex: 'account',
+          isVisible: true,
+        }, {
+          title: 'Ответственные лица',
+          dataIndex: 'responsiblePersons',
+          isVisible: true,
         },
-        {
-          'title': 'Референс ГК',
-          'isVisible': true,
-          'dataIndex': 'gcvpReference',
-        }, {
-          'title': 'Номер плат-го поручения ГК',
-          'isVisible': true,
-          'dataIndex': 'gcvpOrderNum',
-        }, { 'title': 'Дата плат-го поручения ГК', 'dataIndex': 'gcvpOrderDate' }, {
-          'title': 'Причина возврата',
-          'dataIndex': 'drefundReasonId.nameRu',
-        }, { 'title': 'ИИН Потребителя', 'dataIndex': 'personIin' }, {
-          'title': 'КНП',
-          'dataIndex': 'applicationId.dknpId.id',
-        }, {
-          'title': 'Номер платежного поручения',
-          'dataIndex': 'applicationId.payOrderNum',
-        }, {
-          'title': 'Дата платежного поручения',
-          'dataIndex': 'applicationId.payOrderDate',
-        }, { 'title': 'Сумма отчислений', 'dataIndex': 'payAmount' }, {
-          'title': 'Дата последнего взноса',
-          'dataIndex': 'lastPayDate',
-        }, {
-          'title': 'Дата осуществления возврата',
-          'dataIndex': 'refundDate',
-        }, {
-          'title': 'Кол-во отчислений и (или) взносов за последние 12 календарных месяцев',
-          'dataIndex': 'lastMedcarePayCount',
-        }, { 'title': 'Статус страхования', 'dataIndex': 'medinsStatus' }, {
-          'title': 'Референс',
-          'dataIndex': 'applicationId.reference',
-        }, { 'title': 'Причина отказа', 'dataIndex': 'ddenyReasonId.nameRu' }, {
-          'title': 'Отчет об отказе',
-          'dataIndex': 'refundStatus',
-        }, { 'title': 'Осталось дней', 'dataIndex': 'daysLeft' }, {
-          'title': 'Дата изменения статуса заявки',
-          'dataIndex': 'changeDate',
-        }, { 'title': 'Период', 'dataIndex': 'payPeriod' }, {
-          'title': 'Веб-сервис (сообщение) ',
-          'dataIndex': 'wsStatusMessage',
-        }],
+      ],
 
       xsize: 'auto',
 
@@ -137,12 +94,6 @@ class CounterAgent extends Component {
 
   loadMainGridData = () => {
 
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'universal/mainviewtable',
-      payload: this.state.pagingConfig,
-    });
   };
 
   componentDidMount() {
@@ -150,19 +101,18 @@ class CounterAgent extends Component {
   }
 
 
-
-  toggleSearcher() {}
-
-  toggleItems() {}
-
-  goForm = () => {
-    console.log("qweqwe");
-    this.setState({
-      isForm: !this.state.isForm
-    })
+  toggleSearcher() {
   }
 
+  toggleItems() {
+  }
 
+  goForm = () => {
+    console.log('qweqwe');
+    this.setState({
+      isForm: !this.state.isForm,
+    });
+  };
 
 
   render() {
@@ -179,7 +129,7 @@ class CounterAgent extends Component {
               <DataDiv/>
               }
               {!this.state.isForm &&
-              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
+              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView
                   name='SamplePageColumns'
                   scroll={{ x: this.state.xsize }}
@@ -195,16 +145,25 @@ class CounterAgent extends Component {
                   sorted
                   showTotal
                   dataSource={{
-                      total: universal.table.totalElements,
-                      pageSize: this.state.pagingConfig.length,
-                      page: this.state.pagingConfig.start + 1,
-                      data: universal.table.content,
+                    total: 8921,
+                    pageSize: this.state.pagingConfig.length,
+                    page: this.state.pagingConfig.start + 1,
+                    data: [{
+                      'id': '1',
+                      'code': '00052',
+                      'name': 'ТОО TMI Company',
+                      'bin': '861207303160',
+                      'address': 'Микрорайон 4, дом 34, кв 50',
+                      'currentContacts': '+77028596963',
+                      'account': 'KZ75125KZT1001300335',
+                      'responsiblePersons': 'Ахметов Даурен',
+                    }],
                   }}
                   addonButtons={[
                     <Button
                       disabled={hasRole(['ADMIN'])}
                       className='btn-success'
-                      onClick={()=>this.goForm()}
+                      onClick={() => this.goForm()}
                       key='add'
                     >Добавить
                     </Button>,
@@ -218,34 +177,39 @@ class CounterAgent extends Component {
                       disabled={hasRole(['ADMIN'])}
                       type="primary"
                       key='update'
-                    >Редактировать
+                    >Открыть/изменить
                     </Button>,
-                    ]}
+                    <Button
+                      disabled={hasRole(['ADMIN'])}
+                      key='register_document'
+                    >Зарегистрировать договор
+                    </Button>,
+                  ]}
 
                   onShowSizeChange={(pageNumber, pageSize) => {
 
-                    }}
+                  }}
                   onSelectCell={(cellIndex, cell) => {
 
-                    }}
+                  }}
                   onSelectRow={() => {
 
-                    }}
+                  }}
                   onFilter={(filters) => {
 
-                    }}
+                  }}
                   onRefresh={() => {
 
-                    }}
+                  }}
                   onSearch={() => {
 
-                    }}
+                  }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
-                      this.setState({
-                        selectedRowKeys: selectedRowKeys,
-                      });
-                    }}
-                  />
+                    this.setState({
+                      selectedRowKeys: selectedRowKeys,
+                    });
+                  }}
+                />
               </Spin>}
               {this.state.isForm && <SampleForm/>}
             </Col>

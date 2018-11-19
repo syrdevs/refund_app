@@ -1,4 +1,3 @@
-import ajax from 'axios';
 import jwtdecode from 'jwt-decode';
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';

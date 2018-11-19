@@ -20,7 +20,7 @@ export async function getColumns(params) {
 export async function getData(params) {
   return request(`/api/refund/${params.payload.table}`, {
     method: 'POST',
-    body: params.payload
+    body: params.payload,
   });
 }
 
@@ -176,27 +176,49 @@ export async function getmainViewTable(params) {
 export async function getmainViewColumn(params) {
   return request('/api/refund/maindata');
 }
+
 export async function getRPMUTable(params) {
   return request('/api/refund/secondTable');
 }
+
 export async function getMainModal(params) {
   return request('/api/refund/mainmodal');
 }
+
 export async function getMainSelect1(params) {
   return request('/api/refund/mainselect1');
 }
+
 export async function getOptionsdata(params) {
   return request('/api/refund/optionsdata');
 }
-export async function setfile(params) {
-  return request('/api/refund/downloading');
+
+export async function getFilesRequest(params) {
+  return request('/api/refund/upload/application/get/' + params.payload.id);
 }
+
+export async function deleteFileRequest(params) {
+  return request('/api/refund/upload/application/remove/' + params.payload.id, {
+    method: 'POST'
+  });
+}
+
+export async function setfile(params) {
+
+  let formData = new FormData();
+  formData.append('file', params.payload.file);
+
+  return request('/api/refund/upload/application/add/' + params.payload.id, {
+    method: 'POST',
+    body: formData,
+  });
+}
+
 export async function getmt102file(params) {
   return request('/api/refund/getfile');
 }
 
 export async function mt102preview(params) {
-  console.log("api");
   return request('/api/refund/mt102GroupByKnpPreview', {
     method: 'POST',
     body: params.payload.src,

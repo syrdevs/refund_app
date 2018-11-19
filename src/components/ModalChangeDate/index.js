@@ -40,17 +40,14 @@ class ModalChangeDate extends Component {
       this.removeFile(data.file);
     }
 
-    if (data.file.status === 'uploading') {
+
+    if (data.file.status === 'done') {
       dispatch({
         type: 'universal/setfile',
         payload: {
-          file: data.file,
+          file: data.file.originFileObj,
           id: dataSource.id,
         },
-      }).then(() => {
-        if (this.props.uploadFile === false) {
-          console.log('loading file');
-        }
       });
     }
   };
@@ -88,7 +85,6 @@ class ModalChangeDate extends Component {
       defaultFileList: this.props.universal.files.map((file) => ({
         uid: file.id,
         name: file.filename,
-        status: 'done',
       })),
       onChange: this.uploadFile,
     };

@@ -19,6 +19,10 @@ import { Animated } from 'react-animated-css';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
+const formItemLayout = {
+  labelCol: { md: 6, xs: 24, sm: 24 },
+  wrapperCol: { md: 18, xs: 24, sm: 24},
+};
 
 function momentDefine() {
   var suffixes = {
@@ -114,9 +118,9 @@ export default class FieldCreator extends Component {
   }
 
   componentDidMount() {
-    if (getLocale() === 'en-US') {
-      momentDefine();
-    }
+      if (getLocale() === 'en-US') {
+        momentDefine();
+      }
     const { dispatch } = this.props;
     const { isClearFilter, fields } = this.state;
     if (Object.keys(fields).length === 0) {
@@ -129,12 +133,12 @@ export default class FieldCreator extends Component {
           type: filterItem.type,
         };
 
-        if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
+        /*if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
           dispatch({
             type: 'references/load',
             code: filterItem.name,
           });
-        }
+        }*/
       });
 
       this.setState({
@@ -182,7 +186,10 @@ export default class FieldCreator extends Component {
         ...formFilters,
         [filterItem.name]: value,
       },
+    }, ()=>{
+      this.props.fieldOnChange(filterItem, value);
     });
+
   };
 
   applyFilters = () => {
@@ -237,7 +244,6 @@ export default class FieldCreator extends Component {
     const { dateFormat, references } = this.props;
     const { fields, formFilters, isClearFilter } = this.state;
     const mBottom = { marginBottom: '5px' };
-
     switch (filterItem.type) {
       case 'betweenDate': {
 
@@ -284,11 +290,43 @@ export default class FieldCreator extends Component {
           </Row>
         </div>);
       }
-      case 'text': {
+      case 'datePicker': {
         return (<div key={_index} style={mBottom}>{filterItem.label}:
-          <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-            this.fieldOnChange(filterItem, e.target.value);
-          }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
+        <Row>
+          <Col md={22}>
+            <LocaleProvider locale={componentLocal}>
+              <DatePicker />
+            </LocaleProvider>
+          </Col>
+        </Row>
+      </div>);
+      }
+      case 'text': {
+        return (
+          <FormItem
+            key={_index}
+            label={<span
+                style={{fontSize:'15px', fontWeight: 'bold'}}
+              >{filterItem.label}
+              </span>}
+          {...formItemLayout}
+          >
+          {this.props.getFieldDecorator(filterItem.name, {
+            rules: [{
+              required: true,
+              message: "required",
+            }],
+            initialValue: ''
+          })(
+            <Input style={{marginLeft:'10px', width:'95%'}} name={filterItem.name} onChange={(e) => {
+              this.fieldOnChange(filterItem, e.target.value);
+            }} value={formFilters[filterItem.name]}/> )}
+        </FormItem>
+
+          /*<Input onKeyDown={this.onKeyPress} onChange={(e) => {
+          this.fieldOnChange(filterItem, e.target.value);
+        }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/>*/
+        );
       }
       case 'multibox': {
 
@@ -362,10 +400,6 @@ export default class FieldCreator extends Component {
     }).filter((f) => f);
 
 
-    return (
-      <div>
-        {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-      </div>
-    );
+    return Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx));
   }
 }

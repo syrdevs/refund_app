@@ -9,6 +9,7 @@ import { connect } from 'dva';
   uploadFile: loading.effects['universal/setfile'],
   loadingFiles: loading.effects['universal/getFilesRequestDate'],
   deleteFile: loading.effects['universal/removeFileRequest'],
+  changeDate: loading.effects['universal/changeDateRequest'],
 }))
 class ModalChangeDate extends Component {
 
@@ -19,12 +20,20 @@ class ModalChangeDate extends Component {
 
   handleOk = () => {
 
-    const { changeDateValue } = this.state;
+    const { dispatch, dataSource } = this.props;
 
-    if (changeDateValue !== null) {
-
+    if (this.state.changeDateValue !== null) {
+      dispatch({
+        type: 'universal/changeDateRequest',
+        payload: {
+          [dataSource.key]: this.state.changeDateValue,
+          id: dataSource.id,
+        },
+      }).then(() => {
+        this.props.hideModal(true);
+      });
     }
-    //this.props.hideModal();
+    this.props.hideModal();
   };
 
 
@@ -39,7 +48,6 @@ class ModalChangeDate extends Component {
     if (data.file.status === 'removed') {
       this.removeFile(data.file);
     }
-
 
     if (data.file.status === 'done') {
       dispatch({

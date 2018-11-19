@@ -223,7 +223,7 @@ class Requests extends Component {
     });
   }
 
-  resetShow = () => {
+  resetShow = (isGridRefresh) => {
     this.setState({
       /* ModalData: {
          id: null,
@@ -232,6 +232,9 @@ class Requests extends Component {
        },*/
       ShowModal: false,
     });
+
+    if (isGridRefresh)
+      this.refreshTable();
   };
 
   refreshTable = () => {
@@ -265,7 +268,7 @@ class Requests extends Component {
           file: e.file,
           id: ModalData.id,
         },
-      })
+      });
       /*console.log(e.file);*/
     }
     /*if (e.file.status === 'removed') {

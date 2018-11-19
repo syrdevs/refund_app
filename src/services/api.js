@@ -199,7 +199,14 @@ export async function getFilesRequest(params) {
 
 export async function deleteFileRequest(params) {
   return request('/api/refund/upload/application/remove/' + params.payload.id, {
-    method: 'POST'
+    method: 'POST',
+  });
+}
+
+export async function setDateRequest(params) {
+  return request('api/refund/application/set/date', {
+    method: 'POST',
+    body: params.payload,
   });
 }
 

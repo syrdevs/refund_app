@@ -12,6 +12,7 @@ import {
   setRefundStatus,
   getFilesRequest,
   deleteFileRequest,
+  setDateRequest,
 } from '../services/api';
 
 export default {
@@ -52,6 +53,10 @@ export default {
 
     * changeRefundStatus(payload, { call }) {
       yield call(setRefundStatus, payload);
+    },
+
+    * changeDateRequest(payload, { call }) {
+      yield call(setDateRequest, payload);
     },
 
     * setfile(payload, { call, put }) {

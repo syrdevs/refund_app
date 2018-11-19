@@ -204,9 +204,8 @@ export async function deleteFileRequest(params) {
 }
 
 export async function setDateRequest(params) {
-  return request('api/refund/application/set/date', {
-    method: 'POST',
-    body: params.payload,
+  return request(`/api/refund/application/set/date?${stringify(params.payload)}`, {
+    method: 'POST'
   });
 }
 

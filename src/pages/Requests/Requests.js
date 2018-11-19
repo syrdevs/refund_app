@@ -241,46 +241,6 @@ class Requests extends Component {
     this.loadMainGridData();
   };
 
-  clearfile = () => {
-    this.setState({
-      serverFileList: [{
-        id: '1',
-        filename: '1xxx.png',
-      }, {
-        id: '2',
-        filename: '2yyy.png',
-      }, {
-        id: '3',
-        filename: '3zzz.png',
-      }],
-    });
-  };
-
-  addfile = (e) => {
-
-    const { serverFileList, ModalData } = this.state;
-
-    if (e.file.status === 'uploading') {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'universal/setfile',
-        payload: {
-          file: e.file,
-          id: ModalData.id,
-        },
-      });
-      /*console.log(e.file);*/
-    }
-    /*if (e.file.status === 'removed') {
-      this.setState({
-        serverFileList: serverFileList.filter((obj) => {
-          return obj.id !== e.file.uid;
-        }),
-      });
-    }*/
-  };
-
-
   render() {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;

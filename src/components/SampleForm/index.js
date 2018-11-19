@@ -483,7 +483,8 @@ class SampleForm extends Component {
             );
           },
         }
-      ]
+      ],
+      hasError: false
     };
   }
 
@@ -581,6 +582,11 @@ class SampleForm extends Component {
             identities: this.state.idents
           })
         }
+        else {
+          this.setState({
+            hasError:true
+          })
+        }
       },
     );
 
@@ -596,6 +602,7 @@ class SampleForm extends Component {
     const dateFormat = 'DD.MM.YYYY';
     const title = {fontSize:'15px', fontWeight: 'bold'};
     const titledata = {marginLeft:'10px', width:'95%'};
+    const errStyle = {color: 'red', textAlign: 'right', fontSize: '17px', marginRight: '16px'}
     const {
       form: { getFieldDecorator },
     } = this.props;
@@ -648,7 +655,6 @@ class SampleForm extends Component {
                   <Option value="orgpane">Организация</Option>
                   <Option value="fizpane">Физическое лицо</Option>
                 </Select>
-                )}
               </FormItem>
               {this.state.isNew &&
               <div>
@@ -721,22 +727,24 @@ class SampleForm extends Component {
             </div>
           </Row>
           <Row>
+            {this.state.hasError && <div style={errStyle} className='ant-form-explain'>Пожалуйста заполните обязательные поля</div>}
             <Divider
-              style={{ margin: '16px 10px 0 0' }}
+              style={{ margin: '16px 10px 0 0', height: '2px' }}
             />
           </Row>
           <Row>
             <Col>
-              <div style={{float: 'right'}}>
+              <div style={{float: 'right', margin: '20px 20px 10px 0'}}>
                 <Button
-                  style={{ margin: '10px 10px 0px 0px'}}
+                  size={'large'}
+                  style={{ marginRight: '20px'}}
                   type='primary'
                   onClick={(e)=>{this.sendserver(e)}}
                 >
                   Добавить
                 </Button>
                 <Button
-                  style={{ margin: '10px 10px 0px 0px' }}
+                  size={'large'}
                   onClick={(e)=>{this.cancelform()}}
                 >
                   Отменить

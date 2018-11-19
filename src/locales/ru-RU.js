@@ -87,7 +87,7 @@ export default {
   'menu.rpmu': 'РПМУ',
   'menu.refunds.requests': 'Заявки',
   'menu.options': 'Настройки',
-  'menu.counteragent': 'Контрагент',
+  'menu.counteragent': 'Контрагенты',
   'menu.mainview': 'РЕЕСТР ВОЗВРАТОВ',
   'menu.mainview.paylists': 'Платежи',
   'menu.mainview.mt102': 'МТ102',

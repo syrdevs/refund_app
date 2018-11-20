@@ -31,7 +31,7 @@ export default {
         localStorage.setItem('token', response.token);
         setAuthToken();
         reloadAuthorized();
-        const urlParams = new URL(window.location.href);
+       /* const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
         if (redirect) {
@@ -45,8 +45,9 @@ export default {
             window.location.href = redirect;
             return;
           }
-        }
-        yield put(routerRedux.replace(redirect || '/'));
+        }*/
+       //yield put(routerRedux.replace(redirect || '/'));
+        yield put(routerRedux.push('/main/home'));
       } else {
         yield put({
           type: 'incorrectLogin',
@@ -73,9 +74,9 @@ export default {
       yield put(
         routerRedux.push({
           pathname: '/user/login',
-          search: stringify({
+          /*search: stringify({
             redirect: window.location.href,
-          }),
+          }),*/
         }),
       );
     },

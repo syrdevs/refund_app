@@ -81,12 +81,12 @@ export default class ModalGridView extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      filter: this.props.filter,
-    });
+
     const filter = this.props.filter
     filter.src.data.refund_statusList= [{id: "6c6c5156-6530-462e-9a8b-2705336a176c"}];
-    console.log(filter);
+    this.setState({
+      filter: filter,
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/mt102preview',

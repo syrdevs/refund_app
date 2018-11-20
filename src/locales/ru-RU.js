@@ -142,7 +142,7 @@ export default {
   'system.excelExport': 'Выгрузить в Excel',
   'system.clear': 'Очистить',
   'system.information': 'Информация',
-  'system.load': 'Загрузить',
+  'system.load': 'Загрузить файл',
   'system.download.completed': 'Файл успешно загружен',
   'report.list': 'Список отчетов',
   'report.formingList': 'Сформированные отчеты',

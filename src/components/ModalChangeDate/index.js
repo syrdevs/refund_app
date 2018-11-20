@@ -116,7 +116,16 @@ class ModalChangeDate extends Component {
         onCancel={this.handleCancel}
         width={500}
         centered
-        visible={true}>
+        visible
+        footer={[
+          <Button key="back" onClick={this.handleCancel}>
+            {formatMessage({ id: 'system.close' })}
+          </Button>,
+          <Button key="submit" type="primary" onClick={this.handleOk}>
+            {formatMessage({ id: 'form.save' })}
+          </Button>,
+        ]}
+      >
         <Spin spinning={this.props.loadingFiles}>
           <Row>
             <DatePicker
@@ -130,7 +139,7 @@ class ModalChangeDate extends Component {
             />
           </Row>
           {this.props.coltype !== 'appEndDate' &&
-          <Row>
+          <Row style={{marginTop:'15px'}}>
             {this.props.loadingFiles === false &&
             <Upload
               {...uploadProps}>

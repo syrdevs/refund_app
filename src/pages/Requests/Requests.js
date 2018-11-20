@@ -282,7 +282,7 @@ class Requests extends Component {
       },
       {
         'title': 'КНП',
-        'dataIndex': 'dknpId.id',
+        'dataIndex': 'dknpId.code',
       },
       {
         'title': 'Возвратов',

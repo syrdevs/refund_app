@@ -1,4 +1,8 @@
-import { getColumns, getData } from '../services/api';
+import {
+  getColumns,
+  getData,
+  getJournalData,
+  getStaticticsData} from '../services/api';
 
 export default {
   namespace: 'universal2',
@@ -7,6 +11,24 @@ export default {
     columns: [],
   },
   effects: {
+
+    * statisticsData(payload, { call, put }) {
+      const response = yield call(getStaticticsData, payload);
+
+      yield put({
+        type: 'getData',
+        payload: response,
+      });
+    },
+
+    * journalData(payload, { call, put }) {
+      const response = yield call(getJournalData, payload);
+
+      yield put({
+        type: 'getData',
+        payload: response,
+      });
+    },
 
     * clear(payload, { call, put }) {
       yield put({

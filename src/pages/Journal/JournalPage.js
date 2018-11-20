@@ -26,7 +26,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva';
-import {Animated} from "react-animated-css";
+import { Animated } from 'react-animated-css';
 
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
@@ -34,60 +34,65 @@ const dateFormat = 'YYYY/MM/DD';
 
 @connect(({ universal2, loading }) => ({
   universal2,
-  loadingData: loading.effects['universal2/data'],
+  loadingData: loading.effects['universal2/journalData'],
 }))
 export default class JournalPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      columns: [],
+      columns: [{
+        'title': 'Дата и время',
+        'dataIndex': 'entryDate',
+        'isVisible': true,
+      }, {
+        'title': 'Номер заявки',
+        'dataIndex': 'refundId.applicationId.appNumber',
+        'isVisible': true,
+      }, {
+        'title': 'Референс ГК',
+        'dataIndex': 'refundId.gcvpReference',
+        'isVisible': true,
+      }, {
+        'title': 'Номер ПП ГК',
+        'dataIndex': 'refundId.gcvpOrderNum',
+        'isVisible': true,
+      }, {
+        'title': 'Дата ПП ГК',
+        'width': 120,
+        'dataIndex': 'refundId.gcvpOrderDate',
+        'isVisible': true,
+      }, {
+        'title': 'Потребитель',
+        'width': 120,
+        'dataIndex': 'refundId.personIin',
+        'isVisible': true,
+      }
+      /*, {
+        'title': 'Логин',
+        'width': 130,
+        'dataIndex': 'userId.username',
+      }, {
+        'title': 'Пользователь',
+        'width': 120,
+        'dataIndex': 'userId.surname',
+      }, {
+        'title': 'Получатель (БИК)',
+        'width': 120,
+        'dataIndex': 'receiver_bik',
+      }, {
+        'title': 'Действие',
+        'width': 120,
+        'dataIndex': 'Действие',
+      }*/
+      ],
       filterContainer: 0,
       searchButton: false,
-      dataContent: {
-        'size': 15,
-        'totalElements': 8921,
-        'totalPages': 595,
-        'content': [],
+      filterForm: [{
+        name: 'date',
+        label: 'Дата',
+        type: 'betweenDate',
       },
-
-      filterForm: [],
-    };
-  }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'universal2/clear',
-      payload: {
-        table: 'requests',
-      },
-    });
-  }
-
-  componentDidMount() {
-
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'universal2/columns',
-      payload: {
-        table: 'journal',
-      },
-    });
-    dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'journal',
-      },
-    });
-
-    this.setState({
-      filterForm: [
-        {
-          name: 'date',
-          label: 'Дата',
-          type: 'betweenDate',
-        },
         {
           name: 'iin',
           label: 'ИИН Потребителя',
@@ -100,45 +105,100 @@ export default class JournalPage extends Component {
           name: 'login',
           label: 'Логин',
           type: 'text',
-        }
+        },
       ],
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': false,
+          'data': {},
+        },
+      },
+    };
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {},
     });
+  }
+
+  clearFilter = () => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': false,
+          'data': {},
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
+
+  setFilter = (filters) => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': true,
+          'data': filters,
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
+  };
+
+  loadMainGridData = () => {
+
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal2/journalData',
+      payload: this.state.pagingConfig,
+    });
+
+
+  };
+
+  componentDidMount() {
+    this.loadMainGridData();
   }
 
   applyFilter(dataFilter) {
     console.log(dataFilter);
   }
 
-  clearFilter() {
-    console.log('clearead');
-  }
 
   onShowSizeChange = (current, pageSize) => {
 
     const max = current * pageSize;
     const min = max - pageSize;
-    /*this.setState({
-      dataSource: this.state.testdata.content.slice(min, max),
-    });*/
-
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal2/data',
+      type: 'universal2/journalData',
       payload: {
-        table: 'payment',
+        ...this.state.pagingConfig,
+        start: current,
+        length: pageSize,
       },
     });
   };
 
 
   refreshTable = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'journal',
-      },
-    });
+    this.loadMainGridData();
   };
 
   filterPanelState = () => {
@@ -158,18 +218,18 @@ export default class JournalPage extends Component {
           name={'journalPageColumns'}
           searchButton={this.state.searchButton}
           fixedBody={true}
-          rowKey={'id'}
+          rowKey={'entryDate'}
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={true}
-          columns={columns}
+          columns={this.state.columns}
           sorted={true}
           showTotal={false}
           dataSource={{
-            total: 50,
-            pageSize: 10,
-            page: 1,
-            data: dataStore,
+            total: dataStore.totalElements,
+            pageSize: this.state.pagingConfig.length,
+            page: this.state.pagingConfig.start + 1,
+            data: dataStore.content,
           }}
           onShowSizeChange={(pageNumber, pageSize) => {
             console.log(pageNumber, pageSize);

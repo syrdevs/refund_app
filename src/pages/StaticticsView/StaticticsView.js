@@ -28,6 +28,10 @@ import SmartGridView from '@/components/SmartGridView';
 
 const { RangePicker } = DatePicker;
 
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/statisticsData'],
+}))
 export default class StaticticsView extends Component {
   state = {
 
@@ -83,29 +87,100 @@ export default class StaticticsView extends Component {
           title: 'Сумма пени за взносы на возврат',
         },
       ],
-      dataSource: [
-        {
-          id: '1',
-          appcount: 10,
-          otcount: 11,
-          vzcount: 20,
-          penotcount: 15,
-          penvzcount: 16,
-          otsum: 15809,
-          vzsum: 11809,
-          penotsum: 16809,
-          penvzsum: 10809,
-        },
-      ],
+    },
+
+    pagingConfig: {
+      'start': 0,
+      'length': 15,
+      'src': {
+        'searched': false,
+        'data': {},
+      },
     },
   };
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/clear',
+      payload: {},
+    });
+  }
+
+  clearFilter = () => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': false,
+          'data': {},
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
+
+  setFilter = (filters) => {
+
+    this.setState({
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'src': {
+          'searched': true,
+          'data': filters,
+        },
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
+  };
+
+  loadMainGridData = () => {
+
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal2/statisticsData',
+      payload: this.state.pagingConfig,
+    });
+
+
+  };
+
+  onShowSizeChange = (current, pageSize) => {
+
+    const max = current * pageSize;
+    const min = max - pageSize;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/statisticsData',
+      payload: {
+        ...this.state.pagingConfig,
+        start: current,
+        length: pageSize,
+      },
+    });
+  };
+
+  refreshTable = () => {
+    this.loadMainGridData();
+  };
+
   componentDidMount() {
+    this.loadMainGridData();
   }
 
   render() {
 
     const { gridData } = this.state;
+    const { universal2 } = this.props;
+
 
     return (<PageHeaderWrapper title={formatMessage({ id: 'menu.refund.stat.title' })}>
       <Card bodyStyle={{ padding: 5 }}>
@@ -114,7 +189,7 @@ export default class StaticticsView extends Component {
             <Card bodyStyle={{ padding: 5 }}>
               <RangePicker
                 //
-                placeholder={[formatMessage({id:"datepicker.start.label"}), formatMessage({id:"datepicker.end.label"})]}
+                placeholder={[formatMessage({ id: 'datepicker.start.label' }), formatMessage({ id: 'datepicker.end.label' })]}
                 format={'DD.MM.YYYY'}
                 onChange={(date, dateString) => {
                   this.setState((prevState) => ({
@@ -126,22 +201,28 @@ export default class StaticticsView extends Component {
                 }}/>
               <Button style={{ margin: '10px' }} onClick={() => {
                 console.log(this.state.filters.dateValues);
+                this.loadMainGridData();
               }
-              }>{formatMessage({id:"button.apply"})}</Button>
+              }>{formatMessage({ id: 'button.apply' })}</Button>
             </Card>
           </Col>
         </Row>
         <Row>
           <Col>
-            <SmartGridView
-              name={'StatisticsView'}
-              hideFilterBtn={true}
-              hideRefreshBtn={true}
-              columns={gridData.columns}
-              dataSource={{
-                data: gridData.dataSource,
-              }}
-            />
+            <Spin spinning={this.props.loadingData}>
+              <SmartGridView
+                name={'StatisticsView'}
+                hideFilterBtn={true}
+                hideRefreshBtn={true}
+                columns={gridData.columns}
+                dataSource={{
+                  total: 0,
+                  pageSize: this.state.pagingConfig.length,
+                  page: this.state.pagingConfig.start + 1,
+                  data: Array.isArray(universal2.dataStore) ? universal2.dataStore : [universal2.dataStore],
+                }}
+              />
+            </Spin>
           </Col>
         </Row>
       </Card>

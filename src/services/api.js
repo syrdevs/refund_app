@@ -18,7 +18,7 @@ export async function getColumns(params) {
 }
 
 export async function getData(params) {
-  if (['payment', 'paymentcolumn','templates','journaldata','journal'].indexOf(params.payload.table) !== -1) {
+  if (['payment', 'paymentcolumn', 'templates', 'journaldata', 'journal'].indexOf(params.payload.table) !== -1) {
     return request(`/apis/refund/${params.payload.table}data`);
   }
 
@@ -207,9 +207,17 @@ export async function deleteFileRequest(params) {
   });
 }
 
+export async function setDateRefund(params) {
+  return request('/api/refund/refundSetDate', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 export async function setDateRequest(params) {
-  return request(`/api/refund/application/set/date?${stringify(params.payload)}`, {
-    method: 'POST'
+  return request('/api/refund/applicationSetDate', {
+    method: 'POST',
+    body: params.payload,
   });
 }
 
@@ -238,16 +246,29 @@ export async function mt102preview(params) {
 export async function getCalendarEvents(params) {
   return request(`/api/refund/getCalendarEvents?${stringify(params.payload)}`);
 }
+
 export async function saveCalendarEvents(params) {
   return request('/api/refund/saveCalendarEvent', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function removeCalendarEvents(params) {
   return request(`/api/refund/removeCalendarEvent?${stringify(params.payload)}`, {
     method: 'POST',
   });
+}
+
+export async function getJournalData(params) {
+  return request('/api/refund/getRefundHisPage', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
+export async function getStaticticsData(params) {
+  return request('/api/refund/get/stat?dateStart=01.11.2010&dateEnd=16.11.2018');
 }
 
 

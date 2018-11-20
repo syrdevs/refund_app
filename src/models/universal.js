@@ -14,6 +14,7 @@ import {
   deleteFileRequest,
   setDateRequest,
   dAppRefundStatusAuto,
+  setDateRefund
 } from '../services/api';
 
 export default {
@@ -58,6 +59,10 @@ export default {
 
     * changeRefundStatus(payload, { call }) {
       yield call(setRefundStatus, payload);
+    },
+
+    * changeDateRefund(payload, { call }) {
+      yield call(setDateRefund, payload);
     },
 
     * changeDateRequest(payload, { call }) {

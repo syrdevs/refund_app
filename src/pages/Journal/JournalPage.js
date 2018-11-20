@@ -67,24 +67,24 @@ export default class JournalPage extends Component {
         'width': 120,
         'dataIndex': 'refundId.personIin',
         'isVisible': true,
-      }
-      /*, {
-        'title': 'Логин',
-        'width': 130,
-        'dataIndex': 'userId.username',
-      }, {
-        'title': 'Пользователь',
-        'width': 120,
-        'dataIndex': 'userId.surname',
-      }, {
-        'title': 'Получатель (БИК)',
-        'width': 120,
-        'dataIndex': 'receiver_bik',
-      }, {
-        'title': 'Действие',
-        'width': 120,
-        'dataIndex': 'Действие',
-      }*/
+      },
+        /*, {
+          'title': 'Логин',
+          'width': 130,
+          'dataIndex': 'userId.username',
+        }, {
+          'title': 'Пользователь',
+          'width': 120,
+          'dataIndex': 'userId.surname',
+        }, {
+          'title': 'Получатель (БИК)',
+          'width': 120,
+          'dataIndex': 'receiver_bik',
+        }, {
+          'title': 'Действие',
+          'width': 120,
+          'dataIndex': 'Действие',
+        }*/
       ],
       filterContainer: 0,
       searchButton: false,
@@ -92,21 +92,7 @@ export default class JournalPage extends Component {
         name: 'date',
         label: 'Дата',
         type: 'betweenDate',
-      },
-        {
-          name: 'iin',
-          label: 'ИИН Потребителя',
-          type: 'text',
-        }, {
-          name: 'number_request',
-          label: 'Номер заявки',
-          type: 'text',
-        }, {
-          name: 'login',
-          label: 'Логин',
-          type: 'text',
-        },
-      ],
+      }],
       pagingConfig: {
         'start': 0,
         'length': 15,
@@ -272,7 +258,7 @@ export default class JournalPage extends Component {
                       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                         icon={faTimes}/></Icon>}
                     >
-                      <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
+                      <GridFilter clearFilter={this.clearFilter} applyFilter={this.setFilter} key={'1'}
                                   filterForm={this.state.filterForm}
                                   dateFormat={dateFormat}/>
                     </Card>

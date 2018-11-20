@@ -136,6 +136,8 @@ export default class ReportsPage extends Component {
 
     });
 
+    console.log(filteredData);
+
     let orderRecord = this.state.reportForm.data;
     this.setState((prevState, props) => {
       return {

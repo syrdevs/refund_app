@@ -14,7 +14,8 @@ import {
   deleteFileRequest,
   setDateRequest,
   dAppRefundStatusAuto,
-  setDateRefund
+  setDateRefund,
+  saveOptionsdata
 } from '../services/api';
 
 export default {
@@ -159,12 +160,14 @@ export default {
         payload: response,
       });
     },
-    * optionsDatachange(payload, { put }) {
+    * optionsDatachange(payload, { call, put }) {
+      const response = yield call(saveOptionsdata, payload);
       yield put({
         type: 'OptionChangeReducer',
         payload: payload,
       });
     },
+
   },
 
   reducers: {
@@ -238,10 +241,7 @@ export default {
       };
     },
     OptionChangeReducer(state, { payload }) {
-      return {
-        ...state,
-        options: payload.payload,
-      };
+      return state;
     },
 
   },

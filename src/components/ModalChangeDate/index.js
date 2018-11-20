@@ -89,6 +89,15 @@ class ModalChangeDate extends Component {
   componentDidMount() {
     this.getFileList();
   }
+  /*disabledDate =(current) => {
+    // Can not select days before today and today
+    return current && current < moment().endOf('day');
+  }*/
+
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current.valueOf() < Date.now();
+  }
 
   render() {
 
@@ -116,6 +125,7 @@ class ModalChangeDate extends Component {
               size="large"
               style={{ marginBottom: '5px' }}
               format={this.props.dateFormat}
+              disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
             />
           </Row>

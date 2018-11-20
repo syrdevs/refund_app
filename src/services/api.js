@@ -194,7 +194,13 @@ export async function getMainSelect1(params) {
 }
 
 export async function getOptionsdata(params) {
-  return request('/apis/refund/optionsdata');
+  return request('/api/refund/getUserOptionList');
+}
+export async function saveOptionsdata(params) {
+  return request('/api/refund/saveUserOptionList', {
+    method: 'POST',
+    body: params.payload,
+  })
 }
 
 export async function getFilesRequest(params) {

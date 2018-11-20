@@ -591,170 +591,171 @@ class MainView extends Component {
               this.setState({
                 ModalChangeDateRefund: false,
                 selectedRowKeys: [],
+                btnhide: false,
               }, () => this.loadMainGridData());
             else this.setState({ ModalChangeDateRefund: false });
           }}/>}
 
-            <ModalGraphView visible={this.state.ShowGraph}
-            resetshow={(e) => {
-              this.setState({ ShowGraph: false });
-            }}
-            dataSource={universal.mainmodal}/>
+        <ModalGraphView visible={this.state.ShowGraph}
+                        resetshow={(e) => {
+                          this.setState({ ShowGraph: false });
+                        }}
+                        dataSource={universal.mainmodal}/>
 
-          {this.state.ShowModal && <ModalGridView visible={this.state.ShowModal}
-            resetshow={(e) => {
-              this.setState({ ShowModal: false });
-            }}
-            filter={this.state.pagingConfig}/>}
+        {this.state.ShowModal && <ModalGridView visible={this.state.ShowModal}
+                                                resetshow={(e) => {
+                                                  this.setState({ ShowModal: false });
+                                                }}
+                                                filter={this.state.pagingConfig}/>}
 
-            <Card bodyStyle={{ padding: 5 }}>
-            <Row>
+        <Card bodyStyle={{ padding: 5 }}>
+          <Row>
             <Col sm={24} md={this.state.searchercont}>
-            <div>
+              <div>
 
-            {this.state.searchercont === 7 &&
-            <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-              <Card
-                style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                type="inner"
-                title={formatMessage({ id: 'system.filter' })}
-                headStyle={{
-                  padding: '0 14px',
-                }}
-                extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                  icon={faTimes}/></Icon>}
-              >
+                {this.state.searchercont === 7 &&
+                <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+                  <Card
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    type="inner"
+                    title={formatMessage({ id: 'system.filter' })}
+                    headStyle={{
+                      padding: '0 14px',
+                    }}
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}
+                  >
 
-                <GridFilter
-                  clearFilter={() => {
-                    this.clearFilter();
-                  }}
-                  applyFilter={(filters) => {
-                    this.setFilter(filters);
-                  }}
-                  filterForm={GridFilterData}
-                  dateFormat={dateFormat}/>
+                    <GridFilter
+                      clearFilter={() => {
+                        this.clearFilter();
+                      }}
+                      applyFilter={(filters) => {
+                        this.setFilter(filters);
+                      }}
+                      filterForm={GridFilterData}
+                      dateFormat={dateFormat}/>
 
 
-              </Card>
-            </Animated>}
+                  </Card>
+                </Animated>}
 
-            {this.state.searchercont === 8 &&
-            <DataDiv/>
-            }
+                {this.state.searchercont === 8 &&
+                <DataDiv/>
+                }
 
-            </div>
+              </div>
             </Col>
             <Col sm={24} md={this.state.tablecont}>
-            {/*<Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>*/}
-            <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
-            <SmartGridView
-            name={'RefundsPageColumns'}
-            scroll={{ x: this.state.xsize }}
-            selectedRowCheckBox={true}
-            searchButton={this.state.searchButton}
-            selectedRowKeys={this.state.selectedRowKeys}
-            rowKey={'id'}
-            loading={this.props.loadingData}
-            rowSelection={true}
-            actionColumns={this.state.fcolumn}
-            columns={this.state.columns}
-            sorted={true}
-            showTotal={true}
-            dataSource={{
-              total: universal.table.totalElements,
-              pageSize: this.state.pagingConfig.length,
-              page: this.state.pagingConfig.start + 1,
-              data: universal.table.content,
-            }}
-            addonButtons={[
-              <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
-                      disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
-                      key={'odobrit'} className={'btn-success'}
-              >
-                {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-              </Button>,
+              {/*<Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>*/}
+              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
+                <SmartGridView
+                  name={'RefundsPageColumns'}
+                  scroll={{ x: this.state.xsize }}
+                  selectedRowCheckBox={true}
+                  searchButton={this.state.searchButton}
+                  selectedRowKeys={this.state.selectedRowKeys}
+                  rowKey={'id'}
+                  loading={this.props.loadingData}
+                  rowSelection={true}
+                  actionColumns={this.state.fcolumn}
+                  columns={this.state.columns}
+                  sorted={true}
+                  showTotal={true}
+                  dataSource={{
+                    total: universal.table.totalElements,
+                    pageSize: this.state.pagingConfig.length,
+                    page: this.state.pagingConfig.start + 1,
+                    data: universal.table.content,
+                  }}
+                  addonButtons={[
+                    <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            key={'odobrit'} className={'btn-success'}
+                    >
+                      {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                    </Button>,
 
-              <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: 'menu.mainview.cancelBtn' }))}
-                      disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
-                      key={'cancel'}
-                      className={'btn-danger'}>
-                {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-              </Button>,
+                    <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: 'menu.mainview.cancelBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            key={'cancel'}
+                            className={'btn-danger'}>
+                      {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                    </Button>,
 
-              <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
-                      disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
-                      key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-              <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
-                      disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide}
-                      key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                    <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                    <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
+                            disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide}
+                            key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
-              <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-                <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide} key="1"
-                           onClick={this.AppRefundStatusAuto}>
-                  {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                </Menu.Item>
-                <Menu.Item key="2">
-                  {formatMessage({ id: 'menu.mainview.excelBtn' })}
-                </Menu.Item>
-                <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.selectedRowKeys.length === 0}
-                           key="3"
-                           onClick={() => {
-                             this.setState({ ModalChangeDateRefund: true });
-                           }}>
-                  {formatMessage({ id: 'menu.mainview.setDateBtn' })}
-                </Menu.Item>
-                <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4" onClick={() => {
-                  this.showModal();
-                }}>
-                  {formatMessage({ id: 'menu.mainview.mt102Btn' })}
-                </Menu.Item>
-                <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
-                  {formatMessage({ id: 'menu.mainview.xmlBtn' })}
-                </Menu.Item>
-                <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
-                  this.showGraphic();
-                }}>
-                  {formatMessage({ id: 'menu.mainview.infographBtn' })}
-                </Menu.Item>
-              </Menu>}>
-                <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
-                        key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
-                  type="down"/></Button>
-              </Dropdown>,
-            ]}
+                    <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide} key="1"
+                                 onClick={this.AppRefundStatusAuto}>
+                        {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                      </Menu.Item>
+                      <Menu.Item key="2">
+                        {formatMessage({ id: 'menu.mainview.excelBtn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.selectedRowKeys.length === 0}
+                                 key="3"
+                                 onClick={() => {
+                                   this.setState({ ModalChangeDateRefund: true });
+                                 }}>
+                        {formatMessage({ id: 'menu.mainview.setDateBtn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4" onClick={() => {
+                        this.showModal();
+                      }}>
+                        {formatMessage({ id: 'menu.mainview.mt102Btn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
+                        {formatMessage({ id: 'menu.mainview.xmlBtn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
+                        this.showGraphic();
+                      }}>
+                        {formatMessage({ id: 'menu.mainview.infographBtn' })}
+                      </Menu.Item>
+                    </Menu>}>
+                      <Button disabled={hasRole(['FSMS2', 'ADMIN'])}
+                              key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+                        type="down"/></Button>
+                    </Dropdown>,
+                  ]}
 
-            onShowSizeChange={(pageNumber, pageSize) => {
-              this.onShowSizeChange(pageNumber, pageSize);
-            }}
-            onSelectCell={(cellIndex, cell) => {
+                  onShowSizeChange={(pageNumber, pageSize) => {
+                    this.onShowSizeChange(pageNumber, pageSize);
+                  }}
+                  onSelectCell={(cellIndex, cell) => {
 
-            }}
-            onSelectRow={() => {
+                  }}
+                  onSelectRow={() => {
 
-            }}
-            onFilter={(filters) => {
+                  }}
+                  onFilter={(filters) => {
 
-            }}
-            onRefresh={() => {
-              this.loadMainGridData();
-            }}
-            onSearch={() => {
-              this.toggleSearcher();
-            }}
-            onSelectCheckboxChange={(selectedRowKeys) => {
-              this.checkStatus(selectedRowKeys);
-            }}
-            />
-            <br/>
-            </Spin>
-            {/*</Card>*/}
+                  }}
+                  onRefresh={() => {
+                    this.loadMainGridData();
+                  }}
+                  onSearch={() => {
+                    this.toggleSearcher();
+                  }}
+                  onSelectCheckboxChange={(selectedRowKeys) => {
+                    this.checkStatus(selectedRowKeys);
+                  }}
+                />
+                <br/>
+              </Spin>
+              {/*</Card>*/}
             </Col>
-            </Row>
-            </Card>
-            </PageHeaderWrapper>
-            );
-          }
-          }
+          </Row>
+        </Card>
+      </PageHeaderWrapper>
+    );
+  }
+}
 
-          export default MainView;
+export default MainView;

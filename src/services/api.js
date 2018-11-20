@@ -14,10 +14,14 @@ export async function getReference(params) {
 }
 
 export async function getColumns(params) {
-  return request(`/api/refund/${params.payload.table}column`);
+  return request(`/apis/refund/${params.payload.table}column`);
 }
 
 export async function getData(params) {
+  if (['payment', 'paymentcolumn','templates','journaldata','journal'].indexOf(params.payload.table) !== -1) {
+    return request(`/apis/refund/${params.payload.table}data`);
+  }
+
   return request(`/api/refund/${params.payload.table}`, {
     method: 'POST',
     body: params.payload,
@@ -190,7 +194,7 @@ export async function getMainSelect1(params) {
 }
 
 export async function getOptionsdata(params) {
-  return request('/api/refund/optionsdata');
+  return request('/apis/refund/optionsdata');
 }
 
 export async function getFilesRequest(params) {

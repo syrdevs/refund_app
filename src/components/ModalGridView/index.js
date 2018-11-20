@@ -222,8 +222,7 @@ export default class ModalGridView extends Component {
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView
                   name={'mt102ModalPageColumns'}
-                  scroll={{ x: 'auto', y: 100 }}
-                  fixedHeader={true}
+                  scroll={{ x: 'auto' }}
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
                   hideFilterBtn={true}

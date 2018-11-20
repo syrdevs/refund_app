@@ -360,12 +360,13 @@ class MainView extends Component {
   };
 
   stateFilter = () => {
+
+    /*   {
+         name: 'test',
+         label: 'selectlist',
+         type: 'selectlist',
+       },*/
     return [
-      {
-        name: 'test',
-        label: 'selectlist',
-        type: 'selectlist',
-      },
       {
         name: 'appNumber',
         label: formatMessage({ id: 'menu.filter.numberrequest' }),
@@ -533,7 +534,7 @@ class MainView extends Component {
     this.setState({
       selectedRowKeys: selectedRowKeys,
     });
-  }
+  };
 
 
   render() {
@@ -671,7 +672,7 @@ class MainView extends Component {
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="1"
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide} key="1"
                                  onClick={this.AppRefundStatusAuto}>
                         {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>

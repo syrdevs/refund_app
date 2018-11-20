@@ -88,7 +88,7 @@ class MainView extends Component {
             </Button>
           ),
         },
-        {
+        /*{
           title: formatMessage({ id: 'menu.mainview.mt102' }),
           order: 1,
           key: 'mt102',
@@ -98,11 +98,11 @@ class MainView extends Component {
           onCell: record => {
             return {
               onClick: () => {
-                /*const { dispatch } = this.props;
+                /!*const { dispatch } = this.props;
                 dispatch({
                   type: 'universal2/getmt102',
                   payload: {},
-                });*/
+                });*!/
                 //this.toggleItems(record);
               },
             };
@@ -114,7 +114,7 @@ class MainView extends Component {
               </a>
             </Button>
           ),
-        },
+        },*/
         {
           title: formatMessage({ id: 'menu.mainview.fio' }),
           order: 3,

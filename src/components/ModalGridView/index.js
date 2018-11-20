@@ -82,8 +82,8 @@ export default class ModalGridView extends Component {
 
   componentDidMount() {
 
-    const filter = this.props.filter
-    filter.src.data.refund_statusList= [{id: "6c6c5156-6530-462e-9a8b-2705336a176c"}];
+    const filter = this.props.filter;
+    filter.src.data.refund_statusList = [{ id: '6c6c5156-6530-462e-9a8b-2705336a176c' }];
     this.setState({
       filter: filter,
     });
@@ -220,7 +220,6 @@ export default class ModalGridView extends Component {
         <Tabs onChange={this.onChangetab}>
           {this.state.dataColumn.map((tabItem) => {
             return (<TabPane tab={tabItem.knpId} key={tabItem.knpId}>
-              <span>{formatMessage({ id: 'system.totalAmount' })}: {tabItem.totalAmount}</span>
               {/*<Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>*/}
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView
@@ -229,6 +228,8 @@ export default class ModalGridView extends Component {
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
                   hideFilterBtn={true}
+                  showTotal={true}
+                  rowKey={'id'}
                   hideRefreshBtn={true}
                   dataSource={{
                     total: this.state.dataSource.totalElements,
@@ -236,7 +237,11 @@ export default class ModalGridView extends Component {
                     page: this.state.filter.start + 1,
                     data: this.state.dataSource.content,
                   }}
-                  addonButtons={[]}
+                  addonButtons={[
+                    <div style={{
+                      paddingTop: 15,
+                      display: 'inline-block',
+                    }}>{formatMessage({ id: 'system.totalAmount' })}: {tabItem.totalAmount}</div>]}
 
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);

@@ -81,14 +81,17 @@ export default class ModalGridView extends Component {
   }
 
   componentDidMount() {
+
+    const filter = this.props.filter
+    filter.src.data.refund_statusList= [{id: "6c6c5156-6530-462e-9a8b-2705336a176c"}];
     this.setState({
-      filter: this.props.filter,
+      filter: filter,
     });
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/mt102preview',
       payload: {
-        ...this.props.filter,
+        ...filter,
       },
     }).then((e) => {
 
@@ -222,7 +225,7 @@ export default class ModalGridView extends Component {
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView
                   name={'mt102ModalPageColumns'}
-                  scroll={{ x: 'auto' }}
+                  scroll={{ x: 'auto', y: 300 }}
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
                   hideFilterBtn={true}

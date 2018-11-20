@@ -142,7 +142,7 @@ export default {
   'system.excelExport': 'Vygrýzıt v Excel',
   'system.clear': 'Ochıstıt',
   'system.information': 'Informatsııa',
-  'system.load': 'Zagrýzıt',
+  'system.load': 'Zagrýzıt fail',
   'system.download.completed': 'Faıl ýspeshno zagrýjen',
   'report.list': 'Spısok otchetov',
   'report.formingList': 'Sformırovannye otchety',

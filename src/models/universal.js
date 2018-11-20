@@ -106,7 +106,6 @@ export default {
       }
     },
     * mt102view(payload, { call, put }) {
-      console.log(payload);
       const data = yield call(getmainViewTable, payload);
       yield put({
         type: 'mt102dataReducer',

@@ -274,7 +274,8 @@ export async function getJournalData(params) {
 }
 
 export async function getStaticticsData(params) {
-  return request('/api/refund/get/stat?dateStart=01.11.2010&dateEnd=16.11.2018');
+   //console.log(`/api/refund/get/stat?${stringify(params.payload)}`)
+  return request(`/api/refund/get/stat?${stringify(params.payload)}`);
 }
 
 

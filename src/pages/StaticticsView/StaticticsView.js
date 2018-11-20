@@ -100,11 +100,11 @@ export default class StaticticsView extends Component {
   };
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    /*const { dispatch } = this.props;
     dispatch({
       type: 'universal2/clear',
       payload: {},
-    });
+    });*/
   }
 
   clearFilter = () => {
@@ -144,10 +144,13 @@ export default class StaticticsView extends Component {
   loadMainGridData = () => {
 
     const { dispatch } = this.props;
-
+    //dateStart=01.11.2010&dateEnd=16.11.2018
     dispatch({
       type: 'universal2/statisticsData',
-      payload: this.state.pagingConfig,
+      payload: {
+        dateStart: this.state.filters.dateValues[0],
+        dateEnd: this.state.filters.dateValues[1],
+      },
     });
 
 
@@ -161,9 +164,8 @@ export default class StaticticsView extends Component {
     dispatch({
       type: 'universal2/statisticsData',
       payload: {
-        ...this.state.pagingConfig,
-        start: current,
-        length: pageSize,
+        dateStart: this.state.filters.dateValues[0],
+        dateEnd: this.state.filters.dateValues[1],
       },
     });
   };
@@ -173,16 +175,17 @@ export default class StaticticsView extends Component {
   };
 
   componentDidMount() {
-    this.loadMainGridData();
+   // this.loadMainGridData();
   }
 
   render() {
 
-    const { gridData } = this.state;
+    const { gridData, firstload } = this.state;
     const { universal2 } = this.props;
 
 
-    return (<PageHeaderWrapper title={formatMessage({ id: 'menu.refund.stat.title' })}>
+    return (
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.refund.stat.title' })}>
       <Card bodyStyle={{ padding: 5 }}>
         <Row type="flex" justify="center">
           <Col>
@@ -200,7 +203,7 @@ export default class StaticticsView extends Component {
                   }));
                 }}/>
               <Button style={{ margin: '10px' }} onClick={() => {
-                console.log(this.state.filters.dateValues);
+                //console.log(this.state.filters.dateValues);
                 this.loadMainGridData();
               }
               }>{formatMessage({ id: 'button.apply' })}</Button>
@@ -209,7 +212,7 @@ export default class StaticticsView extends Component {
         </Row>
         <Row>
           <Col>
-            <Spin spinning={this.props.loadingData}>
+            <Spin spinning={this.props.loadingData===true}>
               <SmartGridView
                 name={'StatisticsView'}
                 hideFilterBtn={true}

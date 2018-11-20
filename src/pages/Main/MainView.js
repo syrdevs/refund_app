@@ -177,7 +177,7 @@ class MainView extends Component {
           'dataIndex': 'drefundReasonId.nameRu',
         }, { 'title': 'ИИН Потребителя', 'dataIndex': 'personIin' }, {
           'title': 'КНП',
-          'dataIndex': 'applicationId.dknpId.id',
+          'dataIndex': 'applicationId.dknpId.code',
         }, {
           'title': 'Номер платежного поручения',
           'dataIndex': 'applicationId.payOrderNum',

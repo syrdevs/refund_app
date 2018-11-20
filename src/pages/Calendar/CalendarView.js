@@ -15,6 +15,7 @@ import {
   Badge,
   DatePicker,
   Modal,
+  Spin
 } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -30,6 +31,10 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const Option = Select.Option;
 
 
+@connect(({ calendar, loading }) => ({
+  calendar,
+  loadingData: loading.effects['calendar/get'],
+}))
 export default class CalendarView extends Component {
 
   constructor(props) {
@@ -51,23 +56,32 @@ export default class CalendarView extends Component {
   }
 
   componentDidMount() {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'calendar/get',
+      payload: {
+        monthYear: moment(new Date(), 'DD-MM-YYYY').format('MM.YYYY'),
+      },
+    });
+
     this.setState({
       dataSource: [{
         date: '23.10.2018',
         EventID: {
           id: '1',
-          code: '10',
         },
-      }, {
-        date: '01.10.2018',
-        EventID: {
-          id: '2',
-          name: 'Lorem ipsum dolor sit amet 11111',
-          code: '10',
-        },
-      }],
-    });
+      }
+        , {
 
+          date: '01.10.2018',
+          EventID: {
+            id: '2',
+            name: 'Lorem ipsum dolor sit amet 11111',
+          },
+        }
+      ],
+    });
 
   }
 
@@ -76,10 +90,10 @@ export default class CalendarView extends Component {
     const { modalForm } = this.state;
 
     if (Object.keys(data).length) {
-      modalForm.eventDescriptionVisible = data.id === '2';
+      modalForm.eventDescriptionVisible = data.EventID.id === '2';
       modalForm.deleteBtnVisible = true;
-      modalForm.description = data.name;
-      modalForm.selectedDayType = data.id;
+      modalForm.description = data.EventID.name;
+      modalForm.selectedDayType = data.EventID.id;
     }
 
     this.setState({
@@ -89,7 +103,24 @@ export default class CalendarView extends Component {
     });
   };
   handleOk = (e) => {
-    const { modalForm } = this.state;
+    const { modalForm, modalData, selectedDate } = this.state;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'calendar/save',
+      payload: {
+        eventTitle: modalForm.description,
+        eventDate: moment(selectedDate, 'DD-MM-YYYY').format('DD.MM.YYYY'),
+        deventId: {id:modalForm.selectedDayType}
+      },
+    }).then(()=>{
+      dispatch({
+        type: 'calendar/get',
+        payload: {
+          monthYear: moment(selectedDate, 'DD-MM-YYYY').format('MM.YYYY'),
+        },
+      })
+    })
     this.handleCancel();
   };
   handleCancel = (e) => {
@@ -105,39 +136,53 @@ export default class CalendarView extends Component {
     });
   };
   handleDelete = () => {
-    const { modalData, dataSource } = this.state;
+    const { modalData, selectedDate } = this.state;
+    const { dispatch } = this.props;
 
     if (Object.keys(modalData).length > 0) {
-      console.log(modalData);
+
+      dispatch({
+        type: 'calendar/remove',
+        payload: {
+          id: modalData.id,
+        },
+      }).then(()=>{
+        dispatch({
+          type: 'calendar/get',
+          payload: {
+            monthYear: moment(selectedDate, 'DD-MM-YYYY').format('MM.YYYY'),
+          },
+        })
+      })
+      this.handleCancel();
     }
   };
 
   dateCellRender(value) {
     const eventData = this.getListData(value);
-
     return eventData && (
-      <div className={'event_day'}><Icon type="calendar" theme="outlined"/>{eventData.name}</div>
+      <div className={'event_day'}><Icon type="calendar" theme="outlined"/>{eventData.EventID.name}</div>
     );
   }
 
   getListData(value) {
     let listData;
+    if (this.props.calendar.events.length>0) {
+      const { events } = this.props.calendar;
 
-    const { dataSource } = this.state;
+      events.forEach((dateItem) => {
+        let _date = moment(dateItem.date, 'DD-MM-YYYY').format('DD');
+        let _month = moment(dateItem.date, 'DD-MM-YYYY').format('MM');
 
-    dataSource.forEach((dateItem) => {
-      let _date = moment(dateItem.date, 'DD-MM-YYYY').format('DD');
-      let _month = moment(dateItem.date, 'DD-MM-YYYY').format('MM');
-
-      if (_date == value.date() && _month == value.month() + 1) {
-        listData = dateItem.EventID;
-      }
-    });
-
+        if (_date == value.date() && _month == value.month() + 1) {
+          listData = dateItem;
+        }
+      });
+    }
     return listData || '';
   }
 
-  getMonthData(value) {
+  /*getMonthData(value) {
     if (value.month() === 8) {
       return 1394;
     }
@@ -151,7 +196,7 @@ export default class CalendarView extends Component {
         <span>Backlog number</span>
       </div>
     ) : null;
-  }
+  }*/
 
   onSelectDate(e) {
     let _date = moment(e, 'DD.MM.YYYY');
@@ -163,6 +208,15 @@ export default class CalendarView extends Component {
   }
 
   onChangeDatePicker(e, st) {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'calendar/get',
+      payload: {
+        monthYear: st,
+      },
+    });
+
 
     let month = moment(e).format('MM');
     let year = moment(e).format('YYYY');
@@ -231,12 +285,14 @@ export default class CalendarView extends Component {
 
 
       <Card bordered={false}>
+        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
         <div>
           <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder={formatMessage({ id: 'label.select' })}/>
-          <Calendar value={currentDate} className={style.customCalendar} onSelect={this.onSelectDate.bind(this)}
-                    dateCellRender={this.dateCellRender.bind(this)}
-                    monthCellRender={this.monthCellRender.bind(this)}/>
+
+          <Calendar value={currentDate} defaultValue={currentDate} className={style.customCalendar} onSelect={this.onSelectDate.bind(this)}
+                    dateCellRender={this.dateCellRender.bind(this)}/>
         </div>
+        </Spin>
       </Card>
     </PageHeaderWrapper>);
   };

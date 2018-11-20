@@ -54,6 +54,7 @@ class MainView extends Component {
     super(props);
     this.state = {
       ShowModal: false,
+      btnhide: false,
       ShowGraph: false,
       modalVisible: false,
       updateModalVisible: false,
@@ -320,6 +321,7 @@ class MainView extends Component {
   }
 
   selectTable = (selectedRowKeys) => {
+    console.log("test")
     this.setState({ selectedRowKeys });
   };
 
@@ -515,6 +517,25 @@ class MainView extends Component {
     }
   };
 
+  checkStatus  = (selectedRowKeys) => {
+    this.setState({
+      btnhide: false,
+    });
+    if (selectedRowKeys.length>0){
+      selectedRowKeys.map(select=>{
+        if([this.props.universal.table.content.find(item=>item.id===select)].map(item=> item.dappRefundStatusId.code ==='00007' || item.dappRefundStatusId.code ==='00008')[0]) {
+          this.setState({
+            btnhide: true,
+          });
+        }
+      })
+    }
+    this.setState({
+      selectedRowKeys: selectedRowKeys,
+    });
+  }
+
+
   render() {
 
     const dateFormat = 'DD.MM.YYYY';
@@ -629,24 +650,24 @@ class MainView extends Component {
                   }}
                   addonButtons={[
                     <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
                             key={'odobrit'} className={'btn-success'}
                     >
                       {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: 'menu.mainview.cancelBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
                             key={'cancel'}
                             className={'btn-danger'}>
                       {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])}
+                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
                             key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
                     <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
-                            disabled={hasRole(['FSMS2', 'ADMIN'])}
+                            disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide}
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
@@ -699,9 +720,7 @@ class MainView extends Component {
                     this.toggleSearcher();
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
-                    this.setState({
-                      selectedRowKeys: selectedRowKeys,
-                    });
+                    this.checkStatus(selectedRowKeys);
                   }}
                 />
                 <br/>

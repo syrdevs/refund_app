@@ -231,4 +231,19 @@ export async function mt102preview(params) {
   });
 }
 
+export async function getCalendarEvents(params) {
+  return request(`/api/refund/getCalendarEvents?${stringify(params.payload)}`);
+}
+export async function saveCalendarEvents(params) {
+  return request('/api/refund/saveCalendarEvent', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+export async function removeCalendarEvents(params) {
+  return request(`/api/refund/removeCalendarEvent?${stringify(params.payload)}`, {
+    method: 'POST',
+  });
+}
+
 

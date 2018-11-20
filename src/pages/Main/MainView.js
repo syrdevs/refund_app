@@ -471,7 +471,6 @@ class MainView extends Component {
     ];
   };
 
-
   setStatusRecord = (statusCode, statusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
@@ -541,6 +540,9 @@ class MainView extends Component {
     });
   };
 
+  btnIsDisabled = (isRole, args) => {
+    return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
+  };
 
   render() {
 
@@ -578,7 +580,6 @@ class MainView extends Component {
       </Animated>);
 
     const GridFilterData = this.stateFilter();
-
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.mainview' })}>
@@ -670,7 +671,7 @@ class MainView extends Component {
                   }}
                   addonButtons={[
                     <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.state.btnhide])}
                             key={'odobrit'} className={'btn-success'}
                     >
                       {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
@@ -731,8 +732,8 @@ class MainView extends Component {
                   onSelectCell={(cellIndex, cell) => {
 
                   }}
-                  onSelectRow={() => {
-
+                  onSelectRow={(record) => {
+                    console.log(record);
                   }}
                   onFilter={(filters) => {
 

@@ -28,10 +28,11 @@ const checkStatus = response => {
     return response;
   }
   const errortext = codeMessage[response.status] || response.statusText;
-  notification.error({
-    message: `Ошибка ${response.status}: ${response.url}`,
-    description: errortext,
-  });
+  if (response.status !== 401)
+    notification.error({
+      message: `Ошибка ${response.status}: ${response.url}`,
+      description: errortext,
+    });
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -147,16 +148,16 @@ export default function request(url, option) {
     .catch(e => {
 
       const status = e.name;
-      if (status === 401) {
-        // @HACK
-        /* eslint-disable no-underscore-dangle */
+       if (status === 401) {
+         // @HACK
+         /* eslint-disable no-underscore-dangle */
 
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        });
+         window.g_app._store.dispatch({
+           type: 'login/logout',
+         });
 
-        return;
-      }
+         return;
+       }
       // environment should not be used
       if (status === 403) {
         router.push('/exception/403');

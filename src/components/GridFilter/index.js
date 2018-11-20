@@ -287,6 +287,7 @@ export default class GridFilter extends Component {
             <Col md={22}>
               <LocaleProvider locale={componentLocal}>
                 <RangePicker   {...RangeDateProps}
+                  format={"DD.MM.YYYY"}
                                placeholder={[
                                  formatMessage({ id: 'datepicker.start.label' }),
                                  formatMessage({ id: 'datepicker.end.label' }),

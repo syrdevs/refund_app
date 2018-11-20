@@ -522,12 +522,26 @@ class MainView extends Component {
     }
   };
 
+  disableBtnIsReceiptDateNull = () => {
+
+
+    if (this.state.selectedRowKeys.length > 0) {
+      let nullableDateRecords = this.state.selectedRowKeys
+        .map((selectKey) => this.props.universal.table.content.find(item => item.id === selectKey))
+        .filter((itemRecord) => itemRecord.applicationId.receiptAppdateToFsms === null);
+
+      return nullableDateRecords.length > 0;
+    }
+    return false;
+  };
+
   checkStatus = (selectedRowKeys) => {
     this.setState({
       btnhide: false,
     });
     if (selectedRowKeys.length > 0) {
       selectedRowKeys.map(select => {
+
         if ([this.props.universal.table.content.find(item => item.id === select)].map(item => item.dappRefundStatusId.code === '00007' || item.dappRefundStatusId.code === '00008')[0]) {
           this.setState({
             btnhide: true,
@@ -667,7 +681,7 @@ class MainView extends Component {
                     total: universal.table.totalElements,
                     pageSize: this.state.pagingConfig.length,
                     page: this.state.pagingConfig.start + 1,
-                    data: universal.table.content,
+                    data: this.props.universal.table.content,
                   }}
                   addonButtons={[
                     <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
@@ -685,10 +699,10 @@ class MainView extends Component {
                     </Button>,
 
                     <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide])}
                             key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
                     <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
-                            disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide])}
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>

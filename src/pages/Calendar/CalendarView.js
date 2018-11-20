@@ -90,12 +90,11 @@ export default class CalendarView extends Component {
     const { modalForm } = this.state;
 
     if (Object.keys(data).length) {
-      modalForm.eventDescriptionVisible = data.EventID.id === '2';
+      modalForm.eventDescriptionVisible = data.EventID.id.id === '2';
       modalForm.deleteBtnVisible = true;
       modalForm.description = data.EventID.name;
-      modalForm.selectedDayType = data.EventID.id;
+      modalForm.selectedDayType = data.EventID.id.id;
     }
-
     this.setState({
       modalVisible: true,
       modalData: data ? data : {},
@@ -105,7 +104,6 @@ export default class CalendarView extends Component {
   handleOk = (e) => {
     const { modalForm, modalData, selectedDate } = this.state;
     const { dispatch } = this.props;
-
     dispatch({
       type: 'calendar/save',
       payload: {
@@ -138,7 +136,6 @@ export default class CalendarView extends Component {
   handleDelete = () => {
     const { modalData, selectedDate } = this.state;
     const { dispatch } = this.props;
-
     if (Object.keys(modalData).length > 0) {
 
       dispatch({
@@ -270,7 +267,7 @@ export default class CalendarView extends Component {
         </Select>
         </div>
         <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>{formatMessage({ id: 'component.globalHeader.event' })}:</span>
-        <Input value={modalForm.description} title={"asdasd"} onChange={(({ target }) => {
+        <Input value={modalForm.description} onChange={(({ target }) => {
 
           this.setState(({ modalForm }) => ({
             modalForm: {

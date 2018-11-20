@@ -100,18 +100,7 @@ export default class JournalPage extends Component {
           name: 'login',
           label: 'Логин',
           type: 'text',
-        }, {
-          name: 'action',
-          label: 'Действия',
-          type: 'combobox',
-          store: [{
-            id: '0',
-            name: 'Исполнено-одобрено',
-          }, {
-            id: '1',
-            name: 'Исполнено',
-          }],
-        },
+        }
       ],
     });
   }

@@ -262,7 +262,7 @@ export default class ReportsGrid extends Component {
 
   getOrder = async (taskItem, count, call) => {
 
-    const res = await fetch('/api/refund/getorder');
+    const res = await fetch('/apis/refund/getorder');
     const json = await res.json();
 
     if (json.status !== 0) {
@@ -293,7 +293,7 @@ export default class ReportsGrid extends Component {
 
   saveOrder = async () => {
 // to do filter send
-    const res = await fetch('/api/refund/saveorder');
+    const res = await fetch('/apis/refund/saveorder');
     let result = await res.json();
 
     result.message = '';

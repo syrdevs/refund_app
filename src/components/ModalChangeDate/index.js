@@ -36,7 +36,6 @@ class ModalChangeDate extends Component {
     this.props.hideModal();
   };
 
-
   handleCancel = () => {
     this.props.hideModal();
   };
@@ -50,13 +49,17 @@ class ModalChangeDate extends Component {
     }
 
     if (data.file.status === 'done') {
-      dispatch({
+      data.file.status = 'uploading';
+     /* dispatch({
         type: 'universal/setfile',
         payload: {
           file: data.file.originFileObj,
           id: dataSource.id,
         },
-      });
+      }).then(() => {
+        // to do loader
+        //this.getFileList();
+      });*/
     }
   };
   removeFile = (file) => {

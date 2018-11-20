@@ -500,6 +500,20 @@ class MainView extends Component {
 
   };
 
+  AppRefundStatusAuto = () => {
+    const { dispatch } = this.props;
+    if (this.state.selectedRowKeys.length > 0) {
+
+      dispatch({
+        type: 'universal/AppRefundStatusAuto',
+        payload: {
+          'refundList': this.state.selectedRowKeys.map((valueId) => ({ id: valueId }))
+        },
+      }).then(() => {
+        this.loadMainGridData();
+      });
+    }
+  };
 
   render() {
 
@@ -597,13 +611,11 @@ class MainView extends Component {
                 <SmartGridView
                   name={'RefundsPageColumns'}
                   scroll={{ x: this.state.xsize }}
-                  fixedBody={true}
                   selectedRowCheckBox={true}
                   searchButton={this.state.searchButton}
                   selectedRowKeys={this.state.selectedRowKeys}
                   rowKey={'id'}
                   loading={this.props.loadingData}
-                  fixedHeader={true}
                   rowSelection={true}
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
@@ -638,7 +650,8 @@ class MainView extends Component {
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="1">
+                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN'])} key="1"
+                                 onClick={this.AppRefundStatusAuto}>
                         {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
                       <Menu.Item key="2">

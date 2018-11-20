@@ -61,7 +61,7 @@ export default {
     '@antv/data-set': 'DataSet',
   },
   proxy: {
-    '/api': 'http://185.27.192.177:6307'
+    '/api': 'http://localhost:8000'
   },
 
   exportStatic: {},

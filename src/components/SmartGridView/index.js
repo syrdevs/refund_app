@@ -127,13 +127,10 @@ const SmartGridHeader = props => {
   </div>);
 };
 
+
 class BodyCell extends Component {
-
   render() {
-
-    return (
-      <td  {...this.props}/>
-    );
+    return <td  {...this.props}/>;
   }
 }
 
@@ -141,6 +138,8 @@ class BodyCell extends Component {
 export default class SmartGridView extends Component {
   constructor(props) {
     super(props);
+
+    this.table = null;
 
     this.state = {
       selectedRow: null,
@@ -226,11 +225,15 @@ export default class SmartGridView extends Component {
       rowClassName: styles.smart_grid_view_container,
       size: 'small',
       pagination: false,
-      rowKey: this.props.rowKey,
+      rowKey: this.props.rowKey || 'id',
       columns: _columns.filter(column => column.isVisible),
       dataSource: this.props.dataSource.data,
     };
 
+
+    if (this.props.fixedHeader) {
+      // tableOptions.useFixedHeader = this.props.fixedHeader;
+    }
 
     if (this.props.sorted) {
       tableOptions.columns.forEach((column) => {
@@ -325,7 +328,6 @@ export default class SmartGridView extends Component {
         };
       }}
     * */
-
 
     return (<div>
       <SmartGridHeader {...this.props}

@@ -13,6 +13,7 @@ import {
   getFilesRequest,
   deleteFileRequest,
   setDateRequest,
+  dAppRefundStatusAuto,
 } from '../services/api';
 
 export default {
@@ -38,6 +39,10 @@ export default {
     modalgridviewdata: [],
   },
   effects: {
+
+    * AppRefundStatusAuto(payload, { call, put }) {
+      yield call(dAppRefundStatusAuto, payload);
+    },
 
     * removeFileRequest(payload, { call }) {
       yield call(deleteFileRequest, payload);
@@ -83,7 +88,10 @@ export default {
         payload: response,
       });
       if (response.refundKnpList.length > 0) {
-        payload.payload.src.data['knpId'] = response.refundKnpList[0].knpId;
+        payload.payload.src.searched = true;
+        payload.payload.src.data['dKnpId'] = {
+          id: response.refundKnpList[0].knpId,
+        };
         const data = yield call(getmainViewTable, payload);
         yield put({
           type: 'mt102dataReducer',

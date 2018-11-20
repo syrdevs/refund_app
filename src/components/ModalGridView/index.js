@@ -43,26 +43,29 @@ export default class ModalGridView extends Component {
       ],
       columns: [{
         'title': 'Номер заявки',
+        width: 120,
         'isVisible': true,
         'dataIndex': 'applicationId.appNumber',
       }, {
         'title': 'Сумма возврата',
+        width: 150,
         'isVisible': true,
         'dataIndex': 'refundPayAmount',
       }, {
         'title': 'ИИН Потребителя',
         'isVisible': true,
+        width: 120,
         'dataIndex': 'personIin',
-      },
-        {
-          'title': 'КНП',
-          'isVisible': true,
-          'dataIndex': 'applicationId.dknpId.id',
-        }, {
-          'title': 'Период',
-          'isVisible': true,
-          'dataIndex': 'payPeriod',
-        }],
+      }, {
+        'title': 'КНП',
+        'isVisible': true,
+        'dataIndex': 'applicationId.dknpId.id',
+      }, {
+        'title': 'Период',
+        'isVisible': true,
+        width: 120,
+        'dataIndex': 'payPeriod',
+      }],
     };
   }
 
@@ -88,6 +91,7 @@ export default class ModalGridView extends Component {
         ...this.props.filter,
       },
     }).then((e) => {
+
       if (this.props.universal.refundKnpList.length > 0) {
         this.setState({
           filter: {
@@ -97,7 +101,7 @@ export default class ModalGridView extends Component {
               searched: this.state.filter.src.searched,
               data: {
                 ...this.state.filter.src.data,
-                knpId: this.props.universal.refundKnpList[0].knpId,
+                dKnpId: { id: this.props.universal.refundKnpList[0].knpId },
               },
             },
           },
@@ -112,6 +116,9 @@ export default class ModalGridView extends Component {
     this.props.resetshow();
   };
   onChangetab = (e) => {
+
+    const { dispatch } = this.props;
+
     this.setState({
       filter: {
         start: this.state.filter.start,
@@ -120,26 +127,28 @@ export default class ModalGridView extends Component {
           searched: this.state.filter.src.searched,
           data: {
             ...this.state.filter.src.data,
-            knpId: e,
+            dKnpId: { id: e },
           },
         },
       },
-    });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'universal/mt102view',
-      payload: {
-        ...this.state.filter,
-      },
-    }).then(() => {
-      this.setState({
-        dataSource: this.props.universal.modalgridviewdata,
-        dataColumn: this.props.universal.refundKnpList,
+    }, () => {
+      dispatch({
+        type: 'universal/mt102view',
+        payload: {
+          ...this.state.filter,
+        },
+      }).then(() => {
+        this.setState({
+          dataSource: this.props.universal.modalgridviewdata,
+          dataColumn: this.props.universal.refundKnpList,
+        });
       });
     });
+
   };
 
   downloadFile() {
+
     let authToken = localStorage.getItem('token');
 
     this.setState({
@@ -153,7 +162,7 @@ export default class ModalGridView extends Component {
           Authorization: 'Bearer ' + authToken,
         },
         method: 'post',
-        body: JSON.stringify(this.props.filter),
+        body: JSON.stringify(this.state.filter.src),
       })
       .then(response => response.blob())
       .then(responseBlob => {
@@ -213,7 +222,8 @@ export default class ModalGridView extends Component {
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView
                   name={'mt102ModalPageColumns'}
-                  scroll={{ x: 'auto' }}
+                  scroll={{ x: 'auto', y: 100 }}
+                  fixedHeader={true}
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
                   hideFilterBtn={true}

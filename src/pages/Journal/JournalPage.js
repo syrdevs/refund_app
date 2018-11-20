@@ -72,19 +72,19 @@ export default class JournalPage extends Component {
           'title': 'Логин',
           'width': 130,
           'dataIndex': 'userId.username',
-        }, {
-          'title': 'Пользователь',
-          'width': 120,
-          'dataIndex': 'userId.surname',
-        }, {
+        },  {
           'title': 'Получатель (БИК)',
           'width': 120,
           'dataIndex': 'receiver_bik',
-        }, {
+        },*/ {
           'title': 'Действие',
           'width': 120,
-          'dataIndex': 'Действие',
-        }*/
+          'dataIndex': 'dactionId.nameRu',
+        },{
+          'title': 'Пользователь',
+          'width': 120,
+          'dataIndex': 'userId.id',
+        },
       ],
       filterContainer: 0,
       searchButton: false,

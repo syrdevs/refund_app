@@ -16,6 +16,7 @@ class Options extends Component {
     this.state = {
       modalVisible: false,
       columns: [],
+      data:[]
     };
   }
 
@@ -24,7 +25,7 @@ class Options extends Component {
     dispatch({
       type: 'universal/optionsData',
       payload: {},
-    });
+    })
   }
 
 
@@ -32,15 +33,25 @@ class Options extends Component {
     const datasource = this.props.universal.options;
     datasource[index].groupOptionList[childindex].optionValue = value;
     const { dispatch } = this.props;
-    dispatch({
-      type: 'universal/optionsDatachange',
-      payload: datasource,
-    });
+    this.setState({
+      data: datasource
+    })
   };
   saveChanges = () => {
-    console.log(this.state.datasource);
+    const { dispatch } = this.props;
+    const values=[];
+    this.state.data.map((group)=> {group.groupOptionList.map((item)=>{values.push(item)})})
+    dispatch({
+      type: 'universal/optionsDatachange',
+      payload: values,
+    }).then((item)=>{
+      dispatch({
+        type: 'universal/optionsData',
+        payload: {},
+      })
+    })
+    //payload: this.state.data.map((item)=> (item.groupOptionList)),
   };
-
 
   render() {
     const { datasource } = this.props.universal.options;

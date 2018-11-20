@@ -12,11 +12,45 @@ class Profile extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentUser: {
+        id: "1",
+        username: "admin",
+        iin: "100000000000",
+        surname: "Иванов",
+        firstname: "Иван",
+        patronname: "Иванович",
+        birthDate: "16.07.2017",
+        phone: "87011234567",
+        email: "mark@gmail.com",
+        userDRoleList: [
+          {
+            id: "a87ece83-e542-4f14-845b-0e5cc575e850",
+            nameRu: "Администратор",
+            nameKz: "Администратор",
+            code: "ADMIN"
+          }
+        ],
+        passBegDate: "",
+        passEndDate: "",
+        passBlockBegDate: "16.07.2017",
+        passBlockEndDate: "16.07.2017",
+        dcompanyId: {
+          id: "C63E5A60E30243AA82599BD4604A4CFA",
+          nameRu: "Центральный аппарат",
+          nameKz: "Центральный аппарат"
+        },
+        dpositionId: {
+          id: "1",
+          nameRu: "Инженер",
+          nameKz: "Инженер"
+        }
+      }
+    };
   }
 
   render() {
-    const { currentUser } = this.props.user;
+    const { currentUser } = this.state;
 
     const data = [{
       name: 'Логин',

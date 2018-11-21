@@ -83,10 +83,13 @@ export default class ModalGridView extends Component {
   componentDidMount() {
 
     const filter = this.props.filter;
-    filter.src.data.dappRefundStatusList = [{ id: '6c6c5156-6530-462e-9a8b-2705336a176c' }];
+    filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
     this.setState({
       filter: filter,
     });
+      /*},()=>{
+      this.firstLoad();
+    });*/
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/mt102preview',
@@ -94,7 +97,6 @@ export default class ModalGridView extends Component {
         ...filter,
       },
     }).then((e) => {
-
       if (this.props.universal.refundKnpList.length > 0) {
         this.setState({
           filter: {
@@ -104,22 +106,36 @@ export default class ModalGridView extends Component {
               searched: this.state.filter.src.searched,
               data: {
                 ...this.state.filter.src.data,
-                knpList: { id: this.props.universal.refundKnpList[0].knpId },
+                knpList: { id: this.props.universal.refundKnpList[0].id },
               },
             },
           },
           dataSource: this.props.universal.modalgridviewdata,
           dataColumn: this.props.universal.refundKnpList,
         });
+      } else {
+        this.props.resetshow();
+        Modal.info({
+          title: 'Сообщение',
+          content: (
+            <div>
+              <p>Информация для формирования МТ102 отсутствует</p>
+            </div>
+          ),
+          onOk() {},
+        });
+
       }
     });
+  }
+  firstLoad =() => {
+
   }
 
   handleCancel = (e) => {
     this.props.resetshow();
   };
-  onChangetab = (e) => {
-
+  onChangetab = (e, a, b) => {
     const { dispatch } = this.props;
 
     this.setState({
@@ -219,7 +235,7 @@ export default class ModalGridView extends Component {
       <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingFirst}>
         <Tabs onChange={this.onChangetab}>
           {this.state.dataColumn.map((tabItem) => {
-            return (<TabPane tab={tabItem.knpId} key={tabItem.knpId}>
+            return (<TabPane tab={tabItem.knpId} key={tabItem.id}>
               {/*<Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>*/}
               <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
                 <SmartGridView

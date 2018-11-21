@@ -96,7 +96,7 @@ export default {
       if (response.refundKnpList.length > 0) {
         payload.payload.src.searched = true;
         payload.payload.src.data['knpList'] = {
-          id: response.refundKnpList[0].knpId,
+          id: response.refundKnpList[0].id,
         };
         const data = yield call(getmainViewTable, payload);
         yield put({

@@ -299,40 +299,80 @@ class Requests extends Component {
         actionColumns.push({
           ...column,
           order: 2,
-          render: (text, row) => <a
-            onClick={(e) => {
+          render: (text, row) => {
+            if (!text){
+              return (<a
+                onClick={(e) => {
 
 
-              this.setState({
-                ShowModal: true,
-                ColType: column.dataIndex,
-                ModalData: {
-                  id: row.id,
-                  key: column.dataIndex,
-                  value: text,
-                },
-              });
-            }}
-          >{text}</a>,
+                  this.setState({
+                    ShowModal: true,
+                    ColType: column.dataIndex,
+                    ModalData: {
+                      id: row.id,
+                      key: column.dataIndex,
+                      value: text,
+                    },
+                  });
+                }}
+              >Установить дату</a>)
+            }
+            else {
+              return (<a
+                onClick={(e) => {
+                  this.setState({
+                    ShowModal: true,
+                    ColType: column.dataIndex,
+                    ModalData: {
+                      id: row.id,
+                      key: column.dataIndex,
+                      value: text,
+                    },
+                  });
+                }}
+              >{text}</a>)
+            }
+          },
         });
       }
       else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
         actionColumns.push({
           ...column,
           order: 3,
-          render: (text, row) => <a
-            onClick={(e) => {
-              this.setState({
-                ShowModal: true,
-                ColType: column.dataIndex,
-                ModalData: {
-                  id: row.id,
-                  key: column.dataIndex,
-                  value: text,
-                },
-              });
-            }}
-          >{text}</a>,
+          render: (text, row) => {
+            if (!text){
+              return (<a
+                onClick={(e) => {
+
+
+                  this.setState({
+                    ShowModal: true,
+                    ColType: column.dataIndex,
+                    ModalData: {
+                      id: row.id,
+                      key: column.dataIndex,
+                      value: text,
+                    },
+                  });
+                }}
+              >Установить дату</a>)
+            }
+            else {
+              return (<a
+                onClick={(e) => {
+                  this.setState({
+                    ShowModal: true,
+                    ColType: column.dataIndex,
+                    ModalData: {
+                      id: row.id,
+                      key: column.dataIndex,
+                      value: '',
+                    },
+                  });
+                }}
+              >{text}</a>)
+            }
+          },
         });
       }
       else {
@@ -368,8 +408,8 @@ class Requests extends Component {
                       this.clearFilter();
                     }}
                     applyFilter={(filters) => {
-                      console.log(filters);
-                      //this.setFilter(filters);
+                     // console.log(filters);
+                      this.setFilter(filters);
                     }}
                     filterForm={this.state.filterForm}
                     dateFormat={dateFormat}

@@ -86,11 +86,14 @@ export default class ModalGridView extends Component {
     filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
     this.setState({
       filter: filter,
-    });
-      /*},()=>{
+    },()=>{
       this.firstLoad();
-    });*/
+    });
+
+  }
+  firstLoad =() => {
     const { dispatch } = this.props;
+    const { filter } = this.state;
     dispatch({
       type: 'universal/mt102preview',
       payload: {
@@ -124,12 +127,8 @@ export default class ModalGridView extends Component {
           ),
           onOk() {},
         });
-
       }
     });
-  }
-  firstLoad =() => {
-
   }
 
   handleCancel = (e) => {

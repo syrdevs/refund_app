@@ -83,7 +83,7 @@ export default class ModalGridView extends Component {
   componentDidMount() {
 
     const filter = this.props.filter;
-    filter.src.data.refund_statusList = [{ id: '6c6c5156-6530-462e-9a8b-2705336a176c' }];
+    filter.src.data.dappRefundStatusList = [{ id: '6c6c5156-6530-462e-9a8b-2705336a176c' }];
     this.setState({
       filter: filter,
     });

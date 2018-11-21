@@ -92,7 +92,7 @@ export default {
   'menu.mainview.paylists': 'Платежи',
   'menu.mainview.mt102': 'МТ102',
   'menu.mainview.rpmuLocale': 'Платежи потребителя',
-  'menu.mainview.fio': 'ФИО',
+  'menu.mainview.fio': 'ФИО Потребителя',
   'menu.mainview.rpmuName': 'Потребитель',
   'menu.mainview.paymentsum': 'Сумма',
   'menu.mainview.paymentperiod': 'Период',

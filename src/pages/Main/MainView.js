@@ -518,7 +518,7 @@ class MainView extends Component {
               type: 'universal/changeRefundStatus',
               payload: {
                 'status': statusCode,
-                'denyReasonId': statusId ? {id: statusId} : null,
+                'denyReasonId': statusId ? { id: statusId } : null,
                 'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
               },
             }).then(() => {
@@ -642,6 +642,8 @@ class MainView extends Component {
   exportToExcel = () => {
 
     let authToken = localStorage.getItem('token');
+    let columns = JSON.parse(localStorage.getItem('RefundsPageColumns'));
+
 
     fetch('/api/refund/exportToExcel',
       {
@@ -656,127 +658,35 @@ class MainView extends Component {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
           },
-          'columns': [
-            {
-              'title': 'Номер заявки',
-              'dataIndex': 'applicationId.appNumber',
-            },
-            {
-              'title': 'Дата заявления плательщика',
-              'dataIndex': 'appPayerDate',
-            },
-            {
-              'title': 'Дата заявки',
-              'dataIndex': 'applicationId.appDate',
-            },
-            {
-              'title': 'Дата поступления заявления в Фонд',
-              'dataIndex': 'receiptAppdateToFsms',
-            },
-            {
-              'title': 'Дата поступления',
-              'dataIndex': 'entryDate',
-            },
-            {
-              'title': 'Крайняя дата исполнения заявки',
-              'dataIndex': 'appEndDate',
-            },
-            {
-              'title': 'Сумма возврата',
-              'dataIndex': 'refundPayAmount',
-            },
-            {
-              'title': 'Референс ГК',
-              'dataIndex': 'gcvpReference',
-            },
-            {
-              'title': 'Номер плат-го поручения ГК',
-              'dataIndex': 'gcvpOrderNum',
-            },
-            {
-              'title': 'Дата плат-го поручения ГК',
-              'dataIndex': 'gcvpOrderDate',
-            },
-            {
-              'title': 'Причина возврата',
-              'dataIndex': 'drefundReasonId.nameRu',
-            },
-            {
-              'title': 'Статус заявки на возврат',
-              'dataIndex': 'dappRefundStatusId.nameRu',
-            },
-            {
-              'title': 'ИИН Потребителя',
-              'dataIndex': 'personIin',
-            },
-            {
-              'title': 'КНП',
-              'dataIndex': 'applicationId.dknpId.id',
-            },
-            {
-              'title': 'Номер платежного поручения',
-              'dataIndex': 'applicationId.payOrderNum',
-            },
-            {
-              'title': 'Дата платежного поручения',
-              'dataIndex': 'applicationId.payOrderDate',
-            },
-            {
-              'title': 'Сумма отчислений',
-              'dataIndex': 'payAmount',
-            },
-            {
-              'title': 'Дата последнего взноса',
-              'dataIndex': 'lastPayDate',
-            },
-            {
-              'title': 'Дата осуществления возврата',
-              'dataIndex': 'refundDate',
-            },
-            {
-              'title': 'Кол-во отчислений и (или) взносов за последние 12 календарных месяцев',
-              'dataIndex': 'lastMedcarePayCount',
-            },
-            {
-              'title': 'Статус страхования',
-              'dataIndex': 'medinsStatus',
-            },
-            {
-              'title': 'Референс',
-              'dataIndex': 'applicationId.reference',
-            },
-            {
-              'title': 'Причина отказа',
-              'dataIndex': 'ddenyReasonId.nameRu',
-            },
-            {
-              'title': 'Отчет об отказе',
-              'dataIndex': 'refundStatus',
-            },
-            {
-              'title': 'Осталось дней',
-              'dataIndex': 'daysLeft',
-            },
-            {
-              'title': 'Дата изменения статуса заявки',
-              'dataIndex': 'changeDate',
-            },
-            {
-              'title': 'Период',
-              'dataIndex': 'payPeriod',
-            },
-            {
-              'title': 'Веб-сервис (сообщение) ',
-              'dataIndex': 'wsStatusMessage',
-            },
-          ],
+          'columns': [{
+            'title': 'Статус заявки на возврат',
+            'dataIndex': 'dappRefundStatusId.nameRu',
+          }, {
+            'dataIndex': 'personSurname',
+            'title': 'Фамилия',
+          }, {
+            'dataIndex': 'personFirstname',
+            'title': 'Имя',
+          }, {
+            'dataIndex': 'personPatronname',
+            'title': 'Отчество',
+          }].concat(columns.filter(column => column.isVisible)),
         }),
       })
       .then(response => response.blob())
       .then(responseBlob => {
-        let blob = new Blob([responseBlob], { type: responseBlob.type }),
-          url = window.URL.createObjectURL(blob);
-        window.open(url, '_self');
+
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function() {
+          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
+          var url = URL.createObjectURL(blob);
+          window.open(url, '_self');
+        });
+        reader.readAsArrayBuffer(responseBlob);
+
+        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
+           url = window.URL.createObjectURL(blob);
+         window.open(url, '_self');*/
       });
 
   };
@@ -856,13 +766,14 @@ class MainView extends Component {
                     style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
                     bodyStyle={{ padding: 0 }}
                     type="inner"
-                    title="Платежи РПМУ"
+                    title={formatMessage({ id: 'menu.mainview.rpmuLocale' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
                     <LocaleProvider locale={componentLocal}>
                       <Spin spinning={this.props.rpmuLoading}>
                         <Table
+                          bordered={true}
                           size={'small'}
                           columns={rpmuColumns}
                           dataSource={universal.rpmu.content}

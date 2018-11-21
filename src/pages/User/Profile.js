@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Card, List, Row, Col, Table } from 'antd';
+import { Card, List, Row, Col, Table, Spin } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva/index';
 
-@connect(({ user }) => ({
+@connect(({ user, loading }) => ({
   user,
+  loading: loading.effects['user/fetchCurrent'],
 }))
 class Profile extends Component {
 
@@ -14,81 +15,102 @@ class Profile extends Component {
     super(props);
     this.state = {
       currentUser: {
-        id: "1",
-        username: "admin",
-        iin: "100000000000",
-        surname: "Иванов",
-        firstname: "Иван",
-        patronname: "Иванович",
-        birthDate: "16.07.2017",
-        phone: "87011234567",
-        email: "mark@gmail.com",
+        id: '1',
+        username: 'admin',
+        iin: '100000000000',
+        surname: 'Иванов',
+        firstname: 'Иван',
+        patronname: 'Иванович',
+        birthDate: '16.07.2017',
+        phone: '87011234567',
+        email: 'mark@gmail.com',
         userDRoleList: [
           {
-            id: "a87ece83-e542-4f14-845b-0e5cc575e850",
-            nameRu: "Администратор",
-            nameKz: "Администратор",
-            code: "ADMIN"
-          }
+            id: 'a87ece83-e542-4f14-845b-0e5cc575e850',
+            nameRu: 'Администратор',
+            nameKz: 'Администратор',
+            code: 'ADMIN',
+          },
         ],
-        passBegDate: "",
-        passEndDate: "",
-        passBlockBegDate: "16.07.2017",
-        passBlockEndDate: "16.07.2017",
+        passBegDate: '',
+        passEndDate: '',
+        passBlockBegDate: '16.07.2017',
+        passBlockEndDate: '16.07.2017',
         dcompanyId: {
-          id: "C63E5A60E30243AA82599BD4604A4CFA",
-          nameRu: "Центральный аппарат",
-          nameKz: "Центральный аппарат"
+          id: 'C63E5A60E30243AA82599BD4604A4CFA',
+          nameRu: 'Центральный аппарат',
+          nameKz: 'Центральный аппарат',
         },
         dpositionId: {
-          id: "1",
-          nameRu: "Инженер",
-          nameKz: "Инженер"
-        }
-      }
+          id: '1',
+          nameRu: 'Инженер',
+          nameKz: 'Инженер',
+        },
+      },
     };
   }
 
-  render() {
-    const { currentUser } = this.state;
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'user/fetchCurrent',
+    });
+  }
 
-    const data = [{
-      name: 'Логин',
-      value: currentUser.username,
-      key: 1,
-    }, {
-      name: 'ИИН',
-      value: currentUser.iin,
-      key: 2,
-    }, {
-      name: 'ФИО',
-      value: currentUser.surname + ' ' + currentUser.firstname + (currentUser.patronname == null ? '' : ' ' + currentUser.patronname),
-      key: 3,
-    }, {
-      name: 'Дата рождения',
-      value: currentUser.birthDate,
-      key: 4,
-    }, {
-      name: 'Телефон',
-      value: currentUser.phone,
-      key: 5,
-    }, {
-      name: 'Эл. почта',
-      value: currentUser.email,
-      key: 6,
-    }, {
-      name: 'Роли',
-      value: currentUser.userDRoleList.map((role) => role.nameRu + ' '),
-      key: 7,
-    }, {
-      name: 'Компания',
-      value: currentUser.dcompanyId.nameRu,
-      key: 8,
-    }, {
-      name: 'Должность',
-      value: currentUser.dpositionId.nameRu,
-      key: 9,
-    }];
+  render() {
+    const { currentUser } = this.props.user;
+
+    let data = [];
+
+
+    if (this.props.loading !== undefined) {
+      data = [{
+        name: 'ФИО',
+        value: currentUser.userName,
+        key: 3,
+      },
+        {
+          name: 'Телефон',
+          value: currentUser.phoneNumber,
+          key: 5,
+        }, {
+          name: 'Эл. почта',
+          value: currentUser.eMail,
+          key: 6,
+        }, {
+          name: 'Роли',
+          value: currentUser.roles,
+          key: 7,
+        }, {
+          name: 'Компания',
+          value: currentUser.company,
+          key: 8,
+        }, {
+          name: 'Должность',
+          value: currentUser.position,
+          key: 9,
+        }];
+    }
+
+    /* data = [
+
+       /!* {
+          name: 'Дата рождения',
+          value: currentUser.birthDate,
+          key: 4,
+        }, *!/
+     /!*{
+       name: 'Логин',
+       value: currentUser.username,
+       key: 1,
+     },
+     {
+       name: 'ИИН',
+       value: currentUser.iin,
+       key: 2,
+     }, *!/
+     ];*/
+
 
     const columns = [{
       title: 'Наименование',
@@ -114,12 +136,14 @@ class Profile extends Component {
               itemLayout="vertical"
               style={{ paddingBottom: '5px' }}
             >
-              <Table
-                columns={columns}
-                dataSource={data}
-                pagination={{ position: 'none' }}
-                showHeader={false}
-              />
+              <Spin spinning={this.props.loading}>
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  pagination={{ position: 'none' }}
+                  showHeader={false}
+                />
+              </Spin>
             </List>
           </Card>
         </Row>

@@ -49,8 +49,8 @@ class ModalChangeDate extends Component {
     }
 
     if (data.file.status === 'done') {
-      data.file.status = 'uploading';
-     /* dispatch({
+      //data.file.status = 'uploading';
+      dispatch({
         type: 'universal/setfile',
         payload: {
           file: data.file.originFileObj,
@@ -58,8 +58,8 @@ class ModalChangeDate extends Component {
         },
       }).then(() => {
         // to do loader
-        //this.getFileList();
-      });*/
+        this.getFileList();
+      });
     }
   };
   removeFile = (file) => {
@@ -89,6 +89,7 @@ class ModalChangeDate extends Component {
   componentDidMount() {
     this.getFileList();
   }
+
   /*disabledDate =(current) => {
     // Can not select days before today and today
     return current && current < moment().endOf('day');
@@ -96,7 +97,7 @@ class ModalChangeDate extends Component {
 
   disabledDate = (current) => {
     // Can not select days before today and today
-    return current && current.valueOf() < (Date.now()+ -1*24*3600*1000);
+    return current && current.valueOf() < (Date.now() + -1 * 24 * 3600 * 1000);
   };
 
   render() {
@@ -139,7 +140,7 @@ class ModalChangeDate extends Component {
             />
           </Row>
           {this.props.coltype !== 'appEndDate' &&
-          <Row style={{marginTop:'15px'}}>
+          <Row style={{ marginTop: '15px' }}>
             {this.props.loadingFiles === false &&
             <Upload
               {...uploadProps}>

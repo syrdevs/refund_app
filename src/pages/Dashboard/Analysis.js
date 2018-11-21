@@ -279,7 +279,7 @@ class Analysis extends Component {
                   }
                 >
 
-                  
+
                 </Tooltip>
               }
               total={numeral(5558).format('0,0')}
@@ -415,7 +415,7 @@ class Analysis extends Component {
                   label={
                     'Сумма взносов на возврат'
                   }
-                  value={numeral(866621).format('0,0')}
+                  value={'₸ '+numeral(866621).format('0,0')}
                 />
               }
               contentHeight={200}

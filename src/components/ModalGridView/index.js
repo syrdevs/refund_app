@@ -104,7 +104,7 @@ export default class ModalGridView extends Component {
               searched: this.state.filter.src.searched,
               data: {
                 ...this.state.filter.src.data,
-                dKnpId: { id: this.props.universal.refundKnpList[0].knpId },
+                knpList: { id: this.props.universal.refundKnpList[0].knpId },
               },
             },
           },
@@ -130,7 +130,7 @@ export default class ModalGridView extends Component {
           searched: this.state.filter.src.searched,
           data: {
             ...this.state.filter.src.data,
-            dKnpId: { id: e },
+            knpList : { id: e },
           },
         },
       },

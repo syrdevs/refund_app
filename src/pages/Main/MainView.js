@@ -419,7 +419,7 @@ class MainView extends Component {
         type: 'betweenDate',
       },
       {
-        name: 'dKnp',
+        name: 'knp',
         label: formatMessage({ id: 'menu.filter.knp' }),
         type: 'multibox',
         hint: true,
@@ -430,7 +430,7 @@ class MainView extends Component {
         type: 'combobox',
       },
       {
-        name: 'drefundReason',
+        name: 'ddenyReason',
         label: formatMessage({ id: 'menu.filter.RefusalReason' }),
         type: 'combobox',
       },
@@ -482,6 +482,7 @@ class MainView extends Component {
     const { dispatch } = this.props;
 
     let content;
+    let statusId = false;
 
     if (selectedRowKeys.length === 0) return false;
 
@@ -491,18 +492,18 @@ class MainView extends Component {
 
       dispatch({
         type: 'references/load',
-        code: 'drefundReason',
+        code: 'ddenyReason',
       }).then(() => {
-        content = (<div style={{ marginTop: 10 }}><span>Причина возврата:</span>
+        content = (<div style={{ marginTop: 10 }}><span>{formatMessage({ id: 'menu.filter.RefusalReason' })}:</span>
           <Select
             style={{ width: '100%' }}
             placeholder=""
             onChange={(value) => {
-
+              statusId = value;
             }}
           >
-            <Select.Option key={null}>{<div style={{ height: 20 }}> </div>}</Select.Option>
-            {this.props.references['drefundReason'] && this.props.references['drefundReason'].map((item) => {
+            <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
+            {this.props.references['ddenyReason'] && this.props.references['ddenyReason'].map((item) => {
               return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
             })}
           </Select></div>);
@@ -517,7 +518,7 @@ class MainView extends Component {
               type: 'universal/changeRefundStatus',
               payload: {
                 'status': statusCode,
-                'denyReasonId': null,
+                'denyReasonId': statusId ? {id: statusId} : null,
                 'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
               },
             }).then(() => {
@@ -621,7 +622,6 @@ class MainView extends Component {
   btnIsDisabled = (isRole, args) => {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
-
   loadRpmuData = (recordId) => {
 
     const { dispatch } = this.props;
@@ -636,6 +636,149 @@ class MainView extends Component {
         },
       },
     });
+  };
+
+
+  exportToExcel = () => {
+
+    let authToken = localStorage.getItem('token');
+
+    fetch('/api/refund/exportToExcel',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        },
+        method: 'post',
+        body: JSON.stringify({
+          'entityClass': 'Refund',
+          'src': {
+            'searched': true,
+            'data': this.state.pagingConfig.src.data,
+          },
+          'columns': [
+            {
+              'title': 'Номер заявки',
+              'dataIndex': 'applicationId.appNumber',
+            },
+            {
+              'title': 'Дата заявления плательщика',
+              'dataIndex': 'appPayerDate',
+            },
+            {
+              'title': 'Дата заявки',
+              'dataIndex': 'applicationId.appDate',
+            },
+            {
+              'title': 'Дата поступления заявления в Фонд',
+              'dataIndex': 'receiptAppdateToFsms',
+            },
+            {
+              'title': 'Дата поступления',
+              'dataIndex': 'entryDate',
+            },
+            {
+              'title': 'Крайняя дата исполнения заявки',
+              'dataIndex': 'appEndDate',
+            },
+            {
+              'title': 'Сумма возврата',
+              'dataIndex': 'refundPayAmount',
+            },
+            {
+              'title': 'Референс ГК',
+              'dataIndex': 'gcvpReference',
+            },
+            {
+              'title': 'Номер плат-го поручения ГК',
+              'dataIndex': 'gcvpOrderNum',
+            },
+            {
+              'title': 'Дата плат-го поручения ГК',
+              'dataIndex': 'gcvpOrderDate',
+            },
+            {
+              'title': 'Причина возврата',
+              'dataIndex': 'drefundReasonId.nameRu',
+            },
+            {
+              'title': 'Статус заявки на возврат',
+              'dataIndex': 'dappRefundStatusId.nameRu',
+            },
+            {
+              'title': 'ИИН Потребителя',
+              'dataIndex': 'personIin',
+            },
+            {
+              'title': 'КНП',
+              'dataIndex': 'applicationId.dknpId.id',
+            },
+            {
+              'title': 'Номер платежного поручения',
+              'dataIndex': 'applicationId.payOrderNum',
+            },
+            {
+              'title': 'Дата платежного поручения',
+              'dataIndex': 'applicationId.payOrderDate',
+            },
+            {
+              'title': 'Сумма отчислений',
+              'dataIndex': 'payAmount',
+            },
+            {
+              'title': 'Дата последнего взноса',
+              'dataIndex': 'lastPayDate',
+            },
+            {
+              'title': 'Дата осуществления возврата',
+              'dataIndex': 'refundDate',
+            },
+            {
+              'title': 'Кол-во отчислений и (или) взносов за последние 12 календарных месяцев',
+              'dataIndex': 'lastMedcarePayCount',
+            },
+            {
+              'title': 'Статус страхования',
+              'dataIndex': 'medinsStatus',
+            },
+            {
+              'title': 'Референс',
+              'dataIndex': 'applicationId.reference',
+            },
+            {
+              'title': 'Причина отказа',
+              'dataIndex': 'ddenyReasonId.nameRu',
+            },
+            {
+              'title': 'Отчет об отказе',
+              'dataIndex': 'refundStatus',
+            },
+            {
+              'title': 'Осталось дней',
+              'dataIndex': 'daysLeft',
+            },
+            {
+              'title': 'Дата изменения статуса заявки',
+              'dataIndex': 'changeDate',
+            },
+            {
+              'title': 'Период',
+              'dataIndex': 'payPeriod',
+            },
+            {
+              'title': 'Веб-сервис (сообщение) ',
+              'dataIndex': 'wsStatusMessage',
+            },
+          ],
+        }),
+      })
+      .then(response => response.blob())
+      .then(responseBlob => {
+        let blob = new Blob([responseBlob], { type: responseBlob.type }),
+          url = window.URL.createObjectURL(blob);
+        window.open(url, '_self');
+      });
+
   };
 
   render() {
@@ -791,7 +934,8 @@ class MainView extends Component {
                         onClick={this.AppRefundStatusAuto}>
                         {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
-                      <Menu.Item key="2">
+                      <Menu.Item
+                        key="2" onClick={this.exportToExcel}>
                         {formatMessage({ id: 'menu.mainview.excelBtn' })}
                       </Menu.Item>
                       <Menu.Item

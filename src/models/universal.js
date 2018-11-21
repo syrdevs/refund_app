@@ -15,7 +15,7 @@ import {
   setDateRequest,
   dAppRefundStatusAuto,
   setDateRefund,
-  saveOptionsdata
+  saveOptionsdata,
 } from '../services/api';
 
 export default {

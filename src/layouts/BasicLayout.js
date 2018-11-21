@@ -281,10 +281,10 @@ class BasicLayout extends React.PureComponent {
               {children}
             </Authorized>
           </Content>
-          <GlobalFooter
+          {/*<GlobalFooter
             color='white'
             fontcolor='black'
-            />
+            />*/}
         </Layout>
       </Layout>
     );

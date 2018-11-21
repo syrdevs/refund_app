@@ -27,6 +27,8 @@ export default class ReportsGrid extends Component {
 
     selectedRow: null,
 
+    isErrorReport: false,
+
     _configTimer: {
 
       second: 1000,
@@ -262,8 +264,15 @@ export default class ReportsGrid extends Component {
 
   getOrder = async (taskItem, count, call) => {
 
-    const res = await fetch('/apis/refund/getorder');
+    /*const res = await fetch('/apis/refund/getorder');
     const json = await res.json();
+*/
+
+    let json = { status: 0 };
+
+    if (count === 1) {
+      json = { 'status': 1, 'message': 'success' };
+    }
 
     if (json.status !== 0) {
       this.setStatus(taskItem, json, call);
@@ -293,12 +302,45 @@ export default class ReportsGrid extends Component {
 
   saveOrder = async () => {
 // to do filter send
-    const res = await fetch('/apis/refund/saveorder');
-    let result = await res.json();
+    /* const res = await fetch('/apis/refund/saveorder');
+     let result = await res.json();*/
+
+    let result = {
+      'id': 1000,
+      'status': 0,
+      'reportExportFormat': 'pdf',
+      'entryDate': '31.10.2018 21:16',
+      'userId': {
+        'id': '346DD7A796744F06A2593521D3935F12',
+        'iin': '860000000000',
+        'surname': 'КУДАЙБЕРГЕНОВ',
+        'firstname': 'БЕКЖАН',
+        'patronname': 'БАУЫРЖАНОВИЧ',
+        'birthDate': '20.05.2018',
+        'organizationId': {
+          'id': '70A1F9C472805177E054001B782A74A6',
+          'bin': '990440000385',
+          'nameRu': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
+          'nameKz': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
+          'address': null,
+          'entryDate': '10.07.2018 15:44',
+          'changeDate': null,
+          'dOkedList': null,
+        },
+      },
+      'reportId': {
+        'id': 1,
+        'nameRu': 'Количество договоров в разрезе должностей',
+        'nameKz': 'Количество договоров в разрезе должностей',
+        'params': null,
+        'exportFormat': { 'id': 2, 'parentId': null, 'nameRu': 'PDF', 'nameKz': 'PDF', 'code': null },
+      },
+    };
 
     result.message = '';
 
     this.setState(prevState => ({
+      isErrorReport: !prevState.isErrorReport,
       dataSource: [result, ...prevState.dataSource],
     }), () => {
       this.createTask(result);

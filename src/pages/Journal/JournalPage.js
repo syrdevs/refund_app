@@ -41,6 +41,19 @@ export default class JournalPage extends Component {
     super(props);
 
     this.state = {
+      fcolumn: [
+        {
+          title: 'Потребитель',
+          order: 6,
+          key: 'fio',
+          isVisible: true,
+          width: 150,
+          render: (item) => {
+            //console.log(i);
+            return item.refundId.personSurname + ' ' + item.refundId.personFirstname + ' ' + item.refundId.personPatronname;
+          },
+        }
+      ],
       columns: [{
         'title': 'Дата и время',
         'dataIndex': 'entryDate',
@@ -62,12 +75,14 @@ export default class JournalPage extends Component {
         'width': 120,
         'dataIndex': 'refundId.gcvpOrderDate',
         'isVisible': true,
-      }, {
+      },
+        /*{
         'title': 'Потребитель',
         'width': 120,
-        'dataIndex': 'refundId.personIin',
+        'dataIndex': 'refundId.personSurname',
         'isVisible': true,
-      },
+
+      },*/
         /*, {
           'title': 'Логин',
           'width': 130,
@@ -83,7 +98,7 @@ export default class JournalPage extends Component {
         },{
           'title': 'Пользователь',
           'width': 120,
-          'dataIndex': 'userId.id',
+          'dataIndex': 'userId.userName',
         },
       ],
       filterContainer: 0,
@@ -209,6 +224,7 @@ export default class JournalPage extends Component {
           fixedHeader={true}
           rowSelection={true}
           columns={this.state.columns}
+          actionColumns={this.state.fcolumn}
           sorted={true}
           showTotal={false}
           dataSource={{

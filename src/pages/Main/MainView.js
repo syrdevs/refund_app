@@ -47,10 +47,11 @@ function hasRole(roles) {
 }
 
 
-@connect(({ universal, loading }) => ({
+@connect(({ universal, references, loading }) => ({
   universal,
+  references,
   loadingData: loading.effects['universal/mainviewtable'],
-  rpmuLoading:loading.effects['universal/rpmuTable']
+  rpmuLoading: loading.effects['universal/rpmuTable'],
 }))
 class MainView extends Component {
   constructor(props) {
@@ -480,35 +481,93 @@ class MainView extends Component {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
 
+    let content;
+
     if (selectedRowKeys.length === 0) return false;
 
-    confirm({
-      title: 'Подтверждение',
-      content: 'Вы действительно хотите ' + statusText.toLowerCase() + ' возврат? ',
-      okText: 'Да',
-      cancelText: 'Нет',
-      onOk: () => {
-        dispatch({
-          type: 'universal/changeRefundStatus',
-          payload: {
-            'status': statusCode,
-            'denyReasonId': null,
-            'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+    if (statusCode === 2) {
+
+      // to do status component
+
+      dispatch({
+        type: 'references/load',
+        code: 'drefundReason',
+      }).then(() => {
+        content = (<div style={{ marginTop: 10 }}><span>Причина возврата:</span>
+          <Select
+            style={{ width: '100%' }}
+            placeholder=""
+            onChange={(value) => {
+
+            }}
+          >
+            <Select.Option key={null}>{<div style={{ height: 20 }}> </div>}</Select.Option>
+            {this.props.references['drefundReason'] && this.props.references['drefundReason'].map((item) => {
+              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+            })}
+          </Select></div>);
+
+        confirm({
+          title: 'Подтверждение',
+          content: content,
+          okText: 'Да',
+          cancelText: 'Нет',
+          onOk: () => {
+            dispatch({
+              type: 'universal/changeRefundStatus',
+              payload: {
+                'status': statusCode,
+                'denyReasonId': null,
+                'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+              },
+            }).then(() => {
+              this.setState({
+                selectedRowKeys: [],
+              }, () => {
+                this.loadMainGridData();
+              });
+            });
           },
-        }).then(() => {
+          onCancel: () => {
+            this.setState({
+              selectedRowKeys: [],
+            });
+          },
+        });
+
+      });
+
+    } else {
+      content = 'Вы действительно хотите ' + statusText.toLowerCase() + ' возврат? ';
+      confirm({
+        title: 'Подтверждение',
+        content: content,
+        okText: 'Да',
+        cancelText: 'Нет',
+        onOk: () => {
+          dispatch({
+            type: 'universal/changeRefundStatus',
+            payload: {
+              'status': statusCode,
+              'denyReasonId': null,
+              'refundList': selectedRowKeys.map((valueId) => ({ id: valueId })),
+            },
+          }).then(() => {
+            this.setState({
+              selectedRowKeys: [],
+            }, () => {
+              this.loadMainGridData();
+            });
+          });
+        },
+        onCancel: () => {
           this.setState({
             selectedRowKeys: [],
-          }, () => {
-            this.loadMainGridData();
           });
-        });
-      },
-      onCancel: () => {
-        this.setState({
-          selectedRowKeys: [],
-        });
-      },
-    });
+        },
+      });
+    }
+
 
   };
 

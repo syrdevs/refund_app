@@ -188,6 +188,13 @@ export async function getRPMUTable(params) {
   });
 }
 
+export async function dAppRefundStatusAuto(params) {
+  return request('/api/refund/dAppRefundStatusAuto', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 export async function getMainModal(params) {
   return request('/api/refund/mainmodal');
 }

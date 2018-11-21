@@ -278,9 +278,11 @@ class Analysis extends Component {
                     <FormattedMessage id="app.analysis.introduce" defaultMessage="Introduce" />
                   }
                 >
+
+                  
                 </Tooltip>
               }
-              total={'₸ '+numeral(5558).format('0,0')}
+              total={numeral(5558).format('0,0')}
               footer={
                 <Field
                   label={
@@ -308,7 +310,7 @@ class Analysis extends Component {
                 >
                 </Tooltip>
               }
-              total={'₸ '+numeral(812).format('0,0')}
+              total={numeral(812).format('0,0')}
               footer={
                 <Field
                   label={
@@ -336,7 +338,7 @@ class Analysis extends Component {
                 >
                 </Tooltip>
               }
-              total={'₸ '+numeral(389).format('0,0')}
+              total={numeral(389).format('0,0')}
               footer={
                 <Field
                   label={

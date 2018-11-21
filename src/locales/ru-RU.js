@@ -88,11 +88,13 @@ export default {
   'menu.refunds.requests': 'Заявки',
   'menu.options': 'Настройки',
   'menu.counteragent': 'Контрагенты',
+  'menu.requests.nulldate': 'Установить дату',
   'menu.mainview': 'РЕЕСТР ВОЗВРАТОВ',
   'menu.mainview.paylists': 'Платежи',
   'menu.mainview.mt102': 'МТ102',
   'menu.mainview.rpmuLocale': 'Платежи потребителя',
   'menu.mainview.fio': 'ФИО Потребителя',
+  'menu.mainview.refundreceiver': 'Получить заявки на возврат',
   'menu.mainview.rpmuName': 'Потребитель',
   'menu.mainview.paymentsum': 'Сумма',
   'menu.mainview.paymentperiod': 'Период',
@@ -373,5 +375,5 @@ export default {
   'app.footer.suppordtel': '8(7172) 123-456',
   'app.footer.suppordemail': 'support@med.kz',
   'app.login.entrу': 'Вход в систему',
-  'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЕ'
+  'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЕ',
 };

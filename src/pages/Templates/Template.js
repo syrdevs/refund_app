@@ -25,16 +25,32 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva/index';
 
 
-@connect(({ universal2, loading }) => ({
+/*@connect(({ universal2, loading }) => ({
   universal2,
   loadingData: loading.effects['universal2/data'],
-}))
+}))*/
 export default class Template extends Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: [],
       dataSource: [],
+      staticData:[{
+        "id": "D532F7EDEE6C4B78A37913653C78854D",
+        "descriptionRu": "Письмо об отказе",
+        "descriptionKz": "Письмо об отказе",
+        "ord": 1,
+        "fileExt": "docx"
+      }],
+      staticColumn:[
+        {
+          "title": "№",
+          "dataIndex": "ord"
+        },{
+          "title": "Описание шаблона",
+          "dataIndex": "descriptionRu"
+        }
+      ]
     };
   }
 
@@ -48,7 +64,7 @@ export default class Template extends Component {
 
   componentDidMount() {
 
-    const { dispatch } = this.props;
+    /*const { dispatch } = this.props;
     dispatch({
       type: 'universal2/columns',
       payload: {
@@ -60,7 +76,7 @@ export default class Template extends Component {
       payload: {
         table: 'templates',
       },
-    });
+    });*/
 
     this.setState({
       columns: [{
@@ -108,7 +124,9 @@ export default class Template extends Component {
   }
 
   render() {
-    const { dataStore, columns } = this.props.universal2;
+    /*const { dataStore, columns } = this.props.universal2;*/
+    const dataStore = this.state.staticData;
+    const columns  = this.state.staticColumn;
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.refunds.templates_view.title' })}>

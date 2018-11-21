@@ -315,7 +315,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >Установить дату</a>)
+              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>)
             }
             else {
               return (<a
@@ -355,7 +355,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >Установить дату</a>)
+              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>)
             }
             else {
               return (<a

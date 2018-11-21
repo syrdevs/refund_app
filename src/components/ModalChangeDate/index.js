@@ -26,7 +26,7 @@ class ModalChangeDate extends Component {
       dispatch({
         type: 'universal/changeDateRequest',
         payload: {
-          [dataSource.key]: this.state.changeDateValue,
+          [dataSource.key]: this.state.changeDateValue !==""? this.state.changeDateValue : null ,
           id: dataSource.id,
         },
       }).then(() => {

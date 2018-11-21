@@ -50,10 +50,12 @@ function hasRole(roles) {
 @connect(({ universal, loading }) => ({
   universal,
   loadingData: loading.effects['universal/mainviewtable'],
+  rpmuLoading:loading.effects['universal/rpmuTable']
 }))
 class MainView extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
 
       ModalChangeDateRefund: false,
@@ -79,6 +81,7 @@ class MainView extends Component {
             return {
               onClick: () => {
                 this.toggleItems(record);
+                this.loadRpmuData(record.id);
               },
             };
           },
@@ -560,6 +563,22 @@ class MainView extends Component {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
 
+  loadRpmuData = (recordId) => {
+
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/rpmuTable',
+      payload: {
+        'start': 0,
+        'length': 30,
+        'refundId': {
+          'id': recordId,
+        },
+      },
+    });
+  };
+
   render() {
 
     const dateFormat = 'DD.MM.YYYY';
@@ -567,34 +586,6 @@ class MainView extends Component {
     const { universal } = this.props;
 
     const rpmuColumns = this.rpmuColumn();
-
-    const DataDiv = () => (
-      <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-        <Card
-          style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-          bodyStyle={{ padding: 0 }}
-          type="inner"
-          title="Платежи РПМУ"
-          extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
-            icon={faTimes}/></Icon>}
-        >
-          <LocaleProvider locale={componentLocal}><Table
-            size={'small'}
-            columns={rpmuColumns}
-            dataSource={universal.rpmu.content}
-            rowClassName={(record) => {
-
-              if (record.refundExist) {
-                console.log(record.refundExist);
-                return 'greenRow';
-              }
-            }
-            }
-            scroll={{ x: 1100 }}/>
-          </LocaleProvider>
-        </Card>
-      </Animated>);
-
     const GridFilterData = this.stateFilter();
 
     return (
@@ -658,7 +649,34 @@ class MainView extends Component {
                 </Animated>}
 
                 {this.state.searchercont === 8 &&
-                <DataDiv/>
+                <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+                  <Card
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    bodyStyle={{ padding: 0 }}
+                    type="inner"
+                    title="Платежи РПМУ"
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}
+                  >
+                    <LocaleProvider locale={componentLocal}>
+                      <Spin spinning={this.props.rpmuLoading}>
+                        <Table
+                          size={'small'}
+                          columns={rpmuColumns}
+                          dataSource={universal.rpmu.content}
+                          rowClassName={(record) => {
+
+                            if (record.refundExist) {
+                              console.log(record.refundExist);
+                              return 'greenRow';
+                            }
+                          }
+                          }
+                          scroll={{ x: 1100 }}/>
+                      </Spin>
+                    </LocaleProvider>
+                  </Card>
+                </Animated>
                 }
 
               </div>

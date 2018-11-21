@@ -182,7 +182,10 @@ export async function getmainViewColumn(params) {
 }
 
 export async function getRPMUTable(params) {
-  return request('/api/refund/secondTable');
+  return request('/api/refund/paymentByRefundId', {
+    method: 'POST',
+    body: params.payload,
+  });
 }
 
 export async function getMainModal(params) {
@@ -196,11 +199,12 @@ export async function getMainSelect1(params) {
 export async function getOptionsdata(params) {
   return request('/api/refund/getUserOptionList');
 }
+
 export async function saveOptionsdata(params) {
   return request('/api/refund/saveUserOptionList', {
     method: 'POST',
     body: params.payload,
-  })
+  });
 }
 
 export async function getFilesRequest(params) {
@@ -274,7 +278,7 @@ export async function getJournalData(params) {
 }
 
 export async function getStaticticsData(params) {
-   //console.log(`/api/refund/get/stat?${stringify(params.payload)}`)
+  //console.log(`/api/refund/get/stat?${stringify(params.payload)}`)
   return request(`/api/refund/get/stat?${stringify(params.payload)}`);
 }
 

@@ -10,5 +10,5 @@ export async function testMethod() {
   });
 }
 export async function queryCurrent() {
-  return request('/api/user/currentUser');
+  return request('/api/getUserInfo');
 }

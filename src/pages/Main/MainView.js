@@ -619,6 +619,21 @@ class MainView extends Component {
     });
   };
 
+  refundsReceiver = () => {
+    confirm({
+      title: 'Подтверждение',
+      content: 'Вы действительно хотите получить заявки на возврат?',
+      okText: 'Да',
+      cancelText: 'Нет',
+      onOk: () => {
+
+      },
+      onCancel: () => {
+
+      },
+    });
+  };
+
   btnIsDisabled = (isRole, args) => {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
@@ -869,6 +884,11 @@ class MainView extends Component {
                         this.showGraphic();
                       }}>
                         {formatMessage({ id: 'menu.mainview.infographBtn' })}
+                      </Menu.Item>
+                      <Menu.Item disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN'])} key="7" onClick={() => {
+                        this.refundsReceiver();
+                      }}>
+                        {formatMessage({ id: 'menu.mainview.refundreceiver' })}
                       </Menu.Item>
                     </Menu>}>
                       <Button disabled={hasRole(['FSMS2', 'ADMIN'])}

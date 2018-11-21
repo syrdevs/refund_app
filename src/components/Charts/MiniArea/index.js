@@ -79,7 +79,7 @@ class MiniArea extends React.PureComponent {
                 type="area"
                 position="x*y"
                 color={color}
-                tooltip={tooltip}
+                tooltip={false}
                 shape="smooth"
                 style={{
                   fillOpacity: 1,

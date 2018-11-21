@@ -36,7 +36,7 @@ export default [
         path: '/main/home',
         name: 'home',
         icon: 'faHome',
-        component: './HomePage/HomePage',
+        component: './Dashboard/Analysis',
       },
       {
         path: '/rpmu',

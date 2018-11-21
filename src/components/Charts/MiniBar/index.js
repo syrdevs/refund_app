@@ -41,7 +41,7 @@ class MiniBar extends React.Component {
             padding={padding}
           >
             <Tooltip showTitle={false} crosshairs={false} />
-            <Geom type="interval" position="x*y" color={color} tooltip={tooltip} />
+            <Geom type="interval" position="x*y" color={color} tooltip={false} />
           </Chart>
         </div>
       </div>

@@ -94,15 +94,15 @@ class Bar extends Component {
             data={data}
             padding={padding || 'auto'}
           >
-            <Axis
+            {/*<Axis
               name="x"
               title={false}
               label={autoHideXLabels ? false : {}}
               tickLine={autoHideXLabels ? false : {}}
             />
-            <Axis name="y" min={0} />
+            <Axis name="y" min={0} />*/}
             <Tooltip showTitle={false} crosshairs={false} />
-            <Geom type="interval" position="x*y" color={color} tooltip={tooltip} />
+            <Geom type="interval" position="x*y" color={color} tooltip={false} />
           </Chart>
         </div>
       </div>

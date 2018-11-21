@@ -130,7 +130,7 @@ class MainView extends Component {
           isVisible: true,
           'dataIndex': 'dappRefundStatusId.nameRu',
           order: 7,
-          render: (record, value) => <a style={{ color: value.isRefundConfirm === 'True' ? 'green' : 'red' }}
+          render: (record, value) => <a style={{ color: value.isRefundConfirm ? 'green' : 'red' }}
                                         href="#">{value.dappRefundStatusId.nameRu}</a>,
         }],
       columns: [{
@@ -378,53 +378,55 @@ class MainView extends Component {
         type: 'text',
       },
       {
-        name: 'iin',
+        name: 'personIin',
         label: formatMessage({ id: 'menu.filter.iin' }),
         type: 'text',
       },
       {
-        name: 'refund_status',
+        name: 'dappRefundStatus',
         label: formatMessage({ id: 'menu.filter.refundstatus' }),
         type: 'multibox',
       },
       {
-        name: 'lastDate',
+        name: 'appEndDate',
         label: formatMessage({ id: 'menu.filter.lastdate' }),
         type: 'betweenDate',
       },
       {
-        name: 'payerDate',
+        name: 'appPayerDate',
         label: formatMessage({ id: 'menu.filter.payerdate' }),
         type: 'betweenDate',
       },
       {
-        name: 'RefundComeDate',
+        name: 'refundEntryDate',
         label: formatMessage({ id: 'menu.filter.RefundComeDate' }),
         type: 'betweenDate',
       },
       {
-        name: 'RefundFundDate',
+        name: 'refundEntryDate',
         label: formatMessage({ id: 'menu.filter.RefundFundDate' }),
+        nullBtn: true,
         type: 'betweenDate',
       },
       {
-        name: 'RefusalDate',
+        name: 'refundDate',
         label: formatMessage({ id: 'menu.filter.RefusalDate' }),
+        nullBtn: true,
         type: 'betweenDate',
       },
       {
-        name: 'knp',
+        name: 'dKnp',
         label: formatMessage({ id: 'menu.filter.knp' }),
         type: 'multibox',
         hint: true,
       },
       {
-        name: 'refund_reason',
+        name: 'drefundReason',
         label: formatMessage({ id: 'menu.filter.RefundReason' }),
         type: 'combobox',
       },
       {
-        name: 'refund_deny_reason',
+        name: 'drefundReason',
         label: formatMessage({ id: 'menu.filter.RefusalReason' }),
         type: 'combobox',
       },
@@ -685,39 +687,42 @@ class MainView extends Component {
                   }}
                   addonButtons={[
                     <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}
-                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.state.btnhide])}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                             key={'odobrit'} className={'btn-success'}
                     >
                       {formatMessage({ id: 'menu.mainview.approveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: 'menu.mainview.cancelBtn' }))}
-                            disabled={hasRole(['FSMS1', 'FSMS2', 'ADMIN']) || this.state.btnhide}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                             key={'cancel'}
                             className={'btn-danger'}>
                       {formatMessage({ id: 'menu.mainview.cancelBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                     </Button>,
 
                     <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: 'menu.mainview.saveBtn' }))}
-                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide])}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS1', 'FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                             key={'save'}>{formatMessage({ id: 'menu.mainview.saveBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
                     <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: 'menu.mainview.performBtn' }))}
-                            disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide])}
+                            disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                             key={'run'}>{formatMessage({ id: 'menu.mainview.performBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
 
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.btnhide} key="1"
-                                 onClick={this.AppRefundStatusAuto}>
+                      <Menu.Item
+                        disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                        key="1"
+                        onClick={this.AppRefundStatusAuto}>
                         {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
                       <Menu.Item key="2">
                         {formatMessage({ id: 'menu.mainview.excelBtn' })}
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['FSMS2', 'ADMIN']) || this.state.selectedRowKeys.length === 0}
-                                 key="3"
-                                 onClick={() => {
-                                   this.setState({ ModalChangeDateRefund: true });
-                                 }}>
+                      <Menu.Item
+                        disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.state.selectedRowKeys.length === 0])}
+                        key="3"
+                        onClick={() => {
+                          this.setState({ ModalChangeDateRefund: true });
+                        }}>
                         {formatMessage({ id: 'menu.mainview.setDateBtn' })}
                       </Menu.Item>
                       <Menu.Item disabled={hasRole(['ADMIN', 'FSMS2'])} key="4" onClick={() => {

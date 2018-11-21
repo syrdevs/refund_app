@@ -109,9 +109,9 @@ export default class ReportsGrid extends Component {
         'userId': {
           'id': '346DD7A796744F06A2593521D3935F12',
           'iin': '860000000000',
-          'surname': 'КУДАЙБЕРГЕНОВ',
-          'firstname': 'БЕКЖАН',
-          'patronname': 'БАУЫРЖАНОВИЧ',
+          'surname': 'Иванов',
+          'firstname': 'Иван',
+          'patronname': 'Иванович',
           'birthDate': '20.05.2018',
           'organizationId': {
             'id': '70A1F9C472805177E054001B782A74A6',
@@ -145,9 +145,9 @@ export default class ReportsGrid extends Component {
         'userId': {
           'id': '346DD7A796744F06A2593521D3935F12',
           'iin': '860000000000',
-          'surname': 'КУДАЙБЕРГЕНОВ',
-          'firstname': 'БЕКЖАН',
-          'patronname': 'БАУЫРЖАНОВИЧ',
+          'surname': 'Иванов',
+          'firstname': 'Иван',
+          'patronname': 'Иванович',
           'birthDate': '20.05.2018',
           'organizationId': {
             'id': '70A1F9C472805177E054001B782A74A6',
@@ -182,9 +182,9 @@ export default class ReportsGrid extends Component {
         'userId': {
           'id': '346DD7A796744F06A2593521D3935F12',
           'iin': '860000000000',
-          'surname': 'КУДАЙБЕРГЕНОВ',
-          'firstname': 'БЕКЖАН',
-          'patronname': 'БАУЫРЖАНОВИЧ',
+          'surname': 'Иванов',
+          'firstname': 'Иван',
+          'patronname': 'Иванович',
           'birthDate': '20.05.2018',
           'organizationId': {
             'id': '70A1F9C472805177E054001B782A74A6',
@@ -313,9 +313,9 @@ export default class ReportsGrid extends Component {
       'userId': {
         'id': '346DD7A796744F06A2593521D3935F12',
         'iin': '860000000000',
-        'surname': 'КУДАЙБЕРГЕНОВ',
-        'firstname': 'БЕКЖАН',
-        'patronname': 'БАУЫРЖАНОВИЧ',
+        'surname': 'Иванов',
+        'firstname': 'Иван',
+        'patronname': 'Иванович',
         'birthDate': '20.05.2018',
         'organizationId': {
           'id': '70A1F9C472805177E054001B782A74A6',

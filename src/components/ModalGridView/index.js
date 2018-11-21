@@ -59,7 +59,7 @@ export default class ModalGridView extends Component {
       }, {
         'title': 'КНП',
         'isVisible': true,
-        'dataIndex': 'applicationId.dknpId.id',
+        'dataIndex': 'applicationId.dknpId.code',
       }, {
         'title': 'Период',
         'isVisible': true,

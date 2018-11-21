@@ -287,7 +287,7 @@ export default class GridFilter extends Component {
             <Col md={22}>
               <LocaleProvider locale={componentLocal}>
                 <RangePicker   {...RangeDateProps}
-                  format={"DD.MM.YYYY"}
+                               format={'DD.MM.YYYY'}
                                placeholder={[
                                  formatMessage({ id: 'datepicker.start.label' }),
                                  formatMessage({ id: 'datepicker.end.label' }),
@@ -295,6 +295,7 @@ export default class GridFilter extends Component {
                                disabled={fields[filterItem.name].disabled}/>
               </LocaleProvider>
             </Col>
+            {filterItem.nullBtn &&
             <Col md={2}>
               <div style={{ margin: '5px' }}>
                 <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
@@ -306,6 +307,8 @@ export default class GridFilter extends Component {
                 }}></Checkbox>
               </div>
             </Col>
+            }
+
           </Row>
         </div>);
       }

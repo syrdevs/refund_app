@@ -290,7 +290,7 @@ export async function getStaticticsData(params) {
 }
 
 export async function getReceiversRefund(params) {
-  return request('/api/refund/getRefundHisPage', {
+  return request('/api/uicommand/runCommand', {
     method: 'POST',
     body: params.payload,
   });

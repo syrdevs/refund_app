@@ -26,7 +26,7 @@ class ModalChangeDate extends Component {
       dispatch({
         type: 'universal/changeDateRequest',
         payload: {
-          [dataSource.key]: this.state.changeDateValue,
+          [dataSource.key]: this.state.changeDateValue !==""? this.state.changeDateValue : null ,
           id: dataSource.id,
         },
       }).then(() => {
@@ -153,7 +153,7 @@ class ModalChangeDate extends Component {
       >
         <Spin spinning={this.props.loadingFiles}>
           <Row>
-            <DatePicker
+            {this.props.dataSource.value && <DatePicker
               allowClear={false}
               defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
               size="large"
@@ -161,7 +161,17 @@ class ModalChangeDate extends Component {
               format={this.props.dateFormat}
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
-            />
+            />}
+
+            {!this.props.dataSource.value && <DatePicker
+              allowClear={false}
+              size="large"
+              style={{ marginBottom: '5px' }}
+              format={this.props.dateFormat}
+              disabledDate={this.disabledDate}
+              onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
+            />}
+
           </Row>
           {this.props.coltype !== 'appEndDate' &&
           <Row style={{ marginTop: '15px' }}>

@@ -107,6 +107,30 @@ class ModalChangeDate extends Component {
         uid: file.id,
         name: file.filename,
       })),
+      onPreview: (file) => {
+
+        let authToken = localStorage.getItem('token');
+
+        fetch('/api/refund/upload/application/download/' + file.uid,
+          {
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              Authorization: 'Bearer ' + authToken,
+            },
+            method: 'post',
+          })
+          .then(response => response.blob())
+          .then(responseBlob => {
+            let blob = new Blob([responseBlob], { type: responseBlob.type }),
+              url = window.URL.createObjectURL(blob);
+
+            let a = document.createElement('a')
+            a.href = url;
+            a.download = url.split('/').pop()
+            a.click()
+            //window.open(url, '_self');
+          });
+      },
       onChange: this.uploadFile,
     };
 

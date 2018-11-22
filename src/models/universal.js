@@ -16,6 +16,7 @@ import {
   dAppRefundStatusAuto,
   setDateRefund,
   saveOptionsdata,
+  getReceiversRefund,
 } from '../services/api';
 
 export default {
@@ -41,6 +42,10 @@ export default {
     modalgridviewdata: [],
   },
   effects: {
+
+    * receiversRefund(payload, { call, put }) {
+      yield  call(getReceiversRefund, payload);
+    },
 
     * AppRefundStatusAuto(payload, { call, put }) {
       yield call(dAppRefundStatusAuto, payload);

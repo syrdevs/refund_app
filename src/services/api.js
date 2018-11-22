@@ -289,4 +289,9 @@ export async function getStaticticsData(params) {
   return request(`/api/refund/get/stat?${stringify(params.payload)}`);
 }
 
-
+export async function getReceiversRefund(params) {
+  return request('/api/refund/getRefundHisPage', {
+    method: 'POST',
+    body: params.payload,
+  });
+}

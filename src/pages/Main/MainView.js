@@ -626,7 +626,23 @@ class MainView extends Component {
       okText: 'Да',
       cancelText: 'Нет',
       onOk: () => {
-
+        const { dispatch } = this.props;
+        dispatch({
+          type: 'universal/receiversRefund',
+          payload: {
+            'id': 'e6c16d0c-72cb-450d-a813-af5bbd399d91',
+            'parameters': [
+              {
+                'name': 'Код статуса',
+                'value': '00010',
+              },
+              {
+                'name': 'Количество',
+                'value': 5,
+              },
+            ],
+          },
+        }).then(() => this.loadMainGridData());
       },
       onCancel: () => {
 

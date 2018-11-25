@@ -21,6 +21,7 @@ class Options extends Component {
   }
 
   componentDidMount() {
+    //test commit in ubuntu
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/optionsData',

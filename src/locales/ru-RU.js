@@ -120,7 +120,7 @@ export default {
   'menu.filter.RefundFundDate': 'Дата поступления заявление в Фонд',
   'menu.filter.knp': 'КНП',
   'menu.filter.RefundReason': 'Причина возврата',
-  'menu.filter.RefusalDate': 'Дата отказа',
+  'menu.filter.RefusalDate': 'Дата осуществления возврата',
   'menu.filter.RefusalReason': 'Причина отказа',
   'menu.filter.numberrequest': 'Номер заявки',
   'menu.filter.reference': 'Референс',

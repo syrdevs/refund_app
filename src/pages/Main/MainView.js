@@ -134,7 +134,7 @@ class MainView extends Component {
           isVisible: true,
           'dataIndex': 'dappRefundStatusId.nameRu',
           order: 7,
-          render: (record, value) => <a style={{ color: value.isRefundConfirm ? 'green' : 'red' }}
+          render: (record, value) => <a style={{ color: this.setColor(value.isRefundConfirm)}}//value.isRefundConfirm ? 'green' : 'red' }}
                                         href="#">{value.dappRefundStatusId.nameRu}</a>,
         }],
       columns: [{
@@ -293,6 +293,11 @@ class MainView extends Component {
       ShowModal: true,
     });
   };
+  setColor = (value) => {
+    if (value) { return 'green'}
+    else if (value === undefined)  { return 'black'}
+    else {return 'red'}
+  }
 
   showGraphic = () => {
     this.setState({

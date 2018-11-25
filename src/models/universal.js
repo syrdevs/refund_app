@@ -17,6 +17,7 @@ import {
   setDateRefund,
   saveOptionsdata,
   getReceiversRefund,
+  paymentsData,
 } from '../services/api';
 
 export default {
@@ -40,6 +41,7 @@ export default {
     options: [],
     refundKnpList: [],
     modalgridviewdata: [],
+    paymentsData: []
   },
   effects: {
 
@@ -83,6 +85,15 @@ export default {
         payload: response,
       });
     },
+    * paymentsData(payload, { call, put }) {
+      const response = yield call(paymentsData, payload.payload);
+
+      yield put({
+        type: 'paymentsDataReducer',
+        payload: response,
+      });
+    },
+
     * getmt102(payload, { call, put }) {
       const response = yield call(getmt102file, payload);
 
@@ -206,6 +217,13 @@ export default {
       return {
         ...state,
         setfile: payload,
+      };
+    },
+    paymentsDataReducer(state, { payload }) {
+      console.log(payload)
+      return {
+        ...state,
+        paymentsData: payload
       };
     },
     maintable(state, { payload }) {

@@ -370,7 +370,7 @@ export default {
   'app.table.column.total': 'Количество записей',
   'app.footer.titleyear': '2017-2018',
   'app.footer.title': 'Некомерческое акцонерное общество',
-  'app.footer.title2': 'Фонд социального медицинского страхование',
+  'app.footer.title2': 'Фонд социального медицинского страхования',
   'app.footer.suppordname': 'Служба технической поддержки',
   'app.footer.suppordtel': '8(7172) 123-456',
   'app.footer.suppordemail': 'support@med.kz',

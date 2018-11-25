@@ -36,6 +36,7 @@ class Searcher extends Component {
   }
 
   render() {
+    const CardHeight={height:'500px'};
     const columns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -48,7 +49,6 @@ class Searcher extends Component {
       key: 'value',
       width: 150,
     }];
-
     const data = [{
       name: 'ИИН',
       value: '880328301579',
@@ -76,6 +76,7 @@ class Searcher extends Component {
         <Row style={{ marginBottom:'10px' }}>
           <Col span={9}>
             <Card
+              style={CardHeight}
               title={formatMessage({ id: 'report.param.searcher' })}
             >
               <div style={mBottom}>{formatMessage({ id: 'profile.field.iin' })}:
@@ -146,7 +147,9 @@ class Searcher extends Component {
             </Card>
           </Col>
           <Col span={15}>
-            <Card>
+            <Card
+              style={CardHeight}
+            >
               <Table
                 columns={columns}
                 dataSource={data}

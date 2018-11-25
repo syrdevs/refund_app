@@ -203,6 +203,18 @@ export default class GridFilter extends Component {
       },
     });
   };
+  withmaxfieldOnChange = (filterItem, value, max) => {
+
+    const { formFilters } = this.state;
+    if (value.length<(max+1)) {
+      this.setState({
+        formFilters: {
+          ...formFilters,
+          [filterItem.name]: value,
+        },
+      });
+    }
+  };
 
   applyFilters = () => {
     const { fields, formFilters } = this.state;
@@ -313,11 +325,20 @@ export default class GridFilter extends Component {
         </div>);
       }
       case 'text': {
-        return (<div key={_index} style={mBottom}>{filterItem.label}:
-          <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-            this.fieldOnChange(filterItem, e.target.value);
-          }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
-      }
+        console.log()
+        if (filterItem.withMax){
+          return (<div key={_index} style={mBottom}>{filterItem.label}:
+            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
+              this.withmaxfieldOnChange(filterItem, e.target.value, filterItem.withMax);
+            }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
+        }
+        else {
+          return (<div key={_index} style={mBottom}>{filterItem.label}:
+            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
+              this.fieldOnChange(filterItem, e.target.value);
+            }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
+        }
+        }
       case 'multibox': {
 
         let params = {};

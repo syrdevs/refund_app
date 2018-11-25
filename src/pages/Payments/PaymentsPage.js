@@ -43,10 +43,10 @@ const formItemLayout = {
 
 const EditableContext = React.createContext();
 
-/*@connect(({ universal2, loading }) => ({
-  universal2,
-  loadingData: loading.effects['universal2/data'],
-}))*/
+@connect(({ universal, loading }) => ({
+  universal,
+  loadingData: loading.effects['universal/paymentsData'],
+}))
 export default class PaymentsPage extends Component {
   constructor(props) {
     super(props);
@@ -55,12 +55,17 @@ export default class PaymentsPage extends Component {
       testcolumns: [],
       testdata: [],
       dataSource: [],
-
       count: 0,
       filterContainer: 0,
-
-
+      parameters: {
+        start:0,
+        length:20,
+        entity:"mt100",
+        filter:{}
+      },
+      //"knpList":["c7889895-0075-4bc2-89e8-939507dd4fc6"]
       filterForm: [],
+      filterFormmt102:[],
       staticolumn:[{
         "title": "Референс",
         "dataIndex": "reference",
@@ -77,7 +82,7 @@ export default class PaymentsPage extends Component {
           "title": "КНП",
           "dataIndex": "knp",
           "isVisible": "true"
-        },{
+        }, {
           "title": "Отправитель (Наименование)",
           "dataIndex": "senderCompanyName",
           "isVisible": "true"
@@ -105,6 +110,52 @@ export default class PaymentsPage extends Component {
           "title": "Дата создания",
           "dataIndex": "createdOn"
         }],
+      staticmt102columns: [{
+        "title": "Референс",
+        "dataIndex": "reference",
+        "isVisible": "true"
+      },{
+        "title": "Дата платежа",
+        "dataIndex": "paymentdate",
+        "isVisible": "true"
+      },{
+        "title": "КНП",
+        "dataIndex": "knp",
+        "isVisible": "true"
+      },{
+        "title": "Сумма",
+        "dataIndex": "paymentsum",
+        "isVisible": "true"
+      },{
+        "title": "Фамилия",
+        "dataIndex": "lastname",
+        "isVisible": "true"
+      },{
+        "title": "Имя",
+        "dataIndex": "firstname",
+        "isVisible": "true"
+      },{
+        "title": "Отчество",
+        "dataIndex": "secondname",
+        "isVisible": "true"
+      },{
+        "title": "Дата рождения",
+        "dataIndex": "birthdate",
+        "isVisible": "true"
+      },{
+        "title": "ИИН",
+        "dataIndex": "iin",
+        "isVisible": "true"
+      },{
+        "title": "Период",
+        "dataIndex": "paymentperiod",
+        "isVisible": "true"
+      },{
+        "title": "Дата платежа",
+        "dataIndex": "createdon",
+        "isVisible": "true"
+      }],
+
       staticdata: [
         {
           "id": "8F14E584-A899-484C-B054-010FB4DACA2B",
@@ -264,48 +315,140 @@ export default class PaymentsPage extends Component {
       payload: {
         table: 'payment',
       },
-    });
-    dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'payment',
-      },
     });*/
+    dispatch({
+      type: 'universal/paymentsData',
+      payload: this.state.parameters,
+    }).then(()=>{
+
+    });
 
 
-    const children = [];
+    /*const children = [];
     for (let i = 10; i < 36; i++) {
       children.push({
         id: i,
         name: 'a' + i,
       });
-    }
-
+    }*/
     this.setState({
+
       filterForm: [
         {
-          name: 'date_payment',
+          name: 'reference',
+          label: formatMessage({ id: 'menu.mainview.reference' }),
+          type: 'text',
+        },
+        {
+          name: 'paymentDate',
           label: formatMessage({ id: 'menu.filter.payment.create_date' }),
           type: 'betweenDate',
         },
         {
-          name: 'knp',
-          label: formatMessage({ id: 'menu.filter.knp' }),
+          name: 'totalAmount',
+          label: formatMessage({ id: 'menu.mainview.paymentsum' }),
           type: 'text',
         },
         {
-          name: 'bin',
-          label: formatMessage({ id: 'menu.filter.bin' }),
+          name: 'knp',
+          label: formatMessage({ id: 'menu.filter.knp' }),
+          type: 'multibox',
+        },
+        {
+          name: 'senderCompanyName',
+          label: "Отправитель (Наименование)",
           type: 'text',
         },
+        {
+          name: 'senderBin',
+          label: "Отправитель (БИН)",
+          type: 'text',
+          withMax:12
+        },
+        {
+          name: 'senderBankBik',
+          label: "Отправитель (БИК)",
+          type: 'text',
+          withMax:8
+        },
+        {
+          name: 'recipientName',
+          label: "Получатель (Наименование)",
+          type: 'text',
+        },
+        {
+          name: 'recipientBin',
+          label: "Получатель (БИН)",
+          type: 'text',
+          withMax:12
+        },
+        {
+          name: 'recipientBankBik',
+          label: "Получатель (БИК)",
+          type: 'text',
+          withMax:8
+        },
+        {
+          name: 'recipientAccount',
+          label: "Получатель (Счет)",
+          type: 'text',
+        },
+        {
+          label: "Дата создания",
+          name: "createdOn",
+          type: 'betweenDate',
+        }
       ],
+      filterFormmt102: [
+        {
+          label: "Референс",
+          name: "reference",
+          type: "text"
+        },{
+          label: "Дата платежа",
+          name: "paymentdate",
+          type: "betweenDate"
+        },{
+          label: "КНП",
+          name: "knp",
+          type: "multibox"
+        },{
+          label: "Сумма",
+          name: "paymentsum",
+          type: "text"
+        },{
+          label: "Фамилия",
+          name: "lastname",
+          type: "text"
+        },{
+          label: "Имя",
+          name: "firstname",
+          type: "text"
+        },{
+          label: "Отчество",
+          name: "secondname",
+          type: "text"
+        },{
+          label: "Дата рождения",
+          name: "birthdate",
+          type: "betweenDate"
+        },{
+          label: "ИИН",
+          name: "iin",
+          type: "text",
+          withMax:12
+        },{
+          label: "Период",
+          name: "paymentperiod",
+          type: "betweenDate"
+        },{
+          label: "Дата платежа",
+          name: "createdon",
+          type: "betweenDate"
+        }
+      ]
     });
 
-  }
-
-
-  applyFilter(dataFilter) {
-    console.log(dataFilter);
   }
 
   clearFilter() {
@@ -378,10 +521,25 @@ export default class PaymentsPage extends Component {
       },
     };
   }
+  tabchange = (e) => {
+    const { dispatch } = this.props;
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          entity:e,
+        }
+      }, () => {
+        dispatch({
+          type: 'universal/paymentsData',
+          payload: this.state.parameters,
+        });
+      })
+
+  }
 
   render() {
 
-   /* const { dataStore, columns } = this.props.universal2;*/
+    const { paymentsData} = this.props.universal;
     const dataStore= this.state.staticdata;
     const columns= this.state.staticolumn;
 
@@ -433,9 +591,9 @@ export default class PaymentsPage extends Component {
        </EditableContext.Provider>);
      };*/
 
-    const DataDiv = () => (
-      //<Spin tip="" spinning={this.props.loadingData}>
-      <Spin tip="" spinning={false}>
+    const DataDiv = ({mtcolumns, tablename}) => (
+      <Spin tip="" spinning={this.props.loadingData}>
+     {/* <Spin tip="" spinning={false}>*/}
 
         {/*<div>
             <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
@@ -457,7 +615,8 @@ export default class PaymentsPage extends Component {
           </div>*/}
 
         <SmartGridView
-          name={'PaymentPageColumns'}
+          name={tablename}
+          scroll={{ x: 'auto' }}
           fixedBody={true}
           showTotal={true}
           selectedRowCheckBox={true}
@@ -467,13 +626,13 @@ export default class PaymentsPage extends Component {
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={true}
-          columns={columns}
+          columns={mtcolumns}
           sorted={true}
           dataSource={{
-            total: 50,
-            pageSize: 10,
-            page: 1,
-            data: dataStore,
+            total: paymentsData.totalElements,
+            pageSize: this.state.parameters.length,
+            page: this.state.parameters.start + 1,
+            data: paymentsData.content,
           }}
           addonButtons={[<span style={{
             color: '#002140',
@@ -482,6 +641,19 @@ export default class PaymentsPage extends Component {
           }}>{formatMessage({ id: 'system.totalAmount' })}: 54658.00</span>]}
           onShowSizeChange={(pageNumber, pageSize) => {
             console.log(pageNumber, pageSize);
+            const { dispatch } = this.props;
+            this.setState({
+              parameters:{
+                ...this.state.parameters,
+                page:pageNumber,
+                pageSize:pageSize
+              }
+            },()=>{
+              dispatch({
+                type: 'universal/paymentsData',
+                payload: this.state.parameters,
+              });
+            })
           }}
           onSelectCell={(cellIndex, cell) => {
 
@@ -529,8 +701,8 @@ export default class PaymentsPage extends Component {
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
         <Card bodyStyle={{ padding: 5 }}>
-          <Tabs>
-            <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="1">
+          <Tabs  onChange={this.tabchange}>
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100" >
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
                   <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
@@ -544,7 +716,23 @@ export default class PaymentsPage extends Component {
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
-                    <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
+                    <GridFilter clearFilter={this.clearFilter} applyFilter={(filter)=> {
+                      const { dispatch } = this.props;
+                      this.setState({
+                        parameters:{
+                          ...this.state.parameters,
+                          filter:{
+                            ...filter
+                          }
+                        }
+                      }, () => {
+                        console.log(this.state.parameters);
+                        dispatch({
+                          type: 'universal/paymentsData',
+                          payload: this.state.parameters,
+                        });
+                      })
+                    }} key={'1'}
                                 filterForm={this.state.filterForm}
                                 dateFormat={dateFormat}/>
                   </Card>
@@ -552,11 +740,14 @@ export default class PaymentsPage extends Component {
 
                 </Col>
                 <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                  <DataDiv/>
+                  <DataDiv
+                    mtcolumns={this.state.staticolumn}
+                    tablename={'paymentspagemt100columns'}
+                  />
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="2">
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
                   <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
@@ -566,14 +757,33 @@ export default class PaymentsPage extends Component {
                     title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}>
-                    <GridFilter clearFilter={this.clearFilter} applyFilter={this.applyFilter} key={'1'}
-                                filterForm={this.state.filterForm}
+                    <GridFilter clearFilter={this.clearFilter} applyFilter={(filter)=> {
+                      const { dispatch } = this.props;
+                      this.setState({
+                        parameters:{
+                          ...this.state.parameters,
+                          filter:{
+                            ...filter
+                          }
+                        }
+                      }, () => {
+                        console.log(this.state.parameters);
+                        dispatch({
+                          type: 'universal/paymentsData',
+                          payload: this.state.parameters,
+                        });
+                      })
+                    }} key={'1'}
+                                filterForm={this.state.filterFormmt102}
                                 dateFormat={dateFormat}/>
                   </Card>
                   </Animated>
                 </Col>
                 <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                  <DataDiv/>
+                  <DataDiv
+                    mtcolumns={this.state.staticmt102columns}
+                    tablename={'paymentspagemt102columns'}
+                  />
                 </Col>
               </Row>
             </TabPane>

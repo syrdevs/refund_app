@@ -241,6 +241,45 @@ class Requests extends Component {
     this.loadMainGridData();
   };
 
+  exportToExcel = () => {
+
+    let authToken = localStorage.getItem('token');
+    let columns = JSON.parse(localStorage.getItem('RequestPageColumns'));
+
+    fetch('/api/refund/exportToExcel',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        },
+        method: 'post',
+        body: JSON.stringify({
+          'entityClass': 'Application',
+          'src': {
+            'searched': true,
+            'data': this.state.pagingConfig.src.data,
+          },
+          'columns': columns.filter(column => column.isVisible),
+        }),
+      })
+      .then(response => response.blob())
+      .then(responseBlob => {
+
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function() {
+          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
+          var url = URL.createObjectURL(blob);
+          window.open(url, '_self');
+        });
+        reader.readAsArrayBuffer(responseBlob);
+
+        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
+           url = window.URL.createObjectURL(blob);
+         window.open(url, '_self');*/
+      });
+
+  };
+
   render() {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;
@@ -431,12 +470,14 @@ class Requests extends Component {
                   columns={propColumns}
                   sorted={true}
                   showTotal={true}
+                  showExportBtn={true}
                   dataSource={{
                     total: dataStore.totalElements,
                     pageSize: this.state.pagingConfig.length,
                     page: this.state.pagingConfig.start + 1,
                     data: dataStore.content,
                   }}
+                  actionExport={()=>this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
                   }}

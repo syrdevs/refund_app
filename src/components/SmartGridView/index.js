@@ -112,13 +112,18 @@ const SmartGridHeader = props => {
 
           {refreshBtnShow && <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}
           {props.addonButtons}
+
           <div className={styles.smart_grid_controls_right}>
+
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
+            {props.showExportBtn &&
+            <Button onClick={()=>props.actionExport()} style={{ float: 'right' }}><Icon type="file-excel" /></Button>}
 
             {props.showTotal &&
             <div
               className={styles.total_label}>{formatMessage({ id: 'app.table.column.total' })}: {props.dataSource.total}</div>}
+
           </div>
         </div>
 

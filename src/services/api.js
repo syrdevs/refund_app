@@ -169,6 +169,12 @@ export async function LoginUser(params) {
   });
 }
 
+export async function LogoutUser() {
+  return request('/api/logout', {
+    method: 'POST'
+  });
+}
+
 export async function CheckToken(params) {
   return request('/api/CheckToken');
 }

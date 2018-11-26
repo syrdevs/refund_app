@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { LoginUser, CheckToken } from '@/services/api';
+import { LoginUser, CheckToken, LogoutUser } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -31,22 +31,22 @@ export default {
         localStorage.setItem('token', response.token);
         setAuthToken();
         reloadAuthorized();
-       /* const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.startsWith('/#')) {
-              redirect = redirect.substr(2);
-            }
-          } else {
-            window.location.href = redirect;
-            return;
-          }
-        }*/
-       //yield put(routerRedux.replace(redirect || '/'));
+        /* const urlParams = new URL(window.location.href);
+         const params = getPageQuery();
+         let { redirect } = params;
+         if (redirect) {
+           const redirectUrlParams = new URL(redirect);
+           if (redirectUrlParams.origin === urlParams.origin) {
+             redirect = redirect.substr(urlParams.origin.length);
+             if (redirect.startsWith('/#')) {
+               redirect = redirect.substr(2);
+             }
+           } else {
+             window.location.href = redirect;
+             return;
+           }
+         }*/
+        //yield put(routerRedux.replace(redirect || '/'));
         yield put(routerRedux.push('/main/home'));
       } else {
         yield put({
@@ -60,9 +60,12 @@ export default {
     },
 
 
+    * logout(_, { put, call }) {
 
-    * logout(_, { put }) {
+      yield  call(LogoutUser);
+
       localStorage.removeItem('token');
+
       yield put({
         type: 'changeLoginStatus',
         payload: {

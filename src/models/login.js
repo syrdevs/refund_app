@@ -62,7 +62,7 @@ export default {
 
     * logout(_, { put, call }) {
 
-      yield  call(LogoutUser);
+     // yield  call(LogoutUser);
 
       localStorage.removeItem('token');
 

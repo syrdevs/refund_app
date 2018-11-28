@@ -18,6 +18,8 @@ import {
   saveOptionsdata,
   getReceiversRefund,
   paymentsData,
+  getSearcherCalendar,
+  getSearcherData
 } from '../services/api';
 
 export default {
@@ -41,18 +43,17 @@ export default {
     options: [],
     refundKnpList: [],
     modalgridviewdata: [],
-    paymentsData: []
+    paymentsData: [],
+    searcherdata:{},
+    searchercalendar:[]
   },
   effects: {
-
     * receiversRefund(payload, { call, put }) {
       yield  call(getReceiversRefund, payload);
     },
-
     * AppRefundStatusAuto(payload, { call, put }) {
       yield call(dAppRefundStatusAuto, payload);
     },
-
     * removeFileRequest(payload, { call }) {
       yield call(deleteFileRequest, payload);
     },
@@ -64,19 +65,15 @@ export default {
         payload: response,
       });
     },
-
     * changeRefundStatus(payload, { call }) {
       yield call(setRefundStatus, payload);
     },
-
     * changeDateRefund(payload, { call }) {
       yield call(setDateRefund, payload);
     },
-
     * changeDateRequest(payload, { call }) {
       yield call(setDateRequest, payload);
     },
-
     * setfile(payload, { call, put }) {
       const response = yield call(setfile, payload);
 
@@ -93,7 +90,6 @@ export default {
         payload: response,
       });
     },
-
     * getmt102(payload, { call, put }) {
       const response = yield call(getmt102file, payload);
 
@@ -182,6 +178,21 @@ export default {
         payload: payload,
       });
     },
+    * SearcherCalendar(payload, { call, put }) {
+      const response = yield call(getSearcherCalendar, payload);
+      yield put({
+        type: 'SearcherCalendarReducer',
+        payload: response,
+      });
+    },
+    * SearcherData(payload, { call, put }) {
+      const response = yield call(getSearcherData, payload);
+      yield put({
+        type: 'SearcherDataReducer',
+        payload: response,
+      });
+    },
+
 
   },
 
@@ -193,7 +204,6 @@ export default {
         files: payload,
       };
     },
-
     mt102(state, { payload }) {
       return {
         ...state,
@@ -201,7 +211,6 @@ export default {
       };
     },
     mt102dataReducer(state, { payload }) {
-      console.log(payload);
       return {
         ...state,
         modalgridviewdata: payload,
@@ -220,7 +229,6 @@ export default {
       };
     },
     paymentsDataReducer(state, { payload }) {
-      console.log(payload)
       return {
         ...state,
         paymentsData: payload
@@ -264,6 +272,18 @@ export default {
     },
     OptionChangeReducer(state, { payload }) {
       return state;
+    },
+    SearcherCalendarReducer(state, { payload }) {
+      return {
+        ...state,
+        searchercalendar: payload,
+      };
+    },
+    SearcherDataReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherdata: payload,
+      };
     },
 
   },

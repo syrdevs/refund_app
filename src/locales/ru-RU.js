@@ -150,6 +150,7 @@ export default {
   'report.list': 'Список отчетов',
   'report.formingList': 'Сформированные отчеты',
   'report.param.searcher': 'Параметры поиска',
+  'report.param.personinform': 'Информация о физическом лице',
   'menu.rpmu.payments': 'Платежи',
   'menu.journal.requests': 'Заявки',
   'menu.rpmu.searcher': 'Поиск в ГБД ФЛ',

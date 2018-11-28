@@ -254,12 +254,12 @@ class Requests extends Component {
         },
         method: 'post',
         body: JSON.stringify({
-          'entityClass': 'Application',
+          'entityClass': 'application',
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
           },
-          'columns': columns.filter(column => column.isVisible),
+          'columns': columns.filter(column => column.isVisible).map(x=>({dataIndex:x.dataIndex,title:x.title})),
         }),
       })
       .then(response => response.blob())

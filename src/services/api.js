@@ -55,7 +55,7 @@ export async function paymentsData(params) {
   return request('/api/uicommand/getList', {
     method: 'POST',
     body: {
-      ...params
+      ...params,
     },
   });
 }
@@ -171,7 +171,7 @@ export async function LoginUser(params) {
 
 export async function LogoutUser() {
   return request('/api/logout', {
-    method: 'POST'
+    method: 'POST',
   });
 }
 
@@ -307,6 +307,21 @@ export async function getStaticticsData(params) {
 
 export async function getReceiversRefund(params) {
   return request('/api/uicommand/runCommand', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
+export async function getReportsList(params) {
+  return request('/api/report/getReportList');
+}
+
+export async function getReportParameters(params) {
+  return request(`/api/report/getReportParameters?${stringify(params.payload)}`);
+}
+
+export async function getFormedReports(params) {
+  return request('/api/uicommand/getList', {
     method: 'POST',
     body: params.payload,
   });

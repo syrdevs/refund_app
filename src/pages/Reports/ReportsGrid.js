@@ -15,13 +15,22 @@ import {
   Row,
   Col,
   Calendar, Badge,
+  Spin,
   DatePicker,
+  LocaleProvider,
+  Pagination,
   Modal,
 } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import componentLocal from '../../locales/components/componentLocal';
+import ru_RU from 'antd/lib/locale-provider/ru_RU';
 
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/formedReports'],
+}))
 export default class ReportsGrid extends Component {
   state = {
 
@@ -36,6 +45,15 @@ export default class ReportsGrid extends Component {
     },
 
     tasks: [],
+
+    dataSource: [],
+
+    pagingConfig: {
+      'start': 0,
+      'length': 15,
+      'filter': {},
+      'entity': 'report_history',
+    },
 
     columns: [
       {
@@ -55,10 +73,10 @@ export default class ReportsGrid extends Component {
         dataIndex: 'entryDate',
       }, {
         title: 'Пользователь',
-        dataIndex: 'userId.surname',
+        dataIndex: 'userId.userName',
       }, {
         title: 'Формат',
-        dataIndex: 'reportId.exportFormat.nameRu',
+        dataIndex: 'ext',
       }, {
         title: 'Действие',
         align: 'center',
@@ -94,129 +112,13 @@ export default class ReportsGrid extends Component {
               return <Button style={{ 'color': 'red' }}>{formatMessage({ id: 'system.error' })}</Button>;
             }
             default:
-              break;
+              return <Icon spin><FontAwesomeIcon icon={faSpinner}/></Icon>;
           }
 
         },
       }],
 
-    dataSource: [
-      {
-        'id': 229,
-        'status': 1,
-        'reportExportFormat': 'pdf',
-        'entryDate': '31.10.2018 21:16',
-        'userId': {
-          'id': '346DD7A796744F06A2593521D3935F12',
-          'iin': '860000000000',
-          'surname': 'Иванов',
-          'firstname': 'Иван',
-          'patronname': 'Иванович',
-          'birthDate': '20.05.2018',
-          'organizationId': {
-            'id': '70A1F9C472805177E054001B782A74A6',
-            'bin': '990440000385',
-            'nameRu': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'nameKz': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'address': null,
-            'entryDate': '10.07.2018 15:44',
-            'changeDate': null,
-            'dOkedList': null,
-          },
-        },
-        'reportId': {
-          'id': 1,
-          'nameRu': 'Количество договоров в разрезе должностей',
-          'nameKz': 'Количество договоров в разрезе должностей',
-          'params': null,
-          'exportFormat': {
-            'id': 2,
-            'parentId': null,
-            'nameRu': 'PDF',
-            'nameKz': 'PDF',
-            'code': null,
-          },
-        },
-      },
-      {
-        'id': 230,
-        'status': 1,
-        'entryDate': '31.10.2018 21:16',
-        'userId': {
-          'id': '346DD7A796744F06A2593521D3935F12',
-          'iin': '860000000000',
-          'surname': 'Иванов',
-          'firstname': 'Иван',
-          'patronname': 'Иванович',
-          'birthDate': '20.05.2018',
-          'organizationId': {
-            'id': '70A1F9C472805177E054001B782A74A6',
-            'bin': '990440000385',
-            'nameRu': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'nameKz': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'address': null,
-            'entryDate': '10.07.2018 15:44',
-            'changeDate': null,
-            'dOkedList': null,
-          },
-        },
-        'reportId': {
-          'id': 1,
-          'nameRu': 'Количество договоров в разрезе должностей',
-          'nameKz': 'Количество договоров в разрезе должностей',
-          'params': null,
-          'exportFormat': {
-            'id': 2,
-            'parentId': null,
-            'nameRu': 'PDF',
-            'nameKz': 'PDF',
-            'code': null,
-          },
-        },
-      },
-      {
-        'id': 231,
-        'status': 2,
-        'message': 'Lorem ipsum',
-        'entryDate': '31.10.2018 21:16',
-        'userId': {
-          'id': '346DD7A796744F06A2593521D3935F12',
-          'iin': '860000000000',
-          'surname': 'Иванов',
-          'firstname': 'Иван',
-          'patronname': 'Иванович',
-          'birthDate': '20.05.2018',
-          'organizationId': {
-            'id': '70A1F9C472805177E054001B782A74A6',
-            'bin': '990440000385',
-            'nameRu': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'nameKz': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-            'address': null,
-            'entryDate': '10.07.2018 15:44',
-            'changeDate': null,
-            'dOkedList': null,
-          },
-        },
-        'reportId': {
-          'id': 1,
-          'nameRu': 'Количество договоров в разрезе должностей',
-          'nameKz': 'Количество договоров в разрезе должностей',
-          'params': null,
-          'exportFormat': {
-            'id': 2,
-            'parentId': null,
-            'nameRu': 'PDF',
-            'nameKz': 'PDF',
-            'code': null,
-          },
-        },
-      },
-    ],
   };
-
-  componentWillUnmount() {
-    console.log('unMount');
-  }
 
   /*shouldComponentUpdate(nextProps, nextState, nextContext) {
 
@@ -224,11 +126,32 @@ export default class ReportsGrid extends Component {
 
 
   downloadFile = async (param) => {
-    var link = document.createElement('a');
-    link.href = 'https://www.7-zip.org/a/7z1805.exe';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    let authToken = localStorage.getItem('token');
+
+    fetch('api/report/getReportResult?id='+param.id,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        }
+      })
+      .then(response => response.blob())
+      .then(responseBlob => {
+
+        let blob = new Blob([responseBlob], { type: responseBlob.type });
+        let url = URL.createObjectURL(blob);
+        window.open(url, '_self');
+
+      });
+
+    ///api/report/getReportResult?id=
+
+    /* var link = document.createElement('a');
+     link.href = 'https://www.7-zip.org/a/7z1805.exe';
+     document.body.appendChild(link);
+     link.click();
+     document.body.removeChild(link);*/
   };
 
   createTask = async (result) => {
@@ -263,16 +186,15 @@ export default class ReportsGrid extends Component {
   }
 
   getOrder = async (taskItem, count, call) => {
+    let token = localStorage.getItem('token');
 
-    /*const res = await fetch('/apis/refund/getorder');
+    const res = await fetch('/api/report/getReportStatus?id=' + taskItem, {
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: 'Bearer ' + token,
+      },
+    });
     const json = await res.json();
-*/
-
-    let json = { status: 0 };
-
-    if (count === 1) {
-      json = { 'status': 1, 'message': 'success' };
-    }
 
     if (json.status !== 0) {
       this.setStatus(taskItem, json, call);
@@ -282,13 +204,15 @@ export default class ReportsGrid extends Component {
   };
 
   setStatus = async (taskItem, json, call) => {
+
     const { dataSource } = this.state;
     let _dataSource = [];
+
 
     dataSource.forEach((item) => {
       if (item.id === taskItem) {
         item.status = json.status;
-        item.message = json.message;
+        //item.message = json.message;
       }
       _dataSource.push(item);
     });
@@ -298,46 +222,27 @@ export default class ReportsGrid extends Component {
     }, () => {
       call();
     });
+
   };
 
   saveOrder = async () => {
-// to do filter send
-    /* const res = await fetch('/apis/refund/saveorder');
-     let result = await res.json();*/
 
-    let result = {
-      'id': 1000,
-      'status': 0,
-      'reportExportFormat': 'pdf',
-      'entryDate': '31.10.2018 21:16',
-      'userId': {
-        'id': '346DD7A796744F06A2593521D3935F12',
-        'iin': '860000000000',
-        'surname': 'Иванов',
-        'firstname': 'Иван',
-        'patronname': 'Иванович',
-        'birthDate': '20.05.2018',
-        'organizationId': {
-          'id': '70A1F9C472805177E054001B782A74A6',
-          'bin': '990440000385',
-          'nameRu': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-          'nameKz': 'Акционерное общество "Центр развития трудовых ресурсов"\n',
-          'address': null,
-          'entryDate': '10.07.2018 15:44',
-          'changeDate': null,
-          'dOkedList': null,
-        },
-      },
-      'reportId': {
-        'id': 1,
-        'nameRu': 'Количество договоров в разрезе должностей',
-        'nameKz': 'Количество договоров в разрезе должностей',
-        'params': null,
-        'exportFormat': { 'id': 2, 'parentId': null, 'nameRu': 'PDF', 'nameKz': 'PDF', 'code': null },
-      },
-    };
+    let token = localStorage.getItem('token');
 
-    result.message = '';
+    const res = await fetch('/api/report/createReport', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        'id': this.props.data.id,
+        'parameters': [],
+      }),
+    });
+
+    let result = await res.json();
+    result.reportId = this.props.data;
 
     this.setState(prevState => ({
       isErrorReport: !prevState.isErrorReport,
@@ -354,18 +259,49 @@ export default class ReportsGrid extends Component {
     }
   }
 
+  componentWillUnmount() {
+    console.log('did unmount');
+  };
+
   componentDidMount() {
-    if (this.props.formingReport) {
-      this.props.unReport();
-      this.saveOrder();
-    }
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal2/formedReports',
+      payload: this.state.pagingConfig,
+    }).then(() => {
+      if (this.props.formingReport) {
+        this.props.unReport();
+        this.saveOrder();
+      }
+    });
+
+
   }
+
+  onShowSizeChange = (current, pageSize) => {
+
+    const max = current * pageSize;
+    const min = max - pageSize;
+    const { dispatch } = this.props;
+    this.setState({
+      dataSource: [],
+    });
+    dispatch({
+      type: 'universal2/formedReports',
+      payload: {
+        ...this.state.pagingConfig,
+        start: current,
+        length: pageSize,
+      },
+    });
+  };
 
   render() {
 
-    const { columns, dataSource } = this.state;
+    const { columns } = this.state;
 
-    return (<Table
+    return (<Spin spinning={this.props.loadingData}><Table
       size={'small'}
       rowClassName={(record, index) => {
         return this.state.selectedRow === index ? 'active' : '';
@@ -382,6 +318,25 @@ export default class ReportsGrid extends Component {
       rowKey={'id'}
       columns={columns}
       bordered={true}
-      dataSource={dataSource}/>);
+      pagination={false}
+      dataSource={this.props.universal2.reportFormedData.content ? this.state.dataSource.concat(this.props.universal2.reportFormedData.content) : []}/>
+      <br/>
+      <LocaleProvider locale={componentLocal}>
+        <Pagination
+          defaultPageSize={15}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          showSizeChanger
+          pageSizeOptions={['15', '30', '40', '50', '100']}
+          onShowSizeChange={(page, pageSize) => {
+            this.onShowSizeChange(page - 1, pageSize);
+          }}
+          onChange={(page, pageSize) => {
+            this.onShowSizeChange(page - 1, pageSize);
+          }}
+          defaultCurrent={this.state.pagingConfig.start + 1}
+          total={this.props.universal2.reportFormedData.totalElements}
+        />
+      </LocaleProvider>
+    </Spin>);
   }
 }

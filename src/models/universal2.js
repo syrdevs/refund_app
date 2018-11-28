@@ -2,15 +2,48 @@ import {
   getColumns,
   getData,
   getJournalData,
-  getStaticticsData} from '../services/api';
+  getStaticticsData,
+  getReportsList,
+  getReportParameters,
+  getFormedReports,
+} from '../services/api';
 
 export default {
   namespace: 'universal2',
   state: {
+    reportParametersData: [],
+    reportFormedData: [],
     dataStore: [],
     columns: [],
   },
   effects: {
+
+    * formedReports(payload, { call, put }) {
+      const response = yield call(getFormedReports, payload);
+
+      yield put({
+        type: 'formedReportsData',
+        payload: response,
+      });
+    },
+
+    * reportParameters(payload, { call, put }) {
+      const response = yield call(getReportParameters, payload);
+
+      yield put({
+        type: 'reportParametersData',
+        payload: response,
+      });
+    },
+
+    * reportsData(payload, { call, put }) {
+      const response = yield call(getReportsList, payload);
+
+      yield put({
+        type: 'getData',
+        payload: response,
+      });
+    },
 
     * statisticsData(payload, { call, put }) {
       const response = yield call(getStaticticsData, payload);
@@ -58,6 +91,7 @@ export default {
   reducers: {
     clearData(state, { payload }) {
       return {
+        ...state,
         columns: [],
         dataStore: [],
       };
@@ -72,6 +106,18 @@ export default {
       return {
         ...state,
         columns: payload,
+      };
+    },
+    formedReportsData(state, { payload }) {
+      return {
+        ...state,
+        reportFormedData: payload,
+      };
+    },
+    reportParametersData(state, { payload }) {
+      return {
+        ...state,
+        reportParametersData: payload,
       };
     },
   },

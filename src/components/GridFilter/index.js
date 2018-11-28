@@ -26,6 +26,7 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import SelectList from '@/components/SelectList';
 
 
+
 import componentLocal from '../../locales/components/componentLocal';
 import { Animated } from 'react-animated-css';
 

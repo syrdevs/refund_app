@@ -12,6 +12,7 @@ import {
   Tabs,
   Label,
   Select,
+  Spin,
   Row,
   Col,
   Calendar, Badge,
@@ -25,6 +26,66 @@ import ReportForm from './ReportForm';
 
 const TabPane = Tabs.TabPane;
 
+function getTree(data, primaryIdName, parentIdName) {
+  if (!data || data.length == 0 || !primaryIdName || !parentIdName)
+    return [];
+
+  var tree = [],
+    rootIds = [],
+    item = data[0],
+    primaryKey = item[primaryIdName],
+    treeObjs = {},
+    tempChildren = {},
+    parentId,
+    parent,
+    len = data.length,
+    i = 0;
+
+  while (i < len) {
+    item = data[i++];
+    primaryKey = item[primaryIdName];
+
+    if (tempChildren[primaryKey]) {
+      item.children = tempChildren[primaryKey];
+      delete tempChildren[primaryKey];
+    }
+
+    treeObjs[primaryKey] = item;
+    parentId = item[parentIdName];
+
+    if (parentId) {
+      parent = treeObjs[parentId];
+
+      if (!parent) {
+        var siblings = tempChildren[parentId];
+        if (siblings) {
+          siblings.push(item);
+        } else {
+          tempChildren[parentId] = [item];
+        }
+      } else if (parent.children) {
+        parent.children.push(item);
+      } else {
+        parent.children = [item];
+      }
+    } else {
+      rootIds.push(primaryKey);
+    }
+  }
+
+  for (var i = 0; i < rootIds.length; i++) {
+    tree.push(treeObjs[rootIds[i]]);
+  }
+  ;
+
+  return tree;
+}
+
+
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/reportsData'],
+}))
 export default class ReportsPage extends Component {
 
   state = {
@@ -45,53 +106,16 @@ export default class ReportsPage extends Component {
     reportsData: {
       columns: [{
         title: '№',
-        dataIndex: 'index',
+        key: 'index',
+        render: (text, row, index) => index + 1,
       }, {
         title: 'Наименование на казахском',
-        dataIndex: 'name_kk',
+        dataIndex: 'nameKz',
       }, {
         title: 'Наименование на русском',
-        dataIndex: 'name_ru',
-      }, {
-        title: 'Формат',
-        dataIndex: 'file_type',
+        dataIndex: 'nameRu',
       }],
-
-      dataSource: [{
-        id: '1',
-        index: 1,
-        name_ru: 'Количество договоров в разрезе1',
-        name_kk: 'Количество договоров в разрезе1',
-        params: [{
-          type: 'RangePicker',
-          label: 'Дата',
-          placeHolder: ['С', 'ПО'],
-        }, {
-          type: 'MonthPicker',
-          label: 'Месяц',
-          placeHolder: ['С', 'ПО'],
-        }],
-        file_type: 'PDF',
-      }, {
-        id: '2',
-        index: 2,
-        name_ru: 'Количество договоров в разрезе2',
-        name_kk: 'Количество договоров в разрезе2',
-        params: [{
-          type: 'RangePicker',
-          label: 'Дата',
-          placeHolder: ['С', 'ПО'],
-        }, {
-          type: 'MonthPicker',
-          label: 'Месяц',
-          placeHolder: ['С', 'ПО'],
-        }, {
-          type: 'MonthPicker',
-          label: 'Месяц 1',
-          placeHolder: ['С', 'ПО'],
-        }],
-        file_type: 'PDF',
-      }],
+      dataSource: [],
     },
 
   };
@@ -102,13 +126,11 @@ export default class ReportsPage extends Component {
       selectedRow: index,
       reportForm: {
         formingReport: false,
-        reportName: record.name_ru,
+        reportName: record.nameRu,
         buttonIsDisabled: false,
         data: record,
       },
     });
-
-
   };
 
   unReport = () => {
@@ -128,15 +150,12 @@ export default class ReportsPage extends Component {
 
     Object.keys(formFilter).forEach((formItem) => {
       if (formFilter[formItem].momentValue) {
-        filteredData.push({
-          index: formItem,
-          valueList: formFilter[formItem].value,
-        });
+        filteredData.push(formFilter[formItem].value);
       }
-
+      else {
+        filteredData.push(formFilter[formItem].value);
+      }
     });
-
-    console.log(filteredData);
 
     let orderRecord = this.state.reportForm.data;
     this.setState((prevState, props) => {
@@ -153,7 +172,6 @@ export default class ReportsPage extends Component {
     });
   };
 
-
   tabOnChange = (activeKey) => {
     if (this.state.tabs.activeKey === activeKey) return;
     this.setState((prevState, props) => {
@@ -165,40 +183,60 @@ export default class ReportsPage extends Component {
     });
   };
 
-  render() {
-    return (<PageHeaderWrapper title="Отчеты">
-        <Card bodyStyle={{ padding: 5 }}>
-          <Row gutter={16}>
-            <Col sm={18} md={18}>
-              <Tabs onChange={this.tabOnChange} activeKey={this.state.tabs.activeKey}>
-                <TabPane tab={formatMessage({ id: 'report.list' })} key="1">
-                  <Table
-                    rowClassName={(record, index) => {
-                      return this.state.selectedRow === index ? 'active' : '';
-                    }}
-                    size={'small'}
-                    rowKey={'id'}
-                    onRow={(record, index) => {
-                      return {
-                        onClick: () => this.onRowClick(record, index),
-                      };
-                    }}
-                    pagination={false}
-                    columns={this.state.reportsData.columns}
-                    bordered={true}
-                    dataSource={this.state.reportsData.dataSource}/>
-                </TabPane>
-                <TabPane tab={formatMessage({ id: 'report.formingList' })} key="2">
-                  <ReportGrid  {...this.state.reportForm} unReport={this.unReport}/>
-                </TabPane>
-              </Tabs>
+  componentDidMount() {
+    const { dispatch } = this.props;
 
-            </Col>
-            <Col sm={6} md={6}>
-              <ReportForm {...this.state.reportForm} reportForming={this.reportForming}/>
-            </Col>
-          </Row>
-        </Card>
+    dispatch({
+      type: 'universal2/reportsData',
+      payload: {},
+    });
+  }
+
+  render() {
+
+    let treeStoreData = [];
+
+    if (this.props.universal2.dataStore.length > 0)
+      treeStoreData = getTree(JSON.parse(JSON.stringify(this.props.universal2.dataStore)), 'id', 'parentd');
+
+    return (<PageHeaderWrapper title="Отчеты">
+        <Spin spinning={this.props.loadingData}>
+          <Card bodyStyle={{ padding: 5 }}>
+            <Row gutter={16}>
+              <Col sm={18} md={18}>
+                <Tabs onChange={this.tabOnChange} activeKey={this.state.tabs.activeKey}>
+                  <TabPane tab={formatMessage({ id: 'report.list' })} key="1">
+                    <Table
+                      rowClassName={(record, index) => {
+                        return this.state.selectedRow === index ? 'active' : '';
+                      }}
+                      size={'small'}
+                      rowKey={'id'}
+                      onRow={(record, index) => {
+                        return {
+                          onClick: () => this.onRowClick(record, index),
+                        };
+                      }}
+                      pagination={false}
+                      columns={this.state.reportsData.columns}
+                      bordered={true}
+                      dataSource={treeStoreData}/>
+                  </TabPane>
+                  <TabPane tab={formatMessage({ id: 'report.formingList' })} key="2">
+                    {this.state.tabs.activeKey === '2' &&
+                    <ReportGrid  {...this.state.reportForm} unReport={this.unReport}/>}
+                    <br>
+                    </br>
+                  </TabPane>
+                </Tabs>
+
+              </Col>
+              <Col sm={6} md={6}>
+                <ReportForm {...this.state.reportForm} reportForming={this.reportForming}/>
+              </Col>
+            </Row>
+          </Card>
+        </Spin>
       </PageHeaderWrapper>
     );
   }

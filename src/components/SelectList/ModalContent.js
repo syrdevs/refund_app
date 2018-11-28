@@ -42,6 +42,7 @@ export default class ModalContent extends Component {
     selectedRow: false,
     okBtnDisabled: true,
     selectedRecord: false,
+    selectedRowKeys: [],
   };
 
   componentDidMount() {
@@ -57,7 +58,9 @@ export default class ModalContent extends Component {
   }
 
   handleOk = () => {
-    this.props.onSelect(this.state.selectedRecord);
+    // to do name reference
+    var records = this.props.references['knp'].filter(x => this.state.selectedRowKeys.findIndex(a => a === x.id) >= 0);
+    this.props.onSelect(this.props.multipleSelect ? records : this.state.selectedRecord);
   };
   handleCancel = () => {
     this.props.hideModal();
@@ -90,9 +93,12 @@ export default class ModalContent extends Component {
         y: 250,
       },
     };
-    tableOptions.rowClassName = (record, index) => {
-      return this.state.selectedRow === index ? 'active' : '';
-    };
+
+    if (!this.props.multipleSelect) {
+      tableOptions.rowClassName = (record, index) => {
+        return this.state.selectedRow === index ? 'active' : '';
+      };
+    }
 
     tableOptions.onRow = (record, index) => ({
       onClick: () => this.setState({
@@ -101,6 +107,16 @@ export default class ModalContent extends Component {
         okBtnDisabled: false,
       }),
     });
+
+    if (this.props.multipleSelect) {
+      tableOptions.rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+          if (selectedRowKeys.length > 0)
+            this.setState({ selectedRowKeys: selectedRowKeys, okBtnDisabled: false });
+        },
+      };
+    }
+
 
     return (<Modal
       width={700}

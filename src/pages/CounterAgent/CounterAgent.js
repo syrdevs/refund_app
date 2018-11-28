@@ -162,20 +162,17 @@ class CounterAgent extends Component {
                   addonButtons={[
                     <Button
                       disabled={hasRole(['ADMIN'])}
-                      className='btn-success'
                       onClick={() => this.goForm()}
                       key='add'
                     >Добавить
                     </Button>,
                     <Button
                       disabled={hasRole(['ADMIN'])}
-                      className='btn-danger'
                       key='delete'
                     >Удалить
                     </Button>,
                     <Button
                       disabled={hasRole(['ADMIN'])}
-                      type="primary"
                       key='update'
                     >Открыть/изменить
                     </Button>,

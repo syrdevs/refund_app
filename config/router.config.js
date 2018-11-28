@@ -124,13 +124,13 @@ export default [
         component: './Journal/JournalPage',
         authority: ['ADMIN', 'FSMS2']
       },
-      /*{
+      {
         path: '/counteragent',
         icon: 'faBookOpen',
         name: 'counteragent',
         component: './CounterAgent/CounterAgent',
         authority: ['ADMIN', 'FSMS1','FSMS2']
-      },*/
+      },
 
       {
         component: '404',

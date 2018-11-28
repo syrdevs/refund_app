@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import style from './Searcher.less';
+import moment from 'moment';
 import {
   Card,
   Table,
@@ -9,6 +11,7 @@ import {
   Col,
   Input,
   DatePicker,
+  Calendar
 } from 'antd';
 
 class Searcher extends Component {
@@ -20,6 +23,7 @@ class Searcher extends Component {
       surname: '',
       patronic: '',
       bdate: null,
+      payes:["012018", "022018"],
     };
   }
 
@@ -34,9 +38,19 @@ class Searcher extends Component {
       bdate: value
     })
   }
-
+  monthCellRender=(value)=>{
+    let isPayed  = false;
+    this.state.payes.map((item) => {
+      if(item===value.format('MMYYYY')) {
+        isPayed=true
+      }
+    });
+    if(isPayed){
+      return (<div style={{backgroundColor:'red', height: '100%', width: '100%'}} className="notes-month"></div>)
+    }
+  }
   render() {
-    const CardHeight={height:'500px'};
+    const CardHeight={height:'500px', marginBottom:'10px'};
     const columns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -158,6 +172,23 @@ class Searcher extends Component {
               />
             </Card>
           </Col>
+        </Row>
+        <Row>
+          {/*<Card style={CardHeight}>
+            <Calendar
+              mode={'year'}
+              className={style.customCalendar}
+              fullscreen={true}
+            />
+          </Card>*/}
+          <div style={{ width: '100%', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
+            <Calendar
+              mode='year'
+              className={style.customCalendar}
+              monthCellRender={this.monthCellRender}
+              fullscreen
+            />
+          </div>
         </Row>
       </PageHeaderWrapper>
     );

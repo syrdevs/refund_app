@@ -787,6 +787,7 @@ class MainView extends Component {
                         this.clearFilter();
                       }}
                       applyFilter={(filters) => {
+                        console.log(JSON.stringify(filters));
                         this.setFilter(filters);
                       }}
                       filterForm={GridFilterData}
@@ -925,7 +926,7 @@ class MainView extends Component {
 
                   }}
                   onSelectRow={(record) => {
-                    console.log(record);
+                    //console.log(record);
                   }}
                   onFilter={(filters) => {
 

@@ -87,7 +87,7 @@ export default {
   'menu.rpmu': 'Регистр потребителей',
   'menu.refunds.requests': 'Заявки',
   'menu.options': 'Настройки',
-  'menu.counteragent': 'Контрагенты',
+  'menu.counteragent': 'Субъекты здравоохранения',
   'menu.requests.nulldate': 'Установить дату',
   'menu.mainview': 'РЕЕСТР ВОЗВРАТОВ',
   'menu.mainview.paylists': 'Платежи',

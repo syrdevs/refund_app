@@ -28,7 +28,7 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ universal2, loading }) => ({
-  universal2
+  universal2,
 
 }))
 export default class ReportForm extends Component {
@@ -238,7 +238,7 @@ export default class ReportForm extends Component {
           <DatePicker
             {...params}
             style={{
-              width:"100%"
+              width: '100%',
             }}
             format="DD.MM.YYYY"
             onChange={(date, stringDate) => {
@@ -323,110 +323,111 @@ export default class ReportForm extends Component {
   };
 
   render() {
+
     const { buttonIsDisabled, reportName, reportForming, data } = this.props;
 
-    const testParameters = [
-      {
-        'name': 'Дата с',
-        'parameter_type': 'Const',
-        'type': 'DateTime',
-        'multi_value': false,
-      },
-      {
-        'name': 'Дата по',
-        'parameter_type': 'Const',
-        'type': 'DateTime',
-        'multi_value': false,
-      },
-      {
-        'name': 'String',
-        'parameter_type': 'Const',
-        'type': 'String',
-        'multi_value': false,
-      },
-      {
-        'name': 'Int32',
-        'parameter_type': 'Const',
-        'type': 'Int32',
-        'multi_value': false,
-      },
-      {
-        'name': 'Boolean',
-        'parameter_type': 'Const',
-        'type': 'Boolean',
-        'multi_value': false,
-      },
-      {
-        'name': 'Decimal',
-        'parameter_type': 'Const',
-        'type': 'Decimal',
-        'multi_value': false,
-      },
-      {
-        'name': 'Text',
-        'parameter_type': 'Const',
-        'type': 'Text',
-        'multi_value': false,
-      },
-      {
-        'name': 'Int64',
-        'parameter_type': 'Const',
-        'type': 'Int64',
-        'multi_value': false,
-      },
-      {
-        'name': 'Статус',
-        'parameter_type': 'Choice',
-        'enumerable': [
-          {
-            'id': 0,
-            'name': 'Не отправлено',
-          },
-          {
-            'id': 1,
-            'name': 'Отправлено',
-          },
-          {
-            'id': 2,
-            'name': 'Ошибка',
-          },
-        ],
-        'multi_value': false,
-      },
-      {
-        'name': 'Статус multi',
-        'parameter_type': 'Choice',
-        'enumerable': [
-          {
-            'id': 0,
-            'name': 'Не отправлено',
-          },
-          {
-            'id': 1,
-            'name': 'Отправлено',
-          },
-          {
-            'id': 2,
-            'name': 'Ошибка',
-          },
-        ],
-        'multi_value': true,
-      },
-      {
-        'name': 'КНП',
-        'parameter_type': 'Entity',
-        'entity': 'knp',
-        'id_field': 'id',
-        'multi_value': false,
-      },
-      {
-        'name': 'КНП multi',
-        'parameter_type': 'Entity',
-        'entity': 'knp',
-        'id_field': 'id',
-        'multi_value': true,
-      },
-    ];
+    // const testParameters = [
+    //   {
+    //     'name': 'Дата с',
+    //     'parameter_type': 'Const',
+    //     'type': 'DateTime',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Дата по',
+    //     'parameter_type': 'Const',
+    //     'type': 'DateTime',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'String',
+    //     'parameter_type': 'Const',
+    //     'type': 'String',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Int32',
+    //     'parameter_type': 'Const',
+    //     'type': 'Int32',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Boolean',
+    //     'parameter_type': 'Const',
+    //     'type': 'Boolean',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Decimal',
+    //     'parameter_type': 'Const',
+    //     'type': 'Decimal',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Text',
+    //     'parameter_type': 'Const',
+    //     'type': 'Text',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Int64',
+    //     'parameter_type': 'Const',
+    //     'type': 'Int64',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Статус',
+    //     'parameter_type': 'Choice',
+    //     'enumerable': [
+    //       {
+    //         'id': 0,
+    //         'name': 'Не отправлено',
+    //       },
+    //       {
+    //         'id': 1,
+    //         'name': 'Отправлено',
+    //       },
+    //       {
+    //         'id': 2,
+    //         'name': 'Ошибка',
+    //       },
+    //     ],
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'Статус multi',
+    //     'parameter_type': 'Choice',
+    //     'enumerable': [
+    //       {
+    //         'id': 0,
+    //         'name': 'Не отправлено',
+    //       },
+    //       {
+    //         'id': 1,
+    //         'name': 'Отправлено',
+    //       },
+    //       {
+    //         'id': 2,
+    //         'name': 'Ошибка',
+    //       },
+    //     ],
+    //     'multi_value': true,
+    //   },
+    //   {
+    //     'name': 'КНП',
+    //     'parameter_type': 'Entity',
+    //     'entity': 'knp',
+    //     'id_field': 'id',
+    //     'multi_value': false,
+    //   },
+    //   {
+    //     'name': 'КНП multi',
+    //     'parameter_type': 'Entity',
+    //     'entity': 'knp',
+    //     'id_field': 'id',
+    //     'multi_value': true,
+    //   },
+    // ];
 
     return (<Card bodyStyle={{ padding: 15 }}>
       {reportName}
@@ -440,7 +441,7 @@ export default class ReportForm extends Component {
       {/*console.log(data);*/}
       {/*}}/>}*/}
 
-      {this.props.universal2.reportParametersData.length > 0 ? testParameters.map((filterItem, idx) => this.generateForm(filterItem, idx)) : formatMessage({ id: 'system.outParameters' })}
+      {this.props.universal2.reportParametersData.length > 0 && this.props.reportName.length > 0 ? this.props.universal2.reportParametersData.map((filterItem, idx) => this.generateForm(filterItem, idx)) : formatMessage({ id: 'system.outParameters' })}
       <br/>
       <Button onClick={() => {
         reportForming(this.state.formFilters);

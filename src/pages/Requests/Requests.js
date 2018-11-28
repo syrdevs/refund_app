@@ -73,6 +73,8 @@ class Requests extends Component {
       ShowModal: false,
       searchButton: false,
       serverFileList: [],
+
+      sortedInfo: {},
       pagingConfig: {
         'start': 0,
         'length': 10,
@@ -80,6 +82,7 @@ class Requests extends Component {
           'searched': false,
           'data': {},
         },
+        'sort': [],
       },
     };
   }
@@ -107,9 +110,14 @@ class Requests extends Component {
     });
   };
 
+  clearOrder = () => {
+
+  };
+
   clearFilter = () => {
 
     this.setState({
+      sortedInfo: {},
       pagingConfig: {
         'start': 0,
         'length': 10,
@@ -117,6 +125,7 @@ class Requests extends Component {
           'searched': false,
           'data': {},
         },
+        'sort': [],
       },
     }, () => {
       this.loadMainGridData();
@@ -125,7 +134,8 @@ class Requests extends Component {
 
   setFilter = (filters) => {
 
-    this.setState({
+    this.setState(prevState => ({
+      sortedInfo: {},
       pagingConfig: {
         'start': 0,
         'length': 10,
@@ -133,12 +143,11 @@ class Requests extends Component {
           'searched': true,
           'data': filters,
         },
+        sort: [],
       },
-    }, () => {
+    }), () => {
       this.loadMainGridData();
     });
-
-
   };
 
   componentDidMount() {
@@ -244,7 +253,54 @@ class Requests extends Component {
   exportToExcel = () => {
 
     let authToken = localStorage.getItem('token');
-    let columns = JSON.parse(localStorage.getItem('RequestPageColumns'));
+    let columns = [
+      {
+        'title': 'Номер заявки',
+        'width': 100,
+        'isVisible': true,
+        'dataIndex': 'appNumber',
+      },
+      {
+        'title': 'Дата заявки',
+        'isVisible': true,
+        'dataIndex': 'appDate',
+      },
+      {
+        'title': 'Дата поступления заявления в Фонд',
+        'isVisible': true,
+        'dataIndex': 'receiptAppdateToFsms',
+      },
+      {
+        'title': 'Крайняя дата исполнения заявки',
+        'isVisible': true,
+        'dataIndex': 'appEndDate',
+      },
+      {
+        'title': 'Номер платежного поручения',
+        'isVisible': true,
+        'dataIndex': 'payOrderNum',
+      },
+      {
+        'title': 'Дата платежного поручения',
+        'isVisible': true,
+        'dataIndex': 'payOrderDate',
+      },
+      {
+        'title': 'Референс',
+        'isVisible': true,
+        'dataIndex': 'reference',
+      },
+      {
+        'title': 'КНП',
+        'isVisible': true,
+        'dataIndex': 'dknpId.code',
+      },
+      {
+        'title': 'Возвратов',
+        'isVisible': true,
+        'dataIndex': 'refundCount',
+      },
+    ];
 
     fetch('/api/refund/exportToExcel',
       {
@@ -259,7 +315,7 @@ class Requests extends Component {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
           },
-          'columns': columns.filter(column => column.isVisible).map(x=>({dataIndex:x.dataIndex,title:x.title})),
+          'columns': columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title })),
         }),
       })
       .then(response => response.blob())
@@ -332,18 +388,15 @@ class Requests extends Component {
     let actionColumns = [];
     let propColumns = [];
 
-
     columns.forEach((column) => {
       if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
         actionColumns.push({
           ...column,
           order: 2,
           render: (text, row) => {
-            if (!text){
+            if (!text) {
               return (<a
                 onClick={(e) => {
-
-
                   this.setState({
                     ShowModal: true,
                     ColType: column.dataIndex,
@@ -354,7 +407,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>)
+              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>);
             }
             else {
               return (<a
@@ -369,7 +422,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >{text}</a>)
+              >{text}</a>);
             }
           },
         });
@@ -379,7 +432,7 @@ class Requests extends Component {
           ...column,
           order: 3,
           render: (text, row) => {
-            if (!text){
+            if (!text) {
               return (<a
                 onClick={(e) => {
 
@@ -394,7 +447,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>)
+              >{formatMessage({ id: 'menu.requests.nulldate' })}</a>);
             }
             else {
               return (<a
@@ -409,7 +462,7 @@ class Requests extends Component {
                     },
                   });
                 }}
-              >{text}</a>)
+              >{text}</a>);
             }
           },
         });
@@ -447,7 +500,7 @@ class Requests extends Component {
                       this.clearFilter();
                     }}
                     applyFilter={(filters) => {
-                     // console.log(filters);
+                      // console.log(filters);
                       this.setFilter(filters);
                     }}
                     filterForm={this.state.filterForm}
@@ -469,6 +522,7 @@ class Requests extends Component {
                   actionColumns={this.state.columns.concat(actionColumns)}
                   columns={propColumns}
                   sorted={true}
+                  sortedInfo={this.state.sortedInfo}
                   showTotal={true}
                   showExportBtn={true}
                   dataSource={{
@@ -477,9 +531,35 @@ class Requests extends Component {
                     page: this.state.pagingConfig.start + 1,
                     data: dataStore.content,
                   }}
-                  actionExport={()=>this.exportToExcel()}
+                  actionExport={() => this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
+                  }}
+                  onSort={(column) => {
+
+                    if (Object.keys(column).length === 0) {
+                      this.setState(prevState => ({
+                        sortedInfo: {},
+                        pagingConfig: {
+                          ...prevState.pagingConfig,
+                          sort: [],
+                        },
+                      }), () => {
+                        this.loadMainGridData();
+                      });
+                      return;
+                    }
+
+                    this.setState(prevState => ({
+                      sortedInfo: column,
+                      pagingConfig: {
+                        ...prevState.pagingConfig,
+                        sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                      },
+                    }), () => {
+                      this.loadMainGridData();
+                    });
+
                   }}
                   onSelectCell={(cellIndex, cell) => {
 

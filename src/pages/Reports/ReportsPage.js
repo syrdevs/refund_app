@@ -122,15 +122,30 @@ export default class ReportsPage extends Component {
 
 
   onRowClick = (record, index) => {
-    this.setState({
-      selectedRow: index,
-      reportForm: {
-        formingReport: false,
-        reportName: record.nameRu,
-        buttonIsDisabled: false,
-        data: record,
-      },
-    });
+
+    if(!record.children){
+      this.setState({
+        selectedRow: record.id ,
+        reportForm: {
+          formingReport: false,
+          reportName: record.nameRu,
+          buttonIsDisabled: false,
+          data: record,
+        },
+      });
+    }
+    else{
+      this.setState({
+        selectedRow: null,
+        reportForm: {
+          data: {},
+          filterData: [],
+          buttonIsDisabled: true,
+          reportName: '',
+        },
+      });
+    }
+
   };
 
   unReport = () => {
@@ -208,7 +223,7 @@ export default class ReportsPage extends Component {
                   <TabPane tab={formatMessage({ id: 'report.list' })} key="1">
                     <Table
                       rowClassName={(record, index) => {
-                        return this.state.selectedRow === index ? 'active' : '';
+                        return this.state.selectedRow === record.id ? 'active' : '';
                       }}
                       size={'small'}
                       rowKey={'id'}

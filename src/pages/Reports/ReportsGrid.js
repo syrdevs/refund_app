@@ -229,6 +229,7 @@ export default class ReportsGrid extends Component {
 
     let token = localStorage.getItem('token');
 
+
     const res = await fetch('/api/report/createReport', {
       method: 'POST',
       headers: {
@@ -237,7 +238,7 @@ export default class ReportsGrid extends Component {
       },
       body: JSON.stringify({
         'id': this.props.data.id,
-        'parameters': [],
+        'parameters': this.props.filterData,
       }),
     });
 

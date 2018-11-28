@@ -118,7 +118,7 @@ const SmartGridHeader = props => {
             {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
             {props.showExportBtn &&
-            <Button onClick={()=>props.actionExport()} style={{ float: 'right' }}><Icon type="file-excel" /></Button>}
+            <Button onClick={() => props.actionExport()} style={{ float: 'right' }}><Icon type="file-excel"/></Button>}
 
             {props.showTotal &&
             <div
@@ -138,7 +138,6 @@ class BodyCell extends Component {
     return <td  {...this.props}/>;
   }
 }
-
 
 export default class SmartGridView extends Component {
   constructor(props) {
@@ -189,6 +188,10 @@ export default class SmartGridView extends Component {
     });
   };
 
+  clearSort = () => {
+
+  };
+
   StorageHelper() {
     return {
       clear: function(name) {
@@ -233,32 +236,15 @@ export default class SmartGridView extends Component {
       rowKey: this.props.rowKey || 'id',
       columns: _columns.filter(column => column.isVisible),
       dataSource: this.props.dataSource.data,
+      onChange: (pagination, filters, sorter) => {
+        if (this.props.onSort)
+          this.props.onSort(sorter);
+      },
     };
 
 
     if (this.props.fixedHeader) {
       // tableOptions.useFixedHeader = this.props.fixedHeader;
-    }
-
-    if (this.props.sorted) {
-      tableOptions.columns.forEach((column) => {
-        //column.width = 150;
-        column.sorter = (a, b) => {
-          let _a = getPropByName(a, column.dataIndex);
-          let _b = getPropByName(b, column.dataIndex);
-
-          _a = _a ? _a : '';
-          _b = _b ? _b : '';
-
-          if (_a < _b) {
-            return -1;
-          }
-          if (_a > _b) {
-            return 1;
-          }
-          return 0;
-        };
-      });
     }
 
 
@@ -281,6 +267,39 @@ export default class SmartGridView extends Component {
         }
       });
       //tableOptions.columns = this.props.actionColumns.filter(x => x.isVisible).concat(tableOptions.columns);
+    }
+
+    if (this.props.sorted) {
+
+      tableOptions.columns.forEach((column) => {
+
+        //column.width = 150;
+
+        if (this.props.sortedInfo) {
+          column.sortOrder = this.props.sortedInfo.columnKey === column.dataIndex && this.props.sortedInfo.order;
+          column.sorter = true;
+        }
+
+        //(a, b, sortOrder) => {
+        //console.log(sortOrder);
+
+        /*console.log(a);
+
+        let _a = getPropByName(a, column.dataIndex);
+        let _b = getPropByName(b, column.dataIndex);
+
+        _a = _a ? _a : '';
+        _b = _b ? _b : '';
+
+        if (_a < _b) {
+          return -1;
+        }
+        if (_a > _b) {
+          return 1;
+        }
+        return 0;*/
+        //};
+      });
     }
 
     if (this.props.rowSelection) {
@@ -345,7 +364,7 @@ export default class SmartGridView extends Component {
       <br/>
       <LocaleProvider locale={componentLocal}>
         <Pagination
-          defaultPageSize={15}
+          defaultPageSize={this.props.dataSource.pageSize}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           showSizeChanger
           pageSizeOptions={['15', '30', '40', '50', '100']}

@@ -59,42 +59,46 @@ export default class PaymentsPage extends Component {
       dataSource: [],
       count: 0,
       filterContainer: 0,
+      sortedInfo: {},
+
       parameters: {
         start: 0,
-        length: 20,
+        length: 15,
         entity: 'mt100',
         filter: {},
+        sort: [],
       },
       //"knpList":["c7889895-0075-4bc2-89e8-939507dd4fc6"]
       filterForm: [],
       filterFormmt102: [],
-      staticolumn: [{
-        'title': 'Референс',
-        'dataIndex': 'reference',
-        'isVisible': 'true',
-      }, {
-        'title': 'Дата платежа',
-        'dataIndex': 'paymentDate',
-        'isVisible': 'true',
-      }, {
-        'title': 'Сумма',
-        'dataIndex': 'totalAmount',
-        'isVisible': 'true',
-      }, {
-        'title': 'КНП',
-        'dataIndex': 'knp',
-        'isVisible': 'true',
-      }, {
-        'title': 'Отправитель (Наименование)',
-        'dataIndex': 'senderCompanyName',
-        'isVisible': 'true',
-      }, {
-        'title': 'Отправитель (БИН)',
-        'dataIndex': 'senderBin',
-      }, {
-        'title': 'Отправитель (БИК)',
-        'dataIndex': 'senderBankBik',
-      }
+      staticolumn: [
+        {
+          'title': 'Референс',
+          'dataIndex': 'reference',
+          'isVisible': 'true',
+        }, {
+          'title': 'Дата платежа',
+          'dataIndex': 'paymentDate',
+          'isVisible': 'true',
+        }, {
+          'title': 'Сумма',
+          'dataIndex': 'totalAmount',
+          'isVisible': 'true',
+        }, {
+          'title': 'КНП',
+          'dataIndex': 'knp',
+          'isVisible': 'true',
+        }, {
+          'title': 'Отправитель (Наименование)',
+          'dataIndex': 'senderCompanyName',
+          'isVisible': 'true',
+        }, {
+          'title': 'Отправитель (БИН)',
+          'dataIndex': 'senderBin',
+        }, {
+          'title': 'Отправитель (БИК)',
+          'dataIndex': 'senderBankBik',
+        }
         , {
           'title': 'Получатель (Наименование)',
           'dataIndex': 'recipientName',
@@ -112,51 +116,52 @@ export default class PaymentsPage extends Component {
           'title': 'Дата создания',
           'dataIndex': 'createdOn',
         }],
-      staticmt102columns: [{
-        'title': 'Референс',
-        'dataIndex': 'reference',
-        'isVisible': 'true',
-      }, {
-        'title': 'Дата платежа',
-        'dataIndex': 'paymentdate',
-        'isVisible': 'true',
-      }, {
-        'title': 'КНП',
-        'dataIndex': 'knp',
-        'isVisible': 'true',
-      }, {
-        'title': 'Сумма',
-        'dataIndex': 'paymentsum',
-        'isVisible': 'true',
-      }, {
-        'title': 'Фамилия',
-        'dataIndex': 'lastname',
-        'isVisible': 'true',
-      }, {
-        'title': 'Имя',
-        'dataIndex': 'firstname',
-        'isVisible': 'true',
-      }, {
-        'title': 'Отчество',
-        'dataIndex': 'secondname',
-        'isVisible': 'true',
-      }, {
-        'title': 'Дата рождения',
-        'dataIndex': 'birthdate',
-        'isVisible': 'true',
-      }, {
-        'title': 'ИИН',
-        'dataIndex': 'iin',
-        'isVisible': 'true',
-      }, {
-        'title': 'Период',
-        'dataIndex': 'paymentperiod',
-        'isVisible': 'true',
-      }, {
-        'title': 'Дата платежа',
-        'dataIndex': 'createdon',
-        'isVisible': 'true',
-      }],
+      staticmt102columns: [
+        {
+          'title': 'Референс',
+          'dataIndex': 'reference',
+          'isVisible': 'true',
+        }, {
+          'title': 'Дата платежа',
+          'dataIndex': 'paymentdate',
+          'isVisible': 'true',
+        }, {
+          'title': 'КНП',
+          'dataIndex': 'knp',
+          'isVisible': 'true',
+        }, {
+          'title': 'Сумма',
+          'dataIndex': 'paymentsum',
+          'isVisible': 'true',
+        }, {
+          'title': 'Фамилия',
+          'dataIndex': 'lastname',
+          'isVisible': 'true',
+        }, {
+          'title': 'Имя',
+          'dataIndex': 'firstname',
+          'isVisible': 'true',
+        }, {
+          'title': 'Отчество',
+          'dataIndex': 'secondname',
+          'isVisible': 'true',
+        }, {
+          'title': 'Дата рождения',
+          'dataIndex': 'birthdate',
+          'isVisible': 'true',
+        }, {
+          'title': 'ИИН',
+          'dataIndex': 'iin',
+          'isVisible': 'true',
+        }, {
+          'title': 'Период',
+          'dataIndex': 'paymentperiod',
+          'isVisible': 'true',
+        }, {
+          'title': 'Дата платежа',
+          'dataIndex': 'createdon',
+          'isVisible': 'true',
+        }],
 
       staticdata: [
         {
@@ -311,19 +316,21 @@ export default class PaymentsPage extends Component {
 
   componentDidMount() {
 
-    const { dispatch } = this.props;
-    /*dispatch({
+    this.loadGridData();
+
+    /*const { dispatch } = this.props;
+    /!*dispatch({
       type: 'universal2/columns',
       payload: {
         table: 'payment',
       },
-    });*/
+    });*!/
     dispatch({
       type: 'universal/paymentsData',
       payload: this.state.parameters,
     }).then(() => {
 
-    });
+    });*/
 
 
     /*const children = [];
@@ -453,42 +460,54 @@ export default class PaymentsPage extends Component {
 
   }
 
-  clearFilter() {
-    console.log('clearead');
-  }
+  clearFilter = () => {
+    this.setState({
+      sortedInfo: {},
+      parameters: {
+        start: 0,
+        length: 15,
+        entity: this.state.parameters.entity,
+        filter: {},
+        sort: [],
+      },
+    }, () => {
+      this.loadGridData();
+    });
+  };
 
+  applyFilter = (filter) => {
+    this.setState({
+      sortedInfo: {},
+      parameters: {
+        ...this.state.parameters,
+        filter: { ...filter },
+        sort: [],
+      },
+    }, () => {
+      this.loadGridData();
+    });
+  };
 
   onShowSizeChange = (current, pageSize) => {
 
-    const max = current * pageSize;
-    const min = max - pageSize;
+    const { dispatch } = this.props;
 
-    /*const { dispatch } = this.props;
-    dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'payment',
+    this.setState(prevState => ({
+      parameters: {
+        ...prevState.parameters,
+        start: current,
+        length: pageSize,
       },
-    });*/
+    }), () => dispatch({
+      type: 'universal/paymentsData',
+      payload: {
+        ...this.state.parameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
 
   };
-
-  handleSelectColumn(column, e) {
-    let local_helper = this.StorageHelper();
-    const { columns } = this.props.universal2;
-    let filteredColumn = columns.map(function(item) {
-      if (item.dataIndex === column.dataIndex) {
-        item.isVisible = item.isVisible === 'true' ? 'false' : 'true';
-      }
-      return item;
-    });
-
-    local_helper.set('paymentColumns', filteredColumn, true);
-
-    this.setState({
-      columns: filteredColumn,
-    });
-  }
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
@@ -496,47 +515,29 @@ export default class PaymentsPage extends Component {
     }));
   };
 
-  StorageHelper() {
-    return {
-      clear: function(name) {
-        localStorage.setItem(name, null);
-      },
-      set: function(name, value, isReplace = true) {
+  loadGridData = () => {
+    const { dispatch } = this.props;
 
-        if (isReplace) {
-          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-        } else {
-          if (!localStorage.getItem(name)) {
-            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
-          }
-        }
+    let sortField = this.state.sortedInfo;
 
-      },
-      get: function(name) {
-        let result = localStorage.getItem(name);
-
-        if (result) {
-          return JSON.parse(result);
-        }
-
-        return false;
-      },
-    };
-  }
+    dispatch({
+      type: 'universal/paymentsData',
+      payload: this.state.parameters,
+    });
+  };
 
   tabchange = (e) => {
-    const { dispatch } = this.props;
+
     this.setState({
+      sortedInfo: {},
       parameters: {
-        ...this.state.parameters,
+        start: 0,
+        length: 15,
         entity: e,
+        filter: {},
+        sort: [],
       },
-    }, () => {
-      dispatch({
-        type: 'universal/paymentsData',
-        payload: this.state.parameters,
-      });
-    });
+    }, () => this.loadGridData());
 
   };
 
@@ -558,7 +559,7 @@ export default class PaymentsPage extends Component {
             'searched': true,
             'data': this.state.parameters.filter,
           },
-          'columns': this.state.parameters.entity=="mt100"?this.state.staticolumn:this.state.staticmt102columns,
+          'columns': this.state.parameters.entity == 'mt100' ? this.state.staticolumn : this.state.staticmt102columns,
         }),
       })
       .then(response => response.blob())
@@ -585,77 +586,8 @@ export default class PaymentsPage extends Component {
     const dataStore = this.state.staticdata;
     const columns = this.state.staticolumn;
 
-    /* let local_helper = this.StorageHelper();
-     let StorageColumns = local_helper.get('paymentColumns');
-     local_helper.set('paymentColumns', columns, StorageColumns.length === 0 && columns.length !== 0);
-     let _columns = local_helper.get('paymentColumns');
-
-     _columns.forEach((column) => {
-       column.width = 150;
-       column.sorter = (a, b) => a[column.dataIndex].length - b[column.dataIndex].length;
-     });
-
-     const menu = (
-       <Menu>
-         <Menu.Item>
-           <div>Выберите столбцов:</div>
-         </Menu.Item>
-         {_columns.map(function(column, index) {
-           return (
-             <Menu.Item key={index.toString()}>
-               <Checkbox
-                 onChange={this.handleSelectColumn.bind(this, column)}
-                 checked={column.isVisible === 'true'}>
-                 {column.title}
-               </Checkbox>
-             </Menu.Item>
-           );
-         }, this)}
-       </Menu>
-     );
-
-     let lastActiveRow = false;
-     const SelectableRow = ({ form, index, ...props }) => {
-
-       const trRef = React.createRef();
-
-       return (<EditableContext.Provider value={form}>
-         <tr {...props} ref={trRef} onClick={(e) => {
-
-           if (lastActiveRow) {
-             lastActiveRow.style.backgroundColor = '';
-           }
-
-           lastActiveRow = trRef.current;
-           lastActiveRow.style.backgroundColor = '#e6f7ff';
-
-         }}/>
-       </EditableContext.Provider>);
-     };*/
-
     const DataDiv = ({ mtcolumns, tablename }) => (
       <Spin tip="" spinning={this.props.loadingData}>
-        {/* <Spin tip="" spinning={false}>*/}
-
-        {/*<div>
-            <Button type={this.state.filterContainer != 6 ? 'default ' : ''} onClick={this.filterPanelState}
-                    style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="search" theme="outlined"/></Button>
-
-            <Button style={{ margin: '10px 0 10px 15px' }} size="small"><Icon type="redo"
-                                                                              theme="outlined"/>Обновить</Button>
-            <Button style={{ margin: '10px 15px 10px 15px', float: 'right' }} size="small"><Icon type="export"
-                                                                                                 theme="outlined"/>Выгрузка
-              в
-              Excel</Button>
-            <div style={{ margin: '10px 15px 10px 15px', float: 'right' }}>
-              <Dropdown trigger={['click']} overlay={menu} placement="bottomRight">
-                <Button size={'small'}>
-                  <Icon type="setting" theme="outlined"/>
-                </Button>
-              </Dropdown>
-            </div>
-          </div>*/}
-
         <SmartGridView
           name={tablename}
           scroll={{ x: 'auto' }}
@@ -670,46 +602,48 @@ export default class PaymentsPage extends Component {
           rowSelection={true}
           columns={mtcolumns}
           sorted={true}
+          sortedInfo={this.state.sortedInfo}
           showExportBtn={true}
           dataSource={{
             total: paymentsData.totalElements,
-            pageSize: this.state.parameters.length,
+            pageSize: paymentsData.size,
             page: this.state.parameters.start + 1,
             data: paymentsData.content,
           }}
+          onSort={(column) => {
+
+            if (Object.keys(column).length === 0) {
+              this.setState(prevState => ({
+                parameters: {
+                  ...prevState.parameters,
+                  sort: [],
+                },
+                sortedInfo: {},
+              }), () => {
+                this.loadGridData();
+              });
+              return;
+            }
+
+            this.setState(prevState => ({
+              sortedInfo: column,
+              parameters: {
+                ...prevState.parameters,
+                sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+              },
+            }), () => {
+              this.loadGridData();
+            });
+          }}
           actionExport={() => this.exportToExcel()}
-          addonButtons={[<span style={{
+          addonButtons={[<span key={'total-count'} style={{
             color: '#002140',
             fontSize: '12px',
             paddingLeft: '10px',
-          }}>{formatMessage({ id: 'system.totalAmount' })}: 54658.00</span>]}
-          onShowSizeChange={(pageNumber, pageSize) => {
-            console.log(pageNumber, pageSize);
-            const { dispatch } = this.props;
-            this.setState({
-              parameters: {
-                ...this.state.parameters,
-                page: pageNumber,
-                pageSize: pageSize,
-              },
-            }, () => {
-              dispatch({
-                type: 'universal/paymentsData',
-                payload: this.state.parameters,
-              });
-            });
-          }}
-          onSelectCell={(cellIndex, cell) => {
-
-          }}
-          onSelectRow={() => {
-
-          }}
-          onFilter={(filters) => {
-
-          }}
+          }}>{formatMessage({ id: 'system.totalAmount' })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0}</span>]}
+          onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
-            console.log('refresh');
+            this.loadGridData();
           }}
           onSearch={() => {
             this.filterPanelState();
@@ -720,27 +654,8 @@ export default class PaymentsPage extends Component {
             });
           }}
         />
-        {/*<Table components={{
-            body: {
-              row: SelectableRow,
-            },
-          }} bordered={true} size={'small'} columns={_columns.filter(column => column.isVisible === 'true')}
-                 dataSource={dataStore}
-                 scroll={{ y: 360 }} pagination={false}
-          />
-          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-            <Pagination
-              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-              showSizeChanger
-              onShowSizeChange={this.onShowSizeChange}
-              onChange={this.onShowSizeChange}
-              defaultCurrent={1}
-              total={50}
-            />
-          </Row>*/}
       </Spin>
     );
-
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
@@ -758,27 +673,12 @@ export default class PaymentsPage extends Component {
                       type="inner"
                       title={formatMessage({ id: 'system.filter' })}
                       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                        icon={faTimes}/></Icon>}
-                    >
-                      <GridFilter clearFilter={this.clearFilter} applyFilter={(filter) => {
-                        const { dispatch } = this.props;
-                        this.setState({
-                          parameters: {
-                            ...this.state.parameters,
-                            filter: {
-                              ...filter,
-                            },
-                          },
-                        }, () => {
-                          console.log(this.state.parameters);
-                          dispatch({
-                            type: 'universal/paymentsData',
-                            payload: this.state.parameters,
-                          });
-                        });
-                      }} key={'1'}
-                                  filterForm={this.state.filterForm}
-                                  dateFormat={dateFormat}/>
+                        icon={faTimes}/></Icon>}>
+                      <GridFilter
+                        clearFilter={this.clearFilter}
+                        applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                        filterForm={this.state.filterForm}
+                        dateFormat={dateFormat}/>
                     </Card>
                   </Animated>
 
@@ -801,25 +701,12 @@ export default class PaymentsPage extends Component {
                       title={formatMessage({ id: 'system.filter' })}
                       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                         icon={faTimes}/></Icon>}>
-                      <GridFilter clearFilter={this.clearFilter} applyFilter={(filter) => {
-                        const { dispatch } = this.props;
-                        this.setState({
-                          parameters: {
-                            ...this.state.parameters,
-                            filter: {
-                              ...filter,
-                            },
-                          },
-                        }, () => {
-                          console.log(this.state.parameters);
-                          dispatch({
-                            type: 'universal/paymentsData',
-                            payload: this.state.parameters,
-                          });
-                        });
-                      }} key={'2'}
-                                  filterForm={this.state.filterFormmt102}
-                                  dateFormat={dateFormat}/>
+                      <GridFilter
+                        clearFilter={this.clearFilter}
+                        applyFilter={(filter) => this.applyFilter(filter)}
+                        key={'2'}
+                        filterForm={this.state.filterFormmt102}
+                        dateFormat={dateFormat}/>
                     </Card>
                   </Animated>
                 </Col>

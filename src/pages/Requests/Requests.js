@@ -253,7 +253,54 @@ class Requests extends Component {
   exportToExcel = () => {
 
     let authToken = localStorage.getItem('token');
-    let columns = JSON.parse(localStorage.getItem('RequestPageColumns'));
+    let columns = [
+      {
+        'title': 'Номер заявки',
+        'width': 100,
+        'isVisible': true,
+        'dataIndex': 'appNumber',
+      },
+      {
+        'title': 'Дата заявки',
+        'isVisible': true,
+        'dataIndex': 'appDate',
+      },
+      {
+        'title': 'Дата поступления заявления в Фонд',
+        'isVisible': true,
+        'dataIndex': 'receiptAppdateToFsms',
+      },
+      {
+        'title': 'Крайняя дата исполнения заявки',
+        'isVisible': true,
+        'dataIndex': 'appEndDate',
+      },
+      {
+        'title': 'Номер платежного поручения',
+        'isVisible': true,
+        'dataIndex': 'payOrderNum',
+      },
+      {
+        'title': 'Дата платежного поручения',
+        'isVisible': true,
+        'dataIndex': 'payOrderDate',
+      },
+      {
+        'title': 'Референс',
+        'isVisible': true,
+        'dataIndex': 'reference',
+      },
+      {
+        'title': 'КНП',
+        'isVisible': true,
+        'dataIndex': 'dknpId.code',
+      },
+      {
+        'title': 'Возвратов',
+        'isVisible': true,
+        'dataIndex': 'refundCount',
+      },
+    ];
 
     fetch('/api/refund/exportToExcel',
       {

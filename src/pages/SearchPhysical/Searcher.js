@@ -18,6 +18,7 @@ import {
 import { connect } from 'dva/index';
 
 const FormItem = Form.Item;
+const Search = Input.Search;
 
 const formItemLayout = {
   labelCol: { md: 6, xs: 6, sm: 6 },
@@ -79,10 +80,11 @@ class Searcher extends Component {
     }
   }
 
-  searchperson=()=>{
+  searchperson=(value)=>{
     const { dispatch } = this.props;
     this.setState({
-      loading: true
+      loading: true,
+      iin: value
     },()=>{
       dispatch({
         type: 'universal/SearcherData',
@@ -115,7 +117,6 @@ class Searcher extends Component {
             loading: false
           })
         }
-
       });
     })
   }
@@ -140,10 +141,14 @@ class Searcher extends Component {
     })
   }
 
+  upperCase=()=>{
+
+  }
 
   render() {
-    const CardHeight={height:'550px', marginBottom:'10px'};
+    const CardHeight={height:'600px', marginBottom:'10px'};
     const {person} = this.state;
+
     const columns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -156,65 +161,71 @@ class Searcher extends Component {
       key: 'value',
       width: 150,
     }];
-    const data = [{
-      name: 'ИИН',
-      value: person.iin,
-    }, {
-      name: 'ФАМИЛИЯ',
-      value: person.lastname,
-    }, {
-      name: 'ОТЧЕСТВО',
-      value: person.secondname,
-    }, {
-      name: 'ИМЯ',
-      value: person.firstname,
-    }, {
-      name: 'ДАТА РОЖДЕНИЯ',
-      value: person.birthdate,
-    }, {
-      name: 'ПОЛ',
-      value: person.dSexId.nameRu,
-    }];
-    const { iin, surname, name, patronic, bdate } = this.state;
+      const  data = [{
+        name: 'ИИН',
+        value: person.iin ? person.iin.toUpperCase() : person.iin,
+      }, {
+        name: 'ФАМИЛИЯ',
+        value: person.lastname ? person.lastname.toUpperCase() : person.lastname,
+      },  {
+        name: 'ИМЯ',
+        value: person.firstname ? person.firstname.toUpperCase() : person.firstname,
+      }, {
+        name: 'ОТЧЕСТВО',
+        value: person.secondname ? person.secondname.toUpperCase() : person.secondname,
+      }, {
+        name: 'ДАТА РОЖДЕНИЯ',
+        value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate,
+      }, {
+        name: 'ПОЛ',
+        value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
+      }, {
+        name: 'НАЦИОНАЛЬНОСТЬ',
+        value: '',
+      }, {
+        name: 'ГРАЖДАНСТВО',
+        value: '',
+      }, {
+        name: 'СТАТУС СТРАХОВАНИЯ',
+        value: '',
+      }, {
+        name: 'КАТЕГОРИИ',
+        value: '',
+      }];
+      //
+    //
+    const {iin} = this.state;
 
-    return (
-      <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.searcher' })}>
+    return (<div>
         <Spin tip="" spinning={this.state.loading}>
           <Row style={{ marginBottom:'10px' }}>
             <Col span={18}>
               <div style={CardHeight}>
                 <Card
-                  style={{height:'150px'}}
+                  style={{height:'140px'}}
                   type="inner"
+                  bodyStyle={{ padding: 25 }}
                   title={formatMessage({ id: 'report.param.searcher' })}
                 >
-                  <Form layout="inline">
-                    <FormItem
-                      label={<span style={{fontSize:'15px', fontWeight: 'bold'}}>{formatMessage({ id: 'profile.field.iin' })}</span>}
-                    >
-                        <Input
-                          value={iin}
-                          name='iin'
-                          onChange={(e) => {
-                            this.formfield(e);
-                          }}
-                        />
-                    </FormItem>
-                    <FormItem>
-                      <Button
-                        type='primary'
-                        style={{marginLeft:"7px"}}
-                        onClick={()=>{
-                          this.searchperson();
-                        }}
-                      >
-                        {formatMessage({ id: 'system.search' })}
-                      </Button>
-                    </FormItem>
-                  </Form>
+                    <Search
+                      placeholder="Введите ИИН"
+                      enterButton={formatMessage({ id: 'system.search' })}
+                      size="large"
+                      style={{ width: 600 }}
+                      onSearch={value => this.searchperson(value)}
+                    />
+                  {this.state.iin &&<Button
+                    style={{marginLeft:"10px"}}
+                    size={'large'}
+                    onClick={()=>{
+                      if (this.state.iin){
+                        this.props.searchbyiin(this.state.iin)
+                      }
+                    }}
+                  >Просмотр платежей</Button>}
                 </Card>
                 <Card
-                  style={{height:'400px'}}
+                  style={{height:'610px'}}
                   title={formatMessage({ id: 'report.param.personinform' })}
                   type="inner"
                 >
@@ -228,19 +239,23 @@ class Searcher extends Component {
               </div>
             </Col>
             <Col span={6}>
-              <div style={{ width: '100%', height:'550px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
-                <Calendar
-                  onPanelChange={this.onPanelChange}
-                  mode='year'
-                  className={style.customCalendar}
-                  monthCellRender={this.monthCellRender}
-                  fullscreen
-                />
-              </div>
+              <div style={{ width: '100%', height:'750px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
+                <div style={{height:'740px'}}>
+                  <Calendar
+                    onPanelChange={this.onPanelChange}
+                    mode='year'
+                    className={style.customCalendar}
+                    monthCellRender={this.monthCellRender}
+                    fullscreen
+                  />
+                </div>
+                <div style={{height:'50px', marginLeft:'10px'}}>
+                </div>
+                </div>
             </Col>
           </Row>
         </Spin>
-      </PageHeaderWrapper>
+      </div>
     );
   }
 }

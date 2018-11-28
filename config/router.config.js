@@ -51,13 +51,13 @@ export default [
             component: './Payments/PaymentsPage',
             authority: ['ADMIN']
           },
-          {
+          /*{
             path: '/rpmu/searcher',
             icon: 'faSearch',
             name: 'searcher',
             component: './SearchPhysical/Searcher',
             authority: ['ADMIN', 'FSMS2']
-          },
+          },*/
         ],
       },
       {

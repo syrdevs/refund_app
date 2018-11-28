@@ -173,6 +173,7 @@ export default {
   'menu.dashboard.workplace': 'Рабочее место',
   'menu.payments.payment100': 'Платежи МТ100',
   'menu.payments.payment102': 'Платежи МТ102',
+  'menu.payments.searchbtn': 'Поиск в ФЛ',
   'menu.form': 'Form',
   'menu.form.basicform': 'Основная форма',
   'menu.form.stepform': 'Step Form',

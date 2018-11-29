@@ -97,7 +97,8 @@ export default class ReportsPage extends Component {
     },
 
     reportForm: {
-      data: {},
+      loading: false,
+      data: [],
       filterData: [],
       buttonIsDisabled: true,
       reportName: '',
@@ -123,21 +124,37 @@ export default class ReportsPage extends Component {
 
   onRowClick = (record, index) => {
 
-    if(!record.children){
-      this.setState({
-        selectedRow: record.id ,
+    const { dispatch } = this.props;
+
+    if (!record.children) {
+      this.setState(prevState => ({
+        selectedRow: record.id,
         reportForm: {
-          formingReport: false,
-          reportName: record.nameRu,
-          buttonIsDisabled: false,
-          data: record,
+          ...prevState.reportForm,
+          loading: true,
         },
+      }));
+      dispatch({
+        type: 'universal2/reportParameters',
+        payload: { id: record.id },
+      }).then(() => {
+        this.setState({
+          reportForm: {
+            loading: false,
+            formingReport: false,
+            reportName: record.nameRu,
+            buttonIsDisabled: false,
+            data: this.props.universal2.reportParametersData,
+          },
+        });
       });
+
     }
-    else{
+    else {
       this.setState({
         selectedRow: null,
         reportForm: {
+          loading: false,
           data: {},
           filterData: [],
           buttonIsDisabled: true,

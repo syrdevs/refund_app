@@ -21,16 +21,12 @@ import {
 } from 'antd';
 import moment from 'moment/moment';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { connect } from 'dva/index';
 import SelectList from '@/components/SelectList';
 
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ universal2, loading }) => ({
-  universal2,
 
-}))
 export default class ReportForm extends Component {
   state = {
     formId: '0',
@@ -48,7 +44,7 @@ export default class ReportForm extends Component {
   };
 
   componentDidUpdate() {
-    const { dispatch } = this.props;
+    /*const { dispatch } = this.props;
     if (this.props.data.id && this.props && this.state.formId !== this.props.data.id) {
       dispatch({
         type: 'universal2/reportParameters',
@@ -59,7 +55,7 @@ export default class ReportForm extends Component {
           formFilters: {},
         }));
       });
-    }
+    }*/
   }
 
   generateForm = (formItem, _index) => {
@@ -326,6 +322,8 @@ export default class ReportForm extends Component {
 
     const { buttonIsDisabled, reportName, reportForming, data } = this.props;
 
+    console.log(this.props);
+
     // const testParameters = [
     //   {
     //     'name': 'Дата с',
@@ -430,22 +428,24 @@ export default class ReportForm extends Component {
     // ];
 
     return (<Card bodyStyle={{ padding: 15 }}>
-      {reportName}
-      <hr/>
-      <br/>
-      {/*{this.props.data.id  && <ReportParamForm*/}
-      {/*onFilter={(filterData) => {*/}
-      {/*console.log(filterData);*/}
-      {/*}}*/}
-      {/*filterData={(data) => {*/}
-      {/*console.log(data);*/}
-      {/*}}/>}*/}
+      <Spin spinning={this.props.loading}>
+        {reportName}
+        <hr/>
+        <br/>
+        {/*{this.props.data.id  && <ReportParamForm*/}
+        {/*onFilter={(filterData) => {*/}
+        {/*console.log(filterData);*/}
+        {/*}}*/}
+        {/*filterData={(data) => {*/}
+        {/*console.log(data);*/}
+        {/*}}/>}*/}
 
-      {this.props.universal2.reportParametersData.length > 0 && this.props.reportName.length > 0 ? this.props.universal2.reportParametersData.map((filterItem, idx) => this.generateForm(filterItem, idx)) : formatMessage({ id: 'system.outParameters' })}
-      <br/>
-      <Button onClick={() => {
-        reportForming(this.state.formFilters);
-      }} type={'primary'} disabled={buttonIsDisabled}>{formatMessage({ id: 'system.forming' })}</Button>
+        {data.length > 0 && this.props.reportName.length > 0 ? data.map((filterItem, idx) => this.generateForm(filterItem, idx)) : formatMessage({ id: 'system.outParameters' })}
+        <br/>
+        <Button onClick={() => {
+          reportForming(this.state.formFilters);
+        }} type={'primary'} disabled={buttonIsDisabled}>{formatMessage({ id: 'system.forming' })}</Button>
+      </Spin>
     </Card>);
   }
 }

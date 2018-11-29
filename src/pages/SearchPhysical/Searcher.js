@@ -69,7 +69,7 @@ class Searcher extends Component {
         "status": false,
       },
       payes:[],
-      loading:false
+      loading:false,
     };
   }
 
@@ -182,6 +182,7 @@ class Searcher extends Component {
 
 
 
+
   render() {
     const CardHeight={height:'600px', marginBottom:'10px'};
     const {person} = this.state;
@@ -265,6 +266,7 @@ class Searcher extends Component {
                       placeholder="Введите ИИН"
                       enterButton={formatMessage({ id: 'system.search' })}
                       size="large"
+                      maxLength={12}
                       style={{ width: 600 }}
                       onSearch={value => this.searchperson(value)}
                     />

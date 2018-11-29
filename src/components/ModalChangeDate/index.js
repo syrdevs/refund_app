@@ -44,10 +44,6 @@ class ModalChangeDate extends Component {
 
     const { dispatch, dataSource } = this.props;
 
-    if (data.file.status === 'removed') {
-      this.removeFile(data.file);
-    }
-
     if (data.file.status === 'done') {
       //data.file.status = 'uploading';
       dispatch({
@@ -104,6 +100,17 @@ class ModalChangeDate extends Component {
         uid: file.id,
         name: file.filename,
       })),
+      onRemove: (file) => {
+        if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
+          Modal.error({
+            title: 'Внимание',
+            content: 'Файл не может быть удален. Пожалуйста, удалите сначала дату',
+          });
+          return false;
+        } else {
+          this.removeFile(file);
+        }
+      },
       onPreview: (file) => {
 
         let authToken = localStorage.getItem('token');
@@ -131,29 +138,27 @@ class ModalChangeDate extends Component {
       onChange: this.uploadFile,
     };
 
-    console.log(this.props.universal);
-
     return (
-        <Modal
-          title={formatMessage({ id: 'modalchangedate.title' })}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          width={500}
-          centered
-          visible
-          footer={[
-            <Button key="back" onClick={this.handleCancel}>
-              {formatMessage({ id: 'system.close' })}
-            </Button>,
-            <Button
-              disabled={this.props.coltype !== 'appEndDate' && this.props.universal.files.length === 0}
-              key="submit" type="primary" onClick={this.handleOk}>
-              {formatMessage({ id: 'form.save' })}
-            </Button>,
-          ]}
-        >
+      <Modal
+        title={formatMessage({ id: 'modalchangedate.title' })}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        width={500}
+        centered
+        visible
+        footer={[
+          <Button key="back" onClick={this.handleCancel}>
+            {formatMessage({ id: 'system.close' })}
+          </Button>,
+          <Button
+            disabled={this.props.coltype !== 'appEndDate' && this.props.universal.files.length === 0}
+            key="submit" type="primary" onClick={this.handleOk}>
+            {formatMessage({ id: 'form.save' })}
+          </Button>,
+        ]}
+      >
 
-          <Spin spinning={this.props.loadingFiles}>
+        <Spin spinning={this.props.loadingFiles}>
           <Row>
             {this.props.dataSource.value && <DatePicker
               allowClear={false}
@@ -173,7 +178,6 @@ class ModalChangeDate extends Component {
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
             />}
-
           </Row>
           {this.props.coltype !== 'appEndDate' &&
           <Row style={{ marginTop: '15px' }}>
@@ -188,7 +192,7 @@ class ModalChangeDate extends Component {
               </Button>
             }
           </Row>}</Spin>
-        </Modal>
+      </Modal>
     );
   }
 }

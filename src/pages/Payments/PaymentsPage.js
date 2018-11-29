@@ -160,10 +160,6 @@ export default class PaymentsPage extends Component {
           'title': 'Период',
           'dataIndex': 'paymentperiod',
           'isVisible': 'true',
-        }, {
-          'title': 'Дата платежа',
-          'dataIndex': 'createdon',
-          'isVisible': 'true',
         }],
 
       staticdata: [

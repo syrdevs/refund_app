@@ -303,9 +303,9 @@ export default class JournalPage extends Component {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'menu.journal.requests' })} key="2">
-              Заявки
-            </TabPane>
+            {/*<TabPane tab={formatMessage({ id: 'menu.journal.requests' })} key="2">*/}
+              {/*Заявки*/}
+            {/*</TabPane>*/}
           </Tabs>
         </Card>
         <br/>

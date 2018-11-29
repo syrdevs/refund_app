@@ -122,7 +122,7 @@ const SmartGridHeader = props => {
 
             {props.showTotal &&
             <div
-              className={styles.total_label}>{formatMessage({ id: 'app.table.column.total' })}: {props.dataSource.total}</div>}
+              className={styles.total_label}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({ id: 'app.table.column.total' })}: {props.dataSource.total}</div>}
 
           </div>
         </div>
@@ -334,6 +334,8 @@ export default class SmartGridView extends Component {
       onClick: () => {
         this.setState({
           selectedRow: index,
+        }, () => {
+          this.props.onSelectRow(record, index);
         });
       },
     });

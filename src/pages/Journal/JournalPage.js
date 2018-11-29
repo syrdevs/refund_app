@@ -52,7 +52,7 @@ export default class JournalPage extends Component {
             //console.log(i);
             return item.refundId.personSurname + ' ' + item.refundId.personFirstname + ' ' + item.refundId.personPatronname;
           },
-        }
+        },
       ],
       columns: [{
         'title': 'Дата и время',
@@ -95,7 +95,7 @@ export default class JournalPage extends Component {
           'title': 'Действие',
           'width': 120,
           'dataIndex': 'dactionId.nameRu',
-        },{
+        }, {
           'title': 'Пользователь',
           'width': 120,
           'dataIndex': 'userId.userName',
@@ -103,11 +103,33 @@ export default class JournalPage extends Component {
       ],
       filterContainer: 0,
       searchButton: false,
-      filterForm: [{
-        name: 'date',
-        label: 'Дата',
-        type: 'betweenDate',
-      }],
+      filterForm: [
+        {
+          name: 'entryDate',
+          label: 'Дата и время',
+          type: 'betweenDate',
+        }, {
+          name: 'appNumber',
+          label: 'Номер заявки',
+          type: 'text',
+        }, {
+          name: 'gcvpReference',
+          label: 'Референс ГК',
+          type: 'text',
+        }, {
+          name: 'gcvpOrderNum',
+          label: 'Номер ПП ГК',
+          type: 'text',
+        }, {
+          name: 'gcvpOrderDate',
+          label: 'Дата ПП ГК',
+          type: 'betweenDate',
+        }, {
+          name: 'dappRefundStatus',
+          label: 'Действие',
+          type: 'multibox',
+        },
+      ],
       pagingConfig: {
         'start': 0,
         'length': 15,
@@ -128,7 +150,6 @@ export default class JournalPage extends Component {
   }
 
   clearFilter = () => {
-
     this.setState({
       pagingConfig: {
         'start': 0,
@@ -148,7 +169,7 @@ export default class JournalPage extends Component {
     this.setState({
       pagingConfig: {
         'start': 0,
-        'length': 15,
+        'length': this.state.pagingConfig.length,
         'src': {
           'searched': true,
           'data': filters,
@@ -177,24 +198,30 @@ export default class JournalPage extends Component {
     this.loadMainGridData();
   }
 
-  applyFilter(dataFilter) {
-    console.log(dataFilter);
-  }
-
-
   onShowSizeChange = (current, pageSize) => {
 
     const max = current * pageSize;
     const min = max - pageSize;
     const { dispatch } = this.props;
-    dispatch({
-      type: 'universal2/journalData',
-      payload: {
-        ...this.state.pagingConfig,
+
+    this.setState(prevState => ({
+      pagingConfig: {
+        ...prevState.pagingConfig,
         start: current,
         length: pageSize,
       },
+    }), () => {
+      dispatch({
+        type: 'universal2/journalData',
+        payload: {
+          ...this.state.pagingConfig,
+          start: current,
+          length: pageSize,
+        },
+      });
     });
+
+
   };
 
 
@@ -219,7 +246,7 @@ export default class JournalPage extends Component {
           name={'journalPageColumns'}
           searchButton={this.state.searchButton}
           fixedBody={true}
-          rowKey={'entryDate'}
+          rowKey={'id'}
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={true}
@@ -233,18 +260,7 @@ export default class JournalPage extends Component {
             page: this.state.pagingConfig.start + 1,
             data: dataStore.content,
           }}
-          onShowSizeChange={(pageNumber, pageSize) => {
-            console.log(pageNumber, pageSize);
-          }}
-          onSelectCell={(cellIndex, cell) => {
-
-          }}
-          onSelectRow={() => {
-
-          }}
-          onFilter={(filters) => {
-
-          }}
+          onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
             this.refreshTable();
           }}

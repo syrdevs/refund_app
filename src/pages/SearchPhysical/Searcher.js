@@ -191,15 +191,22 @@ class Searcher extends Component {
       }, {
         name: 'КАТЕГОРИИ',
         value: '',
-      }];
-      //
-    //
+      }, {
+        name: 'Медицинская организация'.toUpperCase(),
+        value: '',
+      }, {
+        name: 'Дата прикрепления'.toUpperCase(),
+        value: '',
+      }
+      ];
+
+
     const {iin} = this.state;
 
     return (<div>
         <Spin tip="" spinning={this.state.loading}>
           <Row style={{ marginBottom:'10px' }}>
-            <Col span={18}>
+            <Col span={14}>
               <div style={CardHeight}>
                 <Card
                   style={{height:'140px'}}
@@ -225,22 +232,29 @@ class Searcher extends Component {
                   >Просмотр платежей</Button>}
                 </Card>
                 <Card
-                  style={{height:'610px'}}
+                  style={{height:'700px'}}
                   title={formatMessage({ id: 'report.param.personinform' })}
                   type="inner"
                 >
                   <Table
                     columns={columns}
                     dataSource={data}
-                    pagination={{ position: 'none' }}
+                    pagination={{ pageSize: 50, position: 'none' }}
                     showHeader={false}
                   />
                 </Card>
               </div>
             </Col>
-            <Col span={6}>
-              <div style={{ width: '100%', height:'750px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
-                <div style={{height:'740px'}}>
+            <Col span={10}>
+              {/*<div style={{ width: '100%', height:'830px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>*/}
+
+                <Card
+                  style={{height:'840px'}}
+                  title={formatMessage({ id: 'report.param.monthpay' })}
+                  type="inner"
+                >
+
+                <div style={{height:'790px'}}>
                   <Calendar
                     onPanelChange={this.onPanelChange}
                     mode='year'
@@ -251,7 +265,15 @@ class Searcher extends Component {
                 </div>
                 <div style={{height:'50px', marginLeft:'10px'}}>
                 </div>
-                </div>
+
+
+
+                </Card>
+
+
+
+
+
             </Col>
           </Row>
         </Spin>

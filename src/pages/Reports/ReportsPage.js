@@ -144,6 +144,7 @@ export default class ReportsPage extends Component {
             formingReport: false,
             reportName: record.nameRu,
             buttonIsDisabled: false,
+            record: record,
             data: this.props.universal2.reportParametersData,
           },
         });
@@ -155,6 +156,7 @@ export default class ReportsPage extends Component {
         selectedRow: null,
         reportForm: {
           loading: false,
+          record: {},
           data: {},
           filterData: [],
           buttonIsDisabled: true,

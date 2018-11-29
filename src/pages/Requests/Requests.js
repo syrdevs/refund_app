@@ -271,7 +271,7 @@ class Requests extends Component {
         'dataIndex': 'receiptAppdateToFsms',
       },
       {
-        'title': 'Крайняя дата исполнения заявки',
+        'title': 'Дата исполнения заявки',
         'isVisible': true,
         'dataIndex': 'appEndDate',
       },
@@ -358,7 +358,7 @@ class Requests extends Component {
         'dataIndex': 'receiptAppdateToFsms',
       },
       {
-        'title': 'Крайняя дата исполнения заявки',
+        'title': 'Дата исполнения заявки',
         'isVisible': true,
         'dataIndex': 'appEndDate',
       },

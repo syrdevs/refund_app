@@ -322,8 +322,6 @@ export default class ReportForm extends Component {
 
     const { buttonIsDisabled, reportName, reportForming, data } = this.props;
 
-    console.log(this.props);
-
     // const testParameters = [
     //   {
     //     'name': 'Дата с',

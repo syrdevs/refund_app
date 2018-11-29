@@ -129,12 +129,12 @@ export default class ReportsGrid extends Component {
 
     let authToken = localStorage.getItem('token');
 
-    fetch('api/report/getReportResult?id='+param.id,
+    fetch('api/report/getReportResult?id=' + param.id,
       {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           Authorization: 'Bearer ' + authToken,
-        }
+        },
       })
       .then(response => response.blob())
       .then(responseBlob => {
@@ -229,7 +229,6 @@ export default class ReportsGrid extends Component {
 
     let token = localStorage.getItem('token');
 
-
     const res = await fetch('/api/report/createReport', {
       method: 'POST',
       headers: {
@@ -237,13 +236,13 @@ export default class ReportsGrid extends Component {
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({
-        'id': this.props.data.id,
+        'id': this.props.record.id,
         'parameters': this.props.filterData,
       }),
     });
 
     let result = await res.json();
-    result.reportId = this.props.data;
+    result.reportId = this.props.record;
 
     this.setState(prevState => ({
       isErrorReport: !prevState.isErrorReport,

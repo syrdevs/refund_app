@@ -26,7 +26,7 @@ class ModalChangeDate extends Component {
       dispatch({
         type: 'universal/changeDateRequest',
         payload: {
-          [dataSource.key]: this.state.changeDateValue !==""? this.state.changeDateValue : null ,
+          [dataSource.key]: this.state.changeDateValue !== '' ? this.state.changeDateValue : null,
           id: dataSource.id,
         },
       }).then(() => {
@@ -56,10 +56,7 @@ class ModalChangeDate extends Component {
           file: data.file.originFileObj,
           id: dataSource.id,
         },
-      }).then(() => {
-        // to do loader
-        this.getFileList();
-      });
+      }).then(() => this.getFileList());
     }
   };
   removeFile = (file) => {
@@ -70,7 +67,7 @@ class ModalChangeDate extends Component {
       payload: {
         id: file.uid,
       },
-    });
+    }).then(() => this.getFileList());
   };
 
   getFileList = () => {
@@ -124,34 +121,39 @@ class ModalChangeDate extends Component {
             let blob = new Blob([responseBlob], { type: responseBlob.type }),
               url = window.URL.createObjectURL(blob);
 
-            let a = document.createElement('a')
+            let a = document.createElement('a');
             a.href = url;
-            a.download = url.split('/').pop()
-            a.click()
+            a.download = url.split('/').pop();
+            a.click();
             //window.open(url, '_self');
           });
       },
       onChange: this.uploadFile,
     };
 
+    console.log(this.props.universal);
+
     return (
-      <Modal
-        title={formatMessage({ id: 'modalchangedate.title' })}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        width={500}
-        centered
-        visible
-        footer={[
-          <Button key="back" onClick={this.handleCancel}>
-            {formatMessage({ id: 'system.close' })}
-          </Button>,
-          <Button key="submit" type="primary" onClick={this.handleOk}>
-            {formatMessage({ id: 'form.save' })}
-          </Button>,
-        ]}
-      >
-        <Spin spinning={this.props.loadingFiles}>
+        <Modal
+          title={formatMessage({ id: 'modalchangedate.title' })}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          width={500}
+          centered
+          visible
+          footer={[
+            <Button key="back" onClick={this.handleCancel}>
+              {formatMessage({ id: 'system.close' })}
+            </Button>,
+            <Button
+              disabled={this.props.coltype !== 'appEndDate' && this.props.universal.files.length === 0}
+              key="submit" type="primary" onClick={this.handleOk}>
+              {formatMessage({ id: 'form.save' })}
+            </Button>,
+          ]}
+        >
+
+          <Spin spinning={this.props.loadingFiles}>
           <Row>
             {this.props.dataSource.value && <DatePicker
               allowClear={false}
@@ -175,17 +177,18 @@ class ModalChangeDate extends Component {
           </Row>
           {this.props.coltype !== 'appEndDate' &&
           <Row style={{ marginTop: '15px' }}>
-            {this.props.loadingFiles === false &&
-            <Upload
-              {...uploadProps}>
-              <Button size="large">
+            {this.props.loadingFiles === false ?
+              <Spin tip={'Загрузка файла...'} spinning={this.props.uploadFile === true}> <Upload
+                {...uploadProps}>
+                <Button size="large">
+                  <Icon type="upload"/>{formatMessage({ id: 'system.load' })}
+                </Button>
+              </Upload></Spin> : <Button size="large">
                 <Icon type="upload"/>{formatMessage({ id: 'system.load' })}
               </Button>
-            </Upload>
             }
-          </Row>}
-        </Spin>
-      </Modal>
+          </Row>}</Spin>
+        </Modal>
     );
   }
 }

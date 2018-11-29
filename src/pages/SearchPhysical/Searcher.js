@@ -153,6 +153,7 @@ class Searcher extends Component {
               "categories": [],
             },
             loading: false,
+            payes:[]
           })
         }
       });
@@ -198,39 +199,51 @@ class Searcher extends Component {
       width: 150,
     }];
     const  data = [{
+        key:1,
         name: 'ИИН',
         value: person.iin ? person.iin.toUpperCase() : person.iin,
       }, {
+        key:2,
         name: 'ФАМИЛИЯ',
         value: person.lastname ? person.lastname.toUpperCase() : person.lastname,
       },  {
+        key:3,
         name: 'ИМЯ',
         value: person.firstname ? person.firstname.toUpperCase() : person.firstname,
       }, {
+        key:4,
         name: 'ОТЧЕСТВО',
         value: person.secondname ? person.secondname.toUpperCase() : person.secondname,
       }, {
+        key:5,
         name: 'ДАТА РОЖДЕНИЯ',
         value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate,
       }, {
+        key:6,
         name: 'ПОЛ',
         value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
       }, {
+        key:7,
         name: 'НАЦИОНАЛЬНОСТЬ',
         value: person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu ,
       }, {
+        key:8,
         name: 'ГРАЖДАНСТВО',
         value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
       }, {
+        key:9,
         name: 'СТАТУС СТРАХОВАНИЯ',
         value: person.iin ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
       }, {
+        key:10,
         name: 'КАТЕГОРИИ',
         value: person.categories.map((category) => <Tag color="blue">{category.name.toUpperCase()}</Tag>),
       }, {
+        key:11,
         name: 'Медицинская организация'.toUpperCase(),
         value: person.clinic ? person.clinic.toUpperCase() : person.clinic,
       }, {
+        key:12,
         name: 'Дата прикрепления'.toUpperCase(),
         value: person.clinic_date ? person.clinic_date.toUpperCase() : person.clinic_date,
       }
@@ -266,7 +279,7 @@ class Searcher extends Component {
                   >Просмотр платежей</Button>}
                 </Card>
                 <Card
-                  style={{height:'692px'}}
+                  style={{height:'700px'}}
                   title={formatMessage({ id: 'report.param.personinform' })}
                   type="inner"
                 >
@@ -280,34 +293,23 @@ class Searcher extends Component {
               </div>
             </Col>
             <Col span={9}>
-              {/*<div style={{ width: '100%', height:'830px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>*/}
-
                 <Card
-                  style={{height:'842px', marginLeft:'10px'}}
+                  style={{height:'850px', marginLeft:'10px'}}
                   title={formatMessage({ id: 'report.param.monthpay' })}
                   type="inner"
                 >
-
-                <div style={{height:'790px'}}>
-                  <Calendar
-                    onPanelChange={this.onPanelChange}
-                    mode='year'
-                    className={style.customCalendar}
-                    monthCellRender={this.monthCellRender}
-                    fullscreen
-                  />
-                </div>
-                <div style={{height:'50px', marginLeft:'10px'}}>
-                </div>
-
-
-
+                  <div style={{height:'790px'}}>
+                    <Calendar
+                      onPanelChange={this.onPanelChange}
+                      mode='year'
+                      className={style.customCalendar}
+                      monthCellRender={this.monthCellRender}
+                      fullscreen
+                    />
+                  </div>
+                  <div style={{height:'50px', marginLeft:'10px'}}>
+                  </div>
                 </Card>
-
-
-
-
-
             </Col>
           </Row>
         </Spin>

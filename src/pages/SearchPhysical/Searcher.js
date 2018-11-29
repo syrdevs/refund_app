@@ -13,7 +13,8 @@ import {
   DatePicker,
   Calendar,
   Spin,
-  Form
+  Form,
+  Tag
 } from 'antd';
 import { connect } from 'dva/index';
 
@@ -46,7 +47,26 @@ class Searcher extends Component {
         "firstname": null,
         "secondname": null,
         "birthdate": null,
-        "lastname": null
+        "lastname": null,
+        "clinic": null,
+        "citizenship": {
+          "nameRu": null,
+          "nameKz": null,
+          "shortname": null,
+          "code": null,
+          "id": null
+        },
+        "clinic_date": null,
+        "nationality": {
+          "shortnameKz": null,
+          "nameRu": null,
+          "nameKz": null,
+          "shortname": null,
+          "code": null,
+          "id": null
+        },
+        "categories": [],
+        "status": false,
       },
       payes:[],
       loading:false
@@ -92,12 +112,12 @@ class Searcher extends Component {
           iin: this.state.iin,
         },
       }).then(() => {
-        if (JSON.stringify(this.props.universal.searcherdata)!=="{}") {
-          this.setState({
-            person: this.props.universal.searcherdata
-          }, () => {
-            this.payesSearcher(moment(new Date()).year());
-          })
+        if (JSON.stringify(this.props.universal.searcherdata)!=="{}" && this.props.universal.searcherdata) {
+            this.setState({
+              person: this.props.universal.searcherdata
+            }, () => {
+              this.payesSearcher(moment(new Date()).year());
+            })
         }
         else {
           this.setState({
@@ -112,9 +132,27 @@ class Searcher extends Component {
               "firstname": null,
               "secondname": null,
               "birthdate": null,
-              "lastname": null
+              "lastname": null,
+              "clinic": null,
+              "citizenship": {
+                "nameRu": null,
+                "nameKz": null,
+                "shortname": null,
+                "code": null,
+                "id": null
+              },
+              "clinic_date": null,
+              "nationality": {
+                "shortnameKz": null,
+                "nameRu": null,
+                "nameKz": null,
+                "shortname": null,
+                "code": null,
+                "id": null
+              },
+              "categories": [],
             },
-            loading: false
+            loading: false,
           })
         }
       });
@@ -141,9 +179,7 @@ class Searcher extends Component {
     })
   }
 
-  upperCase=()=>{
 
-  }
 
   render() {
     const CardHeight={height:'600px', marginBottom:'10px'};
@@ -161,7 +197,7 @@ class Searcher extends Component {
       key: 'value',
       width: 150,
     }];
-      const  data = [{
+    const  data = [{
         name: 'ИИН',
         value: person.iin ? person.iin.toUpperCase() : person.iin,
       }, {
@@ -181,35 +217,33 @@ class Searcher extends Component {
         value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
       }, {
         name: 'НАЦИОНАЛЬНОСТЬ',
-        value: '',
+        value: person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu ,
       }, {
         name: 'ГРАЖДАНСТВО',
-        value: '',
+        value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
       }, {
         name: 'СТАТУС СТРАХОВАНИЯ',
-        value: '',
+        value: person.iin ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
       }, {
         name: 'КАТЕГОРИИ',
-        value: '',
+        value: person.categories.map((category) => <Tag color="blue">{category.name.toUpperCase()}</Tag>),
       }, {
         name: 'Медицинская организация'.toUpperCase(),
-        value: '',
+        value: person.clinic ? person.clinic.toUpperCase() : person.clinic,
       }, {
         name: 'Дата прикрепления'.toUpperCase(),
-        value: '',
+        value: person.clinic_date ? person.clinic_date.toUpperCase() : person.clinic_date,
       }
       ];
-
-
     const {iin} = this.state;
 
     return (<div>
         <Spin tip="" spinning={this.state.loading}>
           <Row style={{ marginBottom:'10px' }}>
-            <Col span={14}>
+            <Col span={15}>
               <div style={CardHeight}>
                 <Card
-                  style={{height:'140px'}}
+                  style={{height:'140px', marginBottom:'10px'}}
                   type="inner"
                   bodyStyle={{ padding: 25 }}
                   title={formatMessage({ id: 'report.param.searcher' })}
@@ -221,7 +255,7 @@ class Searcher extends Component {
                       style={{ width: 600 }}
                       onSearch={value => this.searchperson(value)}
                     />
-                  {this.state.iin &&<Button
+                  {this.state.person.iin &&<Button
                     style={{marginLeft:"10px"}}
                     size={'large'}
                     onClick={()=>{
@@ -232,7 +266,7 @@ class Searcher extends Component {
                   >Просмотр платежей</Button>}
                 </Card>
                 <Card
-                  style={{height:'700px'}}
+                  style={{height:'692px'}}
                   title={formatMessage({ id: 'report.param.personinform' })}
                   type="inner"
                 >
@@ -245,11 +279,11 @@ class Searcher extends Component {
                 </Card>
               </div>
             </Col>
-            <Col span={10}>
+            <Col span={9}>
               {/*<div style={{ width: '100%', height:'830px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>*/}
 
                 <Card
-                  style={{height:'840px'}}
+                  style={{height:'842px', marginLeft:'10px'}}
                   title={formatMessage({ id: 'report.param.monthpay' })}
                   type="inner"
                 >

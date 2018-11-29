@@ -326,3 +326,19 @@ export async function getFormedReports(params) {
     body: params.payload,
   });
 }
+
+
+export async function getSearcherCalendar(params) {
+  return request('/api/rpmu/personPeriodList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
+
+export async function getSearcherData(params) {
+  return request('/api/external/gbdflGetPerson', {
+    method: 'POST',
+    body: params.payload,
+  });
+}

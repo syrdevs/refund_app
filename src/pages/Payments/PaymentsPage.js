@@ -31,6 +31,7 @@ import moment from 'moment/moment';
 import classNames from 'classnames';
 import { connect } from 'dva/index';
 import { Animated } from 'react-animated-css';
+import Searcher from '../SearchPhysical/Searcher';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -54,6 +55,8 @@ export default class PaymentsPage extends Component {
     super(props);
     this.state = {
       selectedRowKeys: [],
+      searching: false,
+      activeKey: "searcher",
       testcolumns: [],
       testdata: [],
       dataSource: [],
@@ -302,44 +305,18 @@ export default class PaymentsPage extends Component {
         },
       ],
     };
+
+
   }
 
   componentWillUnmount() {
     const { dispatch } = this.props;
-    /*dispatch({
-      type: 'universal2/clear',
-      payload: {
-        table: 'requests',
-      },
-    });*/
   }
 
   componentDidMount() {
 
     this.loadGridData();
 
-    /*const { dispatch } = this.props;
-    /!*dispatch({
-      type: 'universal2/columns',
-      payload: {
-        table: 'payment',
-      },
-    });*!/
-    dispatch({
-      type: 'universal/paymentsData',
-      payload: this.state.parameters,
-    }).then(() => {
-
-    });*/
-
-
-    /*const children = [];
-    for (let i = 10; i < 36; i++) {
-      children.push({
-        id: i,
-        name: 'a' + i,
-      });
-    }*/
     this.setState({
 
       filterForm: [
@@ -517,9 +494,7 @@ export default class PaymentsPage extends Component {
 
   loadGridData = () => {
     const { dispatch } = this.props;
-
     let sortField = this.state.sortedInfo;
-
     dispatch({
       type: 'universal/paymentsData',
       payload: this.state.parameters,
@@ -527,17 +502,24 @@ export default class PaymentsPage extends Component {
   };
 
   tabchange = (e) => {
-
     this.setState({
-      sortedInfo: {},
-      parameters: {
-        start: 0,
-        length: 15,
-        entity: e,
-        filter: {},
-        sort: [],
-      },
-    }, () => this.loadGridData());
+      activeKey:e
+
+    });
+
+    if (e!=='searcher') {
+      console.log(e)
+      this.setState({
+        sortedInfo: {},
+        parameters: {
+          start: 0,
+          length: 15,
+          entity: e,
+          filter: {},
+          sort: []
+        },
+      }, () => this.loadGridData());
+    }
 
   };
 
@@ -636,7 +618,8 @@ export default class PaymentsPage extends Component {
             });
           }}
           actionExport={() => this.exportToExcel()}
-          addonButtons={[<span key={'total-count'} style={{
+          addonButtons={[
+            <span key={'total-count'} style={{
             color: '#002140',
             fontSize: '12px',
             paddingLeft: '10px',
@@ -660,7 +643,29 @@ export default class PaymentsPage extends Component {
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
         <Card bodyStyle={{ padding: 5 }}>
-          <Tabs onChange={this.tabchange}>
+          <Tabs
+            activeKey={this.state.activeKey}
+            onChange={this.tabchange}>
+            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
+              <Searcher
+                searchbyiin={(iin) => {
+                  console.log(iin)
+                  this.setState({
+                    sortedInfo: {},
+                    parameters: {
+                      ...this.state.parameters,
+                      "entity":"mt102",
+                      "filter":{"iin":iin},
+                      "sort":[]}
+                  }, () => {
+                    this.loadGridData();
+                    this.setState({
+                      activeKey:"mt102"
+                    })
+                  });
+                }}
+              />
+            </TabPane>
             <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>

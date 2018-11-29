@@ -11,19 +11,45 @@ import {
   Col,
   Input,
   DatePicker,
-  Calendar
+  Calendar,
+  Spin,
+  Form
 } from 'antd';
+import { connect } from 'dva/index';
 
+const FormItem = Form.Item;
+const Search = Input.Search;
+
+const formItemLayout = {
+  labelCol: { md: 6, xs: 6, sm: 6 },
+  wrapperCol: { md: 18, xs: 18, sm: 18},
+};
+
+@connect(({ universal, loading }) => {
+  return {
+    universal,
+    loadingData: loading.effects['universal/SearcherData'],
+  };
+})
 class Searcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      iin: '',
-      name: '',
-      surname: '',
-      patronic: '',
-      bdate: null,
-      payes:["012018", "022018"],
+      person: {
+        "dSexId": {
+          "nameKz": null,
+          "id": null,
+          "nameRu": null,
+          "code": null
+        },
+        "iin": null,
+        "firstname": null,
+        "secondname": null,
+        "birthdate": null,
+        "lastname": null
+      },
+      payes:[],
+      loading:false
     };
   }
 
@@ -38,6 +64,7 @@ class Searcher extends Component {
       bdate: value
     })
   }
+
   monthCellRender=(value)=>{
     let isPayed  = false;
     this.state.payes.map((item) => {
@@ -46,11 +73,82 @@ class Searcher extends Component {
       }
     });
     if(isPayed){
-      return (<div style={{backgroundColor:'red', height: '100%', width: '100%'}} className="notes-month"></div>)
+      return (<div style={{backgroundColor: '#52c41a', opacity: '0.1',  height: '100%', width: '100%'}}></div>)
+    }
+    else {
+      return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
     }
   }
+
+  searchperson=(value)=>{
+    const { dispatch } = this.props;
+    this.setState({
+      loading: true,
+      iin: value
+    },()=>{
+      dispatch({
+        type: 'universal/SearcherData',
+        payload: {
+          iin: this.state.iin,
+        },
+      }).then(() => {
+        if (JSON.stringify(this.props.universal.searcherdata)!=="{}") {
+          this.setState({
+            person: this.props.universal.searcherdata
+          }, () => {
+            this.payesSearcher(moment(new Date()).year());
+          })
+        }
+        else {
+          this.setState({
+            person: {
+              "dSexId": {
+                "nameKz": null,
+                "id": null,
+                "nameRu": null,
+                "code": null
+              },
+              "iin": null,
+              "firstname": null,
+              "secondname": null,
+              "birthdate": null,
+              "lastname": null
+            },
+            loading: false
+          })
+        }
+      });
+    })
+  }
+
+  onPanelChange=(value, mode)=>{
+    this.payesSearcher(value.year());
+  };
+
+  payesSearcher=(year)=>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal/SearcherCalendar',
+      payload: {
+        iin: this.state.iin,
+        year: year
+      },
+    }).then(()=>{
+      this.setState({
+        payes: this.props.universal.searchercalendar,
+        loading: false
+      })
+    })
+  }
+
+  upperCase=()=>{
+
+  }
+
   render() {
-    const CardHeight={height:'500px', marginBottom:'10px'};
+    const CardHeight={height:'600px', marginBottom:'10px'};
+    const {person} = this.state;
+
     const columns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -63,139 +161,136 @@ class Searcher extends Component {
       key: 'value',
       width: 150,
     }];
-    const data = [{
-      name: 'ИИН',
-      value: '880328301579',
-    }, {
-      name: 'ФАМИЛИЯ',
-      value: 'Иванов',
-    }, {
-      name: 'ОТЧЕСТВО',
-      value: 'Иванович',
-    }, {
-      name: 'ИМЯ',
-      value: 'Иван',
-    }, {
-      name: 'ДАТА РОЖДЕНИЯ',
-      value: '28.03.1988',
-    }, {
-      name: 'ПОЛ',
-      value: 'Мужской',
-    }];
-    const mBottom = { marginBottom: '5px' };
-    const { iin, surname, name, patronic, bdate } = this.state;
+      const  data = [{
+        name: 'ИИН',
+        value: person.iin ? person.iin.toUpperCase() : person.iin,
+      }, {
+        name: 'ФАМИЛИЯ',
+        value: person.lastname ? person.lastname.toUpperCase() : person.lastname,
+      },  {
+        name: 'ИМЯ',
+        value: person.firstname ? person.firstname.toUpperCase() : person.firstname,
+      }, {
+        name: 'ОТЧЕСТВО',
+        value: person.secondname ? person.secondname.toUpperCase() : person.secondname,
+      }, {
+        name: 'ДАТА РОЖДЕНИЯ',
+        value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate,
+      }, {
+        name: 'ПОЛ',
+        value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
+      }, {
+        name: 'НАЦИОНАЛЬНОСТЬ',
+        value: '',
+      }, {
+        name: 'ГРАЖДАНСТВО',
+        value: '',
+      }, {
+        name: 'СТАТУС СТРАХОВАНИЯ',
+        value: '',
+      }, {
+        name: 'КАТЕГОРИИ',
+        value: '',
+      }];
+      //
+    //
+    const {iin} = this.state;
 
-    return (
-      <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.searcher' })}>
-        <Row style={{ marginBottom:'10px' }}>
-          <Col span={9}>
-            <Card
-              style={CardHeight}
-              title={formatMessage({ id: 'report.param.searcher' })}
-            >
-              <div style={mBottom}>{formatMessage({ id: 'profile.field.iin' })}:
-                <Input
-                  value={iin}
-                  name='iin'
-                  onChange={(e) => {
-                    this.formfield(e);
-                }}
-                />
-              </div>
-              <div style={mBottom}>{formatMessage({ id: 'profile.field.familya' })}:
-                <Input
-                  value={surname}
-                  name='surname'
-                  onChange={(e) => {
-                    this.formfield(e);
-                }}
-                />
-              </div>
-              <div style={mBottom}>{formatMessage({ id: 'profile.field.name' })}:
-                <Input
-                  value={name}
-                  name='name'
-                  onChange={(e) => {
-                    this.formfield(e);
-                }}
-                />
-              </div>
-              <div style={mBottom}>{formatMessage({ id: 'profile.field.surname' })}:
-                <Input
-                  type='text'
-                  value={patronic}
-                  name='patronic'
-                  onChange={(e) => {
-                  this.formfield(e);
-                  }}
-                />
-              </div>
-              <div style={mBottom}><p>{formatMessage({ id: 'profile.field.birthday' })}:</p>
-                <DatePicker
-                  format="DD.MM.YYYY"
-                  value={bdate}
-                  onChange={(e, t) =>{this.ChangeDate(e, t)}}
-                />
-              </div>
-              <div style={{ marginTop:'34px' }}>
-                <Button
-                  type='primary'
-                  style={{marginRight:"7px"}}
-                  onClick={()=>{ console.log(this.state)}}
+    return (<div>
+        <Spin tip="" spinning={this.state.loading}>
+          <Row style={{ marginBottom:'10px' }}>
+            <Col span={18}>
+              <div style={CardHeight}>
+                <Card
+                  style={{height:'140px'}}
+                  type="inner"
+                  bodyStyle={{ padding: 25 }}
+                  title={formatMessage({ id: 'report.param.searcher' })}
                 >
-                  {formatMessage({ id: 'system.search' })}
-                </Button>
-                <Button
-                  onClick={()=>{this.setState({
-                    iin: '',
-                    name: '',
-                    surname: '',
-                    patronic: '',
-                    bdate: null,
-                  })
-                }}
+                    <Search
+                      placeholder="Введите ИИН"
+                      enterButton={formatMessage({ id: 'system.search' })}
+                      size="large"
+                      style={{ width: 600 }}
+                      onSearch={value => this.searchperson(value)}
+                    />
+                  {this.state.iin &&<Button
+                    style={{marginLeft:"10px"}}
+                    size={'large'}
+                    onClick={()=>{
+                      if (this.state.iin){
+                        this.props.searchbyiin(this.state.iin)
+                      }
+                    }}
+                  >Просмотр платежей</Button>}
+                </Card>
+                <Card
+                  style={{height:'610px'}}
+                  title={formatMessage({ id: 'report.param.personinform' })}
+                  type="inner"
                 >
-                  {formatMessage({ id: 'system.clear' })}
-                </Button>
+                  <Table
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{ position: 'none' }}
+                    showHeader={false}
+                  />
+                </Card>
               </div>
-            </Card>
-          </Col>
-          <Col span={15}>
-            <Card
-              style={CardHeight}
-            >
-              <Table
-                columns={columns}
-                dataSource={data}
-                pagination={{ position: 'none' }}
-                showHeader={false}
-              />
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          {/*<Card style={CardHeight}>
-            <Calendar
-              mode={'year'}
-              className={style.customCalendar}
-              fullscreen={true}
-            />
-          </Card>*/}
-          <div style={{ width: '100%', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
-            <Calendar
-              mode='year'
-              className={style.customCalendar}
-              monthCellRender={this.monthCellRender}
-              fullscreen
-            />
-          </div>
-        </Row>
-      </PageHeaderWrapper>
+            </Col>
+            <Col span={6}>
+              <div style={{ width: '100%', height:'750px', backgroundColor:'white', border: "1px solid #d9d9d9", borderRadius: 4, marginBottom:'30px' }}>
+                <div style={{height:'740px'}}>
+                  <Calendar
+                    onPanelChange={this.onPanelChange}
+                    mode='year'
+                    className={style.customCalendar}
+                    monthCellRender={this.monthCellRender}
+                    fullscreen
+                  />
+                </div>
+                <div style={{height:'50px', marginLeft:'10px'}}>
+                </div>
+                </div>
+            </Col>
+          </Row>
+        </Spin>
+      </div>
     );
   }
 }
 export default Searcher;
 
+
+
+{/*<Input
+                      value={iin}
+                      name='iin'
+                      onChange={(e) => {
+                        this.formfield(e);
+                    }}
+                    />*/}
+{/*<Button
+                    onClick={()=>{
+                      this.setState({
+                        person: {
+                          "dSexId": {
+                            "nameKz": null,
+                            "id": null,
+                            "nameRu": null,
+                            "code": null
+                          },
+                          "iin": null,
+                          "firstname": null,
+                          "secondname": null,
+                          "birthdate": null,
+                          "lastname": null
+                        }
+                      })
+                  }}
+                  >
+                    {formatMessage({ id: 'system.clear' })}
+                  </Button>*/}
 
 
 

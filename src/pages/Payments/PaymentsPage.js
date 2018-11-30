@@ -53,10 +53,14 @@ const EditableContext = React.createContext();
 export default class PaymentsPage extends Component {
   constructor(props) {
     super(props);
+
+    this.selectedRecord = {};
+
     this.state = {
+
       selectedRowKeys: [],
       searching: false,
-      activeKey: "searcher",
+      activeKey: 'searcher',
       testcolumns: [],
       testdata: [],
       dataSource: [],
@@ -497,22 +501,21 @@ export default class PaymentsPage extends Component {
     });
   };
 
-  tabchange = (e) => {
+  tabchange = (e, tabFilter = {}) => {
     this.setState({
-      activeKey:e
-
+      activeKey: e,
     });
 
-    if (e!=='searcher') {
-      console.log(e)
+    if (e !== 'searcher') {
+      console.log(e);
       this.setState({
         sortedInfo: {},
         parameters: {
           start: 0,
           length: 15,
           entity: e,
-          filter: {},
-          sort: []
+          filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
+          sort: [],
         },
       }, () => this.loadGridData());
     }
@@ -564,6 +567,27 @@ export default class PaymentsPage extends Component {
     const dataStore = this.state.staticdata;
     const columns = this.state.staticolumn;
 
+    let addonButtons = [];
+    let extraButtons = [<span key={'total-count'} style={{
+      color: '#002140',
+      fontSize: '12px',
+      paddingLeft: '10px',
+    }}>{formatMessage({ id: 'system.totalAmount' })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
+
+    if (this.state.parameters.entity === 'mt100') {
+      addonButtons
+        .unshift(<Button
+          // disabled={Object.keys(this.selectedRecord).length === 0}
+          key={'mt100paymentBtn'}
+          onClick={() => {
+            if (Object.keys(this.selectedRecord).length !== 0)
+              this.tabchange('mt102', {
+                'mt100Id': this.selectedRecord.id,
+              });
+          }}>
+          Платежи МТ102</Button>);
+    }
+
     const DataDiv = ({ mtcolumns, tablename }) => (
       <Spin tip="" spinning={this.props.loadingData}>
         <SmartGridView
@@ -614,12 +638,11 @@ export default class PaymentsPage extends Component {
             });
           }}
           actionExport={() => this.exportToExcel()}
-          addonButtons={[
-            <span key={'total-count'} style={{
-            color: '#002140',
-            fontSize: '12px',
-            paddingLeft: '10px',
-          }}>{formatMessage({ id: 'system.totalAmount' })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0}</span>]}
+          extraButtons={extraButtons}
+          addonButtons={addonButtons}
+          onSelectRow={(record, index) => {
+            this.selectedRecord = record;
+          }}
           onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
             this.loadGridData();
@@ -645,19 +668,20 @@ export default class PaymentsPage extends Component {
             <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
               <Searcher
                 searchbyiin={(iin) => {
-                  console.log(iin)
+                  console.log(iin);
                   this.setState({
                     sortedInfo: {},
                     parameters: {
                       ...this.state.parameters,
-                      "entity":"mt102",
-                      "filter":{"iin":iin},
-                      "sort":[]}
+                      'entity': 'mt102',
+                      'filter': { 'iin': iin },
+                      'sort': [],
+                    },
                   }, () => {
                     this.loadGridData();
                     this.setState({
-                      activeKey:"mt102"
-                    })
+                      activeKey: 'mt102',
+                    });
                   });
                 }}
               />

@@ -638,7 +638,7 @@ export default class PaymentsPage extends Component {
             });
           }}
           actionExport={() => this.exportToExcel()}
-          extraButtons={extraButtons}
+          /*extraButtons={extraButtons}*/
           addonButtons={addonButtons}
           onSelectRow={(record, index) => {
             this.selectedRecord = record;

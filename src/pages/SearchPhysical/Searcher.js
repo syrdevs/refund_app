@@ -184,7 +184,7 @@ class Searcher extends Component {
 
 
   render() {
-    const CardHeight={height:'600px', marginBottom:'10px'};
+    const CardHeight={height:'auto', marginBottom:'10px'};
     const {person} = this.state;
 
     const columns = [{
@@ -238,7 +238,10 @@ class Searcher extends Component {
       }, {
         key:10,
         name: 'КАТЕГОРИИ',
-        value: person.categories.map((category) => <Tag color="blue">{category.name.toUpperCase()}</Tag>),
+        value: person.categories.map((category) =>
+          <div>
+            <div style={{width: '80%',wordWrap: 'break-word'}} color="blue">{category.name.toUpperCase()}</div><br></br>
+          </div>),
       }, {
         key:11,
         name: 'Медицинская организация'.toUpperCase(),
@@ -267,7 +270,7 @@ class Searcher extends Component {
                       enterButton={formatMessage({ id: 'system.search' })}
                       size="large"
                       maxLength={12}
-                      style={{ width: 600 }}
+                      style={{ width: 400 }}
                       onSearch={value => this.searchperson(value)}
                     />
                   {this.state.person.iin &&<Button
@@ -281,7 +284,7 @@ class Searcher extends Component {
                   >Просмотр платежей</Button>}
                 </Card>
                 <Card
-                  style={{height:'700px'}}
+                  bodyStyle={{height:'auto'}}
                   title={formatMessage({ id: 'report.param.personinform' })}
                   type="inner"
                 >
@@ -290,13 +293,14 @@ class Searcher extends Component {
                     dataSource={data}
                     pagination={{ pageSize: 50, position: 'none' }}
                     showHeader={false}
+                    size={'default'}
                   />
                 </Card>
               </div>
             </Col>
             <Col span={9}>
                 <Card
-                  style={{height:'850px', marginLeft:'10px'}}
+                  style={{height:'880px', marginLeft:'10px'}}
                   title={formatMessage({ id: 'report.param.monthpay' })}
                   type="inner"
                 >

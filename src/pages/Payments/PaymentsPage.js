@@ -330,11 +330,11 @@ export default class PaymentsPage extends Component {
           label: formatMessage({ id: 'menu.filter.payment.create_date' }),
           type: 'betweenDate',
         },
-        {
+        /*{
           name: 'totalAmount',
           label: formatMessage({ id: 'menu.mainview.paymentsum' }),
           type: 'text',
-        },
+        },*/
         {
           name: 'knp',
           label: formatMessage({ id: 'menu.filter.knp' }),
@@ -398,11 +398,13 @@ export default class PaymentsPage extends Component {
           label: 'КНП',
           name: 'knp',
           type: 'multibox',
-        }, {
+        },
+        /*{
           label: 'Сумма',
           name: 'paymentsum',
           type: 'text',
-        }, {
+        },*/
+        {
           label: 'Фамилия',
           name: 'lastname',
           type: 'text',
@@ -638,7 +640,7 @@ export default class PaymentsPage extends Component {
             });
           }}
           actionExport={() => this.exportToExcel()}
-          /*extraButtons={extraButtons}*/
+          extraButtons={extraButtons}
           addonButtons={addonButtons}
           onSelectRow={(record, index) => {
             this.selectedRecord = record;

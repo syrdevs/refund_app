@@ -429,11 +429,12 @@ export default class PaymentsPage extends Component {
           label: 'Период',
           name: 'paymentperiod',
           type: 'betweenDate',
-        }, {
+        },
+        /*{
           label: 'Дата платежа',
           name: 'createdon',
           type: 'betweenDate',
-        },
+        },*/
       ],
     });
 
@@ -542,7 +543,7 @@ export default class PaymentsPage extends Component {
             'searched': true,
             'data': this.state.parameters.filter,
           },
-          'columns': this.state.parameters.entity == 'mt100' ? this.state.staticolumn : this.state.staticmt102columns,
+          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item=>item.isVisible==="true") : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item=>item.isVisible==="true"),
         }),
       })
       .then(response => response.blob())

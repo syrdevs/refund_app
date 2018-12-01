@@ -235,6 +235,18 @@ export default {
       };
     },
     maintable(state, { payload }) {
+      if(payload===undefined) {
+        console.log("table is null");
+        return {
+          ...state,
+          table: {
+            "size": 15,
+            "totalElements": 0,
+            "totalPages": 0,
+            "content": []
+          },
+        };
+      }
       return {
         ...state,
         table: payload,

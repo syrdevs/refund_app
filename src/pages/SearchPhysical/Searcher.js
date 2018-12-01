@@ -234,7 +234,7 @@ class Searcher extends Component {
       }, {
         key:9,
         name: 'СТАТУС СТРАХОВАНИЯ',
-        value: person.iin ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
+        value: person.firstname ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
       }, {
         key:10,
         name: 'КАТЕГОРИИ',

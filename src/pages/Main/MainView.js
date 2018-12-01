@@ -246,9 +246,24 @@ class MainView extends Component {
     dispatch({
       type: 'universal/mainviewtable',
       payload: this.state.pagingConfig,
-    });
-
-
+    })
+      /*.then(() => {
+      if (this.props.universal.table.totalElements===undefined)
+      {
+        this.setState({
+          pagingConfig: {
+            'start': 0,
+            'length': 15,
+            'src': {
+              'searched': false,
+              'data': {},
+            },
+          },
+        }, () => {
+          this.loadMainGridData();
+        });
+      }
+    });*/
   };
 
   componentDidMount() {

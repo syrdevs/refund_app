@@ -147,9 +147,12 @@ export default class StaticticsView extends Component {
     //dateStart=01.11.2010&dateEnd=16.11.2018
     dispatch({
       type: 'universal2/statisticsData',
-      payload: {
+      payload: this.state.filters.dateValues !== null ? {
         dateStart: this.state.filters.dateValues[0],
         dateEnd: this.state.filters.dateValues[1],
+      } : {
+        dateStart: null,
+        dateEnd: null,
       },
     });
 
@@ -175,7 +178,7 @@ export default class StaticticsView extends Component {
   };
 
   componentDidMount() {
-   // this.loadMainGridData();
+    // this.loadMainGridData();
   }
 
   render() {
@@ -186,51 +189,51 @@ export default class StaticticsView extends Component {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.refund.stat.title' })}>
-      <Card bodyStyle={{ padding: 5 }}>
-        <Row type="flex" justify="center">
-          <Col>
-            <Card bodyStyle={{ padding: 5 }}>
-              <RangePicker
-                //
-                placeholder={[formatMessage({ id: 'datepicker.start.label' }), formatMessage({ id: 'datepicker.end.label' })]}
-                format={'DD.MM.YYYY'}
-                onChange={(date, dateString) => {
-                  this.setState((prevState) => ({
-                    filters: {
-                      ...prevState.filters,
-                      dateValues: dateString,
-                    },
-                  }));
-                }}/>
-              <Button style={{ margin: '10px' }} onClick={() => {
-                //console.log(this.state.filters.dateValues);
-                this.loadMainGridData();
-              }
-              }>{formatMessage({ id: 'button.apply' })}</Button>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Spin spinning={this.props.loadingData===true}>
-              <SmartGridView
-                name={'StatisticsView'}
-                hideFilterBtn={true}
-                hideRefreshBtn={true}
-                columns={gridData.columns}
-                dataSource={{
-                  total: 0,
-                  pageSize: this.state.pagingConfig.length,
-                  page: this.state.pagingConfig.start + 1,
-                  data: Array.isArray(universal2.dataStore) ? universal2.dataStore : [universal2.dataStore],
-                }}
-              />
-            </Spin>
-          </Col>
-        </Row>
-      </Card>
-      <br/>
-    </PageHeaderWrapper>);
+        <Card bodyStyle={{ padding: 5 }}>
+          <Row type="flex" justify="center">
+            <Col>
+              <Card bodyStyle={{ padding: 5 }}>
+                <RangePicker
+                  //
+                  placeholder={[formatMessage({ id: 'datepicker.start.label' }), formatMessage({ id: 'datepicker.end.label' })]}
+                  format={'DD.MM.YYYY'}
+                  onChange={(date, dateString) => {
+                    this.setState((prevState) => ({
+                      filters: {
+                        ...prevState.filters,
+                        dateValues: dateString,
+                      },
+                    }));
+                  }}/>
+                <Button style={{ margin: '10px' }} onClick={() => {
+                  //console.log(this.state.filters.dateValues);
+                  this.loadMainGridData();
+                }
+                }>{formatMessage({ id: 'button.apply' })}</Button>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Spin spinning={this.props.loadingData === true}>
+                <SmartGridView
+                  name={'StatisticsView'}
+                  hideFilterBtn={true}
+                  hideRefreshBtn={true}
+                  columns={gridData.columns}
+                  dataSource={{
+                    total: 0,
+                    pageSize: this.state.pagingConfig.length,
+                    page: this.state.pagingConfig.start + 1,
+                    data: Array.isArray(universal2.dataStore) ? universal2.dataStore : [universal2.dataStore],
+                  }}
+                />
+              </Spin>
+            </Col>
+          </Row>
+        </Card>
+        <br/>
+      </PageHeaderWrapper>);
   }
 
 }

@@ -23,7 +23,7 @@ export default {
 
       yield put({
         type: 'formedReportsData',
-        payload: response,
+        payload: response || {},
       });
     },
 
@@ -32,7 +32,7 @@ export default {
 
       yield put({
         type: 'reportParametersData',
-        payload: response,
+        payload: response || {},
       });
     },
 
@@ -41,7 +41,7 @@ export default {
 
       yield put({
         type: 'getData',
-        payload: response,
+        payload: response || {},
       });
     },
 
@@ -50,7 +50,7 @@ export default {
 
       yield put({
         type: 'getData',
-        payload: response,
+        payload: response || {},
       });
     },
 
@@ -59,7 +59,7 @@ export default {
 
       yield put({
         type: 'getData',
-        payload: response,
+        payload: response || {},
       });
     },
 
@@ -75,7 +75,7 @@ export default {
 
       yield put({
         type: 'getData',
-        payload: response,
+        payload: response || {},
       });
     },
     * columns(payload, { call, put }) {

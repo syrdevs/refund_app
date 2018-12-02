@@ -24,15 +24,30 @@ const codeMessage = {
 };
 
 const checkStatus = response => {
+
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
+
   const errortext = codeMessage[response.status] || response.statusText;
-  if (response.status !== 401)
+  if (response.status >= 500)
     notification.error({
-      message: `Ошибка ${response.status}: ${response.url}`,
-      description: errortext,
+      // message: `Ошибка ${response.status}: ${response.url}`,
+      message: `Ошибка статус ${response.status}`,
+      description: 'Сервис временно недоступен',
     });
+
+  if (response.status === 400 || (response.status >= 402 && response.status < 500)) {
+    response.json().then((r) => {
+      notification.error({
+        // message: `Ошибка ${response.status}: ${response.url}`,
+        message: `Ошибка статус ${response.status}`,
+        description: r.Message,
+      });
+    });
+    return response;
+  }
+
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -148,27 +163,27 @@ export default function request(url, option) {
     .catch(e => {
 
       const status = e.name;
-       if (status === 401) {
-         // @HACK
-         /* eslint-disable no-underscore-dangle */
+      if (status === 401) {
+        // @HACK
+        /* eslint-disable no-underscore-dangle */
 
-         window.g_app._store.dispatch({
-           type: 'login/logout',
-         });
+        window.g_app._store.dispatch({
+          type: 'login/logout',
+        });
 
-         return;
-       }
+        return;
+      }
       // environment should not be used
       if (status === 403) {
-        router.push('/exception/403');
+        //router.push('/exception/403');
         return;
       }
       if (status <= 504 && status >= 500) {
-        router.push('/exception/500');
+        //router.push('/exception/500');
         return;
       }
       if (status >= 404 && status < 422) {
-        router.push('/exception/404');
+        //router.push('/exception/404');
       }
     });
 }

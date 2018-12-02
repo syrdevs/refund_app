@@ -19,7 +19,7 @@ import {
   getReceiversRefund,
   paymentsData,
   getSearcherCalendar,
-  getSearcherData
+  getSearcherData,
 } from '../services/api';
 
 export default {
@@ -44,8 +44,8 @@ export default {
     refundKnpList: [],
     modalgridviewdata: [],
     paymentsData: [],
-    searcherdata:{},
-    searchercalendar:[]
+    searcherdata: {},
+    searchercalendar: [],
   },
   effects: {
     * receiversRefund(payload, { call, put }) {
@@ -87,7 +87,7 @@ export default {
 
       yield put({
         type: 'paymentsDataReducer',
-        payload: response,
+        payload: response || {},
       });
     },
     * getmt102(payload, { call, put }) {
@@ -168,7 +168,7 @@ export default {
       const response = yield call(getOptionsdata, payload);
       yield put({
         type: 'OptionReducer',
-        payload: response,
+        payload: response || [],
       });
     },
     * optionsDatachange(payload, { call, put }) {
@@ -231,19 +231,18 @@ export default {
     paymentsDataReducer(state, { payload }) {
       return {
         ...state,
-        paymentsData: payload
+        paymentsData: payload,
       };
     },
     maintable(state, { payload }) {
-      if(payload===undefined) {
-        console.log("table is null");
+      if (payload === undefined) {
         return {
           ...state,
           table: {
-            "size": 15,
-            "totalElements": 0,
-            "totalPages": 0,
-            "content": []
+            'size': 15,
+            'totalElements': 0,
+            'totalPages': 0,
+            'content': [],
           },
         };
       }

@@ -121,7 +121,7 @@ export default class PaymentsPage extends Component {
           'title': 'Получатель (Счет)',
           'dataIndex': 'recipientAccount',
         }, {
-          'title': 'Дата создания',
+          'title': 'Дата поступления информации',
           'dataIndex': 'createdOn',
         }],
       staticmt102columns: [
@@ -362,23 +362,23 @@ export default class PaymentsPage extends Component {
           type: 'text',
           withMax: 8,
         },
-        {
-          name: 'recipientName',
-          label: 'Получатель (Наименование)',
-          type: 'text',
-        },
-        {
-          name: 'recipientBin',
-          label: 'Получатель (БИН)',
-          type: 'text',
-          withMax: 12,
-        },
-        {
-          name: 'recipientBankBik',
-          label: 'Получатель (БИК)',
-          type: 'text',
-          withMax: 8,
-        },
+        // {
+        //   name: 'recipientName',
+        //   label: 'Получатель (Наименование)',
+        //   type: 'text',
+        // },
+        // {
+        //   name: 'recipientBin',
+        //   label: 'Получатель (БИН)',
+        //   type: 'text',
+        //   withMax: 12,
+        // },
+        // {
+        //   name: 'recipientBankBik',
+        //   label: 'Получатель (БИК)',
+        //   type: 'text',
+        //   withMax: 8,
+        // },
         {
           name: 'recipientAccount',
           label: 'Получатель (Счет)',

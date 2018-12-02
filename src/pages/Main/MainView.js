@@ -134,8 +134,9 @@ class MainView extends Component {
           isVisible: true,
           'dataIndex': 'dappRefundStatusId.nameRu',
           order: 7,
-          render: (record, value) => <a style={{ color: this.setColor(value.isRefundConfirm)}}//value.isRefundConfirm ? 'green' : 'red' }}
-                                        href="#">{value.dappRefundStatusId.nameRu}</a>,
+          render: (record, value) => <a
+            style={{ color: this.setColor(value.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
+            href="#">{value.dappRefundStatusId.nameRu}</a>,
         }],
       columns: [{
         'title': 'Номер заявки',
@@ -218,6 +219,17 @@ class MainView extends Component {
       filterForm: [],
       xsize: 'auto',
 
+      rpmu: {
+        pagingConfig: {
+          'start': 0,
+          'length': 15,
+          'src': {
+            'searched': false,
+            'data': {},
+          },
+        },
+      },
+
       pagingConfig: {
         'start': 0,
         'length': 15,
@@ -246,24 +258,24 @@ class MainView extends Component {
     dispatch({
       type: 'universal/mainviewtable',
       payload: this.state.pagingConfig,
-    })
-      /*.then(() => {
-      if (this.props.universal.table.totalElements===undefined)
-      {
-        this.setState({
-          pagingConfig: {
-            'start': 0,
-            'length': 15,
-            'src': {
-              'searched': false,
-              'data': {},
-            },
+    });
+    /*.then(() => {
+    if (this.props.universal.table.totalElements===undefined)
+    {
+      this.setState({
+        pagingConfig: {
+          'start': 0,
+          'length': 15,
+          'src': {
+            'searched': false,
+            'data': {},
           },
-        }, () => {
-          this.loadMainGridData();
-        });
-      }
-    });*/
+        },
+      }, () => {
+        this.loadMainGridData();
+      });
+    }
+  });*/
   };
 
   componentDidMount() {
@@ -309,10 +321,16 @@ class MainView extends Component {
     });
   };
   setColor = (value) => {
-    if (value) { return 'green'}
-    else if (value === undefined)  { return 'black'}
-    else {return 'red'}
-  }
+    if (value) {
+      return 'green';
+    }
+    else if (value === undefined) {
+      return 'black';
+    }
+    else {
+      return 'red';
+    }
+  };
 
   showGraphic = () => {
     this.setState({
@@ -460,25 +478,16 @@ class MainView extends Component {
   rpmuColumn = () => {
     return [
       {
-        title: formatMessage({ id: 'menu.mainview.rpmuName' }),
-        key: 'lastname',
-        width: 100,
-        render: (text, record) => (<div>
-            {text.lastname + ' ' + text.firstname + ' ' + text.secondname}
-            <br/>
-            {'(ИИН: ' + text.iin + ', ДР: ' + text.birthdate + ')'}
-          </div>
-        ),
-      },
-      {
         title: formatMessage({ id: 'menu.mainview.paymentsum' }),
         dataIndex: 'paymentsum',
         key: 'paymentsum',
+        isVisible: true,
         width: 80,
       },
       {
         title: formatMessage({ id: 'menu.mainview.paymentperiod' }),
         dataIndex: 'paymentperiod',
+        isVisible: true,
         key: 'paymentperiod',
         width: 70,
       },
@@ -486,12 +495,14 @@ class MainView extends Component {
         title: formatMessage({ id: 'menu.mainview.knp' }),
         dataIndex: 'knp',
         key: 'knp',
+        isVisible: true,
         width: 50,
       },
       {
         title: formatMessage({ id: 'menu.mainview.reference' }),
         dataIndex: 'reference',
         key: 'reference',
+        isVisible: true,
         width: 70,
       },
     ];
@@ -824,20 +835,49 @@ class MainView extends Component {
                   >
                     <LocaleProvider locale={componentLocal}>
                       <Spin spinning={this.props.rpmuLoading}>
-                        <Table
-                          bordered={true}
-                          size={'small'}
+                        <SmartGridView
+                          name={'RefundsRPMUColumns'}
+                          rowKey={'id'}
+                          scroll={{ x: this.state.xsize }}
+                          actionColumns={[
+                            {
+                              title: formatMessage({ id: 'menu.mainview.rpmuName' }),
+                              key: 'lastname',
+                              order: 0,
+                              isVisible: true,
+                              width: 100,
+                              render: (text, record) => (<div>
+                                  {text.lastname + ' ' + text.firstname + ' ' + text.secondname}
+                                  <br/>
+                                  {'(ИИН: ' + text.iin + ', ДР: ' + text.birthdate + ')'}
+                                </div>
+                              ),
+                            }]}
                           columns={rpmuColumns}
-                          dataSource={universal.rpmu.content}
-                          rowClassName={(record) => {
+                          rowSelection={false}
+                          hideFilterBtn={true}
+                          hideRefreshBtn={true}
+                          dataSource={{
+                            total: universal.rpmu.totalElements,
+                            pageSize: this.state.rpmu.pagingConfig.length,
+                            page: this.state.rpmu.pagingConfig.start + 1,
+                            data: universal.rpmu.content,
+                          }}
+                        />
+                        {/*<Table*/}
+                        {/*bordered={true}*/}
+                        {/*size={'small'}*/}
+                        {/*columns={rpmuColumns}*/}
+                        {/*dataSource={universal.rpmu.content}*/}
+                        {/*rowClassName={(record) => {*/}
 
-                            if (record.refundExist) {
-                              console.log(record.refundExist);
-                              return 'greenRow';
-                            }
-                          }
-                          }
-                          scroll={{ x: 1100 }}/>
+                        {/*if (record.refundExist) {*/}
+                        {/*console.log(record.refundExist);*/}
+                        {/*return 'greenRow';*/}
+                        {/*}*/}
+                        {/*}*/}
+                        {/*}*/}
+                        {/*scroll={{ x: 1100 }}/>*/}
                       </Spin>
                     </LocaleProvider>
                   </Card>
@@ -862,6 +902,7 @@ class MainView extends Component {
                   columns={this.state.columns}
                   sorted={true}
                   showTotal={true}
+                  showExportBtn={true}
                   dataSource={{
                     total: universal.table.totalElements,
                     pageSize: this.state.pagingConfig.length,
@@ -897,10 +938,10 @@ class MainView extends Component {
                         onClick={this.AppRefundStatusAuto}>
                         {formatMessage({ id: 'menu.mainview.verifyRPMUBtn' })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                       </Menu.Item>
-                      <Menu.Item
-                        key="2" onClick={this.exportToExcel}>
-                        {formatMessage({ id: 'menu.mainview.excelBtn' })}
-                      </Menu.Item>
+                      {/*<Menu.Item*/}
+                      {/*key="2" onClick={this.exportToExcel}>*/}
+                      {/*{formatMessage({ id: 'menu.mainview.excelBtn' })}*/}
+                      {/*</Menu.Item>*/}
                       <Menu.Item
                         disabled={this.btnIsDisabled(hasRole(['FSMS2', 'ADMIN']), [this.state.selectedRowKeys.length === 0])}
                         key="3"
@@ -933,7 +974,7 @@ class MainView extends Component {
                         type="down"/></Button>
                     </Dropdown>,
                   ]}
-
+                  actionExport={() => this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
                   }}

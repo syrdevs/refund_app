@@ -133,6 +133,13 @@ export default [
       },*/
 
       {
+        path: '/contracts',
+        icon: 'faBookOpen',
+        name: 'contracts',
+        component: './ContractView/ContractPage',
+        authority: ['ADMIN', 'FSMS1','FSMS2']
+      },
+      {
         component: '404',
       },
       /*{

@@ -89,7 +89,9 @@ const SmartColumnsSelect = props => {
     </Menu>
   );
 
-  return (<Dropdown trigger={['click']} overlay={menu} placement="bottomRight">
+  return (<Dropdown trigger={['click']} onVisibleChange={(visible) => {
+    props.dropDownAction(visible);
+  }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
     <Button style={{ float: 'right' }}>
       <Icon><FontAwesomeIcon icon={faColumns}/></Icon>
     </Button>
@@ -115,7 +117,7 @@ const SmartGridHeader = props => {
 
           <div className={styles.smart_grid_controls_right}>
 
-            {<SmartColumnsSelect searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
+            {<SmartColumnsSelect {...props} searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
             {props.showExportBtn &&
             <Button onClick={() => props.actionExport()} style={{ float: 'right' }}><Icon type="file-excel"/></Button>}
@@ -146,6 +148,7 @@ export default class SmartGridView extends Component {
     this.table = null;
 
     this.state = {
+      dropDownVisible: false,
       selectedRow: null,
       isColumnChanged: false,
     };
@@ -335,7 +338,8 @@ export default class SmartGridView extends Component {
         this.setState({
           selectedRow: index,
         }, () => {
-          this.props.onSelectRow(record, index);
+          if (this.props.onSelectRow)
+            this.props.onSelectRow(record, index);
         });
       },
     });
@@ -358,6 +362,12 @@ export default class SmartGridView extends Component {
     return (<div>
       <SmartGridHeader {...this.props}
                        searchButton={this.props.searchButton}
+                       dropDownAction={(state) => {
+                         this.setState({
+                           dropDownVisible: state,
+                         });
+                       }}
+                       dropDownVisible={this.state.dropDownVisible}
                        onSelectColumn={this.onSelectColumn}
                        addonButtons={this.props.addonButtons}
                        columns={_columns}

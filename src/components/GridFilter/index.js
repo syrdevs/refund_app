@@ -276,6 +276,38 @@ export default class GridFilter extends Component {
     const mBottom = { marginBottom: '5px' };
 
     switch (filterItem.type) {
+
+      case 'date': {
+        let params = {
+          style: {
+            width: '100%',
+          },
+          format: dateFormat,
+          onChange: (moment, dateString) => {
+            console.log(dateString);
+            //this.fieldOnChange(filterItem, dateString);
+          },
+        };
+
+        if (isClearFilter) {
+          params.value = [];
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+          <Row>
+            <Col md={24}>
+              <LocaleProvider locale={componentLocal}>
+                <DatePicker   {...params}
+                              format={'DD.MM.YYYY'}
+                  //disabled={fields[filterItem.name].disabled}
+                />
+              </LocaleProvider>
+            </Col>
+          </Row>
+        </div>);
+
+      }
+
       case 'betweenDate': {
 
         let RangeDateProps = {
@@ -339,7 +371,7 @@ export default class GridFilter extends Component {
               this.fieldOnChange(filterItem, e.target.value);
             }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
         }
-        }
+      }
       case 'multibox': {
 
         let params = {};
@@ -394,9 +426,10 @@ export default class GridFilter extends Component {
       case 'selectlist': {
         let params = {};
 
-        return (<div key={_index}><SelectList name={filterItem.name} onSelect={(record) => {
-          console.log(record);
-        }}/></div>);
+        return (<div key={_index} style={mBottom}>{filterItem.label}:<SelectList name={filterItem.name}
+                                                                                 onSelect={(record) => {
+                                                                                   console.log(record);
+                                                                                 }}/></div>);
       }
 
       default:

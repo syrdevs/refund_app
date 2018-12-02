@@ -381,4 +381,7 @@ export default {
   'app.footer.suppordemail': 'support@med.kz',
   'app.login.entrу': 'Вход в систему',
   'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЯ',
+
+  'menu.contracts': 'Учет договоров',
+  'app.module.contracts.title': 'Учет договоров',
 };

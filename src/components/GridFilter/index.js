@@ -268,7 +268,9 @@ export default class GridFilter extends Component {
 
     clearFilter();
   };
-
+  disabledDate(current) {
+    return current && current >= moment().endOf('day');
+  }
   renderFilter = (filterItem, _index) => {
 
     const { dateFormat, references } = this.props;
@@ -333,6 +335,7 @@ export default class GridFilter extends Component {
               <LocaleProvider locale={componentLocal}>
                 <RangePicker   {...RangeDateProps}
                                format={'DD.MM.YYYY'}
+                               disabledDate={this.disabledDate}
                                placeholder={[
                                  formatMessage({ id: 'datepicker.start.label' }),
                                  formatMessage({ id: 'datepicker.end.label' }),

@@ -14,12 +14,14 @@ import {
   Calendar,
   Spin,
   Form,
-  Tag
+  Tag,
+  Tabs
 } from 'antd';
 import { connect } from 'dva/index';
 
 const FormItem = Form.Item;
 const Search = Input.Search;
+const TabPane = Tabs.TabPane;
 
 const formItemLayout = {
   labelCol: { md: 6, xs: 6, sm: 6 },
@@ -252,71 +254,144 @@ class Searcher extends Component {
         value: person.clinic_date ? person.clinic_date.toUpperCase() : person.clinic_date,
       }
       ];
+
+    const dataRPM = [{
+      key:1,
+      name: 'ИИН',
+      value: person.iin ? person.iin.toUpperCase() : person.iin,
+    }, {
+      key:2,
+      name: 'ФАМИЛИЯ',
+      value: person.lastname ? person.lastname.toUpperCase() : person.lastname,
+    },  {
+      key:3,
+      name: 'ИМЯ',
+      value: person.firstname ? person.firstname.toUpperCase() : person.firstname,
+    }, {
+      key:4,
+      name: 'ОТЧЕСТВО',
+      value: person.secondname ? person.secondname.toUpperCase() : person.secondname,
+    }, {
+      key:5,
+      name: 'ДАТА РОЖДЕНИЯ',
+      value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate,
+    }, {
+      key:6,
+      name: 'ПОЛ',
+      value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
+    }, {
+      key:7,
+      name: 'НАЦИОНАЛЬНОСТЬ',
+      value: person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu ,
+    }, {
+      key:8,
+      name: 'ГРАЖДАНСТВО',
+      value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
+    }
+    ];
+
     const {iin} = this.state;
 
     return (<div>
         <Spin tip="" spinning={this.state.loading}>
           <Row style={{ marginBottom:'10px' }}>
-            <Col span={15}>
-              <div style={CardHeight}>
-                <Card
-                  style={{height:'140px', marginBottom:'10px'}}
-                  type="inner"
-                  bodyStyle={{ padding: 25 }}
-                  title={formatMessage({ id: 'report.param.searcher' })}
-                >
-                    <Search
-                      placeholder="Введите ИИН"
-                      enterButton={formatMessage({ id: 'system.search' })}
-                      size="large"
-                      maxLength={12}
-                      style={{ width: 400 }}
-                      onSearch={value => this.searchperson(value)}
-                    />
-                  {this.state.person.iin &&<Button
-                    style={{marginLeft:"10px"}}
-                    size={'large'}
-                    onClick={()=>{
-                      if (this.state.iin){
-                        this.props.searchbyiin(this.state.iin)
-                      }
-                    }}
-                  >Просмотр платежей</Button>}
-                </Card>
-                <Card
-                  bodyStyle={{height:'auto'}}
-                  title={formatMessage({ id: 'report.param.personinform' })}
-                  type="inner"
-                >
-                  <Table
-                    columns={columns}
-                    dataSource={data}
-                    pagination={{ pageSize: 50, position: 'none' }}
-                    showHeader={false}
-                    size={'default'}
-                  />
-                </Card>
-              </div>
-            </Col>
-            <Col span={9}>
-                <Card
-                  style={{height:'880px', marginLeft:'10px'}}
-                  title={formatMessage({ id: 'report.param.monthpay' })}
-                  type="inner"
-                >
-                  <div style={{height:'790px'}}>
-                    <Calendar
-                      onPanelChange={this.onPanelChange}
-                      mode='year'
-                      className={style.customCalendar}
-                      monthCellRender={this.monthCellRender}
-                      fullscreen
-                    />
-                  </div>
-                  <div style={{height:'50px', marginLeft:'10px'}}>
-                  </div>
-                </Card>
-            </Col>
+              <Row>
+                <div style={CardHeight}>
+                  <Card
+                    style={{height:'140px', marginBottom:'10px'}}
+                    type="inner"
+                    bodyStyle={{ padding: 25 }}
+                    title={formatMessage({ id: 'report.param.searcher' })}
+                  >
+
+                    <Col span={12}>
+                      <Search
+                        placeholder="Введите ИИН"
+                        enterButton={formatMessage({ id: 'system.search' })}
+                        size="large"
+                        maxLength={12}
+                        style={{ width: 600 }}
+                        onSearch={value => this.searchperson(value)}
+                      />
+                    </Col>
+                    {this.state.person.iin &&<Button
+                      style={{marginLeft:"10px"}}
+                      size={'large'}
+                      onClick={()=>{
+                        if (this.state.iin){
+                          this.props.searchbyiin(this.state.iin)
+                        }
+                      }}
+                    >Просмотр платежей</Button>}
+                  </Card>
+                </div>
+              </Row>
+
+
+
+            <Tabs
+              defaultActiveKey="1"
+              tabPosition={'left'}
+              style={{ height: 'auto' }}
+            >
+              <TabPane tab={formatMessage({ id: this.props.persontitle })}
+                       key="1"
+              >
+                <Row  gutter={12}>
+                  <Col span={12}>
+                    <Card
+                      bodyStyle={{height:'auto'}}
+                      title={formatMessage({ id: this.props.persontitle })}
+                      type="inner"
+                    >
+                      <Table
+                        columns={columns}
+                        dataSource={data}
+                        pagination={{ pageSize: 50, position: 'none' }}
+                        showHeader={false}
+                        size={'default'}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card
+                      bodyStyle={{height:'auto'}}
+                      title={formatMessage({ id: this.props.persontitle })}
+                      type="inner"
+                    >
+                      <Table
+                        columns={columns}
+                        dataSource={dataRPM}
+                        pagination={{ pageSize: 50, position: 'none' }}
+                        showHeader={false}
+                        size={'default'}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab={formatMessage({ id: 'report.param.monthpay' })}
+                       key="2"
+              >
+                <Row>
+                  <Col span={24}>
+                    <Card
+                      style={{height:'600', marginTop: '10px'}}
+                      title={formatMessage({ id: 'report.param.monthpay' })}
+                      type="inner"
+                    >
+                      <Calendar
+                        onPanelChange={this.onPanelChange}
+                        mode='year'
+                        className={style.customCalendar}
+                        monthCellRender={this.monthCellRender}
+                        fullscreen
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </TabPane>
+            </Tabs>
           </Row>
         </Spin>
       </div>

@@ -32,6 +32,7 @@ import classNames from 'classnames';
 import { connect } from 'dva/index';
 import { Animated } from 'react-animated-css';
 import Searcher from '../SearchPhysical/Searcher';
+import SearcherJur from '../SearchPhysical/SearcherJur';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -151,6 +152,10 @@ export default class PaymentsPage extends Component {
         }, {
           'title': 'Отчество',
           'dataIndex': 'secondname',
+          'isVisible': 'true',
+        },  {
+          'title': 'Регион',
+          'dataIndex': 'region',
           'isVisible': 'true',
         }, {
           'title': 'Дата рождения',
@@ -416,7 +421,13 @@ export default class PaymentsPage extends Component {
           label: 'Отчество',
           name: 'secondname',
           type: 'text',
-        }, {
+        },
+        {
+          label: 'Регион',
+          name: 'region',
+          type: 'text',
+        },
+        {
           label: 'Дата рождения',
           name: 'birthdate',
           type: 'betweenDate',
@@ -508,9 +519,9 @@ export default class PaymentsPage extends Component {
     this.setState({
       activeKey: e,
     });
+    //test commit
 
-    if (e !== 'searcher') {
-      console.log(e);
+    if (e !== 'searcher' && e !== 'searcherJur') {
       this.setState({
         sortedInfo: {},
         parameters: {
@@ -671,7 +682,6 @@ export default class PaymentsPage extends Component {
             <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
               <Searcher
                 searchbyiin={(iin) => {
-                  console.log(iin);
                   this.setState({
                     sortedInfo: {},
                     parameters: {
@@ -687,8 +697,34 @@ export default class PaymentsPage extends Component {
                     });
                   });
                 }}
+                persontitle={'report.param.personinform'}
+                item={'Physic'}
               />
             </TabPane>
+
+            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtnJur' })} key="searcherJur">
+              <SearcherJur
+                searchbyiin={(iin) => {
+                  /*this.setState({
+                    sortedInfo: {},
+                    parameters: {
+                      ...this.state.parameters,
+                      'entity': 'mt102',
+                      'filter': { 'iin': iin },
+                      'sort': [],
+                    },
+                  }, () => {
+                    this.loadGridData();
+                    this.setState({
+                      activeKey: 'mt102',
+                    });
+                  });*/
+                }}
+                persontitle={'report.param.personinformJur'}
+                item={'Juridic'}
+              />
+            </TabPane>
+
             <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>

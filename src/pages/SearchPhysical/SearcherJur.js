@@ -278,7 +278,7 @@ class SearcherJur extends Component {
     return (<div>
         <Spin tip="" spinning={this.state.loading}>
           <Row style={{ marginBottom:'10px' }}>
-            <Col span={12}>
+            <Col span={10}>
               <div style={CardHeight}>
                 <Card
                   style={{height:'140px', marginBottom:'10px'}}
@@ -291,7 +291,6 @@ class SearcherJur extends Component {
                     enterButton={formatMessage({ id: 'system.search' })}
                     size="large"
                     maxLength={12}
-                    style={{ width: 400 }}
                     onSearch={value => this.searchperson(value)}
                   />
                   {this.state.person.iin &&<Button
@@ -320,7 +319,7 @@ class SearcherJur extends Component {
                 </Card>
               </div>
             </Col>
-            <Col span={12}>
+            <Col span={14}>
               <Card
                 style={{height:'600', marginLeft:'10px'}}
                 title={formatMessage({ id: 'report.param.monthpay' })}

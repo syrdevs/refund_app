@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import style from './Searcher.less';
+
 import moment from 'moment';
 import {
   Card,
@@ -18,6 +18,7 @@ import {
   Tabs
 } from 'antd';
 import { connect } from 'dva/index';
+import style from './Searcher.less';
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -189,6 +190,7 @@ class Searcher extends Component {
     const CardHeight={height:'auto', marginBottom:'10px'};
     const {person} = this.state;
 
+
     const columns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -233,58 +235,66 @@ class Searcher extends Component {
         key:8,
         name: 'ГРАЖДАНСТВО',
         value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
-      }, {
-        key:9,
-        name: 'СТАТУС СТРАХОВАНИЯ',
-        value: person.firstname ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
-      }, {
-        key:10,
-        name: 'КАТЕГОРИИ',
-        value: person.categories.map((category) =>
-          <div>
-            <div style={{width: '80%',wordWrap: 'break-word'}} color="blue">{category.name.toUpperCase()}</div><br></br>
-          </div>),
-      }, {
-        key:11,
-        name: 'Медицинская организация'.toUpperCase(),
-        value: person.clinic ? person.clinic.toUpperCase() : person.clinic,
-      }, {
-        key:12,
-        name: 'Дата прикрепления'.toUpperCase(),
-        value: person.clinic_date ? person.clinic_date.toUpperCase() : person.clinic_date,
       }
       ];
 
+    const secondData = [{
+      key:9,
+      name: 'СТАТУС СТРАХОВАНИЯ',
+      value: person.firstname ? (person.status ? formatMessage({ id: 'report.param.medinsstattrue' }).toUpperCase() : formatMessage({ id: 'report.param.medinsstatfalse' }).toUpperCase()): '',
+    }, {
+      key:10,
+      name: 'ЛЬГОТНАЯ КАТЕГОРИЯ',
+      value: person.categories.map((category) =>
+        <div>
+          <div style={{width: '80%',wordWrap: 'break-word'}} color="blue">{category.name.toUpperCase()}</div><br></br>
+        </div>),
+    }, {
+      key:11,
+      name: 'Медицинская организация'.toUpperCase(),
+      value: person.clinic ? person.clinic.toUpperCase() : person.clinic,
+    }, {
+      key:12,
+      name: 'Дата прикрепления'.toUpperCase(),
+      value: person.clinic_date ? person.clinic_date.toUpperCase() : person.clinic_date,
+    }, {
+      key:13,
+      name: 'Категория потребителя'.toUpperCase(),
+      value: '',
+    }
+    ]
+
+    /**/
     const dataRPM = [{
-      key:1,
+      key:14,
       name: 'ИИН',
       value: person.iin ? person.iin.toUpperCase() : person.iin,
     }, {
-      key:2,
+      key:15,
       name: 'ФАМИЛИЯ',
       value: person.lastname ? person.lastname.toUpperCase() : person.lastname,
     },  {
-      key:3,
+      key:16,
       name: 'ИМЯ',
       value: person.firstname ? person.firstname.toUpperCase() : person.firstname,
     }, {
-      key:4,
+      key:17,
       name: 'ОТЧЕСТВО',
       value: person.secondname ? person.secondname.toUpperCase() : person.secondname,
     }, {
-      key:5,
+      key:18,
       name: 'ДАТА РОЖДЕНИЯ',
       value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate,
     }, {
-      key:6,
+      key:19,
       name: 'ПОЛ',
       value: person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu,
     }, {
-      key:7,
+      key:20,
       name: 'НАЦИОНАЛЬНОСТЬ',
       value: person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu ,
     }, {
-      key:8,
+      key:21,
       name: 'ГРАЖДАНСТВО',
       value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
     }
@@ -341,7 +351,7 @@ class Searcher extends Component {
                   <Col span={12}>
                     <Card
                       bodyStyle={{height:'auto'}}
-                      title={formatMessage({ id: this.props.persontitle })}
+                      title={formatMessage({ id: 'menu.payments.searcherRPM' })}
                       type="inner"
                     >
                       <Table
@@ -356,12 +366,28 @@ class Searcher extends Component {
                   <Col span={12}>
                     <Card
                       bodyStyle={{height:'auto'}}
-                      title={formatMessage({ id: this.props.persontitle })}
+                      title={formatMessage({ id: 'menu.payments.searcherGBDFL' })}
                       type="inner"
                     >
                       <Table
                         columns={columns}
                         dataSource={dataRPM}
+                        pagination={{ pageSize: 50, position: 'none' }}
+                        showHeader={false}
+                        size={'default'}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={24}>
+                    <Card
+                      style={{marginTop:'10px'}}
+                      bodyStyle={{height:'auto'}}
+                      type="inner"
+                    >
+                      <Table
+                        columns={columns}
+                        dataSource={secondData}
+                        className={'customanttable'}
                         pagination={{ pageSize: 50, position: 'none' }}
                         showHeader={false}
                         size={'default'}
@@ -391,6 +417,13 @@ class Searcher extends Component {
                   </Col>
                 </Row>
               </TabPane>
+              <TabPane
+                tab={formatMessage({ id: 'menu.payments.medicalsearcher' })}
+                key="3"
+              >
+                <div></div>
+              </TabPane>
+
             </Tabs>
           </Row>
         </Spin>

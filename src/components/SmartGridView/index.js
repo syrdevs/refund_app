@@ -231,6 +231,7 @@ export default class SmartGridView extends Component {
     local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
     let _columns = local_helper.get(this.props.name);
 
+
     let tableOptions = {
       bordered: true,
       rowClassName: styles.smart_grid_view_container,
@@ -244,6 +245,9 @@ export default class SmartGridView extends Component {
           this.props.onSort(sorter);
       },
     };
+   /* if (this.props.rowClassName){
+      tableOptions.rowClassName = this.props.rowClassName;
+    }*/
 
 
     if (this.props.fixedHeader) {
@@ -328,10 +332,15 @@ export default class SmartGridView extends Component {
         ...this.props.scroll,
       };
     }
+    if (!this.props.rowClassName) {
+      tableOptions.rowClassName = (record, index) => {
+        return this.state.selectedRow === index ? 'active' : '';
+      };
+    }
+    else {
+      tableOptions.rowClassName = this.props.rowClassName;
+    }
 
-    tableOptions.rowClassName = (record, index) => {
-      return this.state.selectedRow === index ? 'active' : '';
-    };
 
     tableOptions.onRow = (record, index) => ({
       onClick: () => {

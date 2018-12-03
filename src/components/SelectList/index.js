@@ -63,8 +63,20 @@ export default class SelectList extends Component {
     }));
   };
 
+  componentDidUpdate = () => {
+    const { isClearFilter } = this.props;
+
+    if (isClearFilter && this.state.inputEl.value !== null) {
+      this.setState({
+        inputEl: {
+          value: null,
+        },
+      });
+    }
+  };
 
   render = () => {
+
 
     const children = [];
     this.state.selectedRecords.forEach((record, index) => {

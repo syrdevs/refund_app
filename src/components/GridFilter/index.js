@@ -26,7 +26,6 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import SelectList from '@/components/SelectList';
 
 
-
 import componentLocal from '../../locales/components/componentLocal';
 import { Animated } from 'react-animated-css';
 
@@ -159,7 +158,8 @@ export default class GridFilter extends Component {
   }
 
   componentDidUpdate() {
-    const { dispatch } = this.props;
+
+    const { dispatch, clearFilterAction } = this.props;
     const { isClearFilter, fields } = this.state;
 
     if (isClearFilter) {
@@ -191,6 +191,15 @@ export default class GridFilter extends Component {
       });
     }
 
+    if (this.props.miniForm) {
+      this.applyFilters(true);
+
+      if (clearFilterAction) {
+        this.clearFilters();
+      }
+    }
+
+
   }
 
   fieldOnChange = (filterItem, value) => {
@@ -207,7 +216,7 @@ export default class GridFilter extends Component {
   withmaxfieldOnChange = (filterItem, value, max) => {
 
     const { formFilters } = this.state;
-    if (value.length<(max+1)) {
+    if (value.length < (max + 1)) {
       this.setState({
         formFilters: {
           ...formFilters,
@@ -217,9 +226,9 @@ export default class GridFilter extends Component {
     }
   };
 
-  applyFilters = () => {
+  applyFilters = (callPropFunc) => {
     const { fields, formFilters } = this.state;
-    const { applyFilter } = this.props;
+    const { applyFilter, miniForm } = this.props;
 
     let filterData = {};
     Object.keys(fields).forEach((field) => {
@@ -250,7 +259,12 @@ export default class GridFilter extends Component {
     });
 
 
-    applyFilter(filterData);
+    if (applyFilter)
+      applyFilter(filterData);
+
+    if (miniForm) {
+      this.props.filterOnChange(filterData);
+    }
   };
 
   clearFilters = () => {
@@ -268,9 +282,11 @@ export default class GridFilter extends Component {
 
     clearFilter();
   };
+
   disabledDate(current) {
     return current && current >= moment().endOf('day');
   }
+
   renderFilter = (filterItem, _index) => {
 
     const { dateFormat, references } = this.props;
@@ -286,13 +302,12 @@ export default class GridFilter extends Component {
           },
           format: dateFormat,
           onChange: (moment, dateString) => {
-            console.log(dateString);
-            //this.fieldOnChange(filterItem, dateString);
+            this.fieldOnChange(filterItem, dateString);
           },
         };
 
         if (isClearFilter) {
-          params.value = [];
+          params.value = null;
         }
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
@@ -301,7 +316,6 @@ export default class GridFilter extends Component {
               <LocaleProvider locale={componentLocal}>
                 <DatePicker   {...params}
                               format={'DD.MM.YYYY'}
-                  //disabled={fields[filterItem.name].disabled}
                 />
               </LocaleProvider>
             </Col>
@@ -335,11 +349,11 @@ export default class GridFilter extends Component {
               <LocaleProvider locale={componentLocal}>
                 <RangePicker   {...RangeDateProps}
                                format={'DD.MM.YYYY'}
-                               disabledDate={this.disabledDate}
                                placeholder={[
                                  formatMessage({ id: 'datepicker.start.label' }),
                                  formatMessage({ id: 'datepicker.end.label' }),
                                ]}
+                               disabledDate={this.disabledDate}
                                disabled={fields[filterItem.name].disabled}/>
               </LocaleProvider>
             </Col>
@@ -361,16 +375,22 @@ export default class GridFilter extends Component {
         </div>);
       }
       case 'text': {
-        console.log()
-        if (filterItem.withMax){
+
+        let params = {};
+
+        if(isClearFilter){
+          params.value = null;
+        }
+
+        if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
-            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
+            <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
               this.withmaxfieldOnChange(filterItem, e.target.value, filterItem.withMax);
             }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
         }
         else {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
-            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
+            <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
               this.fieldOnChange(filterItem, e.target.value);
             }} value={formFilters[filterItem.name]} style={{ width: '100%' }}/></div>);
         }
@@ -429,9 +449,14 @@ export default class GridFilter extends Component {
       case 'selectlist': {
         let params = {};
 
-        return (<div key={_index} style={mBottom}>{filterItem.label}:<SelectList name={filterItem.name}
+        if(isClearFilter){
+          params.isClearFilter = isClearFilter;
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:<SelectList {...params} name={filterItem.name}
                                                                                  onSelect={(record) => {
-                                                                                   console.log(record);
+                                                                                   //to do filter
+                                                                                   //console.log(record);
                                                                                  }}/></div>);
       }
 
@@ -462,13 +487,13 @@ export default class GridFilter extends Component {
       <Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
         <Form layout={'vertical'}>
           {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
-          <Divider style={{ margin: '16px 10px 0 0' }}/>
-          <Button style={{ margin: '10px 0 0 0px' }} type='primary'
-                  onClick={this.applyFilters}>
+          {this.props.miniForm !== true && <Divider style={{ margin: '16px 10px 0 0' }}/>}
+          {this.props.miniForm !== true && < Button style={{ margin: '10px 0 0 0px' }} type='primary'
+                                                    onClick={this.applyFilters}>
             {formatMessage({ id: 'system.search' })}
-          </Button>
-          <Button style={{ margin: '10px 0 0 5px' }}
-                  onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>
+          </Button>}
+          {this.props.miniForm !== true && <Button style={{ margin: '10px 0 0 5px' }}
+                                                   onClick={this.clearFilters}>{formatMessage({ id: 'system.clear' })}</Button>}
         </Form>
       </Spin>
     );

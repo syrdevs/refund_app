@@ -20,6 +20,7 @@ import {
   Divider,
 } from 'antd';
 import GridFilter from '@/components/GridFilter';
+import GridFilterCollapsible from '@/components/GridFilterCollapsible';
 import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { connect } from 'dva/index';
@@ -37,54 +38,70 @@ export default class ContractMain extends Component {
 
     filterForm: [
       {
-        name: 'Number',
-        label: 'Номер договора',
-        type: 'text',
+        title: 'Договор фильтр',
+        rootKey: 'dogovorId',
+        formElements: [
+          {
+            name: 'Number',
+            label: 'Номер договора',
+            type: 'text',
+          },
+          {
+            name: 'ParentContractId',
+            label: 'Номер родительского договора ',
+            type: 'text',
+          },
+          {
+            name: 'knp',
+            label: 'Вид договора',
+            type: 'selectlist',
+          },
+          {
+            name: 'knp',
+            label: 'Рабочий период (год)',
+            type: 'selectlist',
+          },
+          {
+            name: 'knp',
+            label: 'Заявки на объем',
+            type: 'selectlist',
+          },
+          {
+            name: 'knp',
+            label: 'Протокол распределения объемов',
+            type: 'selectlist',
+          },
+          {
+            name: 'Date',
+            label: 'Дата заключения договора',
+            type: 'date',
+          },
+          {
+            name: 'DateBegin',
+            label: 'Дата начала действия договора',
+            type: 'date',
+          },
+          {
+            name: 'DateEnd',
+            label: 'Дата окончания действия договора',
+            type: 'date',
+          },
+          {
+            name: 'OwnerDepartment',
+            label: 'Подразделение ФСМС',
+            type: 'selectlist',
+          }],
       },
       {
-        name: 'ParentContractId',
-        label: 'Номер родительского договора ',
-        type: 'text',
-      },
-      {
-        name: 'knp',
-        label: 'Вид договора',
-        type: 'selectlist',
-      },
-      {
-        name: 'knp',
-        label: 'Рабочий период (год)',
-        type: 'selectlist',
-      },
-      {
-        name: 'knp',
-        label: 'Заявки на объем',
-        type: 'selectlist',
-      },
-      {
-        name: 'knp',
-        label: 'Протокол распределения объемов',
-        type: 'selectlist',
-      },
-      {
-        name: 'Date',
-        label: 'Дата заключения договора',
-        type: 'date',
-      },
-      {
-        name: 'DateBegin',
-        label: 'Дата начала действия договора',
-        type: 'date',
-      },
-      {
-        name: 'DateEnd',
-        label: 'Дата окончания действия договора',
-        type: 'date',
-      },
-      {
-        name: 'OwnerDepartment',
-        label: 'Подразделение ФСМС',
-        type: 'selectlist',
+        title: 'Заявка фильтр',
+        rootKey: 'requestId',
+        formElements: [
+          {
+            name: 'Number',
+            label: 'Номер договора',
+            type: 'text',
+          },
+        ],
       },
     ],
 
@@ -196,7 +213,7 @@ export default class ContractMain extends Component {
   };
 
   applyFilter = (filters) => {
-    console.log('applyFilter');
+    console.log(filters);
   };
 
 
@@ -230,12 +247,11 @@ export default class ContractMain extends Component {
               title={formatMessage({ id: 'system.filter' })}
               extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                 icon={faTimes}/></Icon>}>
-              <GridFilter
-                collapsible={true}
+              {this.state.filterContainer === 6 && <GridFilterCollapsible
                 clearFilter={this.clearFilter}
                 applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
                 filterForm={this.state.filterForm}
-                dateFormat={dateFormat}/>
+                dateFormat={dateFormat}/>}
             </Card>
           </Col>
           <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>

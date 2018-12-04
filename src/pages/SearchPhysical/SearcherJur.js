@@ -285,6 +285,15 @@ class SearcherJur extends Component {
                   type="inner"
                   bodyStyle={{ padding: 25 }}
                   title={formatMessage({ id: 'report.param.searcher' })}
+                  extra={<div>{true &&<Button
+                    style={{marginLeft:"10px"}}
+                    size={'large'}
+                    onClick={()=>{
+                      if (this.state.iin){
+                        this.props.searchbyiin(this.state.iin)
+                      }
+                    }}
+                  >Просмотр платежей</Button>}</div>}
                 >
                   <Search
                     placeholder="Введите БИН"
@@ -293,15 +302,7 @@ class SearcherJur extends Component {
                     maxLength={12}
                     onSearch={value => this.searchperson(value)}
                   />
-                  {this.state.person.iin &&<Button
-                    style={{marginLeft:"10px"}}
-                    size={'large'}
-                    onClick={()=>{
-                      if (this.state.iin){
-                        this.props.searchbyiin(this.state.iin)
-                      }
-                    }}
-                  >Просмотр платежей</Button>}
+
                 </Card>
                 <Card
                   bodyStyle={{height:'auto'}}

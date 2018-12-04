@@ -116,7 +116,7 @@ class Searcher extends Component {
         },
       }).then(() => {
         if (JSON.stringify(this.props.universal.searcherdata)!=="{}" && this.props.universal.searcherdata) {
-            this.setState({
+           this.setState({
               person: this.props.universal.searcherdata
             }, () => {
               this.payesSearcher(moment(new Date()).year());
@@ -245,10 +245,10 @@ class Searcher extends Component {
     }, {
       key:10,
       name: 'ЛЬГОТНАЯ КАТЕГОРИЯ',
-      value: person.categories.map((category) =>
+      value: person.categories!==undefined ? person.categories.map((category) =>
         <div>
           <div style={{width: '80%',wordWrap: 'break-word'}} color="blue">{category.name.toUpperCase()}</div><br></br>
-        </div>),
+        </div>) : '',
     }, {
       key:11,
       name: 'Медицинская организация'.toUpperCase(),
@@ -314,7 +314,7 @@ class Searcher extends Component {
                     title={formatMessage({ id: 'report.param.searcher' })}
                   >
 
-                    <Col span={12}>
+                    <Col span={18}>
                       <Search
                         placeholder="Введите ИИН"
                         enterButton={formatMessage({ id: 'system.search' })}
@@ -322,17 +322,19 @@ class Searcher extends Component {
                         maxLength={12}
                         style={{ width: 600 }}
                         onSearch={value => this.searchperson(value)}
+
                       />
+                      {this.state.person.iin &&<Button
+                        style={{marginLeft:"10px"}}
+                        size={'large'}
+                        onClick={()=>{
+                          if (this.state.iin){
+                            this.props.searchbyiin(this.state.iin)
+                          }
+                        }}
+                      >Просмотр платежей</Button>}
                     </Col>
-                    {this.state.person.iin &&<Button
-                      style={{marginLeft:"10px"}}
-                      size={'large'}
-                      onClick={()=>{
-                        if (this.state.iin){
-                          this.props.searchbyiin(this.state.iin)
-                        }
-                      }}
-                    >Просмотр платежей</Button>}
+
                   </Card>
                 </div>
               </Row>

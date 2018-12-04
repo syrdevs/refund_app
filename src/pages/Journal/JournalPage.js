@@ -47,7 +47,7 @@ export default class JournalPage extends Component {
           order: 8,
           key: 'fio',
           isVisible: true,
-          width: 150,
+          width: 200,
           render: (item) => {
             //console.log(i);
             return item.refundId.personSurname + ' ' + item.refundId.personFirstname + ' ' + item.refundId.personPatronname;
@@ -57,22 +57,26 @@ export default class JournalPage extends Component {
       columns: [{
         'title': 'Дата и время',
         'dataIndex': 'entryDate',
+        'width': 200,
         'isVisible': true,
       }, {
         'title': 'Номер заявки',
         'dataIndex': 'refundId.applicationId.appNumber',
+        'width': 200,
         'isVisible': true,
       }, {
         'title': 'Референс ГК',
         'dataIndex': 'refundId.gcvpReference',
+        'width': 200,
         'isVisible': true,
       }, {
         'title': 'Номер ПП ГК',
         'dataIndex': 'refundId.gcvpOrderNum',
+        'width': 200,
         'isVisible': true,
       }, {
         'title': 'Дата ПП ГК',
-        'width': 120,
+        'width': 200,
         'dataIndex': 'refundId.gcvpOrderDate',
         'isVisible': true,
       },
@@ -93,17 +97,17 @@ export default class JournalPage extends Component {
           'dataIndex': 'receiver_bik',
         },*/ {
           'title': 'Действие',
-          'width': 120,
+          'width': 200,
           'dataIndex': 'dactionId.nameRu',
         },
         {
           'title': 'Действие(до)',
-          'width': 120,
+          'width': 200,
           'dataIndex': 'prev_dactionId.nameRu',
         },
         {
           'title': 'Пользователь',
-          'width': 120,
+          'width': 200,
           'dataIndex': 'userId.userName',
         },
       ],
@@ -200,6 +204,46 @@ export default class JournalPage extends Component {
 
   };
 
+  exportToExcel = () => {
+
+    let authToken = localStorage.getItem('token');
+    let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
+
+
+    fetch('/api/refund/exportToExcel',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        },
+        method: 'post',
+        body: JSON.stringify({
+          'entityClass': 'refund_history',
+          'src': {
+            'searched': true,
+            'data': this.state.pagingConfig.src.data,
+          },
+          'columns': [].concat(columns.filter(column => column.isVisible)),
+        }),
+      })
+      .then(response => response.blob())
+      .then(responseBlob => {
+
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function() {
+          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
+          var url = URL.createObjectURL(blob);
+          window.open(url, '_self');
+        });
+        reader.readAsArrayBuffer(responseBlob);
+
+        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
+           url = window.URL.createObjectURL(blob);
+         window.open(url, '_self');*/
+      });
+
+  };
+
   componentDidMount() {
     this.loadMainGridData();
   }
@@ -259,7 +303,9 @@ export default class JournalPage extends Component {
           columns={this.state.columns}
           actionColumns={this.state.fcolumn}
           sorted={true}
-          showTotal={false}
+          showTotal={true}
+          showExportBtn
+          actionExport={() => this.exportToExcel()}
           dataSource={{
             total: dataStore.totalElements,
             pageSize: this.state.pagingConfig.length,

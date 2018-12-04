@@ -124,10 +124,10 @@ export default class PaymentsPage extends Component {
           'title': 'Дата поступления информации',
           'dataIndex': 'createdOn',
         },
-        /*{
+        {
           'title': 'Статус загрузки',
-          'dataIndex': 'mt102LoadStatus',
-        },*/
+          'dataIndex': 'mt102LoadStatus.text',
+        },
         {
           'title': 'Статус загрузки (сообщение)',
           'dataIndex': 'mt102LoadDescription',
@@ -137,7 +137,7 @@ export default class PaymentsPage extends Component {
         }
         ],
       staticmt100funcColuns: [
-        {
+        /*{
           title: 'Статус загрузки',
           key: 'mt102LoadStatus',
           order: 13,
@@ -146,7 +146,7 @@ export default class PaymentsPage extends Component {
           render: (item) => {
             return item.mt102LoadStatus===0 ? formatMessage({ id: 'menu.payments.status0' }): item.mt102LoadStatus===1? formatMessage({ id: 'menu.payments.status1' }): formatMessage({ id: 'menu.payments.status2' });
           },
-        },
+        },*/
         //'menu.payments.status0'
         /*{
           title: 'Статус загрузки (сообщение)',

@@ -201,11 +201,11 @@ class SearcherJur extends Component {
         name: 'БИК',
         value: jur.senderBankBik,
       },
-      {
+      /*{
         key:3,
         name: 'РЕГИОН',
         value: '',
-      },
+      },*/
       {
         key:4,
         name: 'КОЛИЧЕСТВО ПЛАТЕЖЕЙ',
@@ -228,25 +228,30 @@ class SearcherJur extends Component {
                   type="inner"
                   bodyStyle={{ padding: 25 }}
                   title={formatMessage({ id: 'report.param.searcher' })}
-                  extra={<div>
-                    {this.state.jur.senderBin &&<Button
-                    style={{marginLeft:"10px"}}
-                    size={'large'}
-                    onClick={()=>{
-                      if (this.state.bin){
-                        this.props.searchbybin(this.state.bin)
-                      }
-                    }}
-                  >Просмотр платежей</Button>}</div>}
                 >
-                  <Search
-                    placeholder="Введите БИН"
-                    enterButton={formatMessage({ id: 'system.search' })}
-                    size="large"
-                    maxLength={12}
-                    onSearch={value => this.searchperson(value)}
-                  />
+                  <div style={{display:'block'}}>
+                    <div style={{float:'left', width:this.state.jur.senderBin?'70%':'100%'}}>
+                      <Search
+                        placeholder="Введите БИН"
+                        enterButton={formatMessage({ id: 'system.search' })}
+                        size="large"
+                        maxLength={12}
+                        onSearch={value => this.searchperson(value)}
+                      />
+                    </div>
+                    {this.state.jur.senderBin &&<div
+                      style={{float:'left', width:'30%', paddingLeft:'10px'}}>
+                      <Button
+                        size={'large'}
+                        onClick={()=>{
+                          if (this.state.bin){
+                            this.props.searchbybin(this.state.bin)
+                          }
+                        }}
+                      >Просмотр платежей</Button>
+                    </div>}
 
+                  </div>
                 </Card>
                 <Card
                   bodyStyle={{height:'auto'}}

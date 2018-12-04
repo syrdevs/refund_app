@@ -334,10 +334,23 @@ export async function getSearcherCalendar(params) {
     body: params.payload,
   });
 }
+export async function getSearcherJurCalendar(params) {
+  return request('/api/rpmu/senderPeriodList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 
 
 export async function getSearcherData(params) {
   return request('/api/external/gbdflGetPerson', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+export async function getSearcherJur(params) {
+  return request('/api/external/rpmuGetSender', {
     method: 'POST',
     body: params.payload,
   });

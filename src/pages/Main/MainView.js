@@ -871,6 +871,12 @@ class MainView extends Component {
                             }]}
                           columns={rpmuColumns}
                           rowSelection={false}
+                          rowClassName={(record) => {
+                            if (record.refundExist==="True") {
+                              return 'greenRow';
+                            }
+                          }
+                          }
                           hideFilterBtn={true}
                           hideRefreshBtn={true}
                           dataSource={{

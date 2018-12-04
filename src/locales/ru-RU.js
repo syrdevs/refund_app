@@ -89,6 +89,7 @@ export default {
   'menu.options': 'Настройки',
   'menu.counteragent': 'Субъекты здравоохранения',
   'menu.requests.nulldate': 'Установить дату',
+  'menu.requests.servicenote': 'Cформировать служебную записку',
   'menu.mainview': 'РЕЕСТР ВОЗВРАТОВ',
   'menu.mainview.paylists': 'Платежи',
   'menu.mainview.mt102': 'МТ102',

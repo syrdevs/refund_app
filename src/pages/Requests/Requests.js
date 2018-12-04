@@ -6,6 +6,8 @@ import {
   Row,
   Col,
   Spin,
+  Dropdown,
+  Menu
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva';
@@ -16,6 +18,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { Animated } from 'react-animated-css';
+import saveAs from 'file-saver';
+import moment from 'moment';
 
 @connect(({ universal2, universal, loading }) => ({
   universal2,
@@ -332,8 +336,50 @@ class Requests extends Component {
            url = window.URL.createObjectURL(blob);
          window.open(url, '_self');*/
       });
-
   };
+
+  getservicenote = () => {
+    let filename = "";
+    let authToken = localStorage.getItem('token');
+    let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
+
+    fetch('/api/refund/get/oletter',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        },
+        method: 'post',
+        body: JSON.stringify({
+          'src': {
+            'searched': true,
+            'data': this.state.pagingConfig.src.data,
+          }
+        }),
+      })
+      .then(response => {if(response.ok){
+        let disposition = response.headers.get("content-disposition");
+
+        filename = this.getFileNameByContentDisposition(disposition);
+        console.log(filename);
+        return response.blob();
+      }})
+      .then(responseBlob => {saveAs(responseBlob, filename);});
+  };
+  getFileNameByContentDisposition(contentDisposition){
+    var regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    var matches = regex.exec(contentDisposition);
+    var filename;
+    var filenames;
+    if (matches != null && matches[3]) {
+      filename = matches[3].replace(/['"]/g, '');
+      var match = regex.exec(filename);
+      if (match != null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+      }
+    }
+    return decodeURI(filenames);
+  }
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
@@ -524,6 +570,7 @@ class Requests extends Component {
                   sortedInfo={this.state.sortedInfo}
                   showTotal={true}
                   showExportBtn={true}
+
                   dataSource={{
                     total: dataStore.totalElements,
                     pageSize: this.state.pagingConfig.length,
@@ -534,6 +581,25 @@ class Requests extends Component {
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
                   }}
+                  addonButtons={[
+                    <Dropdown key={'dropdown'} trigger={['click']} overlay={
+                      <Menu>
+
+                      <Menu.Item key="4" onClick={() => {
+
+                        this.getservicenote();
+                      }}>
+                        {formatMessage({ id: 'menu.requests.servicenote' })}
+                      </Menu.Item>
+                    </Menu>}>
+                      <Button
+                        key='action'
+                      >{formatMessage({ id: 'menu.mainview.actionBtn' })}
+                      <Icon
+                        type="down"/>
+                      </Button>
+                    </Dropdown>,
+                  ]}
                   onSort={(column) => {
 
                     if (Object.keys(column).length === 0) {

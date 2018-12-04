@@ -27,6 +27,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva';
 import { Animated } from 'react-animated-css';
+import saveAs from 'file-saver';
+import moment from 'moment';
 
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
@@ -205,10 +207,9 @@ export default class JournalPage extends Component {
   };
 
   exportToExcel = () => {
-
+    let filename = "";
     let authToken = localStorage.getItem('token');
     let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
-
 
     fetch('/api/refund/exportToExcel',
       {
@@ -219,6 +220,7 @@ export default class JournalPage extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': 'refund_history',
+          'fileName':'Журнал действий',
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
@@ -226,23 +228,28 @@ export default class JournalPage extends Component {
           'columns': [].concat(columns.filter(column => column.isVisible)),
         }),
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
+      .then(response => {if(response.ok){
+        let disposition = response.headers.get("content-disposition");
 
-        var reader = new FileReader();
-        reader.addEventListener('loadend', function() {
-          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-          var url = URL.createObjectURL(blob);
-          window.open(url, '_self');
-        });
-        reader.readAsArrayBuffer(responseBlob);
-
-        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-           url = window.URL.createObjectURL(blob);
-         window.open(url, '_self');*/
-      });
-
+        filename = this.getFileNameByContentDisposition(disposition);
+        return response.blob();
+      }})
+      .then(responseBlob => {saveAs(responseBlob, moment().format('DDMMYYYY')+filename);});
   };
+  getFileNameByContentDisposition(contentDisposition){
+    var regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    var matches = regex.exec(contentDisposition);
+    var filename;
+    var filenames;
+    if (matches != null && matches[3]) {
+      filename = matches[3].replace(/['"]/g, '');
+      var match = regex.exec(filename);
+      if (match != null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+      }
+    }
+    return decodeURI(filenames);
+  }
 
   componentDidMount() {
     this.loadMainGridData();

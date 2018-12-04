@@ -525,8 +525,7 @@ export default class PaymentsPage extends Component {
           fixedHeader={true}
           rowSelection={true}
           rowClassName={(record) => {
-            console.log(record.id);
-              if (record.id==='73709a55-19d2-4f59-9ac1-0001e4dc43be' || record.id==='ac0af469-1fa6-4e58-b47c-00101b3fa264') {
+              if (record.isRefunded) {
                 return 'redRow';
               }
             }

@@ -712,21 +712,21 @@ export default class PaymentsPage extends Component {
 
             <TabPane tab={formatMessage({ id: 'menu.payments.searchbtnJur' })} key="searcherJur">
               <SearcherJur
-                searchbyiin={(iin) => {
-                  /*this.setState({
+                searchbybin={(bin) => {
+                  this.setState({
                     sortedInfo: {},
                     parameters: {
                       ...this.state.parameters,
-                      'entity': 'mt102',
-                      'filter': { 'iin': iin },
+                      'entity': 'mt100',
+                      'filter': { 'senderBin': bin },
                       'sort': [],
                     },
                   }, () => {
                     this.loadGridData();
                     this.setState({
-                      activeKey: 'mt102',
+                      activeKey: 'mt100',
                     });
-                  });*/
+                  });
                 }}
                 persontitle={'report.param.personinformJur'}
                 item={'Juridic'}

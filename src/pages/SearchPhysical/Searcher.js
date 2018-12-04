@@ -15,7 +15,8 @@ import {
   Spin,
   Form,
   Tag,
-  Tabs
+  Tabs,
+  Modal
 } from 'antd';
 import { connect } from 'dva/index';
 import style from './Searcher.less';
@@ -76,22 +77,11 @@ class Searcher extends Component {
     };
   }
 
-  formfield = (e) => {
-    this.setState({
-      [e.target.name]:e.target.value
-    })
-  }
-
-  ChangeDate(value) {
-    this.setState({
-      bdate: value
-    })
-  }
 
   monthCellRender=(value)=>{
-    let isPayed  = false;
+    /*let isPayed  = false;
     this.state.payes.map((item) => {
-      if(item===value.format('MMYYYY')) {
+      if(item.period===value.format('MMYYYY')) {
         isPayed=true
       }
     });
@@ -101,8 +91,38 @@ class Searcher extends Component {
     else {
       return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
     }
+*/
+    let result=(<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>);
+    this.state.payes.forEach((item) => {
+      if(item.period===value.format('MMYYYY')) {
+        result= (
+          <div
+            style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%', padding: '10px'}}
+            onClick={()=>{this.ShowDetailofMonth(item.detailList, value)}}
+          >
+            <p>Сумма: {item.totalAmount}</p>
+            <p>Кол-во: {item.totalElements}</p>
+          </div>
+        )
+      }
+    });
+    return result;
   }
 
+    ShowDetailofMonth=(value, date)=>{
+      if(value.length) {
+        Modal.info({
+          title: 'Платежи в разрезе КНП за '+date.format('MMMM'),
+          content: (
+            <div>
+              {value.map(item=>(<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
+            </div>
+          ),
+          onOk() {
+          },
+        });
+      }
+    }
   searchperson=(value)=>{
     const { dispatch } = this.props;
     this.setState({

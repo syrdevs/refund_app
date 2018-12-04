@@ -93,11 +93,6 @@ class SearcherJur extends Component {
         content: (
           <div>
             {value.map(item=>(<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
-           {/* <p>121. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>122. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>*/}
           </div>
         ),
         onOk() {
@@ -238,8 +233,8 @@ class SearcherJur extends Component {
                     style={{marginLeft:"10px"}}
                     size={'large'}
                     onClick={()=>{
-                      if (this.state.iin){
-                        this.props.searchbyiin(this.state.iin)
+                      if (this.state.bin){
+                        this.props.searchbybin(this.state.bin)
                       }
                     }}
                   >Просмотр платежей</Button>}</div>}

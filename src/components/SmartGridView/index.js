@@ -160,6 +160,8 @@ export default class SmartGridView extends Component {
 
   onSelectColumn = (columnIndex) => {
 
+    const { onColumnsChange } = this.props;
+
     let local_helper = this.StorageHelper();
     let StorageColumns = local_helper.get(this.props.name);
 
@@ -174,6 +176,10 @@ export default class SmartGridView extends Component {
     this.setState({
       isColumnChanged: !this.state.isColumnChanged,
     });
+
+    if (onColumnsChange)
+      onColumnsChange(!this.state.isColumnChanged);
+
   };
 
   onSelectChange = (selectedRowKeys) => {
@@ -245,9 +251,9 @@ export default class SmartGridView extends Component {
           this.props.onSort(sorter);
       },
     };
-   /* if (this.props.rowClassName){
-      tableOptions.rowClassName = this.props.rowClassName;
-    }*/
+    /* if (this.props.rowClassName){
+       tableOptions.rowClassName = this.props.rowClassName;
+     }*/
 
 
     if (this.props.fixedHeader) {

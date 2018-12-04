@@ -111,7 +111,7 @@ export default class GridFilterCollapsible extends Component {
       </Panel>);
     });
 
-    return (<div><Collapse accordion defaultActiveKey={['0']}>
+    return (<div><Collapse bordered={false} accordion defaultActiveKey={['0']}>
       {collapsiblePanels}
     </Collapse>
       <Form layout={'vertical'}>

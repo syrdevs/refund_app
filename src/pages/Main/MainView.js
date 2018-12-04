@@ -10,6 +10,7 @@ import {
   Pagination,
   Row,
   Col,
+  Upload,
   Form,
   Modal,
   Input,
@@ -35,6 +36,7 @@ import { getAuthority } from '../../utils/authority';
 import ModalGraphView from '../../components/ModalGraphView';
 import { Animated } from 'react-animated-css';
 import componentLocal from '../../locales/components/componentLocal';
+import ImportXMLModal from './ImportXMLModal';
 
 
 const FormItem = Form.Item;
@@ -58,6 +60,10 @@ class MainView extends Component {
     super(props);
 
     this.state = {
+
+      ImportXMLModal: {
+        visible: false,
+      },
 
       ModalChangeDateRefund: false,
 
@@ -138,31 +144,32 @@ class MainView extends Component {
             style={{ color: this.setColor(value.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
             href="#">{value.dappRefundStatusId.nameRu}</a>,
         }],
-      columns: [{
-        'title': 'Номер заявки',
-        'isVisible': true,
-        'dataIndex': 'applicationId.appNumber',
-      }, {
-        'title': 'Дата заявления плательщика',
-        'isVisible': true,
-        'dataIndex': 'appPayerDate',
-      }, {
-        'title': 'Дата заявки',
-        'isVisible': true,
-        'dataIndex': 'applicationId.appDate',
-      }, {
-        'title': 'Дата поступления заявления в Фонд',
-        'isVisible': true,
-        'dataIndex': 'receiptAppdateToFsms',
-      }, {
-        'title': 'Дата поступления',
-        'isVisible': true,
-        'dataIndex': 'entryDate',
-      }, {
-        'title': 'Крайняя дата исполнения заявки',
-        'isVisible': true,
-        'dataIndex': 'appEndDate',
-      },
+      columns: [
+        {
+          'title': 'Номер заявки',
+          'isVisible': true,
+          'dataIndex': 'applicationId.appNumber',
+        }, {
+          'title': 'Дата заявления плательщика',
+          'isVisible': true,
+          'dataIndex': 'appPayerDate',
+        }, {
+          'title': 'Дата заявки',
+          'isVisible': true,
+          'dataIndex': 'applicationId.appDate',
+        }, {
+          'title': 'Дата поступления заявления в Фонд',
+          'isVisible': true,
+          'dataIndex': 'receiptAppdateToFsms',
+        }, {
+          'title': 'Дата поступления',
+          'isVisible': true,
+          'dataIndex': 'entryDate',
+        }, {
+          'title': 'Дата исполнения заявки',
+          'isVisible': true,
+          'dataIndex': 'appEndDate',
+        },
         {
           'title': 'Сумма возврата',
           'isVisible': true,
@@ -753,6 +760,10 @@ class MainView extends Component {
 
   };
 
+  importXmlAction = () => {
+    this.setState(prevState => ({ ImportXMLModal: { visible: true } }));
+  };
+
   render() {
 
     const dateFormat = 'DD.MM.YYYY';
@@ -764,6 +775,12 @@ class MainView extends Component {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.mainview' })}>
+
+        {this.state.ImportXMLModal.visible &&
+        <ImportXMLModal
+          closeAction={() => this.setState(prevState => ({ ImportXMLModal: { visible: false } }))}
+          onSelectedRows={(selectedRecords) => console.log(selectedRecords)}
+        />}
 
         {this.state.ModalChangeDateRefund && <ModalChangeDateRefund
           selectedRowKeys={this.state.selectedRowKeys}
@@ -805,8 +822,7 @@ class MainView extends Component {
                       padding: '0 14px',
                     }}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}
-                  >
+                      icon={faTimes}/></Icon>}>
 
                     <GridFilter
                       clearFilter={() => {
@@ -955,9 +971,30 @@ class MainView extends Component {
                       }}>
                         {formatMessage({ id: 'menu.mainview.mt102Btn' })}
                       </Menu.Item>
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5">
-                        {formatMessage({ id: 'menu.mainview.xmlBtn' })}
+
+                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
+                      }}>
+
+                        <Upload
+                          showUploadList={false}
+                          openFileDialogOnClick={true}
+                          onRemove={() => {
+
+                          }}
+                          onPreview={() => {
+
+                          }}
+                          onChange={(e) => {
+                            if (e.file.status === 'done') {
+                              console.log(e.file);
+                              this.importXmlAction();
+                            }
+                          }}>
+                          {formatMessage({ id: 'menu.mainview.xmlBtn' })}
+                        </Upload>
                       </Menu.Item>
+
+
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
                         this.showGraphic();
                       }}>

@@ -133,23 +133,25 @@ class Searcher extends Component {
     }
 */
     let result=(<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>);
-    this.state.payes.forEach((item) => {
-      if(item.period===value.format('MMYYYY')) {
-        result= (
-          <div
-            style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%', padding: '10px'}}
-            onClick={()=>{this.ShowDetailofMonth(item.detailList, value)}}
-          >
-            <p>Сумма: {item.totalAmount}</p>
-            <p>Кол-во: {item.totalElements}</p>
-          </div>
-        )
-      }
-    });
+    if (this.state.payes!==undefined){
+      this.state.payes.forEach((item) => {
+        if(item.period===value.format('MMYYYY')) {
+          result= (
+            <div
+              style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%', padding: '10px'}}
+              onClick={()=>{this.ShowDetailofMonth(item.detailList, value)}}
+            >
+              <p>Сумма: {item.totalAmount}</p>
+              <p>Кол-во: {item.totalElements}</p>
+            </div>
+          )
+        }
+      });
+    }
     return result;
   }
 
-    ShowDetailofMonth=(value, date)=>{
+  ShowDetailofMonth=(value, date)=>{
       if(value.length) {
         Modal.info({
           title: 'Платежи в разрезе КНП за '+date.format('MMMM'),
@@ -163,6 +165,7 @@ class Searcher extends Component {
         });
       }
     }
+
   searchperson=(value)=>{
     const { dispatch } = this.props;
     this.setState({
@@ -415,7 +418,6 @@ class Searcher extends Component {
       value: '',
     }
     ]
-    console.log()
     /**/
     const dataRPM = [{
       key:14,
@@ -451,8 +453,6 @@ class Searcher extends Component {
       value: personRPN.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu ,
     }
     ];
-
-    const {iin} = this.state;
 
     return (<div>
         <Spin tip="" spinning={this.state.loading && this.state.loading1 && this.state.loading2}>

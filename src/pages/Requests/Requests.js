@@ -73,7 +73,6 @@ class Requests extends Component {
       ShowModal: false,
       searchButton: false,
       serverFileList: [],
-
       sortedInfo: {},
       pagingConfig: {
         'start': 0,

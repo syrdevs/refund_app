@@ -123,7 +123,52 @@ export default class PaymentsPage extends Component {
         }, {
           'title': 'Дата поступления информации',
           'dataIndex': 'createdOn',
-        }],
+        },
+        /*{
+          'title': 'Статус загрузки',
+          'dataIndex': 'mt102LoadStatus',
+        },*/
+        {
+          'title': 'Статус загрузки (сообщение)',
+          'dataIndex': 'mt102LoadDescription',
+        }, {
+          'title': 'Количество МТ102',
+          'dataIndex': 'mt102Count',
+        }
+        ],
+      staticmt100funcColuns: [
+        {
+          title: 'Статус загрузки',
+          key: 'mt102LoadStatus',
+          order: 13,
+          isVisible: true,
+          width: 150,
+          render: (item) => {
+            return item.mt102LoadStatus===0 ? formatMessage({ id: 'menu.payments.status0' }): item.mt102LoadStatus===1? formatMessage({ id: 'menu.payments.status1' }): formatMessage({ id: 'menu.payments.status2' });
+          },
+        },
+        //'menu.payments.status0'
+        /*{
+          title: 'Статус загрузки (сообщение)',
+          key: 'mt102LoadDescription',
+          order: 14,
+          isVisible: true,
+          width: 150,
+          render: (item) => {
+            return item.mt102LoadStatus=== 2 ? item.mt102LoadDescription===1: '';
+          },
+        },
+        {
+          title: 'Количество МТ102',
+          key: 'mt102Count',
+          order: 15,
+          isVisible: true,
+          width: 150,
+          render: (item) => {
+            return item.mt102Count;
+          },
+        },*/
+      ],
       staticmt102columns: [
         {
           'title': 'Референс',
@@ -171,144 +216,6 @@ export default class PaymentsPage extends Component {
           'isVisible': 'true',
         }],
 
-      staticdata: [
-        {
-          'id': '8F14E584-A899-484C-B054-010FB4DACA2B',
-          'reference': 'GCVP-00038594868',
-          'paymentDate': '17.05.2018',
-          'totalAmount': 4545.00,
-          'knp': '123',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '17.05.2018 16:11',
-          'modifiedOn': '17.05.2018 16:12',
-          'countOfDocuments': 'Пеня за несвоевременное перечисление отчислений на обязательное социальное медицинское страхование. Кол-во потребителей =5130 Кол-во документов =458',
-        },
-        {
-          'id': '5E464004-2B10-4768-BFB0-009DF17F8532',
-          'reference': 'GCVP-00038261913',
-          'paymentDate': '03.04.2018',
-          'totalAmount': 4.00,
-          'knp': '122',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '03.04.2018 18:14',
-          'modifiedOn': '03.04.2018 18:15',
-          'countOfDocuments': 'Взносы на обязательное социальное медицинское страхование. Кол-во потребителей =8 Кол-во документов =8',
-        },
-        {
-          'id': '154E051C-FAFB-4FC5-AEF0-00ABE9E5FAAE',
-          'reference': 'GCVP-00037925493',
-          'paymentDate': '14.02.2018',
-          'totalAmount': 3.00,
-          'knp': '121',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '14.02.2018 13:13',
-          'modifiedOn': '14.02.2018 13:14',
-          'countOfDocuments': 'Отчисления на обязательное социальное медицинское страхование. Кол-во потребителей =2258 Кол-во документов =117',
-        },
-        {
-          'id': 'AF2D217E-5300-4947-810B-006D857DDCB1',
-          'reference': 'GCVP-00037699948',
-          'paymentDate': '12.01.2018',
-          'totalAmount': 5.00,
-          'knp': '122',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '12.01.2018 14:20',
-          'modifiedOn': '12.01.2018 14:20',
-          'countOfDocuments': 'Взносы на обязательное социальное медицинское страхование. Кол-во потребителей =91 Кол-во документов =27',
-        },
-        {
-          'id': 'A8D7918F-30CF-45EE-8543-000E017B5AF5',
-          'reference': 'GCVP-00037684462',
-          'paymentDate': '10.01.2018',
-          'totalAmount': 55.00,
-          'knp': '122',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '10.01.2018 18:16',
-          'modifiedOn': '10.01.2018 18:16',
-          'countOfDocuments': 'Взносы на обязательное социальное медицинское страхование. Кол-во потребителей =863 Кол-во документов =186',
-        },
-        {
-          'id': '4BCE3164-D6CD-4A9F-9116-0009A8D36067',
-          'reference': 'GCVP-00037323064',
-          'paymentDate': '30.11.2017',
-          'totalAmount': 45456.00,
-          'knp': '123',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '30.11.2017 11:28',
-          'modifiedOn': '30.11.2017 11:28',
-          'countOfDocuments': 'Пеня за несвоевременное перечисление отчислений на обязательное социальное медицинское страхование. Кол-во потребителей =4996 Кол-во документов =719',
-        },
-        {
-          'id': '88A60117-4755-4D57-972A-00EDC9ACEDDF',
-          'reference': 'GCVP-00037072032',
-          'paymentDate': '26.10.2017',
-          'totalAmount': 4545.00,
-          'knp': '123',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '26.10.2017 13:47',
-          'modifiedOn': '26.10.2017 13:47',
-          'countOfDocuments': 'Пеня за несвоевременное перечисление отчислений на обязательное социальное медицинское страхование. Кол-во потребителей =2287 Кол-во документов =393',
-        },
-        {
-          'id': '3C19E588-3F01-45C2-89DF-00AFF1B918DB',
-          'reference': 'GCVP-00036665289',
-          'paymentDate': '06.09.2017',
-          'totalAmount': 45.00,
-          'knp': '123',
-          'senderCompanyName': 'НАО Государственная корпорация "Правительство для граждан"',
-          'senderBin': '160440007161',
-          'senderBankBik': 'GCVPKZ2A   ',
-          'recipientBankBik': 'NBRKKZKX   ',
-          'recipientAccount': 'KZ33125KZT1001313313',
-          'recipientName': 'АО "Фонд социального медицинского страхования"',
-          'recipientBin': '160940025485',
-          'createdOn': '06.09.2017 11:51',
-          'modifiedOn': '06.09.2017 11:52',
-          'countOfDocuments': 'Пеня за несвоевременное перечисление отчислений на обязательное социальное медицинское страхование. Кол-во потребителей =4119 Кол-во документов =191',
-        },
-      ],
     };
 
 
@@ -608,7 +515,7 @@ export default class PaymentsPage extends Component {
           name={tablename}
           scroll={{ x: 'auto' }}
           fixedBody={true}
-//
+          actionColumns={tablename==='paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
           showTotal={true}
           selectedRowCheckBox={true}
           searchButton={false}

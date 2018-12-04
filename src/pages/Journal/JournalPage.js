@@ -44,7 +44,7 @@ export default class JournalPage extends Component {
       fcolumn: [
         {
           title: 'Потребитель',
-          order: 6,
+          order: 8,
           key: 'fio',
           isVisible: true,
           width: 150,
@@ -95,7 +95,13 @@ export default class JournalPage extends Component {
           'title': 'Действие',
           'width': 120,
           'dataIndex': 'dactionId.nameRu',
-        }, {
+        },
+        {
+          'title': 'Действие(до)',
+          'width': 120,
+          'dataIndex': 'prev_dactionId.nameRu',
+        },
+        {
           'title': 'Пользователь',
           'width': 120,
           'dataIndex': 'userId.userName',

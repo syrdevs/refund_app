@@ -90,7 +90,9 @@ class ModalChangeDate extends Component {
 
   disabledDate = (current) => {
     // Can not select days before today and today
-    return current && current.valueOf() < (Date.now() + -1 * 24 * 3600 * 1000);
+    if (this.props.coltype !== 'appEndDate') {
+      return current && current.valueOf() > (Date.now());
+    }
   };
 
   render() {

@@ -21,7 +21,9 @@ import {
   getSearcherCalendar,
   getSearcherData,
   getSearcherJur,
-  getSearcherJurCalendar
+  getSearcherJurCalendar,
+  getSearcherRPNData,
+  getSearcherMEDData
 } from '../services/api';
 
 export default {
@@ -47,6 +49,8 @@ export default {
     modalgridviewdata: [],
     paymentsData: [],
     searcherdata: {},
+    searcherRPNdata: {},
+    searcherMEDdata: {},
     searcherjur: {},
     searchercalendar: [],
     searcherjurcalendar: [],
@@ -203,6 +207,20 @@ export default {
         payload: response,
       });
     },
+    * SearcherRPNData(payload, { call, put }) {
+      const response = yield call(getSearcherRPNData, payload);
+      yield put({
+        type: 'SearcherRNPDataReducer',
+        payload: response,
+      });
+    },
+    * SearcherMEDData(payload, { call, put }) {
+      const response = yield call(getSearcherMEDData, payload);
+      yield put({
+        type: 'SearcherMEDDataReducer',
+        payload: response,
+      });
+    },
     * SearcherJur(payload, { call, put }) {
       const response = yield call(getSearcherJur, payload);
       yield put({
@@ -318,6 +336,18 @@ export default {
       return {
         ...state,
         searcherdata: payload,
+      };
+    },
+    SearcherRNPDataReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherRPNdata: payload,
+      };
+    },
+    SearcherMEDDataReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherMEDdata: payload,
       };
     },
     SearcherJurReducer(state, { payload }) {

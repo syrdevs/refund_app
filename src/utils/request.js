@@ -38,13 +38,18 @@ const checkStatus = response => {
     });
 
   if (response.status === 400 || (response.status >= 402 && response.status < 500)) {
-    response.json().then((r) => {
-      notification.error({
-        // message: `Ошибка ${response.status}: ${response.url}`,
-        message: `Ошибка статус ${response.status}`,
-        description: r.Message,
+    if(response.statusText!=='Forbidden') {
+      response.json().then((r) => {
+        notification.error({
+          // message: `Ошибка ${response.status}: ${response.url}`,
+          message: `Ошибка статус ${response.status}`,
+          description: r.Message,
+        });
       });
-    });
+    }
+    else {
+      router.push('/exception/403');
+    }
     return response;
   }
 

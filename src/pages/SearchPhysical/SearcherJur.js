@@ -30,98 +30,69 @@ const formItemLayout = {
 @connect(({ universal, loading }) => {
   return {
     universal,
-    loadingData: loading.effects['universal/SearcherData'],
+    loadingData: loading.effects['universal/SearcherJur'],
   };
 })
 class SearcherJur extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      person: {
-        "dSexId": {
-          "nameKz": null,
-          "id": null,
-          "nameRu": null,
-          "code": null
-        },
-        "iin": null,
-        "firstname": null,
-        "secondname": null,
-        "birthdate": null,
-        "lastname": null,
-        "clinic": null,
-        "citizenship": {
-          "nameRu": null,
-          "nameKz": null,
-          "shortname": null,
-          "code": null,
-          "id": null
-        },
-        "clinic_date": null,
-        "nationality": {
-          "shortnameKz": null,
-          "nameRu": null,
-          "nameKz": null,
-          "shortname": null,
-          "code": null,
-          "id": null
-        },
-        "categories": [],
-        "status": false,
+      bin: null,
+      jur: {
+        "senderName": "",
+        "senderBin": "",
+        "senderBankBik": "",
+        "paymentCount": null,
+        "paymentSum": null
       },
-      payes:[],
       loading:false,
+      payes:[]
     };
   }
 
-  formfield = (e) => {
-    this.setState({
-      [e.target.name]:e.target.value
-    })
-  }
-
-  ChangeDate(value) {
-    this.setState({
-      bdate: value
-    })
-  }
 
   monthCellRender=(value)=>{
-    /*let isPayed  = false;
-    this.state.payes.map((item) => {
-      if(item===value.format('MMYYYY')) {
-        isPayed=true
+    let result=(<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>);
+    this.state.payes.forEach((item) => {
+      if(item.period===value.format('MMYYYY')) {
+        result= (
+          <div
+            style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%', padding: '10px'}}
+            onClick={()=>{this.ShowDetailofMonth(item.detailList, value)}}
+            >
+            <p>Сумма: {item.totalAmount}</p>
+            <p>Кол-во: {item.totalElements}</p>
+          </div>
+        )
       }
     });
-    if(isPayed){
-      return (<div style={{backgroundColor: '#52c41a', opacity: '0.1',  height: '100%', width: '100%'}}></div>)
+    return result;
+
+    /*if('012018'===value.format('MMYYYY')) {
+      return (
+        <div
+          style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%'}}
+          onClick={()=>{this.ShowDetailofMonth(value)}}
+        >
+            <p>Сумма: 1000000000</p>
+            <p>Кол-во: 1000000</p>
+        </div>
+      )
     }
     else {
       return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
     }*/
-    if('012018'===value.format('MMYYYY')) {
-      return (
-        <div
-          style={{ height: '100%', width: '100%'}}
-          onClick={()=>{this.ShowDetailofMonth(value)}}
-        >
-          <p>Сумма: 1000000000</p>
-          <p>Кол-во: 1000000</p>
-        </div>
-      )
-    }
+
   }
-  ShowDetailofMonth=(value)=>{
-    if(value) {
+
+
+  ShowDetailofMonth=(value, date)=>{
+    if(value.length) {
       Modal.info({
-        title: 'Платежи в разрезе КНП за '+value.format('MMMM'),
+        title: 'Платежи в разрезе КНП за '+date.format('MMMM'),
         content: (
           <div>
-            <p>121. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>122. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>
-            <p>123. Сумма: 1000000000, кол-во: 1000000</p>
+            {value.map(item=>(<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
           </div>
         ),
         onOk() {
@@ -130,70 +101,34 @@ class SearcherJur extends Component {
     }
   }
 
-  /*getJurMonthData=(value)=>{
-    if('012018'===value){
-      return (<div
-        ref={this._element}
-        style={{ height: '100%', width: '100%'}}>
-        <p>121. Сумма: 1000000000, кол-во: 1000000</p>
-        <p>122. Сумма: 1000000000, кол-во: 1000000</p>
-        <p>123. Сумма: 1000000000, кол-во: 1000000</p>
-      </div>)
-    }
-
-  }*/
 
   searchperson=(value)=>{
     const { dispatch } = this.props;
     this.setState({
       loading: true,
-      iin: value
+      bin: value
     },()=>{
       dispatch({
-        type: 'universal/SearcherData',
+        type: 'universal/SearcherJur',
         payload: {
-          iin: this.state.iin,
+          bin: this.state.bin,
         },
       }).then(() => {
-        if (JSON.stringify(this.props.universal.searcherdata)!=="{}" && this.props.universal.searcherdata) {
+        if (JSON.stringify(this.props.universal.searcherjur)!=="{}" && this.props.universal.searcherjur) {
           this.setState({
-            person: this.props.universal.searcherdata
+            jur: this.props.universal.searcherjur,
           }, () => {
             this.payesSearcher(moment(new Date()).year());
           })
         }
         else {
           this.setState({
-            person: {
-              "dSexId": {
-                "nameKz": null,
-                "id": null,
-                "nameRu": null,
-                "code": null
-              },
-              "iin": null,
-              "firstname": null,
-              "secondname": null,
-              "birthdate": null,
-              "lastname": null,
-              "clinic": null,
-              "citizenship": {
-                "nameRu": null,
-                "nameKz": null,
-                "shortname": null,
-                "code": null,
-                "id": null
-              },
-              "clinic_date": null,
-              "nationality": {
-                "shortnameKz": null,
-                "nameRu": null,
-                "nameKz": null,
-                "shortname": null,
-                "code": null,
-                "id": null
-              },
-              "categories": [],
+            jur: {
+              "senderName": "",
+              "senderBin": "",
+              "senderBankBik": "",
+              "paymentCount": null,
+              "paymentSum": null
             },
             loading: false,
             payes:[]
@@ -210,24 +145,33 @@ class SearcherJur extends Component {
   payesSearcher=(year)=>{
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal/SearcherCalendar',
+      type: 'universal/SearcherJurCalendar',
       payload: {
-        iin: this.state.iin,
+        bin: this.state.bin,
         year: year
       },
     }).then(()=>{
-      this.setState({
-        payes: this.props.universal.searchercalendar,
-        loading: false
-      })
+      if(this.props.universal.searcherjurcalendar!==undefined){
+        this.setState({
+          payes: this.props.universal.searcherjurcalendar,
+          loading: false
+        })
+      }
+      else {
+        this.setState({
+          payes: [],
+          loading: false
+        })
+      }
+
     })
   }
 
 
-
-
   render() {
     const CardHeight={height:'auto', marginBottom:'10px'};
+    const {jur} = this.state;
+
 
     const columns = [{
       title: 'Наименование',
@@ -245,35 +189,34 @@ class SearcherJur extends Component {
       {
         key:0,
         name: 'НАИМЕНОВАНИЕ',
-        value: '',
+        value: jur.senderName,
       },
       {
         key:1,
         name: 'БИН',
-        value: '',
+        value: jur.senderBin,
       },
       {
         key:2,
         name: 'БИК',
-        value: '',
+        value: jur.senderBankBik,
       },
-      {
+      /*{
         key:3,
         name: 'РЕГИОН',
         value: '',
-      },
+      },*/
       {
         key:4,
         name: 'КОЛИЧЕСТВО ПЛАТЕЖЕЙ',
-        value: '',
+        value: jur.paymentCount,
       },
       {
         key:5,
         name: 'СУММА ПЛАТЕЖЕЙ',
-        value: '',
+        value: jur.paymentSum,
       }
     ];
-    const {iin} = this.state;
 
     return (<div>
         <Spin tip="" spinning={this.state.loading}>
@@ -286,22 +229,29 @@ class SearcherJur extends Component {
                   bodyStyle={{ padding: 25 }}
                   title={formatMessage({ id: 'report.param.searcher' })}
                 >
-                  <Search
-                    placeholder="Введите БИН"
-                    enterButton={formatMessage({ id: 'system.search' })}
-                    size="large"
-                    maxLength={12}
-                    onSearch={value => this.searchperson(value)}
-                  />
-                  {this.state.person.iin &&<Button
-                    style={{marginLeft:"10px"}}
-                    size={'large'}
-                    onClick={()=>{
-                      if (this.state.iin){
-                        this.props.searchbyiin(this.state.iin)
-                      }
-                    }}
-                  >Просмотр платежей</Button>}
+                  <div style={{display:'block'}}>
+                    <div style={{float:'left', width:this.state.jur.senderBin?'70%':'100%'}}>
+                      <Search
+                        placeholder="Введите БИН"
+                        enterButton={formatMessage({ id: 'system.search' })}
+                        size="large"
+                        maxLength={12}
+                        onSearch={value => this.searchperson(value)}
+                      />
+                    </div>
+                    {this.state.jur.senderBin &&<div
+                      style={{float:'left', width:'30%', paddingLeft:'10px'}}>
+                      <Button
+                        size={'large'}
+                        onClick={()=>{
+                          if (this.state.bin){
+                            this.props.searchbybin(this.state.bin)
+                          }
+                        }}
+                      >Просмотр платежей</Button>
+                    </div>}
+
+                  </div>
                 </Card>
                 <Card
                   bodyStyle={{height:'auto'}}
@@ -334,7 +284,22 @@ class SearcherJur extends Component {
                     fullscreen
                   />
                 </div>
-                 {/* <div style={{height: 'auto'}}>
+                <div style={{height:'50px', marginLeft:'10px'}}>
+                </div>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+          </Row>
+        </Spin>
+      </div>
+    );
+  }
+}
+export default SearcherJur;
+
+
+{/* <div style={{height: 'auto'}}>
                   <div className="antd-pro\pages\-search-physical\-searcher-customCalendar ant-fullcalendar-fullscreen">
                     <div className="ant-fullcalendar antd-pro\pages\-search-physical\-searcher-customCalendar ant-fullcalendar-full ant-fullcalendar-fullscreen" tabIndex="0">
                       <div className="ant-fullcalendar-calendar-body">
@@ -467,19 +432,5 @@ class SearcherJur extends Component {
                     </div>
                   </div>
                 </div>*/}
-                <div style={{height:'50px', marginLeft:'10px'}}>
-                </div>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-          </Row>
-        </Spin>
-      </div>
-    );
-  }
-}
-export default SearcherJur;
-
 
 

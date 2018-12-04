@@ -20,6 +20,10 @@ import {
   paymentsData,
   getSearcherCalendar,
   getSearcherData,
+  getSearcherJur,
+  getSearcherJurCalendar,
+  getSearcherRPNData,
+  getSearcherMEDData
 } from '../services/api';
 
 export default {
@@ -45,7 +49,11 @@ export default {
     modalgridviewdata: [],
     paymentsData: [],
     searcherdata: {},
+    searcherRPNdata: {},
+    searcherMEDdata: {},
+    searcherjur: {},
     searchercalendar: [],
+    searcherjurcalendar: [],
   },
   effects: {
     * receiversRefund(payload, { call, put }) {
@@ -185,10 +193,38 @@ export default {
         payload: response,
       });
     },
+    * SearcherJurCalendar(payload, { call, put }) {
+      const response = yield call(getSearcherJurCalendar, payload);
+      yield put({
+        type: 'SearcherJurCalendarReducer',
+        payload: response,
+      });
+    },
     * SearcherData(payload, { call, put }) {
       const response = yield call(getSearcherData, payload);
       yield put({
         type: 'SearcherDataReducer',
+        payload: response,
+      });
+    },
+    * SearcherRPNData(payload, { call, put }) {
+      const response = yield call(getSearcherRPNData, payload);
+      yield put({
+        type: 'SearcherRNPDataReducer',
+        payload: response,
+      });
+    },
+    * SearcherMEDData(payload, { call, put }) {
+      const response = yield call(getSearcherMEDData, payload);
+      yield put({
+        type: 'SearcherMEDDataReducer',
+        payload: response,
+      });
+    },
+    * SearcherJur(payload, { call, put }) {
+      const response = yield call(getSearcherJur, payload);
+      yield put({
+        type: 'SearcherJurReducer',
         payload: response,
       });
     },
@@ -290,10 +326,34 @@ export default {
         searchercalendar: payload,
       };
     },
+    SearcherJurCalendarReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherjurcalendar: payload,
+      };
+    },
     SearcherDataReducer(state, { payload }) {
       return {
         ...state,
         searcherdata: payload,
+      };
+    },
+    SearcherRNPDataReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherRPNdata: payload,
+      };
+    },
+    SearcherMEDDataReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherMEDdata: payload,
+      };
+    },
+    SearcherJurReducer(state, { payload }) {
+      return {
+        ...state,
+        searcherjur: payload,
       };
     },
 

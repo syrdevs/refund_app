@@ -261,23 +261,23 @@ export default class PaymentsPage extends Component {
           label: formatMessage({ id: 'menu.filter.knp' }),
           type: 'multibox',
         },
-        {
-          name: 'senderCompanyName',
-          label: 'Отправитель (Наименование)',
-          type: 'text',
-        },
-        {
-          name: 'senderBin',
-          label: 'Отправитель (БИН)',
-          type: 'text',
-          withMax: 12,
-        },
-        {
-          name: 'senderBankBik',
-          label: 'Отправитель (БИК)',
-          type: 'text',
-          withMax: 8,
-        },
+        // {
+        //   name: 'senderCompanyName',
+        //   label: 'Отправитель (Наименование)',
+        //   type: 'text',
+        // },
+        // {
+        //   name: 'senderBin',
+        //   label: 'Отправитель (БИН)',
+        //   type: 'text',
+        //   withMax: 12,
+        // },
+        // {
+        //   name: 'senderBankBik',
+        //   label: 'Отправитель (БИК)',
+        //   type: 'text',
+        //   withMax: 8,
+        // },
         // {
         //   name: 'recipientName',
         //   label: 'Получатель (Наименование)',
@@ -295,11 +295,11 @@ export default class PaymentsPage extends Component {
         //   type: 'text',
         //   withMax: 8,
         // },
-        {
-          name: 'recipientAccount',
-          label: 'Получатель (Счет)',
-          type: 'text',
-        },
+        // {
+        //   name: 'recipientAccount',
+        //   label: 'Получатель (Счет)',
+        //   type: 'text',
+        // },
         {
           label: 'Дата создания',
           name: 'createdOn',

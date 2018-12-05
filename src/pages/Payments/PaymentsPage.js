@@ -212,6 +212,14 @@ export default class PaymentsPage extends Component {
           'dataIndex': 'iin',
           'isVisible': 'true',
         }, {
+          'title': 'Отправитель (БИН)',
+          'dataIndex': 'senderBin',
+          'isVisible': 'true',
+        }, {
+          'title': 'Отправитель (Наименование)',
+          'dataIndex': 'senderName',
+          'isVisible': 'true',
+        }, {
           'title': 'Период',
           'dataIndex': 'paymentperiod',
           'isVisible': 'true',
@@ -339,7 +347,13 @@ export default class PaymentsPage extends Component {
           label: 'Дата рождения',
           name: 'birthdate',
           type: 'betweenDate',
-        }, {
+        },
+        {
+          label: 'Отправитель (БИН)',
+          name: 'senderBin',
+          type: 'text',
+        },
+        {
           label: 'ИИН',
           name: 'iin',
           type: 'text',
@@ -347,7 +361,7 @@ export default class PaymentsPage extends Component {
         }, {
           label: 'Период',
           name: 'paymentperiod',
-          type: 'betweenDate',
+          type: 'monthPicker',
         },
         /*{
           label: 'Дата платежа',
@@ -457,7 +471,7 @@ export default class PaymentsPage extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': this.state.parameters.entity,
-          'fileName': this.state.parameters.entity === 'mt100' ?formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
+          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
           'src': {
             'searched': true,
             'data': this.state.parameters.filter,

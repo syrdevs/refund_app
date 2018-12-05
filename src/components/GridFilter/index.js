@@ -30,7 +30,7 @@ import componentLocal from '../../locales/components/componentLocal';
 import { Animated } from 'react-animated-css';
 
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
+const { RangePicker, MonthPicker } = DatePicker;
 
 function momentDefine() {
   var suffixes = {
@@ -302,7 +302,7 @@ export default class GridFilter extends Component {
           },
           format: dateFormat,
           onChange: (moment, dateString) => {
-            this.fieldOnChange(filterItem, dateString);
+            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''));
           },
         };
 
@@ -322,6 +322,34 @@ export default class GridFilter extends Component {
           </Row>
         </div>);
 
+      }
+
+      case 'monthPicker': {
+        let params = {
+          style: {
+            width: '100%',
+          },
+          format: dateFormat,
+          onChange: (moment, dateString) => {
+            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''));
+          },
+        };
+
+        if (isClearFilter) {
+          params.value = null;
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+          <Row>
+            <Col md={24}>
+              <LocaleProvider locale={componentLocal}>
+                <MonthPicker   {...params}
+                               format={'MM.YYYY'}
+                />
+              </LocaleProvider>
+            </Col>
+          </Row>
+        </div>);
       }
 
       case 'betweenDate': {

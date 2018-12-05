@@ -233,7 +233,14 @@ export default class SmartGridView extends Component {
 
     let local_helper = this.StorageHelper();
     let StorageColumns = local_helper.get(this.props.name);
-    local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
+
+    if (this.props.columns && StorageColumns.length !== this.props.columns.length) {
+      local_helper.set(this.props.name, this.props.columns, true);
+    } else {
+      local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
+    }
+
+
     let _columns = local_helper.get(this.props.name);
 
 

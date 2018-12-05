@@ -448,7 +448,6 @@ export default class PaymentsPage extends Component {
 
     let authToken = localStorage.getItem('token');
 
-
     fetch('/api/refund/exportToExcel',
       {
         headers: {
@@ -458,6 +457,7 @@ export default class PaymentsPage extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': this.state.parameters.entity,
+          'fileName': this.state.parameters.entity === 'mt100' ?formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
           'src': {
             'searched': true,
             'data': this.state.parameters.filter,
@@ -493,7 +493,7 @@ export default class PaymentsPage extends Component {
       })
       .then(data => {
         if (data) {
-          saveAs(data.raw, data.fileName);
+          saveAs(data.raw, moment().format('DDMMYYYY') + data.fileName);
         }
       });
 

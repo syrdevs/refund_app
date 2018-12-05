@@ -319,6 +319,7 @@ class Requests extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': 'application',
+          'fileName':formatMessage({ id: 'menu.refunds.requests' }),
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
@@ -339,7 +340,7 @@ class Requests extends Component {
       })
       .then(data => {
         if (data) {
-          saveAs(data.raw, data.fileName);
+          saveAs(data.raw, moment().format('DDMMYYYY')+data.fileName);
         }
       });
   };

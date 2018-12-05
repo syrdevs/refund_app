@@ -714,7 +714,6 @@ class MainView extends Component {
     let authToken = localStorage.getItem('token');
     let columns = JSON.parse(localStorage.getItem('RefundsPageColumns'));
 
-
     fetch('/api/refund/exportToExcel',
       {
         headers: {
@@ -724,6 +723,7 @@ class MainView extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': 'Refund',
+          'fileName': formatMessage({ id: 'menu.refunds' }),
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
@@ -755,13 +755,13 @@ class MainView extends Component {
         }
       })
       .then(data => {
-        if(data){
-          saveAs(data.raw, data.fileName);
+        if (data) {
+          saveAs(data.raw, moment().format('DDMMYYYY') + data.fileName);
         }
       });
 
   };
-  getFileNameByContentDisposition=(contentDisposition)=>{
+  getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     let matches = regex.exec(contentDisposition);
     let filename;
@@ -770,7 +770,7 @@ class MainView extends Component {
       filename = matches[3].replace(/['"]/g, '');
       let match = regex.exec(filename);
       if (match != null && match[3]) {
-        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8', '');
       }
     }
     return decodeURI(filenames);

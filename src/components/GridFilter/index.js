@@ -331,7 +331,7 @@ export default class GridFilter extends Component {
           /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
           format: dateFormat,
           onChange: (moment, dateString) => {
-            this.fieldOnChange(filterItem, dateString);
+            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
           },
         };
 
@@ -378,7 +378,7 @@ export default class GridFilter extends Component {
 
         let params = {};
 
-        if(isClearFilter){
+        if (isClearFilter) {
           params.value = null;
         }
 
@@ -449,7 +449,7 @@ export default class GridFilter extends Component {
       case 'selectlist': {
         let params = {};
 
-        if(isClearFilter){
+        if (isClearFilter) {
           params.isClearFilter = isClearFilter;
         }
 

@@ -888,7 +888,7 @@ class MainView extends Component {
                           columns={rpmuColumns}
                           rowSelection={false}
                           rowClassName={(record) => {
-                            if (record.refundExist==="True") {
+                            if (record.refundExist) {
                               return 'greenRow';
                             }
                           }

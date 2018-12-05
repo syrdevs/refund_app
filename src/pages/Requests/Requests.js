@@ -172,6 +172,11 @@ class Requests extends Component {
           type: 'text',
         },
         {
+          name: 'appDate',
+          label: 'Дата заявки',
+          type: 'betweenDate',
+        },
+        {
           name: 'reference',
           label: formatMessage({ id: 'menu.filter.reference' }),
           type: 'text',
@@ -333,7 +338,7 @@ class Requests extends Component {
         }
       })
       .then(data => {
-        if(data){
+        if (data) {
           saveAs(data.raw, data.fileName);
         }
       });

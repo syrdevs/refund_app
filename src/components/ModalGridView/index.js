@@ -3,6 +3,7 @@ import { Modal, Tabs, Table, Button, Spin } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { connect } from 'dva';
 import SmartGridView from '@/components/SmartGridView';
+import saveAs from 'file-saver';
 
 const TabPane = Tabs.TabPane;
 
@@ -86,12 +87,13 @@ export default class ModalGridView extends Component {
     filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
     this.setState({
       filter: filter,
-    },()=>{
+    }, () => {
       this.firstLoad();
     });
 
   }
-  firstLoad =() => {
+
+  firstLoad = () => {
     const { dispatch } = this.props;
     const { filter } = this.state;
     dispatch({
@@ -125,11 +127,12 @@ export default class ModalGridView extends Component {
               <p>Информация для формирования МТ102 отсутствует</p>
             </div>
           ),
-          onOk() {},
+          onOk() {
+          },
         });
       }
     });
-  }
+  };
 
   handleCancel = (e) => {
     this.props.resetshow();
@@ -145,7 +148,7 @@ export default class ModalGridView extends Component {
           searched: this.state.filter.src.searched,
           data: {
             ...this.state.filter.src.data,
-            knpList : { id: e },
+            knpList: { id: e },
           },
         },
       },
@@ -182,17 +185,49 @@ export default class ModalGridView extends Component {
         method: 'post',
         body: JSON.stringify(this.state.filter.src),
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
+    // .then(response => response.blob())
+    // .then(responseBlob => {
+    //   this.setState({
+    //     downloadBtn102Loading: false,
+    //   });
+    //
+    //   let blob = new Blob([responseBlob], { type: responseBlob.type }),
+    //     url = window.URL.createObjectURL(blob);
+    //   window.open(url, '_self');
+    // });
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            console.log(this.getFileNameByContentDisposition(disposition));
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
         this.setState({
           downloadBtn102Loading: false,
         });
-
-        let blob = new Blob([responseBlob], { type: responseBlob.type }),
-          url = window.URL.createObjectURL(blob);
-        window.open(url, '_self');
+        if (data) {
+          saveAs(data.raw, data.fileName);
+        }
       });
 
+  };
+  getFileNameByContentDisposition=(contentDisposition)=>{
+    var filename = "";
+    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+      var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      var matches = filenameRegex.exec(contentDisposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
+      }
+    }
+
+    return filename;
   };
 
   handleSave = () => {
@@ -253,7 +288,7 @@ export default class ModalGridView extends Component {
                     data: this.state.dataSource.content,
                   }}
                   addonButtons={[
-                    <div style={{
+                    <div key={"total_amount"} style={{
                       paddingTop: 15,
                       display: 'inline-block',
                     }}>{formatMessage({ id: 'system.totalAmount' })}: {tabItem.totalAmount}</div>]}

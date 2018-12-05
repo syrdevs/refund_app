@@ -212,7 +212,6 @@ export default class SmartGridView extends Component {
           localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
         } else {
           if (!localStorage.getItem(name)) {
-            console.log('replaceddd///////////////');
             localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
           }
         }

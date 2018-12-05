@@ -3,6 +3,7 @@ import { Modal, DatePicker, Upload, Button, Icon, Row, Input, Spin } from 'antd'
 import moment from 'moment';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { connect } from 'dva';
+import saveAs from 'file-saver';
 
 @connect(({ universal, loading }) => ({
   universal,
@@ -95,6 +96,19 @@ class ModalChangeDate extends Component {
     }
   };
 
+  getFileNameByContentDisposition=(contentDisposition)=>{
+    var filename = "";
+    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+      var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      var matches = filenameRegex.exec(contentDisposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, '');
+      }
+    }
+
+    return filename;
+  };
+
   render() {
 
     let uploadProps = {
@@ -125,20 +139,26 @@ class ModalChangeDate extends Component {
             },
             method: 'post',
           })
-          .then(response => response.blob())
-          .then(responseBlob => {
-            let blob = new Blob([responseBlob], { type: responseBlob.type }),
-              url = window.URL.createObjectURL(blob);
-
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = url.split('/').pop();
-            a.click();
-            //window.open(url, '_self');
+          .then(response => {
+            if (response.ok) {
+              return response.blob().then(blob => {
+                let disposition = response.headers.get('content-disposition');
+                return {
+                  fileName: this.getFileNameByContentDisposition(disposition),
+                  raw: blob,
+                };
+              });
+            }
+          })
+          .then(data => {
+            if (data) {
+              saveAs(data.raw, data.fileName);
+            }
           });
       },
       onChange: this.uploadFile,
     };
+
 
     return (
       <Modal

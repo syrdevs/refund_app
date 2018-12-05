@@ -33,6 +33,7 @@ import { connect } from 'dva/index';
 import { Animated } from 'react-animated-css';
 import Searcher from '../SearchPhysical/Searcher';
 import SearcherJur from '../SearchPhysical/SearcherJur';
+import saveAs from 'file-saver';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -134,8 +135,8 @@ export default class PaymentsPage extends Component {
         }, {
           'title': 'Количество МТ102',
           'dataIndex': 'mt102Count',
-        }
-        ],
+        },
+      ],
       staticmt100funcColuns: [
         /*{
           title: 'Статус загрузки',
@@ -198,7 +199,7 @@ export default class PaymentsPage extends Component {
           'title': 'Отчество',
           'dataIndex': 'secondname',
           'isVisible': 'true',
-        },  {
+        }, {
           'title': 'Регион',
           'dataIndex': 'region',
           'isVisible': 'true',
@@ -461,26 +462,57 @@ export default class PaymentsPage extends Component {
             'searched': true,
             'data': this.state.parameters.filter,
           },
-          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item=>item.isVisible==="true") : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item=>item.isVisible==="true"),
+          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item => item.isVisible === 'true') : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item => item.isVisible === 'true'),
         }),
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
-
-        var reader = new FileReader();
-        reader.addEventListener('loadend', function() {
-          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-          var url = URL.createObjectURL(blob);
-          window.open(url, '_self');
-        });
-        reader.readAsArrayBuffer(responseBlob);
-
-        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-           url = window.URL.createObjectURL(blob);
-         window.open(url, '_self');*/
+    // .then(response => response.blob())
+    // .then(responseBlob => {
+    //
+    //   var reader = new FileReader();
+    //   reader.addEventListener('loadend', function() {
+    //     var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
+    //     var url = URL.createObjectURL(blob);
+    //     window.open(url, '_self');
+    //   });
+    //   reader.readAsArrayBuffer(responseBlob);
+    //
+    //   /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
+    //      url = window.URL.createObjectURL(blob);
+    //    window.open(url, '_self');*/
+    // });
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
+        if (data) {
+          saveAs(data.raw, data.fileName);
+        }
       });
 
   };
+  getFileNameByContentDisposition = (contentDisposition) => {
+    let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    let matches = regex.exec(contentDisposition);
+    let filename;
+    let filenames;
+    if (matches != null && matches[3]) {
+      filename = matches[3].replace(/['"]/g, '');
+      let match = regex.exec(filename);
+      if (match != null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8', '');
+      }
+    }
+    return decodeURI(filenames);
+  };
+
 
   render() {
 
@@ -515,7 +547,7 @@ export default class PaymentsPage extends Component {
           name={tablename}
           scroll={{ x: 'auto' }}
           fixedBody={true}
-          actionColumns={tablename==='paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
+          actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
           showTotal={true}
           selectedRowCheckBox={true}
           searchButton={false}
@@ -525,10 +557,10 @@ export default class PaymentsPage extends Component {
           fixedHeader={true}
           rowSelection={true}
           rowClassName={(record) => {
-              if (record.isRefunded) {
-                return 'redRow';
-              }
+            if (record.isRefunded) {
+              return 'redRow';
             }
+          }
           }
           columns={mtcolumns}
           sorted={true}

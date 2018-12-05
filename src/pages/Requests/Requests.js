@@ -7,7 +7,7 @@ import {
   Col,
   Spin,
   Dropdown,
-  Menu
+  Menu,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva';
@@ -321,25 +321,26 @@ class Requests extends Component {
           'columns': columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title })),
         }),
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
-
-        var reader = new FileReader();
-        reader.addEventListener('loadend', function() {
-          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-          var url = URL.createObjectURL(blob);
-          window.open(url, '_self');
-        });
-        reader.readAsArrayBuffer(responseBlob);
-
-        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-           url = window.URL.createObjectURL(blob);
-         window.open(url, '_self');*/
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
+        if(data){
+          saveAs(data.raw, data.fileName);
+        }
       });
   };
 
   getservicenote = () => {
-    let filename = "";
+    let filename = '';
     let authToken = localStorage.getItem('token');
     let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
 
@@ -354,32 +355,35 @@ class Requests extends Component {
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
-          }
+          },
         }),
       })
-      .then(response => {if(response.ok){
-        let disposition = response.headers.get("content-disposition");
+      .then(response => {
+        if (response.ok) {
+          let disposition = response.headers.get('content-disposition');
 
-        filename = this.getFileNameByContentDisposition(disposition);
-        console.log(filename);
-        return response.blob();
-      }})
-      .then(responseBlob => {saveAs(responseBlob, filename);});
+          filename = this.getFileNameByContentDisposition(disposition);
+          return response.blob();
+        }
+      })
+      .then(responseBlob => {
+        saveAs(responseBlob, filename);
+      });
   };
-  getFileNameByContentDisposition(contentDisposition){
-    var regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
-    var matches = regex.exec(contentDisposition);
-    var filename;
-    var filenames;
-    if (matches != null && matches[3]) {
+  getFileNameByContentDisposition = (contentDisposition) => {
+    let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    let matches = regex.exec(contentDisposition);
+    let filename;
+    let filenames;
+    if (matches !== null && matches[3]) {
       filename = matches[3].replace(/['"]/g, '');
-      var match = regex.exec(filename);
-      if (match != null && match[3]) {
-        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+      let match = regex.exec(filename);
+      if (match !== null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8', '');
       }
     }
     return decodeURI(filenames);
-  }
+  };
 
   render() {
     const dateFormat = 'DD.MM.YYYY';
@@ -585,18 +589,18 @@ class Requests extends Component {
                     <Dropdown key={'dropdown'} trigger={['click']} overlay={
                       <Menu>
 
-                      <Menu.Item key="4" onClick={() => {
+                        <Menu.Item key="4" onClick={() => {
 
-                        this.getservicenote();
-                      }}>
-                        {formatMessage({ id: 'menu.requests.servicenote' })}
-                      </Menu.Item>
-                    </Menu>}>
+                          this.getservicenote();
+                        }}>
+                          {formatMessage({ id: 'menu.requests.servicenote' })}
+                        </Menu.Item>
+                      </Menu>}>
                       <Button
                         key='action'
                       >{formatMessage({ id: 'menu.mainview.actionBtn' })}
-                      <Icon
-                        type="down"/>
+                        <Icon
+                          type="down"/>
                       </Button>
                     </Dropdown>,
                   ]}

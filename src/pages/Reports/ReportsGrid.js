@@ -26,6 +26,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import componentLocal from '../../locales/components/componentLocal';
 import ru_RU from 'antd/lib/locale-provider/ru_RU';
+import saveAs from 'file-saver';
 
 @connect(({ universal2, loading }) => ({
   universal2,
@@ -136,13 +137,21 @@ export default class ReportsGrid extends Component {
           Authorization: 'Bearer ' + authToken,
         },
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
-
-        let blob = new Blob([responseBlob], { type: responseBlob.type });
-        let url = URL.createObjectURL(blob);
-        window.open(url, '_self');
-
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
+        if(data){
+          saveAs(data.raw, data.fileName);
+        }
       });
 
     ///api/report/getReportResult?id=
@@ -152,6 +161,20 @@ export default class ReportsGrid extends Component {
      document.body.appendChild(link);
      link.click();
      document.body.removeChild(link);*/
+  };
+  getFileNameByContentDisposition=(contentDisposition)=>{
+    let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    let matches = regex.exec(contentDisposition);
+    let filename;
+    let filenames;
+    if (matches != null && matches[3]) {
+      filename = matches[3].replace(/['"]/g, '');
+      let match = regex.exec(filename);
+      if (match != null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+      }
+    }
+    return decodeURI(filenames);
   };
 
   createTask = async (result) => {

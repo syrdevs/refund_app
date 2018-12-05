@@ -37,6 +37,7 @@ import ModalGraphView from '../../components/ModalGraphView';
 import { Animated } from 'react-animated-css';
 import componentLocal from '../../locales/components/componentLocal';
 import ImportXMLModal from './ImportXMLModal';
+import saveAs from 'file-saver';
 
 
 const FormItem = Form.Item;
@@ -742,22 +743,37 @@ class MainView extends Component {
           }].concat(columns.filter(column => column.isVisible)),
         }),
       })
-      .then(response => response.blob())
-      .then(responseBlob => {
-
-        var reader = new FileReader();
-        reader.addEventListener('loadend', function() {
-          var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-          var url = URL.createObjectURL(blob);
-          window.open(url, '_self');
-        });
-        reader.readAsArrayBuffer(responseBlob);
-
-        /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-           url = window.URL.createObjectURL(blob);
-         window.open(url, '_self');*/
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
+        if(data){
+          saveAs(data.raw, data.fileName);
+        }
       });
 
+  };
+  getFileNameByContentDisposition=(contentDisposition)=>{
+    let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+    let matches = regex.exec(contentDisposition);
+    let filename;
+    let filenames;
+    if (matches != null && matches[3]) {
+      filename = matches[3].replace(/['"]/g, '');
+      let match = regex.exec(filename);
+      if (match != null && match[3]) {
+        filenames = match[3].replace(/['"]/g, '').replace('utf-8','');
+      }
+    }
+    return decodeURI(filenames);
   };
 
   importXmlAction = () => {

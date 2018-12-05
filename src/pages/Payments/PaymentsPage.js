@@ -220,7 +220,7 @@ export default class PaymentsPage extends Component {
           'dataIndex': 'senderName',
           'isVisible': 'true',
         }, {
-          'title': 'Период',
+          'title': 'Выберите период',
           'dataIndex': 'paymentperiod',
           'isVisible': 'true',
         }],
@@ -351,6 +351,11 @@ export default class PaymentsPage extends Component {
         {
           label: 'Отправитель (БИН)',
           name: 'senderBin',
+          type: 'text',
+        },
+        {
+          label: 'Отправитель (Наименование)',
+          name: 'senderName',
           type: 'text',
         },
         {

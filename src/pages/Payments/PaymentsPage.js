@@ -560,7 +560,7 @@ export default class PaymentsPage extends Component {
           Платежи МТ102</Button>);
     }
 
-    const DataDiv = ({ mtcolumns, tablename }) => (
+    /*const DataDiv = ({ mtcolumns, tablename }) => (
       <Spin tip="" spinning={this.props.loadingData}>
         <SmartGridView
           name={tablename}
@@ -635,6 +635,160 @@ export default class PaymentsPage extends Component {
             });
           }}
         />
+      </Spin>
+    );*/
+
+    const DataDiv = ({ mtcolumns, tablename }) => (
+      <Spin tip="" spinning={this.props.loadingData}>
+        {tablename === 'paymentspagemt100columns' ?
+          <SmartGridView
+            name={tablename}
+            scroll={{ x: 'auto' }}
+            fixedBody={true}
+            actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
+            showTotal={true}
+            selectedRowCheckBox={true}
+            searchButton={false}
+            selectedRowKeys={this.state.selectedRowKeys}
+            rowKey={'id'}
+            loading={this.props.loadingData}
+            fixedHeader={true}
+            rowSelection={true}
+            /*rowClassName={(record) => {
+              if (record.isRefunded) {
+                return 'redRow';
+              }
+            }
+            }*/
+            columns={mtcolumns}
+            sorted={true}
+            sortedInfo={this.state.sortedInfo}
+            showExportBtn={true}
+            dataSource={{
+              total: paymentsData.totalElements,
+              pageSize: paymentsData.size,
+              page: this.state.parameters.start + 1,
+              data: paymentsData.content,
+            }}
+            onSort={(column) => {
+
+              if (Object.keys(column).length === 0) {
+                this.setState(prevState => ({
+                  parameters: {
+                    ...prevState.parameters,
+                    sort: [],
+                  },
+                  sortedInfo: {},
+                }), () => {
+                  this.loadGridData();
+                });
+                return;
+              }
+
+              this.setState(prevState => ({
+                sortedInfo: column,
+                parameters: {
+                  ...prevState.parameters,
+                  sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                },
+              }), () => {
+                this.loadGridData();
+              });
+            }}
+            actionExport={() => this.exportToExcel()}
+            extraButtons={extraButtons}
+            addonButtons={addonButtons}
+            onSelectRow={(record, index) => {
+              this.selectedRecord = record;
+            }}
+            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+            onRefresh={() => {
+              this.loadGridData();
+            }}
+            onSearch={() => {
+              this.filterPanelState();
+            }}
+            onSelectCheckboxChange={(selectedRowKeys) => {
+              this.setState({
+                selectedRowKeys: selectedRowKeys,
+              });
+            }}
+          />
+          :
+          <SmartGridView
+            name={tablename}
+            scroll={{ x: 'auto' }}
+            fixedBody={true}
+            actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
+            showTotal={true}
+            selectedRowCheckBox={true}
+            searchButton={false}
+            selectedRowKeys={this.state.selectedRowKeys}
+            rowKey={'id'}
+            loading={this.props.loadingData}
+            fixedHeader={true}
+            rowSelection={true}
+            rowClassName={(record) => {
+              if (record.isRefunded) {
+                return 'redRow';
+              }
+            }
+            }
+            columns={mtcolumns}
+            sorted={true}
+            sortedInfo={this.state.sortedInfo}
+            showExportBtn={true}
+            dataSource={{
+              total: paymentsData.totalElements,
+              pageSize: paymentsData.size,
+              page: this.state.parameters.start + 1,
+              data: paymentsData.content,
+            }}
+            onSort={(column) => {
+
+              if (Object.keys(column).length === 0) {
+                this.setState(prevState => ({
+                  parameters: {
+                    ...prevState.parameters,
+                    sort: [],
+                  },
+                  sortedInfo: {},
+                }), () => {
+                  this.loadGridData();
+                });
+                return;
+              }
+
+              this.setState(prevState => ({
+                sortedInfo: column,
+                parameters: {
+                  ...prevState.parameters,
+                  sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                },
+              }), () => {
+                this.loadGridData();
+              });
+            }}
+            actionExport={() => this.exportToExcel()}
+            extraButtons={extraButtons}
+            addonButtons={addonButtons}
+            onSelectRow={(record, index) => {
+              this.selectedRecord = record;
+            }}
+            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+            onRefresh={() => {
+              this.loadGridData();
+            }}
+            onSearch={() => {
+              this.filterPanelState();
+            }}
+            onSelectCheckboxChange={(selectedRowKeys) => {
+              this.setState({
+                selectedRowKeys: selectedRowKeys,
+              });
+            }}
+          />
+        }
       </Spin>
     );
 

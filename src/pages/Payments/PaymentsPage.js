@@ -223,10 +223,16 @@ export default class PaymentsPage extends Component {
           'title': 'Выберите период',
           'dataIndex': 'paymentperiod',
           'isVisible': 'true',
-        }],
+        }, {
+          'title': 'Сумма возвратов',
+          'dataIndex': 'refundTotalAmount',
+          'isVisible': 'true',
+        }
+
+        ],
 
     };
-
+//
 
   }
 
@@ -828,14 +834,14 @@ export default class PaymentsPage extends Component {
                     sortedInfo: {},
                     parameters: {
                       ...this.state.parameters,
-                      'entity': 'mt100',
+                      'entity': 'mt102',
                       'filter': { 'senderBin': bin },
                       'sort': [],
                     },
                   }, () => {
                     this.loadGridData();
                     this.setState({
-                      activeKey: 'mt100',
+                      activeKey: 'mt102',
                     });
                   });
                 }}

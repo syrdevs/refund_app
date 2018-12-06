@@ -191,21 +191,21 @@ class SearcherJur extends Component {
         name: 'НАИМЕНОВАНИЕ',
         value: jur.senderName,
       },
-      {
+      /*{
         key:1,
         name: 'БИН',
         value: jur.senderBin,
+      },*/
+      {
+        key:1,
+        name: 'РЕГИОН',
+        value: jur.region,
       },
       {
         key:2,
         name: 'БИК',
         value: jur.senderBankBik,
       },
-      /*{
-        key:3,
-        name: 'РЕГИОН',
-        value: '',
-      },*/
       {
         key:4,
         name: 'КОЛИЧЕСТВО ПЛАТЕЖЕЙ',

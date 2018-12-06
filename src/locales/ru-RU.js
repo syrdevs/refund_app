@@ -175,6 +175,7 @@ export default {
   'menu.refund.stat.title': 'СТАТИСТИЧЕСКИЕ ДАННЫЕ',
   'datepicker.start.label': 'С',
   'datepicker.end.label': 'По',
+  'monthpicker.period': 'Выберите период',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': 'Анализ',
   'menu.dashboard.monitor': 'Монитор',

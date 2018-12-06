@@ -344,6 +344,7 @@ export default class GridFilter extends Component {
             <Col md={24}>
               <LocaleProvider locale={componentLocal}>
                 <MonthPicker   {...params}
+                               placeholder={formatMessage({ id: 'monthpicker.period' })}
                                format={'MM.YYYY'}
                 />
               </LocaleProvider>

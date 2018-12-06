@@ -220,7 +220,7 @@ export default class PaymentsPage extends Component {
           'dataIndex': 'senderName',
           'isVisible': 'true',
         }, {
-          'title': 'Выберите период',
+          'title': 'Период',
           'dataIndex': 'paymentperiod',
           'isVisible': 'true',
         }, {
@@ -232,7 +232,6 @@ export default class PaymentsPage extends Component {
         ],
 
     };
-//
 
   }
 
@@ -241,9 +240,7 @@ export default class PaymentsPage extends Component {
   }
 
   componentDidMount() {
-
     this.loadGridData();
-
     this.setState({
 
       filterForm: [
@@ -381,7 +378,6 @@ export default class PaymentsPage extends Component {
         },*/
       ],
     });
-
   }
 
   clearFilter = () => {
@@ -413,9 +409,7 @@ export default class PaymentsPage extends Component {
   };
 
   onShowSizeChange = (current, pageSize) => {
-
     const { dispatch } = this.props;
-
     this.setState(prevState => ({
       parameters: {
         ...prevState.parameters,
@@ -430,7 +424,6 @@ export default class PaymentsPage extends Component {
         length: pageSize,
       },
     }));
-
   };
 
   filterPanelState = () => {

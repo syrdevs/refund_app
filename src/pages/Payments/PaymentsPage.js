@@ -69,7 +69,6 @@ export default class PaymentsPage extends Component {
       count: 0,
       filterContainer: 0,
       sortedInfo: {},
-
       parameters: {
         start: 0,
         length: 15,

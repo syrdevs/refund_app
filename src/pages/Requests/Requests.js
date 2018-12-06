@@ -346,10 +346,9 @@ class Requests extends Component {
   };
 
   getservicenote = () => {
-    let filename = '';
+    let filename = "";
     let authToken = localStorage.getItem('token');
     let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
-
     fetch('/api/refund/get/oletter',
       {
         headers: {
@@ -359,22 +358,20 @@ class Requests extends Component {
         method: 'post',
         body: JSON.stringify({
           'src': {
+            "alias": "d05cafe5-ebf2-4655-88cd-e5c17fe92bc1",
             'searched': true,
             'data': this.state.pagingConfig.src.data,
-          },
+          }
         }),
       })
-      .then(response => {
-        if (response.ok) {
-          let disposition = response.headers.get('content-disposition');
+      .then(response => {if(response.ok){
+        let disposition = response.headers.get("content-disposition");
 
-          filename = this.getFileNameByContentDisposition(disposition);
-          return response.blob();
-        }
-      })
-      .then(responseBlob => {
-        saveAs(responseBlob, filename);
-      });
+        filename = this.getFileNameByContentDisposition(disposition);
+        console.log(filename);
+        return response.blob();
+      }})
+      .then(responseBlob => {saveAs(responseBlob, filename);});
   };
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;

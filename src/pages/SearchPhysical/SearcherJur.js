@@ -289,8 +289,6 @@ class SearcherJur extends Component {
               </Card>
             </Col>
           </Row>
-          <Row>
-          </Row>
         </Spin>
       </div>
     );

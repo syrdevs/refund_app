@@ -2,6 +2,7 @@ import jwtdecode from 'jwt-decode';
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 import { stringify } from 'qs';
+import { routerRedux } from 'dva/router';
 
 
 export default function(isToken = false) {
@@ -13,7 +14,9 @@ export default function(isToken = false) {
     localStorage.removeItem('antd-pro-authority');
     setAuthority('guest');
     reloadAuthorized();
-    location.replace('/user/login');
+    routerRedux.push({
+      pathname: '/user/login'
+    })
   };
 
 

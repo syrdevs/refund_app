@@ -22,8 +22,6 @@ export default class ContractPage extends Component {
   };
 
   contractCreateModal = (selectedData) => {
-
-
     this.setState(prevState => ({
       modal: {
         ...prevState.modal,

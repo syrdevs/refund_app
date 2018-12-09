@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Card,
   Tabs,
@@ -21,11 +21,11 @@ import {
   Divider,
 } from 'antd';
 import styles from './index.less';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
-import { Resizable } from 'react-resizable';
-import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
+import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
+import {Resizable} from 'react-resizable';
+import {formatMessage, FormattedMessage, getLocale} from 'umi/locale';
 import componentLocal from '../../locales/components/componentLocal';
 
 import ru_RU from 'antd/lib/locale-provider/ru_RU';
@@ -37,7 +37,7 @@ function getPropByName(obj, desc) {
     var comp = arr.shift();
     var match = new RegExp('(.+)\\[([0-9]*)\\]').exec(comp);
     if ((match !== null) && (match.length == 3)) {
-      var arrayData = { arrName: match[1], arrIndex: match[2] };
+      var arrayData = {arrName: match[1], arrIndex: match[2]};
       if (obj[arrayData.arrName] != undefined) {
         obj = obj[arrayData.arrName][arrayData.arrIndex];
       } else {
@@ -52,7 +52,7 @@ function getPropByName(obj, desc) {
 }
 
 const ResizeableTitle = (props) => {
-  const { onResize, width, ...restProps } = props;
+  const {onResize, width, ...restProps} = props;
 
   if (!width) {
     return <th {...restProps} />;
@@ -71,9 +71,9 @@ const SmartColumnsSelect = props => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <div>{formatMessage({ id: 'app.table.column.select' })}:</div>
+        <div>{formatMessage({id: 'app.table.column.select'})}:</div>
       </Menu.Item>
-      {props.value.map(function(column, index) {
+      {props.value.map(function (column, index) {
         return (
           <Menu.Item key={index.toString()}>
             <Checkbox
@@ -92,7 +92,7 @@ const SmartColumnsSelect = props => {
   return (<Dropdown trigger={['click']} onVisibleChange={(visible) => {
     props.dropDownAction(visible);
   }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
-    <Button style={{ float: 'right' }}>
+    <Button style={{float: 'right'}}>
       <Icon><FontAwesomeIcon icon={faColumns}/></Icon>
     </Button>
   </Dropdown>);
@@ -120,11 +120,11 @@ const SmartGridHeader = props => {
             {<SmartColumnsSelect {...props} searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
             {props.showExportBtn &&
-            <Button onClick={() => props.actionExport()} style={{ float: 'right' }}><Icon type="file-excel"/></Button>}
+            <Button onClick={() => props.actionExport()} style={{float: 'right'}}><Icon type="file-excel"/></Button>}
 
             {props.showTotal &&
             <div
-              className={styles.total_label}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({ id: 'app.table.column.total' })}: {props.dataSource.total}</div>}
+              className={styles.total_label}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({id: 'app.table.column.total'})}: {props.dataSource.total}</div>}
 
           </div>
         </div>
@@ -160,12 +160,13 @@ export default class SmartGridView extends Component {
 
   onSelectColumn = (columnIndex) => {
 
-    const { onColumnsChange } = this.props;
+    const {onColumnsChange} = this.props;
+    let payment = this.props;
 
     let local_helper = this.StorageHelper();
     let StorageColumns = local_helper.get(this.props.name);
 
-    StorageColumns.forEach(function(item) {
+    StorageColumns.forEach(function (item) {
       if (item.dataIndex === columnIndex) {
         item.isVisible = !item.isVisible;
       }
@@ -178,22 +179,24 @@ export default class SmartGridView extends Component {
     });
 
     if (onColumnsChange)
-      onColumnsChange(!this.state.isColumnChanged);
+      onColumnsChange(!this.state.isColumnChanged,columnIndex);
 
   };
+
+
 
   onSelectChange = (selectedRowKeys) => {
     this.props.onSelectCheckboxChange(selectedRowKeys);
   };
 
-  handleResize = index => (e, { size }) => {
-    this.setState(({ columns }) => {
+  handleResize = index => (e, {size}) => {
+    this.setState(({columns}) => {
       const nextColumns = [...columns];
       nextColumns[index] = {
         ...nextColumns[index],
         width: size.width,
       };
-      return { columns: nextColumns };
+      return {columns: nextColumns};
     });
   };
 
@@ -203,10 +206,10 @@ export default class SmartGridView extends Component {
 
   StorageHelper() {
     return {
-      clear: function(name) {
+      clear: function (name) {
         localStorage.setItem(name, null);
       },
-      set: function(name, value, isReplace = true) {
+      set: function (name, value, isReplace = true) {
 
         if (isReplace) {
           localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
@@ -217,7 +220,7 @@ export default class SmartGridView extends Component {
         }
 
       },
-      get: function(name) {
+      get: function (name) {
         let result = localStorage.getItem(name);
 
         if (result) {
@@ -280,8 +283,7 @@ export default class SmartGridView extends Component {
       this.props.actionColumns.filter(x => x.isVisible).map((actcol) => {
         if (actcol.order != null) {
           tableOptions.columns.splice(actcol.order, 0, actcol);
-        }
-        else {
+        } else {
           tableOptions.columns.splice(1, 0, actcol);
         }
       });
@@ -348,8 +350,7 @@ export default class SmartGridView extends Component {
       tableOptions.rowClassName = (record, index) => {
         return this.state.selectedRow === index ? 'active' : '';
       };
-    }
-    else {
+    } else {
       tableOptions.rowClassName = this.props.rowClassName;
     }
 
@@ -395,10 +396,11 @@ export default class SmartGridView extends Component {
                        onSearch={this.props.onSearch}/>
       <Table {...tableOptions}/>
       <br/>
+      {!this.props.hidePagination &&
       <LocaleProvider locale={componentLocal}>
         <Pagination
           defaultPageSize={this.props.dataSource.pageSize}
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
           showSizeChanger
           pageSizeOptions={['15', '30', '40', '50', '100']}
           onShowSizeChange={(page, pageSize) => {
@@ -410,7 +412,7 @@ export default class SmartGridView extends Component {
           defaultCurrent={this.props.dataSource.page}
           total={this.props.dataSource.total}
         />
-      </LocaleProvider>
+      </LocaleProvider>}
     </div>);
   }
 

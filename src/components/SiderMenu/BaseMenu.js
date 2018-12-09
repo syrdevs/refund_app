@@ -20,6 +20,10 @@ import {
   faFileInvoice,
   faUserCog,
   faMoneyBill,
+  faFileContract,
+  faFileAlt,
+  faFileSignature,
+  faFileMedicalAlt,
   faUserMd,
   faChartBar,
   faSearch,
@@ -37,6 +41,14 @@ const getIcon = icon => {
   }
   if (typeof icon === 'string') {
     switch (icon) {
+      case 'faFileContract':
+        return <Icon><FontAwesomeIcon icon={faFileContract}/></Icon>;
+      case 'faFileAlt':
+        return <Icon><FontAwesomeIcon icon={faFileAlt}/></Icon>;
+      case 'faFileSignature':
+        return <Icon><FontAwesomeIcon icon={faFileSignature}/></Icon>;
+      case 'faFileMedicalAlt':
+        return <Icon><FontAwesomeIcon icon={faFileMedicalAlt}/></Icon>;
       case 'faChartBar':
         return <Icon><FontAwesomeIcon icon={faChartBar}/></Icon>;
       case 'faListAlt':

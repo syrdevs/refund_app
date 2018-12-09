@@ -364,3 +364,9 @@ export async function getSearcherJur(params) {
     body: params.payload,
   });
 }
+export async function getActDics(params) {
+  return request('/api/uicommand/getList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}

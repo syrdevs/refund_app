@@ -37,47 +37,49 @@ export default class DogovorPage extends Component {
     }];
 
 
-    return (<div>
-      {this.state.modalForm.visible &&
-      <DogovorModal
-        onSelect={(record) => {
+    return (<Card bodyStyle={{ padding: 5 }} style={{ marginLeft: '-10px' }}>
+      <div>
+        {this.state.modalForm.visible &&
+        <DogovorModal
+          onSelect={(record) => {
 
-          let selectItem = [];
-          let keys = Object.keys(this.state.formKeys);
+            let selectItem = [];
+            let keys = Object.keys(this.state.formKeys);
 
-          keys.forEach((itemKey) => {
-            selectItem.push({
-              name: this.state.formKeys[itemKey],
-              value: record[itemKey],
+            keys.forEach((itemKey) => {
+              selectItem.push({
+                name: this.state.formKeys[itemKey],
+                value: record[itemKey],
+              });
             });
-          });
 
-          this.setState({
-            dataSource: selectItem,
-          });
-        }}
-        hide={() => this.setState({ modalForm: { visible: false } })}/>}
-
-      <div style={{ width: '100%' }}>
-        <Button onClick={() => {
-          this.setState({ modalForm: { visible: true } });
-        }} key={'select_button'} style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>
-        <Button
-          onClick={() => {
             this.setState({
-              dataSource: [],
+              dataSource: selectItem,
             });
           }}
-          disabled={this.state.dataSource.length === 0}
-          key={'delete_button'}
-          style={{ margin: '0px 0px 10px 5px' }}>Удалить</Button>
+          hide={() => this.setState({ modalForm: { visible: false } })}/>}
+
+        <div style={{ width: '100%' }}>
+          <Button onClick={() => {
+            this.setState({ modalForm: { visible: true } });
+          }} key={'select_button'} style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>
+          <Button
+            onClick={() => {
+              this.setState({
+                dataSource: [],
+              });
+            }}
+            disabled={this.state.dataSource.length === 0}
+            key={'delete_button'}
+            style={{ margin: '0px 0px 10px 5px' }}>Удалить</Button>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={this.state.dataSource}
+          pagination={{ position: 'none' }}
+          showHeader={false}
+        />
       </div>
-      <Table
-        columns={columns}
-        dataSource={this.state.dataSource}
-        pagination={{ position: 'none' }}
-        showHeader={false}
-      />
-    </div>);
+    </Card>);
   };
 }

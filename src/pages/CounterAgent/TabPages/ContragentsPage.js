@@ -5,7 +5,7 @@ import reduxRouter from 'umi/router';
 import SmartGridView from '@/components/SmartGridView';
 
 export default class ContragentsPage extends Component {
-  state =  {
+  state = {
     isForm: false,
     columns: [
       {
@@ -51,51 +51,53 @@ export default class ContragentsPage extends Component {
     },
   };
   render = () => {
-    return <div>
+    return <Card style={{ marginLeft: '-10px' }} bodyStyle={{ padding: 5 }}>
       <SmartGridView
-      name='ContragentPageView'
-      rowKey={'id'}
-      hideFilterBtn={true}
-      hideRefreshBtn={true}
-      columns={this.state.columns}
-      dataSource={{
-        total: 8921,
-        pageSize: this.state.pagingConfig.length,
-        page: this.state.pagingConfig.start + 1,
-        data: [{
-          'id': '1',
-          'code': '00052',
-          'name': 'ТОО TMI Company',
-          'bin': '861207303160',
-          'address': 'Микрорайон 4, дом 34, кв 50',
-          'currentContacts': '+77028596963',
-          'account': 'KZ75125KZT1001300335',
-          'responsiblePersons': 'Ахметов Даурен',
-        }],
-      }}
+        hidePagination={true}
+        name='ContragentPageView'
+        rowKey={'id'}
+        hideFilterBtn={true}
+        hideRefreshBtn={true}
+        columns={this.state.columns}
+        dataSource={{
+          total: 8921,
+          pageSize: this.state.pagingConfig.length,
+          page: this.state.pagingConfig.start + 1,
+          data: [{
+            'id': '1',
+            'code': '00052',
+            'name': 'ТОО TMI Company',
+            'bin': '861207303160',
+            'address': 'Микрорайон 4, дом 34, кв 50',
+            'currentContacts': '+77028596963',
+            'account': 'KZ75125KZT1001300335',
+            'responsiblePersons': 'Ахметов Даурен',
+          }],
+        }}
 
-      onShowSizeChange={(pageNumber, pageSize) => {
-        {/*<Button
+        onShowSizeChange={(pageNumber, pageSize) => {
+          {/*<Button
                       disabled={hasRole(['ADMIN'])}
                       key='register_document'
                     >Зарегистрировать договор
-                    </Button>,*/}
-      }}
-      onSelectCell={(cellIndex, cell) => {
+                    </Button>,*/
+          }
+        }}
+        onSelectCell={(cellIndex, cell) => {
 
-      }}
-      onSelectRow={() => {
+        }}
+        onSelectRow={() => {
 
-      }}
-      onFilter={(filters) => {
+        }}
+        onFilter={(filters) => {
 
-      }}
-      onRefresh={() => {
+        }}
+        onRefresh={() => {
 
-      }}
-      onSearch={() => {
+        }}
+        onSearch={() => {
 
-      }}
-    /></div>;
+        }}
+      /></Card>;
   };
 }

@@ -49,7 +49,7 @@ export default class InfoPage extends Component {
     const { formItemLayout } = this.props;
 
 
-    return (<Card style={{ marginLeft: '-10px' }}>
+    return (<Card  style={{ marginLeft: '-10px' }}>
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
         <Form.Item {...formItemLayout} label="БИН">
           {getFieldDecorator('bin', {

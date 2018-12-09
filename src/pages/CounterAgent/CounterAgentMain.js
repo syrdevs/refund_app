@@ -16,7 +16,6 @@ export default class CounterAgentMain extends Component {
 
     return (<PageHeaderWrapper title={formatMessage({ id: 'menu.counteragent' })}>
         <Card bodyStyle={{ padding: 5 }}>
-
           <div style={{ width: '100%' }}>
           </div>
           {children}

@@ -447,7 +447,7 @@ class SpecPage extends Component {
   };
 
   render = () => {
-    return (<div>
+    return (<Card bodyStyle={{ padding: 5 }} style={{ marginLeft: '-10px' }}>
       <Button onClick={() => {
         this.setState({
           smarttabDataSource: [
@@ -459,15 +459,15 @@ class SpecPage extends Component {
           ],
           smarttabcount: this.state.smarttabcount + 1,
         });
-      }}  style={{ marginBottom: 16 }}>
+      }} style={{ marginBottom: 16 }}>
         Добавить
       </Button>
       <Table
         scroll={{
           x: 1200,
         }}
-        paging={false}
-        bordered={false} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/></div>);
+        pagination={false}
+        bordered={false} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/></Card>);
   };
 }
 

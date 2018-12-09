@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon} from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon, InputNumber} from 'antd';
 import styles from './style.less';
 
 const { Option } = Select;
@@ -11,6 +11,7 @@ import { Tab } from '../../components/Login';
 import ActModal from './ActModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const TabPane = Tabs.TabPane;
@@ -28,14 +29,14 @@ const formItemLayout = {
 
 
 @Form.create()
-@connect(({ universal, loading }) => ({
+@connect(({ universal, formsData, loading }) => ({
   universal,
+  formsData,
   loadingperiodYear: loading.effects['universal/getActperiodYear'],
   loadingperiodSection: loading.effects['universal/getActperiodSection'],
   loadingorganization: loading.effects['universal/getActorganization'],
   loadingmedicalType: loading.effects['universal/getActmedicalType'],
 }))
-
 class Actsadd extends Component {
   constructor(props) {
     super(props);
@@ -52,19 +53,68 @@ class Actsadd extends Component {
           'isVisible': 'true',
         },
         {
-          'title': 'Принято к оплате (тг)',
-          'dataIndex': 'accept_payment',
-          'isVisible': 'true',
+          title: 'Вычет аванса (₸)',
+          dataIndex: 'prepaid',
+          isVisible: true,
         },
         {
-          'title': 'Вычет аванса (тг)',
-          'dataIndex': 'prepaid',
-          'isVisible': 'true',
+          title: 'Итого к оплате (₸)',
+          dataIndex: 'total',
+          isVisible: true,
+        }
+      ],
+      fcolumn: [
+        {
+          title: 'Принято к оплате (₸)',
+          dataIndex: 'accept_payment',
+          isVisible: true,
+          order: 2,
+          width: 200,
+          key: 'accept_payment',
+          className: 'action_column',
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              },
+            };
+          },
+          render: (e) => (
+            <InputNumber
+              style={{width:'100%'}}
+              step={0.01}
+              onChange={(d)=>{
+                this.onChangePayment(e, d)
+              }}
+            />
+          ),
         },
         {
-          'title': 'Итого к оплате (тг)',
-          'dataIndex': 'total',
-          'isVisible': 'true',
+          title: 'Предъявлено к оплате (₸)',
+          order: 3,
+          width: 200,
+          key: 'operation',
+          className: 'action_column',
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              },
+            };
+          },
+          render: (e) => (
+            <InputNumber
+              style={{width:'100%'}}
+              step={0.01}
+              onChange={(d)=>{
+                console.log(e);
+                /*console.log(d.target.value);*/
+                this.onChangeSumma(e, d)
+              }}
+            />
+          ),
         }
       ],
       data: [
@@ -81,9 +131,12 @@ class Actsadd extends Component {
       ContractSelect: [],
       selectedRowKeys: [],
       modal:false,
-      ContractSumms:[]
+      ContractSumms:[],
+      Contractpayment:[],
+      ShowClear: true
     }
   }
+  //₸
   deleteContract=()=>{
     /*this.setState({
       data: this.state.data.filter((item) => {
@@ -93,8 +146,10 @@ class Actsadd extends Component {
       })
     })*/
   }
-componentDidMount() {
-  const { dispatch } = this.props;
+  componentDidMount() {
+
+  const { dispatch, match } = this.props;
+  console.log(match)
   const DicArr=[
     'periodYear',
     'periodSection',
@@ -144,7 +199,6 @@ componentDidMount() {
     },
   });*/
 }
-
   showModal=()=>{
     this.setState({
       modal:true
@@ -159,7 +213,7 @@ componentDidMount() {
     console.log(e.id);
     console.log(d);
     //ContractSumms
-    this.setState({
+    /*this.setState({
       ContractSumms:[
         ...this.state.ContractSumms.filter((item)=>{item.id != e.id}),
         {
@@ -167,7 +221,27 @@ componentDidMount() {
           summ: d
         }
       ]
-    })
+    })*/
+  }
+
+  save=()=>{
+    console.log("e");
+    console.log(this.props)
+  }
+
+
+  onChangePayment=(e, d)=>{
+    console.log(e.id);
+    console.log(d);
+    /*this.setState({
+      Contractpayment:[
+        ...this.state.Contractpayment.filter((item)=>{item.id != e.id}),
+        {
+          id: e.id,
+          summ: d
+        }
+      ]
+    })*/
   }
   render() {
     const title = {fontSize:'12px'};
@@ -178,42 +252,47 @@ componentDidMount() {
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
     };
-    return (<Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
-      {this.state.modal &&<ActModal
-          addAct={(actitem)=>{
-          console.log(actitem);
-            this.setState({
-              data: [
-                ...this.state.data,
-                actitem
-              ]
-            }, ()=>{
-              this.CancelModal()
-            })
-          }}
-          onCancel={()=>{
-            this.CancelModal()
-          }}
-       />}
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Акт выполненных работ" key="1">
+    return (
+        <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+        <Card bodyStyle={{ padding: 5 }}>
           <Row style={{marginTop:'20px'}}>
             <Form layout="horizontal" hideRequiredMark>
 
               <Tabs
                 className={styles.stepFormText}
                 defaultActiveKey="form"
+                onChange={(e)=>{
+                  if (e==='form'){
+                    this.setState({
+                      ShowClear: true
+                    })
+                  }
+                  else {
+                    this.setState({
+                      ShowClear: false
+                    })
+                  }
+                }}
                 tabPosition={'left'}>
                 <Row>
                   <div style={{width:'100%'}}>
+                      <Button
+                        htmlType="submit"
+                        style={{float:'left', margin: '0px 0px 10px -10px'}}
+                      onClick={(e)=>{
+                        this.save(e);
+                        this.props.tomain();
+                      }
+                      }>
+                        Сохранить
+                      </Button>
+                    {this.state.ShowClear &&
                     <Button
-                      style={{float:'left', margin: '0px 0px 10px -10px'}}>
-                      Сохранить
-                    </Button>
-                    <Button
-                      style={{float:'left', margin: '0px 0px 10px 10px'}}>
-                      <Icon><FontAwesomeIcon icon={faTrash}/></Icon> Очистить
-                    </Button>
+                      style={{float:'left', margin: '0px 0px 10px 10px'}} onClick={() => {
+                      this.props.form.resetFields();
+                    }}>
+                      Очистить
+                    </Button>}
                   </div>
                 </Row>
                 <TabPane tab="Титульная часть" key="form">
@@ -223,7 +302,9 @@ componentDidMount() {
                         {getFieldDecorator('number', {
                           initialValue: '',
                           rules: [{ required: true, message: 'не заполнено'}],
-                        })(<Input style={{width:'50%'}}/>)}
+                        })(
+                          <Input style={{width:'50%'}}/>
+                        )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Дата">
                         {getFieldDecorator('date', {
@@ -242,7 +323,10 @@ componentDidMount() {
                           initialValue: '',
                           rules: [{ required: true, message: 'не заполнено' }],
                         })(
-                          <Select style={{width:'50%'}}>
+                          <Select
+                            allowClear
+                            style={{width:'50%'}}
+                          >
                             {this.props.universal.actperiodYear.content && this.props.universal.actperiodYear.content.map((item) => {
                                     return <Select.Option key={item.id}>{item.year}</Select.Option>;
                                 })}
@@ -254,7 +338,10 @@ componentDidMount() {
                           initialValue: '',
                           rules: [{ required: true, message: 'не заполнено' }],
                         })(
-                          <Select style={{width:'50%'}}>
+                          <Select
+                            allowClear
+                            style={{width:'50%'}}
+                          >
                             {this.props.universal.actperiodSection.content && this.props.universal.actperiodSection.content.map((item) => {
                               return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
                             })}
@@ -266,7 +353,9 @@ componentDidMount() {
                           initialValue: '',
                           rules: [{ required: true, message: 'не заполнено' }],
                         })(
-                          <Select>
+                          <Select
+                            allowClear
+                          >
                             {this.props.universal.actorganization.content && this.props.universal.actorganization.content.map((item) => {
                               return <Select.Option key={item.id}>{item.name}</Select.Option>;
                             })}
@@ -289,10 +378,13 @@ componentDidMount() {
                     </Row>
                   </Card>
                 </TabPane>
-                <TabPane tab={<Badge count={this.state.data.length} style={{ backgroundColor: '#1990FF', margin:'-4px' }}><div><span style={title}>Спецификации</span></div></Badge>} key="contracts">
+                <TabPane tab="Спецификация"
+                         //tab={<Badge count={this.state.data.length} style={{ backgroundColor: '#1990FF', margin:'-4px' }}><div><span style={title}>Спецификация</span></div></Badge>}
+                         key="specifications"
+                        >
                   <Card style={{marginLeft: '-10px'}}>
                     <SmartGridView
-                      name={'actform'}
+                      name={'specform'}
                       scroll={{ x: 'auto' }}
                       searchButton={false}
                       fixedBody={true}
@@ -306,32 +398,9 @@ componentDidMount() {
                       showTotal={true}
                       hidePagination={true}
                       columns={this.state.columns}
-                      actionColumns={[
-                        {
-                          title: 'Предъявлено к оплате (тг)',
-                          order: 10,
-                          width: 200,
-                          key: 'operation',
-                          className: 'action_column',
-                          isVisible: true,
-                          onCell: record => {
-                            return {
-                              onClick: () => {
-
-                              },
-                            };
-                          },
-                          render: (e) => (
-                            <Input
-                              onChange={(d)=>{
-                                /*console.log(e);
-                                console.log(d.target.value);*/
-                                this.onChangeSumma(e, d.target.value)
-                              }}
-                            />
-                          ),
-                        }]}
-                      sorted={false}
+                      actionColumns={this.state.fcolumn}
+                      sorted={true}
+                      onSort={(column) => {}}
                       showTotal={true}
                       addonButtons={[]}
                       actionExport={() => {}}
@@ -355,22 +424,16 @@ componentDidMount() {
                   </Card>
                 </TabPane>
               </Tabs>
-              <Form.Item
-                wrapperCol={{
-                  xs: { span: 24, offset: 0 },
-                  sm: {
-                    span: formItemLayout.wrapperCol.span,
-                    offset: formItemLayout.labelCol.span,
-                  },
-                }}
-                label=""
-              >
-              </Form.Item>
+
             </Form>
           </Row>
-        </TabPane>
-      </Tabs>
-      </Spin> );
+      </Card>
+        </Spin>
+  /*
+    <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title' })}>
+    </PageHeaderWrapper>
+  */
+  );
   }
 }
 

@@ -126,67 +126,60 @@ export default [
       },
 
 
-      /*{
-        path: '/contracts',
-        icon: 'faBookOpen',
-        name: 'contracts',
-        component: './ContractView/ContractPage',
-        hideChildrenInMenu: true,
-        authority: ['ADMIN', 'FSMS1','FSMS2'],
-        routes: [
-          { path: '/contracts/new', redirect: '/contracts/new' },
-          {
-            path: '/contracts/new',
-            component: './ContractView/ContractNew',
-          },
-        ],
-      },*/
 
 
       {
+        path: '/contract/contracts/newact',
+        component: './Acts/Actsadd',
+      },
+      {
+        path: '/contract/acts/newcontractrequest',
+        component: './ContractRequests/ContractRequestsadd',
+      },
+      {
         path: '/contract',
+        icon: 'faFileContract',
         name: 'contract',
         routes: [
           {
             path: '/contract/counteragent',
             name: 'counteragent',
+            icon: 'faFileMedicalAlt',
             component: './CounterAgent/CounterAgent',
             authority: ['ADMIN', 'FSMS1', 'FSMS2']
           },
           {
             path: '/contract/contracts',
             name: 'contracts',
-            component: './ContractView/ContractMain',
+            component: './ContractView/ContractTable',
+            icon: 'faFileSignature',
             hideChildrenInMenu: true,
             authority: ['ADMIN', 'FSMS1', 'FSMS2'],
             routes: [
-              {
+              /*{
                 path: '/contract/contracts',
                 redirect: '/contract/contracts/table',
               },
               {
                 path: '/contract/contracts/table',
                 component: './ContractView/ContractTable',
-              },
-              {
+              },*/
+              /*{
                 path: '/contract/contracts/new',
                 component: './ContractView/ContractNew',
-              },
+              },*/
+
             ],
           },
-
-
-
-
-
           {
             path: '/contract/acts',
             name: 'acts',
-            component: './Acts/index',
+            icon: 'faFileInvoice',
+            component: './Acts/main',
             hideChildrenInMenu: true,
             authority: ['ADMIN', 'FSMS1', 'FSMS2'],
             routes: [
-              {
+              /*{
                 path: '/contract/acts',
                 redirect: '/contract/acts/table',
               },
@@ -198,11 +191,16 @@ export default [
                 path: '/contract/acts/add',
                 component: './Acts/Actsadd',
               },
+              {
+                path: '/contract/acts/newcontractrequest',
+                component: './ContractRequests/ContractRequestsadd',
+              },*/
             ],
           },
           {
             path: '/contract/contractrequests',
             name: 'contractrequests',
+            icon: 'faFileAlt',
             component: './ContractRequests/index',
             hideChildrenInMenu: true,
             authority: ['ADMIN', 'FSMS1', 'FSMS2'],
@@ -254,6 +252,21 @@ export default [
             path: '/dashboard/workplace',
             name: 'workplace',
             component: './Dashboard/Workplace',
+          },
+        ],
+      },*/
+      /*{
+        path: '/contracts',
+        icon: 'faBookOpen',
+        name: 'contracts',
+        component: './ContractView/ContractPage',
+        hideChildrenInMenu: true,
+        authority: ['ADMIN', 'FSMS1','FSMS2'],
+        routes: [
+          { path: '/contracts/new', redirect: '/contracts/new' },
+          {
+            path: '/contracts/new',
+            component: './ContractView/ContractNew',
           },
         ],
       },*/

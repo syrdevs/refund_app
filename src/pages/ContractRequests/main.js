@@ -257,17 +257,11 @@ export default class ContractRequestsTable extends Component  {
     };
 
     const addonButtons = [
-      <Button
-        onClick={() => this.createConract()}
-        disabled={this.state.selectedRowKeys.length === 0}
-        className={'btn-success'}
-        key={'create_contract'}>Создать
-        Акт</Button>,
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
           key="1"
           onClick={()=>{
-            contractform();
+            //contractform();
           }}>
           Новый
         </Menu.Item>
@@ -278,10 +272,6 @@ export default class ContractRequestsTable extends Component  {
         <Menu.Item
           key="3">
           Удалить
-        </Menu.Item>
-        <Menu.Item
-          key="4">
-          Включить в заявку на оплату
         </Menu.Item>
       </Menu>}>
         <Button

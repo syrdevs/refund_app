@@ -8,7 +8,8 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 const dateFormat = 'DD.MM.YYYY';
 export default class ContractMain extends Component {
-  state = {};
+  state = {
+  };
 
   render = () => {
     const { location, children } = this.props;

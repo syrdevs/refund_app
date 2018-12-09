@@ -29,13 +29,12 @@ const formItemLayout = {
 
 
 @Form.create()
-@connect(({ universal, formsData, loading }) => ({
+@connect(({ universal, loading }) => ({
   universal,
-  formsData,
-  loadingperiodYear: loading.effects['universal/getActperiodYear'],
-  loadingperiodSection: loading.effects['universal/getActperiodSection'],
-  loadingorganization: loading.effects['universal/getActorganization'],
-  loadingmedicalType: loading.effects['universal/getActmedicalType'],
+  loadingperiodYear: loading.effects['universal/getperiodYear'],
+  loadingperiodSection: loading.effects['universal/getperiodSection'],
+  loadingorganization: loading.effects['universal/getorganization'],
+  loadingmedicalType: loading.effects['universal/getmedicalType'],
 }))
 class Actsadd extends Component {
   constructor(props) {
@@ -109,7 +108,6 @@ class Actsadd extends Component {
               style={{width:'100%'}}
               step={0.01}
               onChange={(d)=>{
-                console.log(e);
                 /*console.log(d.target.value);*/
                 this.onChangeSumma(e, d)
               }}
@@ -136,7 +134,6 @@ class Actsadd extends Component {
       ShowClear: true
     }
   }
-  //₸
   deleteContract=()=>{
     /*this.setState({
       data: this.state.data.filter((item) => {
@@ -147,9 +144,7 @@ class Actsadd extends Component {
     })*/
   }
   componentDidMount() {
-
   const { dispatch, match } = this.props;
-  console.log(match)
   const DicArr=[
     'periodYear',
     'periodSection',
@@ -158,7 +153,7 @@ class Actsadd extends Component {
   ]
   DicArr.forEach(function(item) {
     dispatch({
-      type: 'universal/getAct'+item,
+      type: 'universal/get'+item,
       payload: {
           "start":0,
           "length":1000,
@@ -210,8 +205,6 @@ class Actsadd extends Component {
     })
   }
   onChangeSumma=(e, d)=>{
-    console.log(e.id);
-    console.log(d);
     //ContractSumms
     /*this.setState({
       ContractSumms:[
@@ -224,15 +217,9 @@ class Actsadd extends Component {
     })*/
   }
 
-  save=()=>{
-    console.log("e");
-    console.log(this.props)
-  }
-
-
   onChangePayment=(e, d)=>{
-    console.log(e.id);
-    console.log(d);
+   /* console.log(e.id);
+    console.log(d);*/
     /*this.setState({
       Contractpayment:[
         ...this.state.Contractpayment.filter((item)=>{item.id != e.id}),
@@ -280,8 +267,19 @@ class Actsadd extends Component {
                         htmlType="submit"
                         style={{float:'left', margin: '0px 0px 10px -10px'}}
                       onClick={(e)=>{
-                        this.save(e);
-                        this.props.tomain();
+
+                        //console.log(window.location);
+
+                        this.props.form.validateFields(
+                          (err, values) => {
+                            if (!err) {
+                              this.props.tomain();
+                            }
+                            else {
+
+                            }
+                          },
+                        );
                       }
                       }>
                         Сохранить
@@ -307,9 +305,9 @@ class Actsadd extends Component {
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Дата">
-                        {getFieldDecorator('date', {
+                        {getFieldDecorator('date-picker', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <DatePicker
                             format={'DD.MM.YYYY'}
@@ -321,13 +319,13 @@ class Actsadd extends Component {
                       <Form.Item {...formItemLayout} label="Отчетный период: год">
                         {getFieldDecorator('act_period_year', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
                             allowClear
                             style={{width:'50%'}}
                           >
-                            {this.props.universal.actperiodYear.content && this.props.universal.actperiodYear.content.map((item) => {
+                            {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
                                     return <Select.Option key={item.id}>{item.year}</Select.Option>;
                                 })}
                           </Select>
@@ -336,13 +334,13 @@ class Actsadd extends Component {
                       <Form.Item {...formItemLayout} label="Отчетный период: месяц">
                         {getFieldDecorator('act_period_month', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
                             allowClear
                             style={{width:'50%'}}
                           >
-                            {this.props.universal.actperiodSection.content && this.props.universal.actperiodSection.content.map((item) => {
+                            {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
                               return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
                             })}
                           </Select>
@@ -351,12 +349,12 @@ class Actsadd extends Component {
                       <Form.Item {...formItemLayout} label="Подразделение">
                         {getFieldDecorator('podr', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
                             allowClear
                           >
-                            {this.props.universal.actorganization.content && this.props.universal.actorganization.content.map((item) => {
+                            {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
                               return <Select.Option key={item.id}>{item.name}</Select.Option>;
                             })}
                           </Select>
@@ -365,7 +363,7 @@ class Actsadd extends Component {
                       <Form.Item {...formItemLayout} label="Примечание">
                         {getFieldDecorator('notes', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Input />
                         )}
@@ -379,7 +377,6 @@ class Actsadd extends Component {
                   </Card>
                 </TabPane>
                 <TabPane tab="Спецификация"
-                         //tab={<Badge count={this.state.data.length} style={{ backgroundColor: '#1990FF', margin:'-4px' }}><div><span style={title}>Спецификация</span></div></Badge>}
                          key="specifications"
                         >
                   <Card style={{marginLeft: '-10px'}}>

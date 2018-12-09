@@ -29,10 +29,11 @@ const formItemLayout = {
 @Form.create()
 @connect(({ universal, loading }) => ({
   universal,
-  loadingperiodYear: loading.effects['universal/getActperiodYear'],
-  loadingperiodSection: loading.effects['universal/getActperiodSection'],
-  loadingorganization: loading.effects['universal/getActorganization'],
-  loadingmedicalType: loading.effects['universal/getActmedicalType'],
+  loadingperiodYear: loading.effects['universal/getperiodYear'],
+  loadingperiodSection: loading.effects['universal/getperiodSection'],
+  loadingorganization: loading.effects['universal/getorganization'],
+  loadingmedicalType: loading.effects['universal/getmedicalType'],
+  loadingpaymentRequestType: loading.effects['universal/getpaymentRequestType'],
 }))
 class ContractRequestsadd extends Component {
   constructor(props) {
@@ -277,10 +278,11 @@ class ContractRequestsadd extends Component {
       'periodSection',
       'organization',
       'medicalType',
+      'paymentRequestType'
     ]
     DicArr.forEach(function(item) {
       dispatch({
-        type: 'universal/getAct' + item,
+        type: 'universal/get' + item,
         payload: {
           "start": 0,
           "length": 1000,
@@ -332,35 +334,7 @@ class ContractRequestsadd extends Component {
       modal: false
     })
   }
-  onChangeSumma = (e, d) => {
-    console.log(e.id);
-    console.log(d);
-    //ContractSumms
-    /*this.setState({
-      ContractSumms:[
-        ...this.state.ContractSumms.filter((item)=>{item.id != e.id}),
-        {
-          id: e.id,
-          summ: d
-        }
-      ]
-    })*/
-  }
 
-
-  onChangePayment = (e, d) => {
-    console.log(e.id);
-    console.log(d);
-    /*this.setState({
-      Contractpayment:[
-        ...this.state.Contractpayment.filter((item)=>{item.id != e.id}),
-        {
-          id: e.id,
-          summ: d
-        }
-      ]
-    })*/
-  }
 
   render() {
     const title = { fontSize: '12px' };
@@ -396,7 +370,17 @@ class ContractRequestsadd extends Component {
                   htmlType="submit"
                   style={{ float: 'left', margin: '0px 0px 10px -10px' }}
                   onClick={()=>{
-                    this.props.tomain();
+
+                    this.props.form.validateFields(
+                      (err, values) => {
+                        if (!err) {
+                          this.props.tomain();
+                        }
+                        else {
+
+                        }
+                      },
+                    );
                   }}
                 >
                   Сохранить
@@ -418,23 +402,27 @@ class ContractRequestsadd extends Component {
                       initialValue: '',
                       rules: [{ required: true, message: 'не заполнено' }],
                     })(
-                      <Select>
-                        <Option value="ant-design@alipay.com">Договор 1</Option>
-                        <Option value="ant-design@alipay.com">Договор 2</Option>
-                        <Option value="ant-design@alipay.com">Договор 3</Option>
+                      <Select
+                        allowClear
+                        style={{width:'50%'}}
+                      >
+                      {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
+                        return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                      })}
                       </Select>
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Номер">
                     {getFieldDecorator('number', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(<Input/>)}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Дата">
-                    {getFieldDecorator('date', {
+
+                    {getFieldDecorator('date-picker', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(
                       <DatePicker
                         format={'DD.MM.YYYY'}
@@ -445,13 +433,13 @@ class ContractRequestsadd extends Component {
                   <Form.Item {...formItemLayout} label="Отчетный период: год">
                     {getFieldDecorator('act_period_year', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(
                       <Select
                         allowClear
                         style={{width:'50%'}}
                       >
-                        {this.props.universal.actperiodYear.content && this.props.universal.actperiodYear.content.map((item) => {
+                        {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
                           return <Select.Option key={item.id}>{item.year}</Select.Option>;
                         })}
                       </Select>
@@ -460,13 +448,13 @@ class ContractRequestsadd extends Component {
                   <Form.Item {...formItemLayout} label="Отчетный период: месяц">
                     {getFieldDecorator('act_period_month', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(
                       <Select
                         allowClear
                         style={{width:'50%'}}
                       >
-                        {this.props.universal.actperiodSection.content && this.props.universal.actperiodSection.content.map((item) => {
+                        {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
                           return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
                         })}
                       </Select>
@@ -475,12 +463,12 @@ class ContractRequestsadd extends Component {
                   <Form.Item {...formItemLayout} label="Подразделение">
                     {getFieldDecorator('podr', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(
                       <Select
                         allowClear
                       >
-                        {this.props.universal.actorganization.content && this.props.universal.actorganization.content.map((item) => {
+                        {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
                           return <Select.Option key={item.id}>{item.name}</Select.Option>;
                         })}
                       </Select>
@@ -489,7 +477,7 @@ class ContractRequestsadd extends Component {
                   <Form.Item {...formItemLayout} label="Примечание">
                     {getFieldDecorator('notes', {
                       initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
+                      rules: [{ required: false, message: 'не заполнено' }],
                     })(
                       <Input/>
                     )}

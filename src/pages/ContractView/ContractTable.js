@@ -241,14 +241,14 @@ export default class ContractTable extends Component {
   };
 
   clearFilter = () => {
-    console.log('clear filter');
+    //console.log('clear filter');
   };
 
   applyFilter = (filters) => {
-    console.log(filters);
+   // console.log(filters);
   };
   componentDidMount() {
-    console.log(this.props.acts);
+   // console.log(this.props.acts);
   }
 
 
@@ -266,8 +266,6 @@ export default class ContractTable extends Component {
     ShowMain: false,
     ShowAct: true,
     title: formatMessage({ id: 'app.module.acts.title.add'})
-  }, ()=> {
-    console.log(this.state.showMain)
   })
   };
 
@@ -358,7 +356,7 @@ export default class ContractTable extends Component {
                   addonButtons={addonButtons}
                   actionColumns={this.state.fcolumn}
                   actionExport={() => {
-                    console.log('export');
+                   // console.log('export');
                   }}
                   dataSource={{
                     total: this.state.dataSource.length,
@@ -367,10 +365,10 @@ export default class ContractTable extends Component {
                     data: this.state.dataSource,
                   }}
                   onShowSizeChange={(pageNumber, pageSize) => {
-                    console.log('on paging');
+                   // console.log('on paging');
                   }}
                   onRefresh={() => {
-                    console.log('onRefresh');
+                   // console.log('onRefresh');
                   }}
                   onSearch={() => {
                     this.filterPanelState();

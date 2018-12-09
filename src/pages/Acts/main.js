@@ -216,11 +216,9 @@ export default class ActsTable extends Component  {
   };
 
   clearFilter = () => {
-    console.log('clear filter');
   };
 
   applyFilter = (filters) => {
-    console.log(filters);
   };
 
 
@@ -325,7 +323,6 @@ export default class ActsTable extends Component  {
                 showExportBtn={true}
                 addonButtons={addonButtons}
                 actionExport={() => {
-                  console.log('export');
                 }}
                 dataSource={{
                   total: this.state.dataSource.length,
@@ -334,10 +331,8 @@ export default class ActsTable extends Component  {
                   data: this.state.dataSource,
                 }}
                 onShowSizeChange={(pageNumber, pageSize) => {
-                  console.log('on paging');
                 }}
                 onRefresh={() => {
-                  console.log('onRefresh');
                 }}
                 onSearch={() => {
                   this.filterPanelState();

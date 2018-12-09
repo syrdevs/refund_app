@@ -129,11 +129,11 @@ export default [
 
 
       {
-        path: '/contract/contracts/newact',
+        path: '/add/newact',
         component: './Acts/Actsadd',
       },
       {
-        path: '/contract/acts/newcontractrequest',
+        path: '/add/newcontractrequest',
         component: './ContractRequests/ContractRequestsadd',
       },
       {

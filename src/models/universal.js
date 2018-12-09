@@ -55,10 +55,11 @@ export default {
     searcherjur: {},
     searchercalendar: [],
     searcherjurcalendar: [],
-    actperiodYear:{},
-    actperiodSection: {},
-    actorganization: {},
-    actmedicalType: {}
+    periodYear:{},
+    periodSection: {},
+    organization: {},
+    medicalType: {},
+    paymentRequestType: {}
 
   },
   effects: {
@@ -234,31 +235,39 @@ export default {
         payload: response,
       });
     },
-    * getActperiodYear(payload, { call, put }) {
+    * getperiodYear(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicactperiodyearReducer',
+        type: 'dicperiodyearReducer',
         payload: response,
       });
     },
-    * getActperiodSection(payload, { call, put }) {
+    * getperiodSection(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicactperiodSectionReducer',
+        type: 'dicperiodSectionReducer',
         payload: response,
       });
     },
-    * getActorganization(payload, { call, put }) {
+    * getorganization(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicactorganizationReducer',
+        type: 'dicorganizationReducer',
         payload: response,
       });
     },
-    * getActmedicalType(payload, { call, put }) {
+    * getmedicalType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicactmedicalTypeReducer',
+        type: 'dicmedicalTypeReducer',
+        payload: response,
+      });
+    },
+
+    * getpaymentRequestType(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicpaymentRequestTypeReducer',
         payload: response,
       });
     },
@@ -389,28 +398,34 @@ export default {
       };
     },
 
-    dicactperiodyearReducer(state, { payload }) {
+    dicperiodyearReducer(state, { payload }) {
       return {
         ...state,
-        actperiodYear: payload,
+        periodYear: payload,
       };
     },
-    dicactperiodSectionReducer(state, { payload }) {
+    dicperiodSectionReducer(state, { payload }) {
       return {
         ...state,
-        actperiodSection: payload,
+        periodSection: payload,
       };
     },
-    dicactorganizationReducer(state, { payload }) {
+    dicorganizationReducer(state, { payload }) {
       return {
         ...state,
-        actorganization: payload,
+        organization: payload,
       };
     },
-    dicactmedicalTypeReducer(state, { payload }) {
+    dicmedicalTypeReducer(state, { payload }) {
       return {
         ...state,
-        actmedicalType: payload,
+        medicalType: payload,
+      };
+    },
+    dicpaymentRequestTypeReducer(state, { payload }) {
+      return {
+        ...state,
+        paymentRequestType: payload,
       };
     },
 

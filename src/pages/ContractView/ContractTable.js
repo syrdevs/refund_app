@@ -27,11 +27,9 @@ import { connect } from 'dva/index';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'umi/router';
-import ContractNew from './ContractNew';
-
 
 const dateFormat = 'DD.MM.YYYY';
-export default class ContractTable extends Component  {
+export default class ContractTable extends Component {
   state = {
 
     selectedRowKeys: [],
@@ -196,7 +194,7 @@ export default class ContractTable extends Component  {
             periodEnd: '05.12.2018',
             podr: '06.12.2018',
             status: 'lorem ipsum dolor sit amet',
-          }
+          },
         ],
       }, {
         id: '2',
@@ -223,9 +221,9 @@ export default class ContractTable extends Component  {
             periodEnd: '05.12.2018',
             podr: '06.12.2018',
             status: 'lorem ipsum dolor sit amet',
-          }
+          },
         ],
-        newContract:false
+        newContract: false,
       },
     ],
   };
@@ -250,14 +248,6 @@ export default class ContractTable extends Component  {
   };
 
   render = () => {
-    const contractform = () => {
-      /*console.log("test");
-      router.push('/acts/add');*/
-
-      this.setState({
-        newContract: !this.state.newContract
-      })
-    };
 
     const addonButtons = [
       <Button
@@ -269,8 +259,8 @@ export default class ContractTable extends Component  {
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
           key="1"
-          onClick={()=>{
-            contractform();
+          onClick={() => {
+            router.push('/contract/contracts/new');
           }}>
           Новый
         </Menu.Item>
@@ -293,8 +283,10 @@ export default class ContractTable extends Component  {
       </Dropdown>,
     ];
 
+    //{this.state.newContract && <ContractNew/>}
+
     return (<div>
-        {this.state.newContract ? <ContractNew/>: <Row>
+        <Row>
           <Col sm={24} md={this.state.filterContainer}>
             <Card
               headStyle={{
@@ -344,6 +336,7 @@ export default class ContractTable extends Component  {
                 this.filterPanelState();
               }}
               onSelectCheckboxChange={(selectedRowKeys) => {
+
                 this.setState({
                   selectedRowKeys: selectedRowKeys,
                 });
@@ -351,7 +344,7 @@ export default class ContractTable extends Component  {
             />
             <br/>
           </Col>
-        </Row>}
+        </Row>
       </div>
     );
   };

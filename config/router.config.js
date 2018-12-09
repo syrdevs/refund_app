@@ -170,7 +170,7 @@ export default [
               },
               {
                 path: '/contract/contracts/new',
-                component: './ContractView/ContractTable',
+                component: './ContractView/ContractNew',
               },
             ],
           },

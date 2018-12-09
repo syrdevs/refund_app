@@ -8,9 +8,7 @@ const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/index';
-import SmartGridColumn from '../../components/SmartGridView/SmartGridColumn';
-import SmartGridView from '../../components/SmartGridView';
-
+import SmartGridView from '@/components/SmartGridView';
 
 const TabPane = Tabs.TabPane;
 
@@ -108,16 +106,6 @@ class ContractRequestsadd extends Component {
           <TabPane tab="Информация о Заяке на возврат" key="1">
             <Row style={{marginTop:'20px'}}>
               <Form layout="horizontal" hideRequiredMark>
-{/*
-                Вид заявки
-                Номер
-                Дата
-                Отчетный период: год
-                Отчетный период: месяц
-                Подразделение
-                Примечание
-*/}
-
                 <Tabs
                   className={styles.stepFormText}
                   defaultActiveKey="form"

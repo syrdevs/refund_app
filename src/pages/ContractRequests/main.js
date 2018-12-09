@@ -252,8 +252,6 @@ export default class ContractRequestsTable extends Component  {
   };
 
   render = () => {
-
-
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item

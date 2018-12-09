@@ -262,7 +262,6 @@ export default class ContractTable extends Component {
   this.setState({
     ShowMain: false,
     ShowAct: true,
-    ShowContract: false,
     title: formatMessage({ id: 'app.module.acts.title.add'})
   })
   };
@@ -271,18 +270,6 @@ export default class ContractTable extends Component {
     const addonButtons = [
 
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-        <Menu.Item
-          key="1"
-          onClick={() => {
-            //router.push('/contract/contracts/new');
-            this.setState({
-              ShowMain: false,
-              ShowAct: false,
-              ShowContract: true
-            })
-          }}>
-          Новый
-        </Menu.Item>
         <Menu.Item
           key="2">
           Открыть/Изменить
@@ -314,22 +301,11 @@ export default class ContractTable extends Component {
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>
-          {this.state.ShowContract && <ContractNew
-            tomain={()=>{
-              this.setState({
-                ShowMain: true,
-                ShowAct: false,
-                ShowContract: false,
-                title: formatMessage({ id: 'app.module.contracts.title' })
-              })
-            }}
-          />}
           {this.state.ShowAct && <Actsadd
             tomain={()=>{
               this.setState({
                 ShowMain: true,
                 ShowAct: false,
-                ShowContract: false,
                 title: formatMessage({ id: 'app.module.contracts.title' })
               })
             }}

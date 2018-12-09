@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card} from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
-
-const { Option } = Select;
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import SmartGridView from '../../components/SmartGridView';
-
+import { Acts, Contracts, Requests, ContractForm } from './TabPages';
 
 const TabPane = Tabs.TabPane;
-
 const formItemLayout = {
   labelCol: {
     span: 10,
@@ -21,285 +16,37 @@ const formItemLayout = {
   },
 };
 
-@Form.create()
-class ContractNew extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columns: [
-        {
-          'title': 'Наименование',
-          'dataIndex': 'name',
-          'isVisible': 'true',
-        },
-        {
-          'title': 'Тип1',
-          'dataIndex': 'type1',
-          'isVisible': 'true',
-        },
-        {
-          'title': 'Тип2',
-          'dataIndex': 'type2',
-          'isVisible': 'true',
-        }
-      ],
-      data: [
-        {
-          key: 1, name: 'Договор 1', type1: 32, type2: 'абс',
-        },
-        {
-          key: 2, name: 'Договор 1', type1: 42, type2: 'абс',
-        },
-        {
-          key: 3, name: 'Договор 1', type1: 32, type2: 'абс',
-        },
-      ],
-      ContractSelect: [],
-      selectedRowKeys: [],
+export default class ContractNew extends Component {
+  state = {
+    tabs:{
+      ContractForm:{
 
-
+      }
     }
-  }
-  deleteContract=()=>{
-    /*this.setState({
-      data: this.state.data.filter((item) => {
-        /!*this.state.ContractTable.filter((select)=>{
-          select.key==item.key
-        })*!/
-      })
-    })*/
-  }
-  render() {
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
-      onSelect: (record, selected, selectedRows) => {
-        //selectedRows=[].push(record)
-        /*this.setState({
-          ContractSelect: selectedRows
-        })*/
-      },
-       onSelectAll: (selected, selectedRows, changeRows) => {
-         console.log(selected, selectedRows, changeRows);
-       },
-    };
-    const { form, dispatch, data } = this.props;
-    const { getFieldDecorator, validateFields } = form;
-    const onValidateForm = () => {
-      validateFields((err, values) => {
-        if (!err) {
-          dispatch({
-            type: 'form/saveStepFormData',
-            payload: values,
-          });
-          router.push('/form/step-form/confirm');
-        }
-      });
-    };
+  };
 
+  render() {
 
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab="Информация о договоре" key="1">
-          <Row style={{marginTop:'20px'}}>
+          <Row style={{ marginTop: '20px' }}>
             <Form layout="horizontal" hideRequiredMark>
               <Tabs
                 className={styles.stepFormText}
                 defaultActiveKey="form"
                 tabPosition={'left'}>
                 <TabPane tab="Форма" key="form">
-                  <Card style={{marginLeft: '-10px'}}>
-                    <div style={{margin:'30px 0', maxWidth:'70%'}}>
-                      <Form.Item {...formItemLayout} label="БИН">
-                        {getFieldDecorator('bin', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(<Input />)}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Контрагент">
-                        {getFieldDecorator('counteragent', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <Select>
-                            <Option value="ant-design@alipay.com">Контрагент 1</Option>
-                            <Option value="ant-design@alipay.com">Контрагент 2</Option>
-                            <Option value="ant-design@alipay.com">Контрагент 3</Option>
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Вид договора">
-                        {getFieldDecorator('contract_Type', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <Select>
-                            <Option value="ant-design@alipay.com">Договор 1</Option>
-                            <Option value="ant-design@alipay.com">Договор 2</Option>
-                            <Option value="ant-design@alipay.com">Договор 3</Option>
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Причина">
-                        {getFieldDecorator('reason', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <Select>
-                            <Option value="ant-design@alipay.com">Причина 1</Option>
-                            <Option value="ant-design@alipay.com">Причина 2</Option>
-                            <Option value="ant-design@alipay.com">Причина 3</Option>
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Номер">
-                        {getFieldDecorator('number', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(<Input />)}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Дата">
-                        {getFieldDecorator('date', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <DatePicker
-                            style={{width:'100%'}}
-                            placeholder="Выберите дату" />
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Отчетный период">
-                        {getFieldDecorator('report_period', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <MonthPicker
-                            style={{width:'100%'}}
-                            placeholder="Выберите период" />
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Период">
-                        {getFieldDecorator('period', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <RangePicker
-                            style={{width:'100%'}}
-                            placeholder={[
-                              formatMessage({ id: 'datepicker.start.label' }),
-                              formatMessage({ id: 'datepicker.end.label' }),
-                            ]}/>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Подразделение">
-                        {getFieldDecorator('podr', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <Select>
-                            <Option value="ant-design@alipay.com">Подразделение 1</Option>
-                            <Option value="ant-design@alipay.com">Подразделение 2</Option>
-                            <Option value="ant-design@alipay.com">Подразделение 3</Option>
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Статус">
-                        {getFieldDecorator('status', {
-                          initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(
-                          <Select>
-                            <Option value="ant-design@alipay.com">Статус 1</Option>
-                            <Option value="ant-design@alipay.com">Статус 2</Option>
-                            <Option value="ant-design@alipay.com">Статус 3</Option>
-                          </Select>
-                        )}
-                      </Form.Item>
-                    </div>
-                  </Card>
+                  <ContractForm  formItemLayout={formItemLayout}/>
                 </TabPane>
                 <TabPane tab="Договора" key="contracts">
-                  <Card style={{marginLeft: '-10px'}}>
-                      <SmartGridView
-                        name={'contractform'}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={false}
-                        columns={this.state.columns}
-                        actionColumns={[]}
-                        sorted={false}
-                        showTotal={false}
-                        addonButtons={[
-                          <Button style={{marginRight:'5px'}} type={'default'}  onClick={()=>{}}>Добавить</Button>,
-                          <Button  type={'default'}  onClick={()=>{this.deleteContract()}}>Удалить</Button>
-                        ]}
-                        actionExport={() => {}}
-                        onSelectRow={(record, index) => {
-                          console.log(e)
-                        }}
-                        dataSource={{
-                          total: 1,
-                          pageSize: 15,
-                          page: 1,
-                          data: this.state.data,
-                        }}
-                        onShowSizeChange={(pageNumber, pageSize) => {}}
-                        onRefresh={() => {
-
-                        }}
-                        onSearch={() => {
-
-                        }}
-                      />
-                  </Card>
+                  {/*<Contracts/>*/}
                 </TabPane>
                 <TabPane tab="Акты" key="act">
-                  <Card style={{marginLeft: '-10px'}}>
-                      <SmartGridView
-                        name={'contractform'}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={false}
-                        columns={this.state.columns}
-                        actionColumns={[]}
-                        sorted={false}
-                        showTotal={false}
-                        addonButtons={[
-                          <Button style={{marginRight:'5px'}} type={'default'}  onClick={()=>{}}>Добавить</Button>,
-                          <Button  type={'default'}  onClick={()=>{this.deleteContract()}}>Удалить</Button>
-                        ]}
-                        actionExport={() => {}}
-                        onSelectRow={(record, index) => {
-                          console.log(e)
-                        }}
-                        dataSource={{
-                          total: 1,
-                          pageSize: 15,
-                          page: 1,
-                          data: this.state.data,
-                        }}
-                        onShowSizeChange={(pageNumber, pageSize) => {}}
-                        onRefresh={() => {
-
-                        }}
-                        onSearch={() => {
-
-                        }}
-                      />
-                  </Card>
+                  {/*<Acts/>*/}
+                </TabPane>
+                <TabPane tab="Заявки" key="requests">
+                  {/*<Requests/>*/}
                 </TabPane>
               </Tabs>
               <Form.Item
@@ -312,21 +59,15 @@ class ContractNew extends Component {
                 }}
                 label=""
               >
-                <Button type="primary" >
+                <Button type="primary">
                   Сохранить
                 </Button>
               </Form.Item>
             </Form>
-
-
-            <Divider style={{ margin: '40px 0 24px' }} />
-
-
+            <Divider style={{ margin: '40px 0 24px' }}/>
           </Row>
         </TabPane>
       </Tabs>
     );
   }
 }
-
-export default  ContractNew;

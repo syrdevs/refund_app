@@ -245,23 +245,21 @@ export default class ContractRequestsTable extends Component  {
   createConract = () => {
     this.props.createContract(this.state.selectedRowKeys);
   };
+  contractform = () => {
+    this.setState({
+      newContract: !this.state.newContract
+    })
+  };
 
   render = () => {
-    const contractform = () => {
-      /*console.log("test");
-      router.push('/acts/add');*/
 
-      this.setState({
-        newContract: !this.state.newContract
-      })
-    };
 
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
           key="1"
           onClick={()=>{
-            //contractform();
+            this.contractform();
           }}>
           Новый
         </Menu.Item>
@@ -281,7 +279,8 @@ export default class ContractRequestsTable extends Component  {
     ];
 
     return (<div>
-        {this.state.newContract ? <ContractRequestsadd/>: <Row>
+        {this.state.newContract && <ContractRequestsadd />}
+        {!this.state.newContract && <Row>
           <Col sm={24} md={this.state.filterContainer}>
             <Card
               headStyle={{

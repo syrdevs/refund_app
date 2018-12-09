@@ -206,6 +206,7 @@ export default class ActsTable extends Component  {
     ],
     ShowMain: true,
     Showrequest: false,
+    ShowAct: false,
     title: formatMessage({ id: 'app.module.acts.title' })
   };
 
@@ -230,6 +231,7 @@ export default class ActsTable extends Component  {
     this.setState({
       ShowMain: false,
       Showrequest: true,
+      ShowAct: false,
       title: formatMessage({ id: 'app.module.contractrequests.title.add'})
     })
   }
@@ -249,7 +251,11 @@ export default class ActsTable extends Component  {
         <Menu.Item
           key="1"
           onClick={()=>{
-            //contractform();
+            this.setState({
+              ShowMain: false,
+              Showrequest: false,
+              ShowAct: true
+            })
           }}>
           Новый
         </Menu.Item>
@@ -281,11 +287,22 @@ export default class ActsTable extends Component  {
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>
+        {this.state.ShowAct && <Actsadd
+            tomain={()=>{
+              this.setState({
+                ShowMain: true,
+                ShowAct: false,
+                ShowContract: false,
+                title: formatMessage({ id: 'app.module.contracts.title' })
+              })
+            }}
+          />}
         {this.state.Showrequest && <ContractRequestsadd
           tomain={()=>{
             this.setState({
               ShowMain: true,
               Showrequest: false,
+              ShowAct: false,
               title: formatMessage({ id: 'app.module.acts.title'})
             })
           }}

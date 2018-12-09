@@ -30,6 +30,7 @@ import router from 'umi/router';
 import Actsadd from '../Acts/Actsadd';
 import Options from '../Options/Options';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import ContractNew from './ContractNew';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -231,27 +232,23 @@ export default class ContractTable extends Component {
     ],
     ShowMain: true,
     ShowAct: false,
+    ShowContract: false,
     title: formatMessage({ id: 'app.module.contracts.title' })
   };
-
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
       filterContainer: filterContainer === 6 ? 0 : 6,
     }));
   };
-
   clearFilter = () => {
     //console.log('clear filter');
   };
-
   applyFilter = (filters) => {
    // console.log(filters);
   };
   componentDidMount() {
    // console.log(this.props.acts);
   }
-
-
   createConract = () => {
     const {dispatch} = this.props;
 
@@ -265,10 +262,10 @@ export default class ContractTable extends Component {
   this.setState({
     ShowMain: false,
     ShowAct: true,
+    ShowContract: false,
     title: formatMessage({ id: 'app.module.acts.title.add'})
   })
   };
-
   render = () => {
 
     const addonButtons = [
@@ -278,6 +275,11 @@ export default class ContractTable extends Component {
           key="1"
           onClick={() => {
             //router.push('/contract/contracts/new');
+            this.setState({
+              ShowMain: false,
+              ShowAct: false,
+              ShowContract: true
+            })
           }}>
           Новый
         </Menu.Item>
@@ -311,18 +313,28 @@ export default class ContractTable extends Component {
 
     return (
       <PageHeaderWrapper title={this.state.title}>
-        {this.state.ShowAct && <Actsadd
-          tomain={()=>{
-            this.setState({
-              ShowMain: true,
-              ShowAct: false,
-              title: formatMessage({ id: 'app.module.contracts.title' })
-            })
-          }}
-        />}
-        {this.state.ShowMain &&
         <Card bodyStyle={{ padding: 5 }}>
-          <div>
+          {this.state.ShowContract && <ContractNew
+            tomain={()=>{
+              this.setState({
+                ShowMain: true,
+                ShowAct: false,
+                ShowContract: false,
+                title: formatMessage({ id: 'app.module.contracts.title' })
+              })
+            }}
+          />}
+          {this.state.ShowAct && <Actsadd
+            tomain={()=>{
+              this.setState({
+                ShowMain: true,
+                ShowAct: false,
+                ShowContract: false,
+                title: formatMessage({ id: 'app.module.contracts.title' })
+              })
+            }}
+          />}
+          {this.state.ShowMain &&<div>
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
                 <Card
@@ -383,8 +395,8 @@ export default class ContractTable extends Component {
                 <br/>
               </Col>
             </Row>
-          </div>
-        </Card>}
+          </div>}
+        </Card>
       </PageHeaderWrapper>
 
     );

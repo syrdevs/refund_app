@@ -241,7 +241,6 @@ class Actsadd extends Component {
     };
     return (
         <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
-        <Card bodyStyle={{ padding: 5 }}>
           <Row style={{marginTop:'20px'}}>
             <Form layout="horizontal" hideRequiredMark>
 
@@ -424,7 +423,6 @@ class Actsadd extends Component {
 
             </Form>
           </Row>
-      </Card>
         </Spin>
   /*
     <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title' })}>

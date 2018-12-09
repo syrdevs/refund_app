@@ -490,8 +490,6 @@ class ContractRequestsadd extends Component {
                 </Row>
               </Card>
             </TabPane>
-
-
             <TabPane tab="Акты"
                      key="acts"
             >
@@ -586,16 +584,6 @@ class ContractRequestsadd extends Component {
                 />
               </Card>
             </TabPane>
-
-
-
-
-
-
-
-
-
-
             <TabPane tab="Спецификация"
                      key="specifications"
             >

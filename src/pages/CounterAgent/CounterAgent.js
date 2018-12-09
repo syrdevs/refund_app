@@ -26,7 +26,7 @@ import { connect } from 'dva';
 import { getAuthority } from '../../utils/authority';
 import { Animated } from 'react-animated-css';
 import SampleForm from '../../components/SampleForm';
-
+import reduxRouter from 'umi/router';
 
 function hasRole(roles) {
   let userRoles = getAuthority();
@@ -119,10 +119,42 @@ class CounterAgent extends Component {
     const { universal } = this.props;
 
 
+    const addonButtons = [
+      <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
+        <Menu.Item
+          disabled={hasRole(['ADMIN'])}
+          onClick={() => this.goForm()}
+          key='add'>
+          Добавить
+        </Menu.Item>
+        <Menu.Item
+          disabled={hasRole(['ADMIN'])}
+          key='delete'>
+          Удалить
+        </Menu.Item>
+        <Menu.Item
+          disabled={hasRole(['ADMIN'])}
+          key='update'>
+          Открыть/изменить
+        </Menu.Item>
+        <Menu.Item
+          disabled={hasRole(['ADMIN'])}
+          key='register_document'
+          onClick={()=>{
+            reduxRouter.push("create");
+          }}>
+          Создать договор
+        </Menu.Item>
+      </Menu>}>
+        <Button
+          key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+          type="down"/></Button>
+      </Dropdown>,
+    ];
+
     return (
-      <PageHeaderWrapper title={formatMessage({ id: 'menu.counteragent' })}>
-        <Card bodyStyle={{ padding: 5 }}>
           <Row>
+
             <Col sm={24} md={this.state.tablecont}>
               {this.state.searchercont === 8 &&
               <DataDiv/>
@@ -140,6 +172,8 @@ class CounterAgent extends Component {
                   loading={this.props.loadingData}
                   fixedHeader
                   rowSelection
+                  showExportBtn={true}
+                  actionExport={() => {}}
                   columns={this.state.columns}
                   sorted
                   showTotal
@@ -158,30 +192,7 @@ class CounterAgent extends Component {
                       'responsiblePersons': 'Ахметов Даурен',
                     }],
                   }}
-                  addonButtons={[
-                    <Button
-                      disabled={hasRole(['ADMIN'])}
-                      onClick={() => this.goForm()}
-                      key='add'
-                    >Добавить
-                    </Button>,
-                    <Button
-                      disabled={hasRole(['ADMIN'])}
-                      key='delete'
-                    >Удалить
-                    </Button>,
-                    <Button
-                      disabled={hasRole(['ADMIN'])}
-                      key='update'
-                    >Открыть/изменить
-                    </Button>,
-                    <Button
-                      disabled={hasRole(['ADMIN'])}
-                      key='register_document'
-                    >Зарегистрировать договор
-                    </Button>,
-
-                  ]}
+                  addonButtons={addonButtons}
 
                   onShowSizeChange={(pageNumber, pageSize) => {
                     {/*<Button
@@ -216,8 +227,6 @@ class CounterAgent extends Component {
             </Col>
 
           </Row>
-        </Card>
-      </PageHeaderWrapper>
     );
   }
 }

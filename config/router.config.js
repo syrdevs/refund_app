@@ -145,8 +145,27 @@ export default [
             path: '/contract/counteragent',
             name: 'counteragent',
             icon: 'faFileMedicalAlt',
-            component: './CounterAgent/CounterAgent',
-            authority: ['ADMIN', 'FSMS1', 'FSMS2']
+            component: './CounterAgent/CounterAgentMain',
+            authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                path: '/contract/counteragent',
+                redirect: '/contract/counteragent/main',
+              },
+              {
+                path: '/contract/counteragent/main',
+                component: './CounterAgent/CounterAgent',
+              },
+              {
+                path: '/contract/counteragent/create',
+                component: './CounterAgent/CounterAgentCreate',
+              },
+              {
+                path: '/contract/counteragent/edit',
+                component: './CounterAgent/CounterAgentEdit',
+              },
+            ],
           },
           {
             path: '/contract/contracts',

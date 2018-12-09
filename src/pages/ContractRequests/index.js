@@ -8,7 +8,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const dateFormat = 'DD.MM.YYYY';
-export default class ContractMain extends Component {
+export default class ContractRequests extends Component {
   state = {
   };
 
@@ -16,10 +16,10 @@ export default class ContractMain extends Component {
 
   render = () => {
     const { location, children } = this.props;
-    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contracts.title' })}>
-      <Card bodyStyle={{ padding: 5 }}>
-        {children}
-      </Card>
+    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
+        <Card bodyStyle={{ padding: 5 }}>
+          {children}
+        </Card>
       </PageHeaderWrapper>
     );
   };

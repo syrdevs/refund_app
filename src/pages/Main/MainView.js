@@ -1015,8 +1015,6 @@ class MainView extends Component {
                           {formatMessage({ id: 'menu.mainview.xmlBtn' })}
                         </Upload>
                       </Menu.Item>
-
-
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
                         this.showGraphic();
                       }}>

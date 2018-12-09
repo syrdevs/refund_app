@@ -124,21 +124,114 @@ export default [
         component: './Journal/JournalPage',
         authority: ['ADMIN', 'FSMS2']
       },
-      /*{
-        path: '/counteragent',
-        icon: 'faBookOpen',
-        name: 'counteragent',
-        component: './CounterAgent/CounterAgent',
-        authority: ['ADMIN', 'FSMS1','FSMS2']
-      },*/
 
-      {
+
+      /*{
         path: '/contracts',
         icon: 'faBookOpen',
         name: 'contracts',
         component: './ContractView/ContractPage',
-        authority: ['ADMIN', 'FSMS1','FSMS2']
+        hideChildrenInMenu: true,
+        authority: ['ADMIN', 'FSMS1','FSMS2'],
+        routes: [
+          { path: '/contracts/new', redirect: '/contracts/new' },
+          {
+            path: '/contracts/new',
+            component: './ContractView/ContractNew',
+          },
+        ],
+      },*/
+
+
+      {
+        path: '/contract',
+        name: 'contract',
+        routes: [
+          {
+            path: '/contract/counteragent',
+            name: 'counteragent',
+            component: './CounterAgent/CounterAgent',
+            authority: ['ADMIN', 'FSMS1', 'FSMS2']
+          },
+          {
+            path: '/contract/contracts',
+            name: 'contracts',
+            component: './ContractView/ContractMain',
+            hideChildrenInMenu: true,
+            authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+            routes: [
+              {
+                path: '/contract/contracts',
+                redirect: '/contract/contracts/table',
+              },
+              {
+                path: '/contract/contracts/table',
+                component: './ContractView/ContractTable',
+              },
+              {
+                path: '/contract/contracts/new',
+                component: './ContractView/ContractTable',
+              },
+            ],
+          },
+
+
+
+
+
+          {
+            path: '/contract/acts',
+            name: 'acts',
+            component: './Acts/index',
+            hideChildrenInMenu: true,
+            authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+            routes: [
+              {
+                path: '/contract/acts',
+                redirect: '/contract/acts/table',
+              },
+              {
+                path: '/contract/acts/table',
+                component: './Acts/main',
+              },
+              {
+                path: '/contract/acts/add',
+                component: './Acts/Actsadd',
+              },
+            ],
+          },
+          {
+            path: '/contract/contractrequests',
+            name: 'contractrequests',
+            component: './ContractRequests/index',
+            hideChildrenInMenu: true,
+            authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+            routes: [
+              {
+                path: '/contract/contractrequests',
+                redirect: '/contract/contractrequests/table',
+              },
+              {
+                path: '/contract/contractrequests/table',
+                component: './ContractRequests/main',
+              },
+              {
+                path: '/contract/contractrequests/add',
+                component: './ContractRequests/ContractRequestsadd',
+              },
+            ],
+          },
+        ]
       },
+
+
+
+
+
+
+
+
+
       {
         component: '404',
       },

@@ -108,7 +108,6 @@ class CounterAgent extends Component {
   }
 
   goForm = () => {
-    console.log('qweqwe');
     this.setState({
       isForm: !this.state.isForm,
     });
@@ -181,10 +180,15 @@ class CounterAgent extends Component {
                       key='register_document'
                     >Зарегистрировать договор
                     </Button>,
+
                   ]}
 
                   onShowSizeChange={(pageNumber, pageSize) => {
-
+                    {/*<Button
+                      disabled={hasRole(['ADMIN'])}
+                      key='register_document'
+                    >Зарегистрировать договор
+                    </Button>,*/}
                   }}
                   onSelectCell={(cellIndex, cell) => {
 

@@ -76,8 +76,6 @@ export default class InfoPage extends Component {
           })(
             <Select>
               <Option value="ant-design@alipay.com">Договор 1</Option>
-              <Option value="ant-design@alipay.com">Договор 2</Option>
-              <Option value="ant-design@alipay.com">Договор 3</Option>
             </Select>,
           )}
         </Form.Item>
@@ -88,8 +86,6 @@ export default class InfoPage extends Component {
           })(
             <Select>
               <Option value="ant-design@alipay.com">Причина 1</Option>
-              <Option value="ant-design@alipay.com">Причина 2</Option>
-              <Option value="ant-design@alipay.com">Причина 3</Option>
             </Select>,
           )}
         </Form.Item>
@@ -106,7 +102,7 @@ export default class InfoPage extends Component {
           })(
             <DatePicker
               value={null}
-              style={{ width: '100%' }}
+              style={{ width: '50%' }}
               placeholder="Выберите дату"/>,
           )}
         </Form.Item>
@@ -116,7 +112,7 @@ export default class InfoPage extends Component {
             rules: [{ required: true, message: '' }],
           })(
             <MonthPicker
-              style={{ width: '100%' }}
+              style={{ width: '50%' }}
               placeholder="Выберите период"/>,
           )}
         </Form.Item>
@@ -126,7 +122,7 @@ export default class InfoPage extends Component {
             rules: [{ required: true, message: '' }],
           })(
             <RangePicker
-              style={{ width: '100%' }}
+              style={{ width: '50%' }}
               placeholder={[
                 formatMessage({ id: 'datepicker.start.label' }),
                 formatMessage({ id: 'datepicker.end.label' }),
@@ -140,8 +136,6 @@ export default class InfoPage extends Component {
           })(
             <Select>
               <Option value="ant-design@alipay.com">Подразделение 1</Option>
-              <Option value="ant-design@alipay.com">Подразделение 2</Option>
-              <Option value="ant-design@alipay.com">Подразделение 3</Option>
             </Select>,
           )}
         </Form.Item>

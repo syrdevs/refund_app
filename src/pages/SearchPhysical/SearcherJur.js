@@ -46,7 +46,8 @@ class SearcherJur extends Component {
         "paymentSum": null
       },
       loading:false,
-      payes:[]
+      payes:[],
+      yearDo:null,
     };
   }
 
@@ -118,7 +119,12 @@ class SearcherJur extends Component {
           this.setState({
             jur: this.props.universal.searcherjur,
           }, () => {
-            this.payesSearcher(moment(new Date()).year());
+            if(this.state.yearDo===null){
+              this.payesSearcher(moment(new Date()).year());
+            }else{
+              this.payesSearcher(this.state.yearDo)
+            }
+
           })
         }
         else {
@@ -140,6 +146,7 @@ class SearcherJur extends Component {
 
   onPanelChange=(value, mode)=>{
     this.payesSearcher(value.year());
+    this.state.yearDo=value.year();
   };
 
   payesSearcher=(year)=>{

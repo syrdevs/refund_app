@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Card,
   Tabs,
@@ -19,34 +19,34 @@ import {
   Spin,
   Divider,
 } from 'antd';
-import { formatMessage, FormattedMessage } from 'umi/locale';
+import {formatMessage, FormattedMessage} from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faTimes} from '@fortawesome/free-solid-svg-icons/index';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 
 import paymentsData from './paymentsData';
 import moment from 'moment/moment';
 import classNames from 'classnames';
-import { connect } from 'dva/index';
-import { Animated } from 'react-animated-css';
+import {connect} from 'dva/index';
+import {Animated} from 'react-animated-css';
 import Searcher from '../SearchPhysical/Searcher';
 import SearcherJur from '../SearchPhysical/SearcherJur';
 import saveAs from 'file-saver';
 
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
+const {RangePicker} = DatePicker;
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
 const formItemLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  labelCol: {span: 4},
+  wrapperCol: {span: 18},
 };
 
 const EditableContext = React.createContext();
 
-@connect(({ universal, loading }) => {
+@connect(({universal, loading}) => {
   return {
     universal,
     loadingData: loading.effects['universal/paymentsData'],
@@ -199,6 +199,10 @@ export default class PaymentsPage extends Component {
           'dataIndex': 'secondname',
           'isVisible': 'true',
         }, {
+          'title': 'Район',
+          'dataIndex': 'raion',
+          'isVisible': 'true',
+        }, {
           'title': 'Регион',
           'dataIndex': 'region',
           'isVisible': 'true',
@@ -226,31 +230,35 @@ export default class PaymentsPage extends Component {
           'title': 'Сумма возвратов',
           'dataIndex': 'refundTotalAmount',
           'isVisible': 'true',
+        }, {
+          'title': 'Дата поступления информации',
+          'dataIndex': 'createdon',
         }
 
-        ],
+      ],
 
     };
 
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
   }
 
   componentDidMount() {
     this.loadGridData();
+    console.log(this.state.paymentspagemt100columns);
     this.setState({
 
       filterForm: [
         {
           name: 'reference',
-          label: formatMessage({ id: 'menu.mainview.reference' }),
+          label: formatMessage({id: 'menu.mainview.reference'}),
           type: 'text',
         },
         {
           name: 'paymentDate',
-          label: formatMessage({ id: 'menu.filter.payment.create_date' }),
+          label: formatMessage({id: 'menu.filter.payment.create_date'}),
           type: 'betweenDate',
         },
         /*{
@@ -260,7 +268,7 @@ export default class PaymentsPage extends Component {
         },*/
         {
           name: 'knp',
-          label: formatMessage({ id: 'menu.filter.knp' }),
+          label: formatMessage({id: 'menu.filter.knp'}),
           type: 'multibox',
         },
         // {
@@ -341,6 +349,11 @@ export default class PaymentsPage extends Component {
           type: 'text',
         },
         {
+          label: 'Район',
+          name: 'raion',
+          type: 'text',
+        },
+        {
           label: 'Регион',
           name: 'region',
           type: 'text',
@@ -354,6 +367,7 @@ export default class PaymentsPage extends Component {
           label: 'Отправитель (БИН)',
           name: 'senderBin',
           type: 'text',
+          withMax: 12,
         },
         {
           label: 'Отправитель (Наименование)',
@@ -399,7 +413,7 @@ export default class PaymentsPage extends Component {
       sortedInfo: {},
       parameters: {
         ...this.state.parameters,
-        filter: { ...filter },
+        filter: {...filter},
         sort: [],
       },
     }, () => {
@@ -408,7 +422,7 @@ export default class PaymentsPage extends Component {
   };
 
   onShowSizeChange = (current, pageSize) => {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     this.setState(prevState => ({
       parameters: {
         ...prevState.parameters,
@@ -426,13 +440,13 @@ export default class PaymentsPage extends Component {
   };
 
   filterPanelState = () => {
-    this.setState(({ filterContainer }) => ({
+    this.setState(({filterContainer}) => ({
       filterContainer: filterContainer == 6 ? 0 : 6,
     }));
   };
 
   loadGridData = () => {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     let sortField = this.state.sortedInfo;
     dispatch({
       type: 'universal/paymentsData',
@@ -454,10 +468,12 @@ export default class PaymentsPage extends Component {
           length: 15,
           entity: e,
           filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
-          sort: [],
+         // sort:[],
+           sort: e==='mt100'? [{field: "createdOn", 'desc': true}]:[{field: "createdon", 'desc': true}],
         },
       }, () => this.loadGridData());
     }
+
 
   };
 
@@ -474,7 +490,7 @@ export default class PaymentsPage extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': this.state.parameters.entity,
-          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
+          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({id: 'menu.payments.payment100'}) : formatMessage({id: 'menu.payments.payment102'}),
           'src': {
             'searched': true,
             'data': this.state.parameters.filter,
@@ -533,7 +549,7 @@ export default class PaymentsPage extends Component {
 
   render() {
 
-    const { paymentsData } = this.props.universal;
+    const {paymentsData} = this.props.universal;
     const dataStore = this.state.staticdata;
     const columns = this.state.staticolumn;
 
@@ -542,7 +558,7 @@ export default class PaymentsPage extends Component {
       color: '#002140',
       fontSize: '12px',
       paddingLeft: '10px',
-    }}>{formatMessage({ id: 'system.totalAmount' })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
+    }}>{formatMessage({id: 'system.totalAmount'})}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
 
     if (this.state.parameters.entity === 'mt100') {
       addonButtons
@@ -636,29 +652,35 @@ export default class PaymentsPage extends Component {
       </Spin>
     );*/
 
-    const DataDiv = ({ mtcolumns, tablename }) => (
+    const DataDiv = ({mtcolumns, tablename}) => (
       <Spin tip="" spinning={this.props.loadingData}>
         {tablename === 'paymentspagemt100columns' ?
           <SmartGridView
             name={tablename}
-            scroll={{ x: 'auto' }}
+            scroll={{x: 'auto'}}
             fixedBody={true}
             actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
             showTotal={true}
-            selectedRowCheckBox={true}
+            // selectedRowCheckBox={true}
             searchButton={false}
             selectedRowKeys={this.state.selectedRowKeys}
             rowKey={'id'}
             loading={this.props.loadingData}
             fixedHeader={true}
             rowSelection={true}
-            /*rowClassName={(record) => {
-              if (record.isRefunded) {
-                return 'redRow';
-              }
-            }
-            }*/
             columns={mtcolumns}
+            // onColumnsChange={(isChanged, dataIndex) => {
+            //   if (isChanged === true && dataIndex === 'createdOn') {
+            //     this.setState(prevState => ({
+            //       parameters: {
+            //         ...prevState.parameters,
+            //         sort: [{field: "createdOn", 'desc': true}],
+            //       },
+            //     }), () => {
+            //       this.loadGridData();
+            //     });
+            //   }
+            // }}
             sorted={true}
             sortedInfo={this.state.sortedInfo}
             showExportBtn={true}
@@ -687,7 +709,7 @@ export default class PaymentsPage extends Component {
                 sortedInfo: column,
                 parameters: {
                   ...prevState.parameters,
-                  sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                  sort: [{field: column.field, 'desc': column.order === 'descend'}],
                 },
               }), () => {
                 this.loadGridData();
@@ -715,11 +737,11 @@ export default class PaymentsPage extends Component {
           :
           <SmartGridView
             name={tablename}
-            scroll={{ x: 'auto' }}
+            scroll={{x: 'auto'}}
             fixedBody={true}
             actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
             showTotal={true}
-            selectedRowCheckBox={true}
+            // selectedRowCheckBox={true}
             searchButton={false}
             selectedRowKeys={this.state.selectedRowKeys}
             rowKey={'id'}
@@ -733,6 +755,9 @@ export default class PaymentsPage extends Component {
             }
             }
             columns={mtcolumns}
+            onColumnsChange={(isChanged, dataIndex) => {
+              console.log(dataIndex)
+            }}
             sorted={true}
             sortedInfo={this.state.sortedInfo}
             showExportBtn={true}
@@ -761,7 +786,7 @@ export default class PaymentsPage extends Component {
                 sortedInfo: column,
                 parameters: {
                   ...prevState.parameters,
-                  sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                  sort: [{field: column.field, 'desc': column.order === 'descend'}],
                 },
               }), () => {
                 this.loadGridData();
@@ -791,12 +816,12 @@ export default class PaymentsPage extends Component {
     );
 
     return (
-      <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
-        <Card bodyStyle={{ padding: 5 }}>
+      <PageHeaderWrapper title={formatMessage({id: 'menu.rpmu.payments'})}>
+        <Card bodyStyle={{padding: 5}}>
           <Tabs
             activeKey={this.state.activeKey}
             onChange={this.tabchange}>
-            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
+            <TabPane tab={formatMessage({id: 'menu.payments.searchbtn'})} key="searcher">
               <Searcher
                 searchbyiin={(iin) => {
                   this.setState({
@@ -804,7 +829,7 @@ export default class PaymentsPage extends Component {
                     parameters: {
                       ...this.state.parameters,
                       'entity': 'mt102',
-                      'filter': { 'iin': iin },
+                      'filter': {'iin': iin},
                       'sort': [],
                     },
                   }, () => {
@@ -819,7 +844,7 @@ export default class PaymentsPage extends Component {
               />
             </TabPane>
 
-            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtnJur' })} key="searcherJur">
+            <TabPane tab={formatMessage({id: 'menu.payments.searchbtnJur'})} key="searcherJur">
               <SearcherJur
                 searchbybin={(bin) => {
                   this.setState({
@@ -827,7 +852,7 @@ export default class PaymentsPage extends Component {
                     parameters: {
                       ...this.state.parameters,
                       'entity': 'mt102',
-                      'filter': { 'senderBin': bin },
+                      'filter': {'senderBin': bin},
                       'sort': [],
                     },
                   }, () => {
@@ -842,7 +867,7 @@ export default class PaymentsPage extends Component {
               />
             </TabPane>
 
-            <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100">
+            <TabPane tab={formatMessage({id: 'menu.payments.payment100'})} key="mt100">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
                   <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
@@ -850,10 +875,10 @@ export default class PaymentsPage extends Component {
                       headStyle={{
                         padding: '0 14px',
                       }}
-                      style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                      style={{margin: '0px 5px 10px 0px', borderRadius: '5px'}}
                       type="inner"
-                      title={formatMessage({ id: 'system.filter' })}
-                      extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      title={formatMessage({id: 'system.filter'})}
+                      extra={<Icon style={{'cursor': 'pointer'}} onClick={this.filterPanelState}><FontAwesomeIcon
                         icon={faTimes}/></Icon>}>
                       <GridFilter
                         clearFilter={this.clearFilter}
@@ -872,15 +897,15 @@ export default class PaymentsPage extends Component {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
+            <TabPane tab={formatMessage({id: 'menu.payments.payment102'})} key="mt102">
               <Row>
                 <Col sm={24} md={this.state.filterContainer}>
                   <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                     <Card
-                      style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                      style={{margin: '0px 5px 10px 0px', borderRadius: '5px'}}
                       type="inner"
-                      title={formatMessage({ id: 'system.filter' })}
-                      extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      title={formatMessage({id: 'system.filter'})}
+                      extra={<Icon style={{'cursor': 'pointer'}} onClick={this.filterPanelState}><FontAwesomeIcon
                         icon={faTimes}/></Icon>}>
                       <GridFilter
                         clearFilter={this.clearFilter}

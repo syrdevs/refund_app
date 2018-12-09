@@ -20,6 +20,7 @@ import {
   Checkbox,
   Divider,
   Spin,
+  Badge,
 } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -65,6 +66,7 @@ class MainView extends Component {
       ImportXMLModal: {
         visible: false,
       },
+      sortedInfo: {},
 
       ModalChangeDateRefund: false,
 
@@ -139,11 +141,11 @@ class MainView extends Component {
         }, {
           'title': 'Статус заявки на возврат',
           isVisible: true,
-          'dataIndex': 'dappRefundStatusId.nameRu',
+          'dataIndex': 'dappRefundStatusId.nameRu ',
           order: 7,
           render: (record, value) => <a
             style={{ color: this.setColor(value.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
-            href="#">{value.dappRefundStatusId.nameRu}</a>,
+            href="#"> <span><Badge status={this.setBadgeStatus(value.isRefundConfirm)} /></span> {value.dappRefundStatusId.nameRu}</a>,
         }],
       columns: [
         {
@@ -163,7 +165,7 @@ class MainView extends Component {
           'isVisible': true,
           'dataIndex': 'receiptAppdateToFsms',
         }, {
-          'title': 'Дата поступления',
+          'title': 'Дата поступление заявки на возврат',
           'isVisible': true,
           'dataIndex': 'entryDate',
         }, {
@@ -228,9 +230,11 @@ class MainView extends Component {
       xsize: 'auto',
 
       rpmu: {
+        sortedInfo:{},
         pagingConfig: {
           'start': 0,
           'length': 15,
+          'sort': [],
           'src': {
             'searched': false,
             'data': {},
@@ -241,6 +245,7 @@ class MainView extends Component {
       pagingConfig: {
         'start': 0,
         'length': 15,
+        'sort': [],
         'src': {
           'searched': false,
           'data': {},
@@ -329,14 +334,18 @@ class MainView extends Component {
     });
   };
   setColor = (value) => {
+    return '#000000a6';
+  };
+
+  setBadgeStatus = (value) => {
     if (value) {
-      return 'green';
+      return 'success';
     }
     else if (value === undefined) {
-      return 'black';
+      return 'default';
     }
     else {
-      return 'red';
+      return 'error';
     }
   };
 
@@ -383,9 +392,11 @@ class MainView extends Component {
   clearFilter = () => {
 
     this.setState({
+      sortedInfo:{},
       pagingConfig: {
         'start': 0,
         'length': 15,
+        'sort': [],
         'src': {
           'searched': false,
           'data': {},
@@ -399,9 +410,11 @@ class MainView extends Component {
   setFilter = (filters) => {
 
     this.setState({
+      sortedInfo:{},
       pagingConfig: {
         'start': 0,
         'length': 15,
+        'sort': [],
         'src': {
           'searched': true,
           'data': filters,
@@ -431,6 +444,7 @@ class MainView extends Component {
         name: 'personIin',
         label: formatMessage({ id: 'menu.filter.iin' }),
         type: 'text',
+        withMax: 12,
       },
       {
         name: 'dappRefundStatus',
@@ -455,13 +469,11 @@ class MainView extends Component {
       {
         name: 'refundEntryDate',
         label: formatMessage({ id: 'menu.filter.RefundFundDate' }),
-        nullBtn: true,
         type: 'betweenDate',
       },
       {
         name: 'refundDate',
         label: formatMessage({ id: 'menu.filter.RefusalDate' }),
-        nullBtn: true,
         type: 'betweenDate',
       },
       {
@@ -886,6 +898,34 @@ class MainView extends Component {
                               ),
                             }]}
                           columns={rpmuColumns}
+                          sorted={true}
+                          sortedInfo={this.state.sortedInfo}
+                          onSort={(column) => {
+
+                            if (Object.keys(column).length === 0) {
+                              this.setState(prevState => ({
+                                sortedInfo: {},
+                                pagingConfig: {
+                                  ...prevState.pagingConfig,
+                                  sort: [],
+                                },
+                              }), () => {
+                                this.loadMainGridData();
+                              });
+                              return;
+                            }
+
+                            this.setState(prevState => ({
+                              sortedInfo: column,
+                              pagingConfig: {
+                                ...prevState.pagingConfig,
+                                sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                              },
+                            }), () => {
+                              this.loadMainGridData();
+                            });
+
+                          }}
                           rowSelection={false}
                           rowClassName={(record) => {
                             if (record.refundExist) {
@@ -939,6 +979,7 @@ class MainView extends Component {
                   actionColumns={this.state.fcolumn}
                   columns={this.state.columns}
                   sorted={true}
+                  sortedInfo={this.state.sortedInfo}
                   showTotal={true}
                   showExportBtn={true}
                   dataSource={{
@@ -994,27 +1035,27 @@ class MainView extends Component {
                         {formatMessage({ id: 'menu.mainview.mt102Btn' })}
                       </Menu.Item>
 
-                      <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
-                      }}>
+                      {/*<Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {*/}
+                      {/*}}>*/}
 
-                        <Upload
-                          showUploadList={false}
-                          openFileDialogOnClick={true}
-                          onRemove={() => {
+                        {/*<Upload*/}
+                          {/*showUploadList={false}*/}
+                          {/*openFileDialogOnClick={true}*/}
+                          {/*onRemove={() => {*/}
 
-                          }}
-                          onPreview={() => {
+                          {/*}}*/}
+                          {/*onPreview={() => {*/}
 
-                          }}
-                          onChange={(e) => {
-                            if (e.file.status === 'done') {
-                              console.log(e.file);
-                              this.importXmlAction();
-                            }
-                          }}>
-                          {formatMessage({ id: 'menu.mainview.xmlBtn' })}
-                        </Upload>
-                      </Menu.Item>
+                          {/*}}*/}
+                          {/*onChange={(e) => {*/}
+                            {/*if (e.file.status === 'done') {*/}
+                              {/*console.log(e.file);*/}
+                              {/*this.importXmlAction();*/}
+                            {/*}*/}
+                          {/*}}>*/}
+                          {/*{formatMessage({ id: 'menu.mainview.xmlBtn' })}*/}
+                        {/*</Upload>*/}
+                      {/*</Menu.Item>*/}
                       <Menu.Item disabled={hasRole(['ADMIN'])} key="6" onClick={() => {
                         this.showGraphic();
                       }}>
@@ -1034,6 +1075,32 @@ class MainView extends Component {
                   actionExport={() => this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
+                  }}
+                  onSort={(column) => {
+
+                    if (Object.keys(column).length === 0) {
+                      this.setState(prevState => ({
+                        sortedInfo: {},
+                        pagingConfig: {
+                          ...prevState.pagingConfig,
+                          sort: [],
+                        },
+                      }), () => {
+                        this.loadMainGridData();
+                      });
+                      return;
+                    }
+
+                    this.setState(prevState => ({
+                      sortedInfo: column,
+                      pagingConfig: {
+                        ...prevState.pagingConfig,
+                        sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                      },
+                    }), () => {
+                      this.loadMainGridData();
+                    });
+
                   }}
                   onSelectCell={(cellIndex, cell) => {
 

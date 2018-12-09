@@ -395,6 +395,7 @@ export default class SmartGridView extends Component {
                        onSearch={this.props.onSearch}/>
       <Table {...tableOptions}/>
       <br/>
+      {!this.props.hidePagination &&
       <LocaleProvider locale={componentLocal}>
         <Pagination
           defaultPageSize={this.props.dataSource.pageSize}
@@ -410,7 +411,7 @@ export default class SmartGridView extends Component {
           defaultCurrent={this.props.dataSource.page}
           total={this.props.dataSource.total}
         />
-      </LocaleProvider>
+      </LocaleProvider>}
     </div>);
   }
 

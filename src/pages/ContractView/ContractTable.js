@@ -244,7 +244,8 @@ export default class ContractTable extends Component {
 
 
   createConract = () => {
-    this.props.createContract(this.state.selectedRowKeys);
+   /* this.props.createContract(this.state.selectedRowKeys);*/
+    router.push('/contract/acts/add');
   };
 
   render = () => {

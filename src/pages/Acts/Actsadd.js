@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin} from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon} from 'antd';
 import styles from './style.less';
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
+import {  faTrash } from '@fortawesome/free-solid-svg-icons';
 import SmartGridView from '@/components/SmartGridView';
 import { Tab } from '../../components/Login';
 import ActModal from './ActModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
 
 
@@ -50,11 +52,6 @@ class Actsadd extends Component {
           'isVisible': 'true',
         },
         {
-          'title': 'Предъявлено к оплате (тг)',
-          'dataIndex': 'present_payment',
-          'isVisible': 'true',
-        },
-        {
           'title': 'Принято к оплате (тг)',
           'dataIndex': 'accept_payment',
           'isVisible': 'true',
@@ -72,18 +69,19 @@ class Actsadd extends Component {
       ],
       data: [
         {
-          key: 1, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 1, id:"123qwe111", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
         {
-          key: 2, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 2, id:"123qwe222", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
         {
-          key: 3, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 3, id:"123qwe333", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
       ],
       ContractSelect: [],
       selectedRowKeys: [],
-      modal:false
+      modal:false,
+      ContractSumms:[]
     }
   }
   deleteContract=()=>{
@@ -157,8 +155,22 @@ componentDidMount() {
       modal:false
     })
   }
+  onChangeSumma=(e, d)=>{
+    console.log(e.id);
+    console.log(d);
+    //ContractSumms
+    this.setState({
+      ContractSumms:[
+        ...this.state.ContractSumms.filter((item)=>{item.id != e.id}),
+        {
+          id: e.id,
+          summ: d
+        }
+      ]
+    })
+  }
   render() {
-
+    const title = {fontSize:'12px'};
     const rowSelection = {
 
     };
@@ -184,29 +196,43 @@ componentDidMount() {
           }}
        />}
       <Tabs defaultActiveKey="1">
-        <TabPane tab="Информация об Акте" key="1">
+        <TabPane tab="Акт выполненных работ" key="1">
           <Row style={{marginTop:'20px'}}>
             <Form layout="horizontal" hideRequiredMark>
+
               <Tabs
                 className={styles.stepFormText}
                 defaultActiveKey="form"
                 tabPosition={'left'}>
-                <TabPane tab="Форма" key="form">
+                <Row>
+                  <div style={{width:'100%'}}>
+                    <Button
+                      style={{float:'left', margin: '0px 0px 10px -10px'}}>
+                      Сохранить
+                    </Button>
+                    <Button
+                      style={{float:'left', margin: '0px 0px 10px 10px'}}>
+                      <Icon><FontAwesomeIcon icon={faTrash}/></Icon> Очистить
+                    </Button>
+                  </div>
+                </Row>
+                <TabPane tab="Титульная часть" key="form">
                   <Card style={{marginLeft: '-10px'}}>
-                    <div style={{margin:'30px 0', maxWidth:'70%'}}>
+                    <div style={{margin:'10px 0', maxWidth:'70%'}}>
                       <Form.Item {...formItemLayout} label="Номер">
                         {getFieldDecorator('number', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
-                        })(<Input />)}
+                          rules: [{ required: true, message: 'не заполнено'}],
+                        })(<Input style={{width:'50%'}}/>)}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Дата">
                         {getFieldDecorator('date', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
+                          rules: [{ required: true, message: 'не заполнено' }],
                         })(
                           <DatePicker
-                            style={{width:'100%'}}
+                            format={'DD.MM.YYYY'}
+                            style={{width:'50%'}}
                             placeholder="Выберите дату"
                           />
                         )}
@@ -214,9 +240,9 @@ componentDidMount() {
                       <Form.Item {...formItemLayout} label="Отчетный период: год">
                         {getFieldDecorator('act_period_year', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
+                          rules: [{ required: true, message: 'не заполнено' }],
                         })(
-                          <Select>
+                          <Select style={{width:'50%'}}>
                             {this.props.universal.actperiodYear.content && this.props.universal.actperiodYear.content.map((item) => {
                                     return <Select.Option key={item.id}>{item.year}</Select.Option>;
                                 })}
@@ -226,9 +252,9 @@ componentDidMount() {
                       <Form.Item {...formItemLayout} label="Отчетный период: месяц">
                         {getFieldDecorator('act_period_month', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
+                          rules: [{ required: true, message: 'не заполнено' }],
                         })(
-                          <Select>
+                          <Select style={{width:'50%'}}>
                             {this.props.universal.actperiodSection.content && this.props.universal.actperiodSection.content.map((item) => {
                               return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
                             })}
@@ -238,7 +264,7 @@ componentDidMount() {
                       <Form.Item {...formItemLayout} label="Подразделение">
                         {getFieldDecorator('podr', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
+                          rules: [{ required: true, message: 'не заполнено' }],
                         })(
                           <Select>
                             {this.props.universal.actorganization.content && this.props.universal.actorganization.content.map((item) => {
@@ -250,15 +276,20 @@ componentDidMount() {
                       <Form.Item {...formItemLayout} label="Примечание">
                         {getFieldDecorator('notes', {
                           initialValue: '',
-                          rules: [{ required: true, message: '' }],
+                          rules: [{ required: true, message: 'не заполнено' }],
                         })(
                           <Input />
                         )}
                       </Form.Item>
                     </div>
+                    <Row>
+                      <div style={{width:'100%'}}>
+
+                      </div>
+                    </Row>
                   </Card>
                 </TabPane>
-                <TabPane tab="Спецификация" key="contracts">
+                <TabPane tab={<Badge count={this.state.data.length} style={{ backgroundColor: '#1990FF', margin:'-4px' }}><div><span style={title}>Спецификации</span></div></Badge>} key="contracts">
                   <Card style={{marginLeft: '-10px'}}>
                     <SmartGridView
                       name={'actform'}
@@ -271,25 +302,45 @@ componentDidMount() {
                       hideRefreshBtn={true}
                       hideFilterBtn={true}
                       rowSelection={true}
-                      showExportBtn={false}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
                       columns={this.state.columns}
-                      actionColumns={[]}
+                      actionColumns={[
+                        {
+                          title: 'Предъявлено к оплате (тг)',
+                          order: 10,
+                          width: 200,
+                          key: 'operation',
+                          className: 'action_column',
+                          isVisible: true,
+                          onCell: record => {
+                            return {
+                              onClick: () => {
+
+                              },
+                            };
+                          },
+                          render: (e) => (
+                            <Input
+                              onChange={(d)=>{
+                                /*console.log(e);
+                                console.log(d.target.value);*/
+                                this.onChangeSumma(e, d.target.value)
+                              }}
+                            />
+                          ),
+                        }]}
                       sorted={false}
-                      showTotal={false}
-                      addonButtons={[
-                        <Button style={{marginRight:'5px'}} type={'default'}  onClick={()=>{this.showModal()}}
-                        >
-                          Добавить
-                        </Button>,
-                        <Button  type={'default'}  onClick={()=>{this.deleteContract()}}>Удалить</Button>
-                      ]}
+                      showTotal={true}
+                      addonButtons={[]}
                       actionExport={() => {}}
                       onSelectRow={(record, index) => {
-                        console.log(record)
+                        //console.log(record)
                       }}
                       dataSource={{
                         total: this.state.data.length,
-                        pageSize: 15,
+                        pageSize: this.state.data.length,
                         page: 1,
                         data: this.state.data,
                       }}
@@ -314,9 +365,6 @@ componentDidMount() {
                 }}
                 label=""
               >
-                <Button type="primary" >
-                  Сохранить
-                </Button>
               </Form.Item>
             </Form>
           </Row>

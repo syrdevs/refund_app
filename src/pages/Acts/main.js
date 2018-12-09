@@ -115,18 +115,6 @@ export default class ActsTable extends Component  {
       },
     },
 
-/*
-    БИН
-    Контрагент
-    Договор
-    Номер
-    Дата
-    Оплата
-    Подразделение
-*/
-
-
-
     columns: [
       {
         title: 'Отчетный период(Год)',
@@ -205,20 +193,6 @@ export default class ActsTable extends Component  {
         act_date: '02.12.2018',
         payment: '05.12.2018',
         podr: '06.12.2018',
-        children: [
-          {
-            id: '3',
-            act_period_year: 'test',
-            act_period_month: 'test',
-            bin: 'test',
-            counteragent: 'test',
-            contract_id: 'test',
-            number: '1516512',
-            act_date: '02.12.2018',
-            payment: '05.12.2018',
-            podr: '06.12.2018',
-          }
-        ],
       }, {
         id: '2',
         act_period_year: 'test',
@@ -230,20 +204,6 @@ export default class ActsTable extends Component  {
         act_date: '02.12.2018',
         payment: '05.12.2018',
         podr: '06.12.2018',
-        children: [
-          {
-            id: '4',
-            act_period_year: 'test',
-            act_period_month: 'test',
-            bin: 'test',
-            counteragent: 'test',
-            contract_id: 'test',
-            number: '1516512',
-            act_date: '02.12.2018',
-            payment: '05.12.2018',
-            podr: '06.12.2018',
-          }
-        ],
         newContract:false
       },
     ],
@@ -265,7 +225,7 @@ export default class ActsTable extends Component  {
 
 
   createConract = () => {
-    this.props.createContract(this.state.selectedRowKeys);
+    /*this.props.createContract(this.state.selectedRowKeys);*/
   };
 
   render = () => {

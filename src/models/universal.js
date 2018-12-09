@@ -23,7 +23,8 @@ import {
   getSearcherJur,
   getSearcherJurCalendar,
   getSearcherRPNData,
-  getSearcherMEDData
+  getSearcherMEDData,
+  getActDics
 } from '../services/api';
 
 export default {
@@ -54,6 +55,11 @@ export default {
     searcherjur: {},
     searchercalendar: [],
     searcherjurcalendar: [],
+    actperiodYear:{},
+    actperiodSection: {},
+    actorganization: {},
+    actmedicalType: {}
+
   },
   effects: {
     * receiversRefund(payload, { call, put }) {
@@ -228,8 +234,34 @@ export default {
         payload: response,
       });
     },
-
-
+    * getActperiodYear(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactperiodyearReducer',
+        payload: response,
+      });
+    },
+    * getActperiodSection(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactperiodSectionReducer',
+        payload: response,
+      });
+    },
+    * getActorganization(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactorganizationReducer',
+        payload: response,
+      });
+    },
+    * getActmedicalType(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactmedicalTypeReducer',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -354,6 +386,31 @@ export default {
       return {
         ...state,
         searcherjur: payload,
+      };
+    },
+
+    dicactperiodyearReducer(state, { payload }) {
+      return {
+        ...state,
+        actperiodYear: payload,
+      };
+    },
+    dicactperiodSectionReducer(state, { payload }) {
+      return {
+        ...state,
+        actperiodSection: payload,
+      };
+    },
+    dicactorganizationReducer(state, { payload }) {
+      return {
+        ...state,
+        actorganization: payload,
+      };
+    },
+    dicactmedicalTypeReducer(state, { payload }) {
+      return {
+        ...state,
+        actmedicalType: payload,
       };
     },
 

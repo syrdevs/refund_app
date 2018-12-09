@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card} from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin} from 'antd';
 import styles from './style.less';
 
 const { Option } = Select;
@@ -7,6 +7,8 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import SmartGridView from '@/components/SmartGridView';
 import { Tab } from '../../components/Login';
+import ActModal from './ActModal';
+import { connect } from 'dva/index';
 
 
 const TabPane = Tabs.TabPane;
@@ -24,42 +26,64 @@ const formItemLayout = {
 
 
 @Form.create()
+@connect(({ universal, loading }) => ({
+  universal,
+  loadingperiodYear: loading.effects['universal/getActperiodYear'],
+  loadingperiodSection: loading.effects['universal/getActperiodSection'],
+  loadingorganization: loading.effects['universal/getActorganization'],
+  loadingmedicalType: loading.effects['universal/getActmedicalType'],
+}))
+
 class Actsadd extends Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: [
         {
-          'title': 'Наименование',
-          'dataIndex': 'name',
+          'title': 'Код',
+          'dataIndex': 'code',
           'isVisible': 'true',
         },
         {
-          'title': 'Тип1',
-          'dataIndex': 'type1',
+          'title': 'Вид деятельности',
+          'dataIndex': 'activity',
           'isVisible': 'true',
         },
         {
-          'title': 'Тип2',
-          'dataIndex': 'type2',
+          'title': 'Предъявлено к оплате (тг)',
+          'dataIndex': 'present_payment',
+          'isVisible': 'true',
+        },
+        {
+          'title': 'Принято к оплате (тг)',
+          'dataIndex': 'accept_payment',
+          'isVisible': 'true',
+        },
+        {
+          'title': 'Вычет аванса (тг)',
+          'dataIndex': 'prepaid',
+          'isVisible': 'true',
+        },
+        {
+          'title': 'Итого к оплате (тг)',
+          'dataIndex': 'total',
           'isVisible': 'true',
         }
       ],
       data: [
         {
-          key: 1, name: 'Договор 1', type1: 32, type2: 'абс',
+          key: 1, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
         {
-          key: 2, name: 'Договор 1', type1: 42, type2: 'абс',
+          key: 2, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
         {
-          key: 3, name: 'Договор 1', type1: 32, type2: 'абс',
+          key: 3, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
         },
       ],
       ContractSelect: [],
       selectedRowKeys: [],
-
-
+      modal:false
     }
   }
   deleteContract=()=>{
@@ -71,30 +95,94 @@ class Actsadd extends Component {
       })
     })*/
   }
+componentDidMount() {
+  const { dispatch } = this.props;
+  const DicArr=[
+    'periodYear',
+    'periodSection',
+    'organization',
+    'medicalType',
+  ]
+  DicArr.forEach(function(item) {
+    dispatch({
+      type: 'universal/getAct'+item,
+      payload: {
+          "start":0,
+          "length":1000,
+          "entity":item
+      },
+    });
+  })
+
+
+/*  dispatch({
+    type: 'universal/getActperiodYear',
+    payload: {
+      table: {
+        "start":0,
+        "length":20,
+        "entity":"periodYear"
+      },
+    },
+  });
+  dispatch({
+    type: 'universal/getActperiodYear',
+    payload: {
+      table: {
+        "start":0,
+        "length":20,
+        "entity":"periodYear"
+      },
+    },
+  });
+  dispatch({
+    type: 'universal/getActperiodYear',
+    payload: {
+      table: {
+        "start":0,
+        "length":20,
+        "entity":"periodYear"
+      },
+    },
+  });*/
+}
+
+  showModal=()=>{
+    this.setState({
+      modal:true
+    })
+  }
+  CancelModal=()=>{
+    this.setState({
+      modal:false
+    })
+  }
   render() {
+
     const rowSelection = {
-      /*onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },*/
-      /*onSelect: (record, selected, selectedRows) => {
-        //selectedRows=[].push(record)
-        console.log(record)
-        console.log(selectedRows)
-        this.setState({
-          ContractSelect: selectedRows
-        })
-      },*/
-      /* onSelectAll: (selected, selectedRows, changeRows) => {
-         console.log(selected, selectedRows, changeRows);
-       },*/
+
     };
     const { form, dispatch, data } = this.props;
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
     };
-
-
-    return (
+    return (<Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+      {this.state.modal &&<ActModal
+          addAct={(actitem)=>{
+          console.log(actitem);
+            this.setState({
+              data: [
+                ...this.state.data,
+                actitem
+              ]
+            }, ()=>{
+              this.CancelModal()
+            })
+          }}
+          onCancel={()=>{
+            this.CancelModal()
+          }}
+       />}
       <Tabs defaultActiveKey="1">
         <TabPane tab="Информация об Акте" key="1">
           <Row style={{marginTop:'20px'}}>
@@ -117,7 +205,10 @@ class Actsadd extends Component {
                           initialValue: '',
                           rules: [{ required: true, message: '' }],
                         })(
-                          <DatePicker/>
+                          <DatePicker
+                            style={{width:'100%'}}
+                            placeholder="Выберите дату"
+                          />
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Отчетный период: год">
@@ -126,9 +217,9 @@ class Actsadd extends Component {
                           rules: [{ required: true, message: '' }],
                         })(
                           <Select>
-                            <Option value="ant-design@alipay.com">2017</Option>
-                            <Option value="ant-design@alipay.com">2018</Option>
-                            <Option value="ant-design@alipay.com">2019</Option>
+                            {this.props.universal.actperiodYear.content && this.props.universal.actperiodYear.content.map((item) => {
+                                    return <Select.Option key={item.id}>{item.year}</Select.Option>;
+                                })}
                           </Select>
                         )}
                       </Form.Item>
@@ -137,14 +228,24 @@ class Actsadd extends Component {
                           initialValue: '',
                           rules: [{ required: true, message: '' }],
                         })(
-                          <MonthPicker/>
+                          <Select>
+                            {this.props.universal.actperiodSection.content && this.props.universal.actperiodSection.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                            })}
+                          </Select>
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Подразделение">
                         {getFieldDecorator('podr', {
                           initialValue: '',
                           rules: [{ required: true, message: '' }],
-                        })(<Input />)}
+                        })(
+                          <Select>
+                            {this.props.universal.actorganization.content && this.props.universal.actorganization.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Примечание">
                         {getFieldDecorator('notes', {
@@ -160,7 +261,8 @@ class Actsadd extends Component {
                 <TabPane tab="Спецификация" key="contracts">
                   <Card style={{marginLeft: '-10px'}}>
                     <SmartGridView
-                      name={'contractform'}
+                      name={'actform'}
+                      scroll={{ x: 'auto' }}
                       searchButton={false}
                       fixedBody={true}
                       rowKey={'id'}
@@ -175,15 +277,18 @@ class Actsadd extends Component {
                       sorted={false}
                       showTotal={false}
                       addonButtons={[
-                        <Button style={{marginRight:'5px'}} type={'default'}  onClick={()=>{}}>Добавить</Button>,
+                        <Button style={{marginRight:'5px'}} type={'default'}  onClick={()=>{this.showModal()}}
+                        >
+                          Добавить
+                        </Button>,
                         <Button  type={'default'}  onClick={()=>{this.deleteContract()}}>Удалить</Button>
                       ]}
                       actionExport={() => {}}
                       onSelectRow={(record, index) => {
-                        console.log(e)
+                        console.log(record)
                       }}
                       dataSource={{
-                        total: 1,
+                        total: this.state.data.length,
                         pageSize: 15,
                         page: 1,
                         data: this.state.data,
@@ -217,7 +322,7 @@ class Actsadd extends Component {
           </Row>
         </TabPane>
       </Tabs>
-    );
+      </Spin> );
   }
 }
 

@@ -10,15 +10,13 @@ const dateFormat = 'DD.MM.YYYY';
 export default class ContractMain extends Component {
   state = {
   };
+  componentDidMount() {
+
+  }
 
   render = () => {
     const { location, children } = this.props;
 
-    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contracts.title' })}>
-        <Card bodyStyle={{ padding: 5 }}>
-          {children}
-        </Card>
-      </PageHeaderWrapper>
-    );
+    return children;
   };
 }

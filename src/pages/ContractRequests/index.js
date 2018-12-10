@@ -13,11 +13,7 @@ export default class ContractRequests extends Component {
 
   render = () => {
     const { location, children } = this.props;
-    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
-        <Card bodyStyle={{ padding: 5 }}>
-          {children}
-        </Card>
-      </PageHeaderWrapper>
-    );
+    return children
+
   };
 }

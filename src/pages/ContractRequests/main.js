@@ -28,6 +28,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'umi/router';
 import ContractRequestsadd from './ContractRequestsadd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -276,7 +277,8 @@ export default class ContractRequestsTable extends Component  {
       </Dropdown>,
     ];
 
-    return (<div>
+    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
+      <Card bodyStyle={{ padding: 5 }}>
         {this.state.newContract && <ContractRequestsadd />}
         {!this.state.newContract && <Row>
           <Col sm={24} md={this.state.filterContainer}>
@@ -336,7 +338,8 @@ export default class ContractRequestsTable extends Component  {
             <br/>
           </Col>
         </Row>}
-      </div>
+      </Card>
+      </PageHeaderWrapper>
     );
   };
 }

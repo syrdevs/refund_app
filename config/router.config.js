@@ -170,19 +170,19 @@ export default [
           {
             path: '/contract/contracts',
             name: 'contracts',
-            component: './ContractView/ContractTable',
+            component: './ContractView/ContractMain',
             icon: 'faFileSignature',
             hideChildrenInMenu: true,
             authority: ['ADMIN', 'FSMS1', 'FSMS2'],
             routes: [
-              /*{
+              {
                 path: '/contract/contracts',
                 redirect: '/contract/contracts/table',
               },
               {
                 path: '/contract/contracts/table',
                 component: './ContractView/ContractTable',
-              },*/
+              },
               /*{
                 path: '/contract/contracts/new',
                 component: './ContractView/ContractNew',
@@ -194,11 +194,11 @@ export default [
             path: '/contract/acts',
             name: 'acts',
             icon: 'faFileInvoice',
-            component: './Acts/main',
+            component: './Acts/index',
             hideChildrenInMenu: true,
             authority: ['ADMIN', 'FSMS1', 'FSMS2'],
             routes: [
-              /*{
+              {
                 path: '/contract/acts',
                 redirect: '/contract/acts/table',
               },
@@ -206,7 +206,7 @@ export default [
                 path: '/contract/acts/table',
                 component: './Acts/main',
               },
-              {
+              /*{
                 path: '/contract/acts/add',
                 component: './Acts/Actsadd',
               },

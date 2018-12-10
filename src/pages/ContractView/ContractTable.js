@@ -271,6 +271,13 @@ export default class ContractTable extends Component {
 
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
+          key="1"
+          onClick={() => {
+            //router.push('/contract/contracts/new');
+          }}>
+          Новый
+        </Menu.Item>
+        <Menu.Item
           key="2">
           Открыть/Изменить
         </Menu.Item>
@@ -306,7 +313,7 @@ export default class ContractTable extends Component {
               this.setState({
                 ShowMain: true,
                 ShowAct: false,
-                title: formatMessage({ id: 'app.module.contracts.title' })
+                title: "test"
               })
             }}
           />}

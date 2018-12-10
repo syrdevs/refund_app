@@ -273,8 +273,58 @@ class ContractRequestsadd extends Component {
       ContractSumms: [],
       Contractpayment: [],
       ShowClear: true,
+      formcolumn:[{
+        title: 'Наименование',
+        dataIndex: 'name',
+        render: (text) => <div style={{ color: 'black' }}>{text}</div>,
+        width: 100,
+
+      }, {
+        title: 'Значения',
+        dataIndex: 'value',
+        key: 'value',
+        width: 150,
+      }],
+      formdata:[
+        {
+          name: 'Вид заявки',
+          value: "123456",
+          key: 1,
+        },
+        {
+          name: 'Номер',
+          value: "01.01.2019",
+          key: 2,
+        },
+        {
+          name: 'Дата',
+          value: "2019",
+          key: 3,
+        },
+        {
+          name: 'Отчетный период: год',
+          value: "2019",
+          key: 4,
+        },
+        {
+          name: 'Отчетный период: месяц',
+          value: "Январь",
+          key: 5,
+        },
+        {
+          name: 'Подразделение',
+          value: "ТОО ТМИ",
+          key: 6,
+        },
+        {
+          name: 'Примечание',
+          value: "Lorem ipsum dolor.",
+          key: 7,
+        }
+      ]
     };
   }
+
 
   deleteContract = () => {
     /*this.setState({
@@ -360,40 +410,12 @@ class ContractRequestsadd extends Component {
     };
     return (<Card
       headStyle={{ padding: 0 }}
-      title={''}
+      style={{padding:'10px'}}
       className={styles.headPanel}
-      extra={[<Button
-        htmlType="submit"
-        onClick={() => {
-
-          this.props.form.validateFields(
-            (err, values) => {
-              if (!err) {
-                this.props.tomain();
-              }
-              else {
-
-              }
-            },
-          );
-        }}
-      >
-        Сохранить
-      </Button>,
-        <div style={{float:'left'}}>
-          {this.state.ShowClear &&
-          <Button
-            style={{margin: '0px 0px 10px 10px'}} onClick={() => {
-            this.props.form.resetFields();
-          }}>
-            Очистить
-          </Button>}
-        </div>]}
       bordered={false}
       bodyStyle={{ padding: 0 }}><Spin
       spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
       <Row style={{ marginTop: '5px' }}>
-        <Form layout="horizontal" hideRequiredMark>
           <Tabs
             type={'card'}
             className={styles.stepFormText}
@@ -411,112 +433,14 @@ class ContractRequestsadd extends Component {
               }
             }}
             tabPosition={'left'}>
-            {/*<Row>*/}
-              {/*<div style={{ width: '100%' }}>*/}
-                {/**/}
-                {/*{this.state.ShowClear &&*/}
-                {/*<Button*/}
-                  {/*style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {*/}
-                  {/*this.props.form.resetFields();*/}
-                {/*}}>*/}
-                  {/*Очистить*/}
-                {/*</Button>}*/}
-              {/*</div>*/}
-            {/*</Row>*/}
             <TabPane tab="Титульная часть" key="form">
               <Card style={{ marginLeft: '-10px' }}>
-                <div style={{ margin: '10px 0', maxWidth: '70%' }}>
-                  <Form.Item {...formItemLayout} label="Вид заявки">
-                    {getFieldDecorator('contract_Type', {
-                      initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Номер">
-                    {getFieldDecorator('number', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(<Input/>)}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Дата">
-
-                    {getFieldDecorator('date-picker', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <DatePicker
-                        format={'DD.MM.YYYY'}
-                        style={{ width: '50%' }}
-                        placeholder="Выберите дату"/>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Отчетный период: год">
-                    {getFieldDecorator('act_period_year', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.year}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Отчетный период: месяц">
-                    {getFieldDecorator('act_period_month', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Подразделение">
-                    {getFieldDecorator('podr', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                      >
-                        {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Примечание">
-                    {getFieldDecorator('notes', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Input/>,
-                    )}
-                  </Form.Item>
-                </div>
-                <Row>
-                  <div style={{ width: '100%' }}>
-
-                  </div>
-                </Row>
+                  <Table
+                    columns={this.state.formcolumn}
+                    dataSource={this.state.formdata}
+                    pagination={{ position: 'none' }}
+                    showHeader={false}
+                  />
               </Card>
             </TabPane>
             <TabPane tab="Акты"
@@ -666,7 +590,6 @@ class ContractRequestsadd extends Component {
             >
             </TabPane>
           </Tabs>
-        </Form>
       </Row>
     </Spin></Card>);
   }

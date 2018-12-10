@@ -393,6 +393,7 @@ class ContractRequestsadd extends Component {
           className={styles.headPanel}
           extra={[<Button
             htmlType="submit"
+            style={{float:'left'}}
             onClick={() => {
 
               this.props.form.validateFields(

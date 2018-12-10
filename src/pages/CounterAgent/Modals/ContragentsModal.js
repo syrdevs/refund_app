@@ -3,8 +3,9 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 
-export default class DogovorModal extends Component {
+export default class ContragentsModal extends Component {
   state = {
+    selectedRowKeys: [],
     selectedRecord: {},
     dataSource: [
       {
@@ -47,63 +48,86 @@ export default class DogovorModal extends Component {
   };
   render = () => {
 
-    const columns = [{
-      title: 'БИН',
-      dataIndex: 'bin',
-      isVisible:true,
-      width: 100,
-    }, {
-      title: 'Контрагент',
-      dataIndex: 'counteragent',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Вид договора',
-      dataIndex: 'type_dogovor',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Номер',
-      dataIndex: 'nomer',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Дата',
-      dataIndex: 'date',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Статус',
-      dataIndex: 'status',
-      isVisible:true,
-      width: 150,
-    }];
+    const columns = [
+      {
+        title: 'Код',
+        dataIndex: 'code',
+        isVisible: true,
+      }, {
+        title: 'Наименование/Имя',
+        dataIndex: 'name',
+        isVisible: true,
+      }, {
+        title: 'Идентификатор',
+        dataIndex: 'bin',
+        isVisible: true,
+      }, {
+        title: 'Адрес',
+        dataIndex: 'address',
+        isVisible: true,
+      }, {
+        title: 'Актуальные контакты',
+        dataIndex: 'currentContacts',
+        isVisible: true,
+      }, {
+        title: 'Банковские реквизиты',
+        dataIndex: 'account',
+        isVisible: true,
+      }, {
+        title: 'Ответственные лица',
+        dataIndex: 'responsiblePersons',
+        isVisible: true,
+      }];
 
+    const dataSource = [{
+      'id': '1',
+      'code': '00052',
+      'name': 'ТОО TMI Company',
+      'bin': '861207303160',
+      'address': 'Микрорайон 4, дом 34, кв 50',
+      'currentContacts': '+77028596963',
+      'account': 'KZ75125KZT1001300335',
+      'responsiblePersons': 'Ахметов Даурен',
+    }, {
+      'id': '2',
+      'code': '00052',
+      'name': 'ТОО TMI Company',
+      'bin': '861207303160',
+      'address': 'Микрорайон 4, дом 34, кв 50',
+      'currentContacts': '+77028596963',
+      'account': 'KZ75125KZT1001300335',
+      'responsiblePersons': 'Ахметов Даурен',
+    }];
 
     return (<Modal
       style={{ top: 20 }}
       width={800}
-      title={'Список договоров'}
+      title={'Список контрагентов'}
       okText={'Выбрать'}
       onCancel={() => this.props.hide()}
       onOk={() => {
-        this.props.onSelect(this.state.selectedRecord);
+        this.props.onSelect(dataSource.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1));
         //this.props.hide();
       }}
       visible={true}>
       <SmartGridView
         scroll={{ x: 'auto' }}
-        name={'DogovorModal'}
+        name={'ContragentsModal'}
+        rowSelection={true}
+        hideFilterBtn={true}
+        hideRefreshBtn={true}
+        selectedRowCheckBox={true}
+        selectedRowKeys={this.state.selectedRowKeys}
         columns={columns}
         showTotal={true}
         actionExport={() => {
           console.log('export');
         }}
         dataSource={{
-          total: this.state.dataSource.length,
+          total: 8921,
           pageSize: 15,
           page: 1,
-          data: this.state.dataSource,
+          data: dataSource,
         }}
         onSelectRow={(record, index) => {
           this.setState({
@@ -120,7 +144,7 @@ export default class DogovorModal extends Component {
 
         }}
         onSelectCheckboxChange={(selectedRowKeys) => {
-
+          this.setState({ selectedRowKeys: selectedRowKeys });
         }}
       />
     </Modal>);

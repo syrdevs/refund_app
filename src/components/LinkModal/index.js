@@ -12,6 +12,7 @@ export default class LinkModal extends Component {
   };
 
   render = () => {
+
     return (<div>
       <Modal
         width={1000}
@@ -20,15 +21,20 @@ export default class LinkModal extends Component {
         visible={this.state.visible}>
         {this.props.children}
       </Modal>
-      <span
+
+      {!this.props.data ? <Button onClick={() => {
+        this.props.onClick(false);
+      }}>Выбрать</Button> : <span
         style={{
           color: '#1890ff',
           textDecoration: 'underline',
           cursor: 'pointer',
         }}
         onClick={() => {
-          this.setState({ visible: true });
-        }}> Договор #12153161681 </span>
+          window.open("viewcontract?id=1");
+        }}> Договор #12153161681 </span>}
+
+
     </div>);
   };
 }

@@ -3,10 +3,16 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
 import reduxRouter from 'umi/router';
 import SmartGridView from '@/components/SmartGridView';
+import ContragentsModal from '../Modals/ContragentsModal';
 
 export default class ContragentsPage extends Component {
   state = {
     isForm: false,
+
+    ContragentsModal: {
+      visible: false,
+    },
+
     columns: [
       {
         title: 'Код',
@@ -38,6 +44,16 @@ export default class ContragentsPage extends Component {
         isVisible: true,
       },
     ],
+    dataSource: [{
+      'id': '1',
+      'code': '00052',
+      'name': 'ТОО TMI Company',
+      'bin': '861207303160',
+      'address': 'Микрорайон 4, дом 34, кв 50',
+      'currentContacts': '+77028596963',
+      'account': 'KZ75125KZT1001300335',
+      'responsiblePersons': 'Ахметов Даурен',
+    }],
 
     xsize: 'auto',
 
@@ -51,7 +67,46 @@ export default class ContragentsPage extends Component {
     },
   };
   render = () => {
+
+    const addonButtons = [
+      <Button
+        key={'select-record'}
+        onClick={() => this.setState({ ContragentsModal: { visible: true } })}
+      >
+        Выбрать
+      </Button>
+    ];
+
+    if (this.state.dataSource.length > 0) {
+      addonButtons.push(<Button
+        onClick={() => {
+          this.setState({ dataSource: [] });
+        }}
+        key={'clear-records'}>
+        Очистить
+      </Button>);
+    }
+
     return <Card style={{ marginLeft: '-10px' }} bodyStyle={{ padding: 5 }}>
+      {this.state.ContragentsModal.visible &&
+      <ContragentsModal
+        onSelect={(selectedRows) => {
+          console.log(selectedRows);
+          this.setState({
+            ContragentsModal: {
+              visible: false,
+            },
+            dataSource: selectedRows,
+          });
+        }}
+        hide={() => {
+          this.setState({
+            ContragentsModal: {
+              ...this.state.ContragentsModal,
+              visible: false,
+            },
+          });
+        }}/>}
       <SmartGridView
         hidePagination={true}
         name='ContragentPageView'
@@ -61,22 +116,15 @@ export default class ContragentsPage extends Component {
         hideFilterBtn={true}
         hideRefreshBtn={true}
         columns={this.state.columns}
+        addonButtons={addonButtons}
         dataSource={{
           total: 8921,
           pageSize: this.state.pagingConfig.length,
           page: this.state.pagingConfig.start + 1,
-          data: [{
-            'id': '1',
-            'code': '00052',
-            'name': 'ТОО TMI Company',
-            'bin': '861207303160',
-            'address': 'Микрорайон 4, дом 34, кв 50',
-            'currentContacts': '+77028596963',
-            'account': 'KZ75125KZT1001300335',
-            'responsiblePersons': 'Ахметов Даурен',
-          }],
+          data: this.state.dataSource,
         }}
-        actionExport={() =>{}}
+        actionExport={() => {
+        }}
         onShowSizeChange={(pageNumber, pageSize) => {
           {/*<Button
                       disabled={hasRole(['ADMIN'])}

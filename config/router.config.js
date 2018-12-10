@@ -124,10 +124,6 @@ export default [
         component: './Journal/JournalPage',
         authority: ['ADMIN', 'FSMS2']
       },
-
-
-
-
       {
         path: '/add/newact',
         component: './Acts/Actsadd',
@@ -207,11 +203,11 @@ export default [
                 path: '/contract/acts/table',
                 component: './Acts/main',
               },
-              /*{
-                path: '/contract/acts/add',
-                component: './Acts/Actsadd',
-              },
               {
+                path: '/contract/acts/viewAct',
+                component: './Acts/ViewAct',
+              },
+             /* {
                 path: '/contract/acts/newcontractrequest',
                 component: './ContractRequests/ContractRequestsadd',
               },*/
@@ -236,6 +232,10 @@ export default [
               {
                 path: '/contract/contractrequests/add',
                 component: './ContractRequests/ContractRequestsadd',
+              },
+              {
+                path: '/contract/contractrequests/view',
+                component: './ContractRequests/ViewRequest',
               },
             ],
           },

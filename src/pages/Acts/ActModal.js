@@ -65,7 +65,7 @@ export default class ActModal extends Component {
       data: [
         {
           id: '3',
-          act_period_year: 'test',
+          act_period_year: 'test123',
           act_period_month: 'test',
           bin: 'test',
           counteragent: 'test',
@@ -76,7 +76,7 @@ export default class ActModal extends Component {
           podr: '06.12.2018',
         }, {
           id: '4',
-          act_period_year: 'test',
+          act_period_year: 'test123',
           act_period_month: 'test',
           bin: 'test',
           counteragent: 'test',
@@ -88,6 +88,8 @@ export default class ActModal extends Component {
           newContract: false,
         },
       ],
+      selectedRowKeys: [],
+      selectedRecord: {},
     };
   }
   cancelModal=()=>{
@@ -97,30 +99,43 @@ export default class ActModal extends Component {
 
   }
   addAct=()=>{
-    this.props.addAct(this.state.selectedRow)
+    this.props.addAct(this.state.data.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1))
   }
 
   render() {
 
     return (<Modal
-      width={1000}
-      centered
-      visible={true}
-      footer={[<Button key={'savemt'} onClick={()=>{this.addAct()}}>Добавить</Button>,
-      <Button key={'closeExcel'} onClick={()=>{this.cancelModal()}}>Отмена</Button>]}>
-      <Card
-        style={{marginTop:'15px'}}>
+        style={{ top: 20 }}
+        width={800}
+        title={'Список Актов'}
+        okText={'Выбрать'}
+        onCancel={() => this.cancelModal()}
+        onOk={() => {
+          this.addAct()
+          //this.props.hide();
+        }}
+        visible={true}>
       <SmartGridView
         name={'actform'}
         scroll={{ x: 'auto' }}
+        rowSelection={true}
+        hideFilterBtn={true}
+        hideRefreshBtn={true}
+        selectedRowCheckBox={true}
+        selectedRowKeys={this.state.selectedRowKeys}
+        onSelectCheckboxChange={(selectedRowKeys) => {
+          this.setState({ selectedRowKeys: selectedRowKeys });
+        }}
+        onSelectRow={(record, index) => {
+          this.setState({
+            selectedRecord: record,
+          });
+        }}
         searchButton={false}
         fixedBody={true}
         rowKey={'id'}
         loading={false}
         fixedHeader={false}
-        hideRefreshBtn={true}
-        hideFilterBtn={true}
-        rowSelection={true}
         showExportBtn={false}
         columns={this.state.columns}
         actionColumns={[]}
@@ -147,8 +162,6 @@ export default class ActModal extends Component {
 
         }}
       />
-      </Card>
-
     </Modal>);
   }
 }

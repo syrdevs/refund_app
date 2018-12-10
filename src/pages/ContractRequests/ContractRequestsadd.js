@@ -350,6 +350,25 @@ class ContractRequestsadd extends Component {
   };
   render() {
     const title = { fontSize: '12px' };
+    const addonbuttons = [<Button
+      onClick={() => {
+        this.setState({
+          ActModal: true
+        })
+      }}
+      key={'select_button'}
+      style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>]
+
+    if (this.state.actdata.length>0) {
+      addonbuttons.push([ <Button
+        onClick={() => {
+          this.setState({
+            actdata:[]
+          })
+        }}
+        key={'delete_button'}
+        style={{ margin: '0px 0px 10px 5px' }}>Очистить</Button>])
+    }
     const rowSelection = {};
     const { form, dispatch, data } = this.props;
     const { getFieldDecorator, validateFields } = form;
@@ -360,13 +379,10 @@ class ContractRequestsadd extends Component {
         {this.state.ActModal &&
         <ActModal
           onCancel={() => this.setState({ ActModal: false })}
-          addAct={(row)=>{
-            console.log(row);
+          addAct={(rows)=>{
+            console.log(rows);
             this.setState({
-              actdata: [
-                ...this.state.actdata,
-                row
-              ],
+              actdata: rows,
               ActModal: false
             })
           }}
@@ -514,18 +530,13 @@ class ContractRequestsadd extends Component {
                         )}
                       </Form.Item>
                     </div>
-                    <Row>
-                      <div style={{ width: '100%' }}>
-
-                      </div>
-                    </Row>
                   </Card>
                 </TabPane>
                 <TabPane tab="Акты"
                          key="acts"
                 >
                   <Card style={{ marginLeft: '-10px' }}>
-                    <Button onClick={() => {
+                    {/*<Button onClick={() => {
                               this.setState({
                                 ActModal: true
                               })
@@ -541,7 +552,8 @@ class ContractRequestsadd extends Component {
                           }}
                         style={{ marginBottom: 16, marginLeft: 5 }}>
                       Очистить
-                    </Button>
+                    </Button>*/}
+
                     <SmartGridView
                       name={'actform'}
                       scroll={{ x: 'auto' }}
@@ -562,7 +574,7 @@ class ContractRequestsadd extends Component {
                       onSort={(column) => {
                       }}
                       showTotal={true}
-                      addonButtons={[]}
+                      addonButtons={addonbuttons}
                       actionExport={() => {
                       }}
                       onSelectRow={(record, index) => {

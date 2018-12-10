@@ -25,7 +25,13 @@ export default {
 
 
     * getList(payload, { call, put }) {
+      //
+      yield put({
+        type: 'loading',
+        payload: true,
+      });
 
+      /**/
       const response = yield call(getList, payload);
 
       yield put({
@@ -36,6 +42,10 @@ export default {
         },
       });
 
+      yield put({
+        type: 'loading',
+        payload: false,
+      });
     },
 
     * formedReports(payload, { call, put }) {

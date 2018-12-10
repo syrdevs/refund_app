@@ -66,7 +66,7 @@ class CounterAgent extends Component {
           isVisible: true,
         }, {
           title: 'Банковские реквизиты',
-          dataIndex: 'bankAccount.account',
+          dataIndex: 'bankAccount.bank',
           isVisible: true,
         }, {
           title: 'Ответственные лица',
@@ -79,7 +79,7 @@ class CounterAgent extends Component {
 
       gridParameters: {
         start: 0,
-        length: 10,
+        length: 15,
         alias: 'clinicList',
         entity: 'clinic',
         filter: {},
@@ -91,6 +91,24 @@ class CounterAgent extends Component {
   componentWillUnmount() {
 
   }
+
+  onShowSizeChange = (current, pageSize) => {
+    const {dispatch} = this.props;
+    this.setState(prevState => ({
+      gridParameters: {
+        ...prevState.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }), () => dispatch({
+      type: 'universal2/getList',
+      payload: {
+        ...this.state.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
+  };
 
   loadMainGridData = () => {
     const { dispatch } = this.props;
@@ -199,9 +217,9 @@ class CounterAgent extends Component {
         <Col sm={24} md={this.state.tablecont}>
           {this.state.searchercont === 8 && <DataDiv/>}
           {!this.state.isForm &&
-          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
+          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
             <SmartGridView
-              name='SamplePageColumns'
+              name='CounterAgentPageColumns'
               scroll={{ x: this.state.xsize }}
               fixedBody
               selectedRowCheckBox
@@ -214,19 +232,17 @@ class CounterAgent extends Component {
               actionExport={() => {
               }}
               columns={this.state.columns}
-              sorted
-              showTotal
+              sorted={true}
+              showTotal={true}
               dataSource={{
                 total: counterData ? counterData.totalElements : 0,
-                pageSize: counterData ? counterData.size : 0,
+                pageSize: this.state.gridParameters.length,
                 page: this.state.gridParameters.start + 1,
                 data: counterData ? counterData.content : [],
               }}
               addonButtons={addonButtons}
 
-              onShowSizeChange={(pageNumber, pageSize) => {
-
-              }}
+              onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
               onSelectCell={(cellIndex, cell) => {
 
               }}
@@ -237,7 +253,7 @@ class CounterAgent extends Component {
 
               }}
               onRefresh={() => {
-
+                this.loadMainGridData();
               }}
               onSearch={() => {
 

@@ -31,6 +31,7 @@ import ActModal from '../Acts/ActModal';
 
 
 const TabPane = Tabs.TabPane;
+const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -527,7 +528,7 @@ class ContractRequestsadd extends Component {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
-                          <Input/>,
+                          <TextArea rows={4}/>,
                         )}
                       </Form.Item>
                     </div>

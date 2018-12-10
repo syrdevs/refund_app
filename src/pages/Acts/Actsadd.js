@@ -15,6 +15,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const TabPane = Tabs.TabPane;
+const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -370,7 +371,7 @@ class Actsadd extends Component {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
-                          <Input />
+                          <TextArea rows={4}/>,
                         )}
                       </Form.Item>
                     </div>
@@ -381,9 +382,10 @@ class Actsadd extends Component {
                     </Row>
                   </Card>
                 </TabPane>
-                <TabPane tab="Спецификация"
-                         key="specifications"
-                        >
+                <TabPane
+                  tab="Спецификация"
+                  key="specifications"
+                  >
                   <Card style={{marginLeft: '-10px'}}>
                     <SmartGridView
                       name={'specform'}

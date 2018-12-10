@@ -661,13 +661,13 @@ export default class PaymentsPage extends Component {
             fixedBody={true}
             actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
             showTotal={true}
-            // selectedRowCheckBox={true}
+            selectedRowCheckBox={true}
             searchButton={false}
             selectedRowKeys={this.state.selectedRowKeys}
             rowKey={'id'}
             loading={this.props.loadingData}
             fixedHeader={true}
-            rowSelection={true}
+            // rowSelection={true}
             columns={mtcolumns}
             // onColumnsChange={(isChanged, dataIndex) => {
             //   if (isChanged === true && dataIndex === 'createdOn') {
@@ -748,12 +748,12 @@ export default class PaymentsPage extends Component {
             loading={this.props.loadingData}
             fixedHeader={true}
             rowSelection={true}
-            rowClassName={(record) => {
-              if (record.isRefunded) {
-                return 'redRow';
-              }
-            }
-            }
+            // rowClassName={(record) => {
+            //   if (record.isRefunded) {
+            //     return 'redRow';
+            //   }
+            // }
+            // }
             columns={mtcolumns}
             onColumnsChange={(isChanged, dataIndex) => {
               console.log(dataIndex)

@@ -14,48 +14,78 @@ export default class ActModal extends Component {
 
     this.state = {
       visible: true,
+      selectedRow: {},
       columns: [
         {
-          'title': 'Код',
-          'dataIndex': 'code',
-          'isVisible': 'true',
+          title: 'Отчетный период(Год)',
+          dataIndex: 'act_period_year',
+          isVisible: true,
         },
         {
-          'title': 'Вид деятельности',
-          'dataIndex': 'activity',
-          'isVisible': 'true',
+          title: 'Отчетный период(Месяц)',
+          dataIndex: 'act_period_month',
+          isVisible: true,
         },
         {
-          'title': 'Предъявлено к оплате (тг)',
-          'dataIndex': 'present_payment',
-          'isVisible': 'true',
+          title: 'БИН',
+          dataIndex: 'bin',
+          isVisible: true,
         },
         {
-          'title': 'Принято к оплате (тг)',
-          'dataIndex': 'accept_payment',
-          'isVisible': 'true',
+          title: 'Контрагент',
+          dataIndex: 'counteragent',
+          isVisible: true,
         },
         {
-          'title': 'Вычет аванса (тг)',
-          'dataIndex': 'prepaid',
-          'isVisible': 'true',
+          title: 'Договор',
+          dataIndex: 'contract_id',
+          isVisible: true,
         },
         {
-          'title': 'Итого к оплате (тг)',
-          'dataIndex': 'total',
-          'isVisible': 'true',
-        }
+          title: 'Номер',
+          dataIndex: 'number',
+          isVisible: true,
+        },
+        {
+          title: 'Дата',
+          dataIndex: 'act_date',
+          isVisible: true,
+        },
+        {
+          title: 'Оплата',
+          dataIndex: 'payment',
+          isVisible: true,
+        },
+        {
+          title: 'Подразделение',
+          dataIndex: 'podr',
+          isVisible: true,
+        },
       ],
-      selectedRow: {},
       data: [
         {
-          key: 4, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
-        },
-        {
-          key: 5, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
-        },
-        {
-          key: 6, code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          id: '3',
+          act_period_year: 'test',
+          act_period_month: 'test',
+          bin: 'test',
+          counteragent: 'test',
+          contract_id: 'test',
+          number: '1516512',
+          act_date: '02.12.2018',
+          payment: '05.12.2018',
+          podr: '06.12.2018',
+        }, {
+          id: '4',
+          act_period_year: 'test',
+          act_period_month: 'test',
+          bin: 'test',
+          counteragent: 'test',
+          contract_id: 'test',
+          number: '1516512',
+          act_date: '02.12.2018',
+          payment: '05.12.2018',
+          podr: '06.12.2018',
+          newContract: false,
         },
       ],
     };
@@ -82,6 +112,7 @@ export default class ActModal extends Component {
         style={{marginTop:'15px'}}>
       <SmartGridView
         name={'actform'}
+        scroll={{ x: 'auto' }}
         searchButton={false}
         fixedBody={true}
         rowKey={'id'}

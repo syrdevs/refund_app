@@ -27,6 +27,7 @@ import SmartGridView from '@/components/SmartGridView';
 import { Tab } from '../../components/Login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
+import ActModal from '../Acts/ActModal';
 
 
 const TabPane = Tabs.TabPane;
@@ -356,6 +357,20 @@ class ContractRequestsadd extends Component {
     };
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title.add' })}>
+        {this.state.ActModal &&
+        <ActModal
+          onCancel={() => this.setState({ ActModal: false })}
+          addAct={(row)=>{
+            console.log(row);
+            this.setState({
+              actdata: [
+                ...this.state.actdata,
+                row
+              ],
+              ActModal: false
+            })
+          }}
+        />}
         <Card
           headStyle={{ padding: 0 }}
           style={{padding:'10px'}}
@@ -410,18 +425,6 @@ class ContractRequestsadd extends Component {
                   }
                 }}
                 tabPosition={'left'}>
-                {/*<Row>*/}
-                  {/*<div style={{ width: '100%' }}>*/}
-                    {/**/}
-                    {/*{this.state.ShowClear &&*/}
-                    {/*<Button*/}
-                      {/*style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {*/}
-                      {/*this.props.form.resetFields();*/}
-                    {/*}}>*/}
-                      {/*Очистить*/}
-                    {/*</Button>}*/}
-                  {/*</div>*/}
-                {/*</Row>*/}
                 <TabPane tab="Титульная часть" key="form">
                   <Card style={{ marginLeft: '-10px' }}>
                     <div style={{ margin: '10px 0', maxWidth: '70%' }}>
@@ -522,6 +525,23 @@ class ContractRequestsadd extends Component {
                          key="acts"
                 >
                   <Card style={{ marginLeft: '-10px' }}>
+                    <Button onClick={() => {
+                              this.setState({
+                                ActModal: true
+                              })
+                            }}
+                            style={{ marginBottom: 16 }}>
+                      Добавить
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            this.setState({
+                              actdata:[]
+                            })
+                          }}
+                        style={{ marginBottom: 16, marginLeft: 5 }}>
+                      Очистить
+                    </Button>
                     <SmartGridView
                       name={'actform'}
                       scroll={{ x: 'auto' }}
@@ -660,7 +680,6 @@ class ContractRequestsadd extends Component {
                   </Card>
                 </TabPane>
                 <TabPane tab="Проводки"
-
                          key="provods"
                 >
                 </TabPane>

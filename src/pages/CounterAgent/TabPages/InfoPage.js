@@ -5,7 +5,7 @@ import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import moment from 'moment';
 import LinkModal from '@/components/LinkModal';
-import Actsadd from '../../Acts/Actsadd';
+import DogovorModal from '../Modals/DogovorModal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,6 +17,12 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 @Form.create()
 export default class InfoPage extends Component {
   state = {
+
+    DogovorModal: {
+      record: null,
+      visible: false,
+    },
+
     fields: {
       bin: '',
     },
@@ -76,8 +82,14 @@ export default class InfoPage extends Component {
 
     const { form: { getFieldDecorator, validateFields }, dispatch, data, formItemLayout } = this.props;
 
-
     return (<Card style={{ marginLeft: '-10px' }}>
+      {this.state.DogovorModal.visible && <DogovorModal
+        onSelect={(record) => {
+          this.setState({ DogovorModal: { visible: false, record: record } });
+        }}
+        hide={() => this.setState({ DogovorModal: { visible: false } })
+        }/>}
+
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
         {/*<Form.Item {...formItemLayout} label="БИН">*/}
         {/*{getFieldDecorator('bin', {*/}
@@ -163,8 +175,20 @@ export default class InfoPage extends Component {
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Род-кий договор">
-          <LinkModal>
-            <Actsadd/>
+          <LinkModal
+            value={'Договор №1254364'}
+            data={this.state.DogovorModal.record}
+            onClick={(isLink, record) => {
+              if (isLink) {
+                console.log(record);
+              } else {
+                this.setState({
+                  DogovorModal: {
+                    visible: true,
+                  },
+                });
+              }
+            }}>
           </LinkModal>
         </Form.Item>
         <Form.Item {...formItemLayout} label="Примечание">

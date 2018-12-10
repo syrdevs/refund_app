@@ -1,11 +1,19 @@
-import React, { Component } from 'react';
-import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal } from 'antd';
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage } from './TabPages';
-import Actsadd from '../Acts/Actsadd';
+import React, { Component, Provider } from 'react';
+import {
+  Card,
+  Button,
+  Label,
+  Row,
+  Form,
+  Tabs
+} from 'antd';
+import { formatMessage, FormattedMessage } from 'umi/locale';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { ContragentsPage, SpecPage, InfoPage, DogovorPage } from './TabPagesView';
 import styles from './CounterAgent.less';
 
 const TabPane = Tabs.TabPane;
+const dateFormat = 'DD.MM.YYYY';
 const formItemLayout = {
   labelCol: {
     span: 10,
@@ -15,30 +23,19 @@ const formItemLayout = {
   },
 };
 
-export default class CounterAgentCreate extends Component {
-  state = {};
-
+export default class CounterAgentView extends Component {
   componentDidMount() {
     console.log(this.props);
   };
 
   render = () => {
+    const { location, children } = this.props;
 
-    {/*<div style={{float:'right'}}>*/
-    }
-    {/*<Button key={'save_button'}*/
-    }
-    {/*style={{ margin: '0px 0px 10px' }}>Сохранить</Button>*/
-    }
-    {/*</div>*/
-    }
-
-    return (
+    return (<div>
       <Card
         headStyle={{ padding: 0 }}
         title={''}
         className={styles.headPanel}
-        extra={[<Button>Сохранить</Button>]}
         bordered={false}
         bodyStyle={{ padding: 0 }}>
         <Row style={{ marginTop: '5px' }}>
@@ -64,6 +61,7 @@ export default class CounterAgentCreate extends Component {
             </Tabs>
           </Form>
         </Row>
-      </Card>);
+      </Card>
+    </div>);
   };
 }

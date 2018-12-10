@@ -246,6 +246,7 @@ class Actsadd extends Component {
         className={styles.headPanel}
         extra={[<Button
           htmlType="submit"
+          style={{float:'left'}}
           onClick={(e)=>{
 
             this.props.form.validateFields(
@@ -261,7 +262,17 @@ class Actsadd extends Component {
           }
           }>
           Сохранить
-        </Button>]}
+        </Button>,
+          <div style={{float:'left'}}>
+          {this.state.ShowClear &&
+          <Button
+            style={{margin: '0px 0px 10px 10px'}} onClick={() => {
+            this.props.form.resetFields();
+          }}>
+            Очистить
+          </Button>}
+        </div>
+        ]}
         bordered={false}
         bodyStyle={{ padding: 0 }}>
         <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
@@ -285,16 +296,7 @@ class Actsadd extends Component {
                 }}
                 tabPosition={'left'}>
                 {/*<Row>*/}
-                  {/*<div style={{width:'100%'}}>*/}
 
-                    {/*{this.state.ShowClear &&*/}
-                    {/*<Button*/}
-                      {/*style={{float:'left', margin: '0px 0px 10px 10px'}} onClick={() => {*/}
-                      {/*this.props.form.resetFields();*/}
-                    {/*}}>*/}
-                      {/*Очистить*/}
-                    {/*</Button>}*/}
-                  {/*</div>*/}
                 {/*</Row>*/}
                 <TabPane tab="Титульная часть" key="form">
                   <Card style={{marginLeft: '-10px'}}>

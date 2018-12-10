@@ -379,7 +379,16 @@ class ContractRequestsadd extends Component {
         }}
       >
         Сохранить
-      </Button>]}
+      </Button>,
+        <div style={{float:'left'}}>
+          {this.state.ShowClear &&
+          <Button
+            style={{margin: '0px 0px 10px 10px'}} onClick={() => {
+            this.props.form.resetFields();
+          }}>
+            Очистить
+          </Button>}
+        </div>]}
       bordered={false}
       bodyStyle={{ padding: 0 }}><Spin
       spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>

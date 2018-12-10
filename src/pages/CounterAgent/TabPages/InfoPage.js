@@ -3,57 +3,78 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
+import moment from 'moment';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
-
+@connect(({ universal2 }) => ({
+  universal2,
+}))
 @Form.create()
 export default class InfoPage extends Component {
-  state = {
-    columns: [
-      {
-        'title': 'Наименование',
-        'dataIndex': 'name',
-        'isVisible': 'true',
-      },
-      {
-        'title': 'Тип1',
-        'dataIndex': 'type1',
-        'isVisible': 'true',
-      },
-      {
-        'title': 'Тип2',
-        'dataIndex': 'type2',
-        'isVisible': 'true',
-      },
-    ],
-    data: [
-      {
-        key: 1, name: 'Договор 1', type1: 32, type2: 'абс',
-      },
-      {
-        key: 2, name: 'Договор 1', type1: 42, type2: 'абс',
-      },
-      {
-        key: 3, name: 'Договор 1', type1: 32, type2: 'абс',
-      },
-    ],
-    ContractSelect: [],
-    selectedRowKeys: [],
+  state = {};
+
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().year(2019);
   };
+
+  getReferenceValues = (code, propName) => {
+    const { universal2 } = this.props;
+
+    return universal2.references[code]
+      ? universal2.references[code].content.map((item) => (
+        <Option value={item.id} key={item.id}>{item[propName]}</Option>))
+      : null;
+  };
+  componentDidMount = () => {
+
+    const { dispatch, universal2 } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        'start': 0,
+        'length': 500,
+        'entity': 'contractType',
+      },
+    });
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        'start': 0,
+        'length': 500,
+        'entity': 'contractAlterationReason',
+      },
+    });
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        'start': 0,
+        'length': 500,
+        'entity': 'organization',
+      },
+    });
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        'start': 0,
+        'length': 500,
+        'entity': 'periodYear',
+      },
+    });
+  };
+
   render = () => {
 
-    const { form: { getFieldDecorator, validateFields }, dispatch, data } = this.props;
-    const { formItemLayout } = this.props;
+    const { form: { getFieldDecorator, validateFields }, dispatch, data, formItemLayout } = this.props;
 
 
-    return (<Card  style={{ marginLeft: '-10px' }}>
+    return (<Card style={{ marginLeft: '-10px' }}>
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
         <Form.Item {...formItemLayout} label="БИН">
           {getFieldDecorator('bin', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(<Input style={{ width: '50%' }}/>)}
         </Form.Item>
@@ -71,33 +92,29 @@ export default class InfoPage extends Component {
         {/*</Form.Item>*/}
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator('contract_Type', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <Select>
-              <Option value="ant-design@alipay.com">Договор 1</Option>
+              {this.getReferenceValues('contractType', 'nameRu')}
             </Select>,
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator('reason', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <Select>
-              <Option value="ant-design@alipay.com">Причина 1</Option>
+              {this.getReferenceValues('contractAlterationReason', 'nameRu')}
             </Select>,
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Номер">
           {getFieldDecorator('number', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(<Input/>)}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Дата">
           {getFieldDecorator('date', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <DatePicker
@@ -108,17 +125,15 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Отчетный период">
           {getFieldDecorator('report_period', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
-            <MonthPicker
-              style={{ width: '50%' }}
-              placeholder="Выберите период"/>,
+            <Select style={{ width: '50%' }}>
+              {this.getReferenceValues('periodYear', 'year')}
+            </Select>,
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator('period', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <RangePicker
@@ -131,17 +146,15 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Подразделение">
           {getFieldDecorator('podr', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <Select>
-              <Option value="ant-design@alipay.com">Подразделение 1</Option>
+              {this.getReferenceValues('organization', 'name')}
             </Select>,
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Примечание">
           {getFieldDecorator('description', {
-            initialValue: '',
             rules: [{ required: true, message: '' }],
           })(
             <TextArea rows={4}/>,

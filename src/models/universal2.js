@@ -6,6 +6,7 @@ import {
   getReportsList,
   getReportParameters,
   getFormedReports,
+  getList,
 } from '../services/api';
 
 export default {
@@ -15,8 +16,36 @@ export default {
     reportFormedData: [],
     dataStore: [],
     columns: [],
+
+    references: {},
+
+    loading: false,
   },
   effects: {
+
+
+    * getList(payload, { call, put }) {
+      //
+      yield put({
+        type: 'loading',
+        payload: true,
+      });
+
+      const response = yield call(getList, payload);
+
+      yield put({
+        type: 'getListData',
+        payload: {
+          type: payload.payload.entity,
+          response: response || {},
+        },
+      });
+
+      yield put({
+        type: 'loading',
+        payload: false,
+      });
+    },
 
     * formedReports(payload, { call, put }) {
       const response = yield call(getFormedReports, payload);
@@ -89,6 +118,22 @@ export default {
     },
   },
   reducers: {
+    loading(state, { payload }) {
+      return {
+        ...state,
+        loading: payload,
+      };
+    },
+    getListData(state, { payload }) {
+      return {
+        ...state,
+        references: {
+          ...state.references,
+          [payload.type]: payload.response,
+        },
+      };
+    },
+
     clearData(state, { payload }) {
       return {
         ...state,

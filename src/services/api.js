@@ -50,6 +50,12 @@ export async function removeRule(params) {
   });
 }
 
+export async function getList(params) {
+  return request('/api/uicommand/getList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
 
 export async function paymentsData(params) {
   return request('/api/uicommand/getList', {

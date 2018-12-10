@@ -231,7 +231,6 @@ class Actsadd extends Component {
     })*/
   }
   render() {
-    const title = {fontSize:'12px'};
     const rowSelection = {
 
     };
@@ -240,9 +239,10 @@ class Actsadd extends Component {
     const onValidateForm = () => {
     };
     return (
+    <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
       <Card
         headStyle={{ padding: 0 }}
-        title={''}
+        style={{padding:'10px'}}
         className={styles.headPanel}
         extra={[<Button
           htmlType="submit"
@@ -429,10 +429,8 @@ class Actsadd extends Component {
           </Row>
         </Spin>
       </Card>
-  /*
-    <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title' })}>
     </PageHeaderWrapper>
-  */
+
   );
   }
 }

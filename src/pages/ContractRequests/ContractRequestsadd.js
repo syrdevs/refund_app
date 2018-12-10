@@ -17,6 +17,7 @@ import {
   InputNumber,
 } from 'antd';
 import styles from './style.less';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
@@ -275,7 +276,6 @@ class ContractRequestsadd extends Component {
       ShowClear: true,
     };
   }
-
   deleteContract = () => {
     /*this.setState({
       data: this.state.data.filter((item) => {
@@ -285,7 +285,6 @@ class ContractRequestsadd extends Component {
       })
     })*/
   };
-
   componentDidMount() {
     const { dispatch } = this.props;
     const DicArr = [
@@ -338,7 +337,6 @@ class ContractRequestsadd extends Component {
         },
       });*/
   }
-
   showModal = () => {
     this.setState({
       modal: true,
@@ -349,8 +347,6 @@ class ContractRequestsadd extends Component {
       modal: false,
     });
   };
-
-
   render() {
     const title = { fontSize: '12px' };
     const rowSelection = {};
@@ -358,317 +354,323 @@ class ContractRequestsadd extends Component {
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
     };
-    return (<Card
-      headStyle={{ padding: 0 }}
-      title={''}
-      className={styles.headPanel}
-      extra={[<Button
-        htmlType="submit"
-        onClick={() => {
+    return (
+      <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title.add' })}>
+        <Card
+          headStyle={{ padding: 0 }}
+          style={{padding:'10px'}}
+          className={styles.headPanel}
+          extra={[<Button
+            htmlType="submit"
+            onClick={() => {
 
-          this.props.form.validateFields(
-            (err, values) => {
-              if (!err) {
-                this.props.tomain();
-              }
-              else {
+              this.props.form.validateFields(
+                (err, values) => {
+                  if (!err) {
+                    this.props.tomain();
+                  }
+                  else {
 
-              }
-            },
-          );
-        }}
-      >
-        Сохранить
-      </Button>,
-        <div style={{float:'left'}}>
-          {this.state.ShowClear &&
-          <Button
-            style={{margin: '0px 0px 10px 10px'}} onClick={() => {
-            this.props.form.resetFields();
-          }}>
-            Очистить
-          </Button>}
-        </div>]}
-      bordered={false}
-      bodyStyle={{ padding: 0 }}><Spin
-      spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
-      <Row style={{ marginTop: '5px' }}>
-        <Form layout="horizontal" hideRequiredMark>
-          <Tabs
-            type={'card'}
-            className={styles.stepFormText}
-            defaultActiveKey="form"
-            onChange={(e) => {
-              if (e === 'form') {
-                this.setState({
-                  ShowClear: true,
-                });
-              }
-              else {
-                this.setState({
-                  ShowClear: false,
-                });
-              }
+                  }
+                },
+              );
             }}
-            tabPosition={'left'}>
-            {/*<Row>*/}
-              {/*<div style={{ width: '100%' }}>*/}
-                {/**/}
-                {/*{this.state.ShowClear &&*/}
-                {/*<Button*/}
-                  {/*style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {*/}
-                  {/*this.props.form.resetFields();*/}
-                {/*}}>*/}
-                  {/*Очистить*/}
-                {/*</Button>}*/}
-              {/*</div>*/}
-            {/*</Row>*/}
-            <TabPane tab="Титульная часть" key="form">
-              <Card style={{ marginLeft: '-10px' }}>
-                <div style={{ margin: '10px 0', maxWidth: '70%' }}>
-                  <Form.Item {...formItemLayout} label="Вид заявки">
-                    {getFieldDecorator('contract_Type', {
-                      initialValue: '',
-                      rules: [{ required: true, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Номер">
-                    {getFieldDecorator('number', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(<Input/>)}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Дата">
+          >
+            Сохранить
+          </Button>,
+            <div style={{float:'left'}}>
+              {this.state.ShowClear &&
+              <Button
+                style={{margin: '0px 0px 10px 10px'}} onClick={() => {
+                this.props.form.resetFields();
+              }}>
+                Очистить
+              </Button>}
+            </div>]}
+          bordered={false}
+          bodyStyle={{ padding: 0 }}>
+            <Spin
+          spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+          <Row style={{ marginTop: '5px' }}>
+            <Form layout="horizontal" hideRequiredMark>
+              <Tabs
+                type={'card'}
+                className={styles.stepFormText}
+                defaultActiveKey="form"
+                onChange={(e) => {
+                  if (e === 'form') {
+                    this.setState({
+                      ShowClear: true,
+                    });
+                  }
+                  else {
+                    this.setState({
+                      ShowClear: false,
+                    });
+                  }
+                }}
+                tabPosition={'left'}>
+                {/*<Row>*/}
+                  {/*<div style={{ width: '100%' }}>*/}
+                    {/**/}
+                    {/*{this.state.ShowClear &&*/}
+                    {/*<Button*/}
+                      {/*style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {*/}
+                      {/*this.props.form.resetFields();*/}
+                    {/*}}>*/}
+                      {/*Очистить*/}
+                    {/*</Button>}*/}
+                  {/*</div>*/}
+                {/*</Row>*/}
+                <TabPane tab="Титульная часть" key="form">
+                  <Card style={{ marginLeft: '-10px' }}>
+                    <div style={{ margin: '10px 0', maxWidth: '70%' }}>
+                      <Form.Item {...formItemLayout} label="Вид заявки">
+                        {getFieldDecorator('contract_Type', {
+                          initialValue: '',
+                          rules: [{ required: true, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                            style={{ width: '50%' }}
+                          >
+                            {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                            })}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Номер">
+                        {getFieldDecorator('number', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(<Input/>)}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Дата">
 
-                    {getFieldDecorator('date-picker', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <DatePicker
-                        format={'DD.MM.YYYY'}
-                        style={{ width: '50%' }}
-                        placeholder="Выберите дату"/>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Отчетный период: год">
-                    {getFieldDecorator('act_period_year', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.year}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Отчетный период: месяц">
-                    {getFieldDecorator('act_period_month', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                        style={{ width: '50%' }}
-                      >
-                        {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Подразделение">
-                    {getFieldDecorator('podr', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Select
-                        allowClear
-                      >
-                        {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
-                          return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                        })}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                  <Form.Item {...formItemLayout} label="Примечание">
-                    {getFieldDecorator('notes', {
-                      initialValue: '',
-                      rules: [{ required: false, message: 'не заполнено' }],
-                    })(
-                      <Input/>,
-                    )}
-                  </Form.Item>
-                </div>
-                <Row>
-                  <div style={{ width: '100%' }}>
+                        {getFieldDecorator('date-picker', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <DatePicker
+                            format={'DD.MM.YYYY'}
+                            style={{ width: '50%' }}
+                            placeholder="Выберите дату"/>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Отчетный период: год">
+                        {getFieldDecorator('act_period_year', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                            style={{ width: '50%' }}
+                          >
+                            {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.year}</Select.Option>;
+                            })}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Отчетный период: месяц">
+                        {getFieldDecorator('act_period_month', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                            style={{ width: '50%' }}
+                          >
+                            {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                            })}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Подразделение">
+                        {getFieldDecorator('podr', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                          >
+                            {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                            })}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Примечание">
+                        {getFieldDecorator('notes', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Input/>,
+                        )}
+                      </Form.Item>
+                    </div>
+                    <Row>
+                      <div style={{ width: '100%' }}>
 
-                  </div>
-                </Row>
-              </Card>
-            </TabPane>
-            <TabPane tab="Акты"
-                     key="acts"
-            >
-              <Card style={{ marginLeft: '-10px' }}>
-                <SmartGridView
-                  name={'actform'}
-                  scroll={{ x: 'auto' }}
-                  searchButton={false}
-                  fixedBody={true}
-                  rowKey={'id'}
-                  loading={false}
-                  fixedHeader={false}
-                  hideRefreshBtn={true}
-                  hideFilterBtn={true}
-                  rowSelection={true}
-                  showExportBtn={true}
-                  showTotal={true}
-                  hidePagination={true}
-                  columns={this.state.actcolumns}
-                  actionColumns={[]}
-                  sorted={true}
-                  onSort={(column) => {
-                  }}
-                  showTotal={true}
-                  addonButtons={[]}
-                  actionExport={() => {
-                  }}
-                  onSelectRow={(record, index) => {
-                    //console.log(record)
-                  }}
-                  dataSource={{
-                    total: this.state.actdata.length,
-                    pageSize: this.state.actdata.length,
-                    page: 1,
-                    data: this.state.actdata,
-                  }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                  }}
-                  onRefresh={() => {
+                      </div>
+                    </Row>
+                  </Card>
+                </TabPane>
+                <TabPane tab="Акты"
+                         key="acts"
+                >
+                  <Card style={{ marginLeft: '-10px' }}>
+                    <SmartGridView
+                      name={'actform'}
+                      scroll={{ x: 'auto' }}
+                      searchButton={false}
+                      fixedBody={true}
+                      rowKey={'id'}
+                      loading={false}
+                      fixedHeader={false}
+                      hideRefreshBtn={true}
+                      hideFilterBtn={true}
+                      rowSelection={true}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
+                      columns={this.state.actcolumns}
+                      actionColumns={[]}
+                      sorted={true}
+                      onSort={(column) => {
+                      }}
+                      showTotal={true}
+                      addonButtons={[]}
+                      actionExport={() => {
+                      }}
+                      onSelectRow={(record, index) => {
+                        //console.log(record)
+                      }}
+                      dataSource={{
+                        total: this.state.actdata.length,
+                        pageSize: this.state.actdata.length,
+                        page: 1,
+                        data: this.state.actdata,
+                      }}
+                      onShowSizeChange={(pageNumber, pageSize) => {
+                      }}
+                      onRefresh={() => {
 
-                  }}
-                  onSearch={() => {
+                      }}
+                      onSearch={() => {
 
-                  }}
-                />
-              </Card>
-            </TabPane>
-            <TabPane tab="Договоры"
-                     key="contracts"
-            >
-              <Card style={{ marginLeft: '-10px' }}>
-                <SmartGridView
-                  name={'contractform'}
-                  scroll={{ x: 'auto' }}
-                  searchButton={false}
-                  fixedBody={true}
-                  rowKey={'id'}
-                  loading={false}
-                  fixedHeader={false}
-                  hideRefreshBtn={true}
-                  hideFilterBtn={true}
-                  rowSelection={true}
-                  showExportBtn={true}
-                  showTotal={true}
-                  hidePagination={true}
-                  columns={this.state.contractcolumns}
-                  actionColumns={[]}
-                  sorted={true}
-                  onSort={(column) => {
-                  }}
-                  showTotal={true}
-                  addonButtons={[]}
-                  actionExport={() => {
-                  }}
-                  onSelectRow={(record, index) => {
-                    //console.log(record)
-                  }}
-                  dataSource={{
-                    total: this.state.contractdata.length,
-                    pageSize: this.state.contractdata.length,
-                    page: 1,
-                    data: this.state.contractdata,
-                  }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                  }}
-                  onRefresh={() => {
+                      }}
+                    />
+                  </Card>
+                </TabPane>
+                <TabPane tab="Договоры"
+                         key="contracts"
+                >
+                  <Card style={{ marginLeft: '-10px' }}>
+                    <SmartGridView
+                      name={'contractform'}
+                      scroll={{ x: 'auto' }}
+                      searchButton={false}
+                      fixedBody={true}
+                      rowKey={'id'}
+                      loading={false}
+                      fixedHeader={false}
+                      hideRefreshBtn={true}
+                      hideFilterBtn={true}
+                      rowSelection={true}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
+                      columns={this.state.contractcolumns}
+                      actionColumns={[]}
+                      sorted={true}
+                      onSort={(column) => {
+                      }}
+                      showTotal={true}
+                      addonButtons={[]}
+                      actionExport={() => {
+                      }}
+                      onSelectRow={(record, index) => {
+                        //console.log(record)
+                      }}
+                      dataSource={{
+                        total: this.state.contractdata.length,
+                        pageSize: this.state.contractdata.length,
+                        page: 1,
+                        data: this.state.contractdata,
+                      }}
+                      onShowSizeChange={(pageNumber, pageSize) => {
+                      }}
+                      onRefresh={() => {
 
-                  }}
-                  onSearch={() => {
+                      }}
+                      onSearch={() => {
 
-                  }}
-                />
-              </Card>
-            </TabPane>
-            <TabPane tab="Спецификация"
-                     key="specifications"
-            >
-              <Card style={{ marginLeft: '-10px' }}>
-                <SmartGridView
-                  name={'specform'}
-                  scroll={{ x: 'auto' }}
-                  searchButton={false}
-                  fixedBody={true}
-                  rowKey={'id'}
-                  loading={false}
-                  fixedHeader={false}
-                  hideRefreshBtn={true}
-                  hideFilterBtn={true}
-                  rowSelection={true}
-                  showExportBtn={true}
-                  showTotal={true}
-                  hidePagination={true}
-                  columns={this.state.speccolumns}
-                  actionColumns={this.state.specfcolumn}
-                  sorted={true}
-                  onSort={(column) => {
-                  }}
-                  showTotal={true}
-                  addonButtons={[]}
-                  actionExport={() => {
-                  }}
-                  onSelectRow={(record, index) => {
-                    //console.log(record)
-                  }}
-                  dataSource={{
-                    total: this.state.specdata.length,
-                    pageSize: this.state.specdata.length,
-                    page: 1,
-                    data: this.state.specdata,
-                  }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                  }}
-                  onRefresh={() => {
+                      }}
+                    />
+                  </Card>
+                </TabPane>
+                <TabPane tab="Спецификация"
+                         key="specifications"
+                >
+                  <Card style={{ marginLeft: '-10px' }}>
+                    <SmartGridView
+                      name={'specform'}
+                      scroll={{ x: 'auto' }}
+                      searchButton={false}
+                      fixedBody={true}
+                      rowKey={'id'}
+                      loading={false}
+                      fixedHeader={false}
+                      hideRefreshBtn={true}
+                      hideFilterBtn={true}
+                      rowSelection={true}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
+                      columns={this.state.speccolumns}
+                      actionColumns={this.state.specfcolumn}
+                      sorted={true}
+                      onSort={(column) => {
+                      }}
+                      showTotal={true}
+                      addonButtons={[]}
+                      actionExport={() => {
+                      }}
+                      onSelectRow={(record, index) => {
+                        //console.log(record)
+                      }}
+                      dataSource={{
+                        total: this.state.specdata.length,
+                        pageSize: this.state.specdata.length,
+                        page: 1,
+                        data: this.state.specdata,
+                      }}
+                      onShowSizeChange={(pageNumber, pageSize) => {
+                      }}
+                      onRefresh={() => {
 
-                  }}
-                  onSearch={() => {
+                      }}
+                      onSearch={() => {
 
-                  }}
-                />
-              </Card>
-            </TabPane>
-            <TabPane tab="Проводки"
+                      }}
+                    />
+                  </Card>
+                </TabPane>
+                <TabPane tab="Проводки"
 
-                     key="provods"
-            >
-            </TabPane>
-          </Tabs>
-        </Form>
-      </Row>
-    </Spin></Card>);
+                         key="provods"
+                >
+                </TabPane>
+              </Tabs>
+            </Form>
+          </Row>
+        </Spin>
+        </Card>
+      </PageHeaderWrapper>
+    );
   }
 }
 

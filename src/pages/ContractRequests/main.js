@@ -258,7 +258,8 @@ export default class ContractRequestsTable extends Component  {
         <Menu.Item
           key="1"
           onClick={()=>{
-            this.contractform();
+            //this.contractform();
+            router.push('/contract/contractrequests/add');
           }}>
           Новый
         </Menu.Item>
@@ -279,8 +280,7 @@ export default class ContractRequestsTable extends Component  {
 
     return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
       <Card bodyStyle={{ padding: 5 }}>
-        {this.state.newContract && <ContractRequestsadd />}
-        {!this.state.newContract && <Row>
+         <Row>
           <Col sm={24} md={this.state.filterContainer}>
             <Card
               headStyle={{
@@ -337,7 +337,7 @@ export default class ContractRequestsTable extends Component  {
             />
             <br/>
           </Col>
-        </Row>}
+        </Row>
       </Card>
       </PageHeaderWrapper>
     );

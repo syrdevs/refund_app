@@ -63,15 +63,14 @@ export default class DogovorPage extends Component {
           <Button onClick={() => {
             this.setState({ modalForm: { visible: true } });
           }} key={'select_button'} style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>
-          <Button
+          {this.state.dataSource.length > 0 && <Button
             onClick={() => {
               this.setState({
                 dataSource: [],
               });
             }}
-            disabled={this.state.dataSource.length === 0}
             key={'delete_button'}
-            style={{ margin: '0px 0px 10px 5px' }}>Удалить</Button>
+            style={{ margin: '0px 0px 10px 5px' }}>Удалить</Button>}
         </div>
         <Table
           columns={columns}

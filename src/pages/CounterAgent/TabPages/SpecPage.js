@@ -189,6 +189,7 @@ class SpecPage extends Component {
 Сумма (тг) 10
 Аванс (тг) 10
 */
+    validatemessage:"не заполнено",
     columns: [
       {
         title: 'Код',
@@ -268,8 +269,8 @@ class SpecPage extends Component {
                   message: this.state.validatemessage,
                 }],
               })(
-                <Input name={'amount' + record.key} onChange={(e) => {
-                  this.identValue(e.target.value, record, 'amount', 'identities');
+                <InputNumber name={'amount' + record.key} onChange={(e) => {
+                  this.identValue(e, record, 'amount', 'identities');
                 }}/>)}
             </FormItem>);
         },

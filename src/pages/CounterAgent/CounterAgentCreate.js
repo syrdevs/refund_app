@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal } from 'antd';
 import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage } from './TabPages';
+import Actsadd from '../Acts/Actsadd';
 import styles from './CounterAgent.less';
 
 const TabPane = Tabs.TabPane;
@@ -17,6 +18,9 @@ const formItemLayout = {
 export default class CounterAgentCreate extends Component {
   state = {};
 
+  componentDidMount() {
+    console.log(this.props);
+  };
 
   render = () => {
 
@@ -37,7 +41,7 @@ export default class CounterAgentCreate extends Component {
         extra={[<Button>Сохранить</Button>]}
         bordered={false}
         bodyStyle={{ padding: 0 }}>
-        <Row style={{ marginTop: '0px' }}>
+        <Row style={{ marginTop: '5px' }}>
           <Form layout="horizontal" hideRequiredMark>
             <Tabs
               tabBarStyle={{ textAlign: 'left' }}

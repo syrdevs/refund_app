@@ -159,6 +159,7 @@ export default [
               },
               {
                 path: '/contract/counteragent/create',
+                name:"contractView",
                 component: './CounterAgent/CounterAgentCreate',
               },
               {

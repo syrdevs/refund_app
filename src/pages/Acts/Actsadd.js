@@ -240,12 +240,36 @@ class Actsadd extends Component {
     const onValidateForm = () => {
     };
     return (
-        <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
-          <Row style={{marginTop:'20px'}}>
-            <Form layout="horizontal" hideRequiredMark>
+      <Card
+        headStyle={{ padding: 0 }}
+        title={''}
+        className={styles.headPanel}
+        extra={[<Button
+          htmlType="submit"
+          onClick={(e)=>{
 
+            this.props.form.validateFields(
+              (err, values) => {
+                if (!err) {
+                  this.props.tomain();
+                }
+                else {
+
+                }
+              },
+            );
+          }
+          }>
+          Сохранить
+        </Button>]}
+        bordered={false}
+        bodyStyle={{ padding: 0 }}>
+        <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+          <Row style={{marginTop:'5px'}}>
+            <Form layout="horizontal" hideRequiredMark>
               <Tabs
                 className={styles.stepFormText}
+                type={'card'}
                 defaultActiveKey="form"
                 onChange={(e)=>{
                   if (e==='form'){
@@ -260,38 +284,18 @@ class Actsadd extends Component {
                   }
                 }}
                 tabPosition={'left'}>
-                <Row>
-                  <div style={{width:'100%'}}>
-                      <Button
-                        htmlType="submit"
-                        style={{float:'left', margin: '0px 0px 10px -10px'}}
-                      onClick={(e)=>{
+                {/*<Row>*/}
+                  {/*<div style={{width:'100%'}}>*/}
 
-                        //console.log(window.location);
-
-                        this.props.form.validateFields(
-                          (err, values) => {
-                            if (!err) {
-                              this.props.tomain();
-                            }
-                            else {
-
-                            }
-                          },
-                        );
-                      }
-                      }>
-                        Сохранить
-                      </Button>
-                    {this.state.ShowClear &&
-                    <Button
-                      style={{float:'left', margin: '0px 0px 10px 10px'}} onClick={() => {
-                      this.props.form.resetFields();
-                    }}>
-                      Очистить
-                    </Button>}
-                  </div>
-                </Row>
+                    {/*{this.state.ShowClear &&*/}
+                    {/*<Button*/}
+                      {/*style={{float:'left', margin: '0px 0px 10px 10px'}} onClick={() => {*/}
+                      {/*this.props.form.resetFields();*/}
+                    {/*}}>*/}
+                      {/*Очистить*/}
+                    {/*</Button>}*/}
+                  {/*</div>*/}
+                {/*</Row>*/}
                 <TabPane tab="Титульная часть" key="form">
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
@@ -391,7 +395,6 @@ class Actsadd extends Component {
                       hideFilterBtn={true}
                       rowSelection={true}
                       showExportBtn={true}
-                      showTotal={true}
                       hidePagination={true}
                       columns={this.state.columns}
                       actionColumns={this.state.fcolumn}
@@ -420,10 +423,10 @@ class Actsadd extends Component {
                   </Card>
                 </TabPane>
               </Tabs>
-
             </Form>
           </Row>
         </Spin>
+      </Card>
   /*
     <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title' })}>
     </PageHeaderWrapper>

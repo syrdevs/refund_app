@@ -15,6 +15,16 @@
   max-width: 70%;
 }
 
+.headPanel {
+  :global {
+    .ant-card-extra {
+      float: left;
+      padding: 7px 0;
+      margin-left: 0;
+    }
+  }
+}
+
 .stepFormText {
   margin-bottom: 24px;
   :global {
@@ -22,7 +32,12 @@
     .ant-form-item-control {
       line-height: 22px;
     }
-
+    .ant-card-extra {
+      padding: 7px 0;
+    }
+    .ant-tabs-nav-container .ant-tabs-tab {
+      text-align: left !important;
+    }
   }
 }
 

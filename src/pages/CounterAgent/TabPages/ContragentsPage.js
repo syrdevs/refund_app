@@ -56,6 +56,8 @@ export default class ContragentsPage extends Component {
         hidePagination={true}
         name='ContragentPageView'
         rowKey={'id'}
+        showExportBtn={true}
+        showTotal={true}
         hideFilterBtn={true}
         hideRefreshBtn={true}
         columns={this.state.columns}
@@ -74,7 +76,7 @@ export default class ContragentsPage extends Component {
             'responsiblePersons': 'Ахметов Даурен',
           }],
         }}
-
+        actionExport={() =>{}}
         onShowSizeChange={(pageNumber, pageSize) => {
           {/*<Button
                       disabled={hasRole(['ADMIN'])}

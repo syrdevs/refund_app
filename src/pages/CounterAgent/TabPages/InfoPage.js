@@ -4,6 +4,8 @@ import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs
 import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import moment from 'moment';
+import LinkModal from '@/components/LinkModal';
+import Actsadd from '../../Acts/Actsadd';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -14,7 +16,11 @@ const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 }))
 @Form.create()
 export default class InfoPage extends Component {
-  state = {};
+  state = {
+    fields: {
+      bin: '',
+    },
+  };
 
   disabledDate = (current) => {
     // Can not select days before today and today
@@ -73,11 +79,12 @@ export default class InfoPage extends Component {
 
     return (<Card style={{ marginLeft: '-10px' }}>
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
-        <Form.Item {...formItemLayout} label="БИН">
-          {getFieldDecorator('bin', {
-            rules: [{ required: true, message: '' }],
-          })(<Input style={{ width: '50%' }}/>)}
-        </Form.Item>
+        {/*<Form.Item {...formItemLayout} label="БИН">*/}
+        {/*{getFieldDecorator('bin', {*/}
+        {/*rules: [{ required: true, message: '' }]*/}
+        {/*}*/}
+        {/*)(<Input style={{ width: '50%' }}/>)}*/}
+        {/*</Form.Item>*/}
         {/*<Form.Item {...formItemLayout} label="Контрагент">*/}
         {/*{getFieldDecorator('counteragent', {*/}
         {/*initialValue: '',*/}
@@ -118,6 +125,7 @@ export default class InfoPage extends Component {
             rules: [{ required: true, message: '' }],
           })(
             <DatePicker
+              format={'DD.MM.YYYY'}
               value={null}
               style={{ width: '50%' }}
               placeholder="Выберите дату"/>,
@@ -138,6 +146,7 @@ export default class InfoPage extends Component {
           })(
             <RangePicker
               style={{ width: '50%' }}
+              format={'DD.MM.YYYY'}
               placeholder={[
                 formatMessage({ id: 'datepicker.start.label' }),
                 formatMessage({ id: 'datepicker.end.label' }),
@@ -152,6 +161,11 @@ export default class InfoPage extends Component {
               {this.getReferenceValues('organization', 'name')}
             </Select>,
           )}
+        </Form.Item>
+        <Form.Item {...formItemLayout} label="Род-кий договор">
+          <LinkModal>
+            <Actsadd/>
+          </LinkModal>
         </Form.Item>
         <Form.Item {...formItemLayout} label="Примечание">
           {getFieldDecorator('description', {

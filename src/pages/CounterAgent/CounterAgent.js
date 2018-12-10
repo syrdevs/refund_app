@@ -42,6 +42,7 @@ class CounterAgent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedRowKeys: [],
       isForm: false,
       columns: [
         {
@@ -122,113 +123,152 @@ class CounterAgent extends Component {
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
-          disabled={hasRole(['ADMIN'])}
+          disabled={hasRole(['ADMIN']) || true}
           onClick={() => this.goForm()}
           key='add'>
           Добавить
         </Menu.Item>
         <Menu.Item
-          disabled={hasRole(['ADMIN'])}
+          disabled={hasRole(['ADMIN']) || true}
           key='delete'>
           Удалить
         </Menu.Item>
         <Menu.Item
-          disabled={hasRole(['ADMIN'])}
+          disabled={hasRole(['ADMIN']) || true}
           key='update'>
           Открыть/изменить
         </Menu.Item>
         <Menu.Item
-          disabled={hasRole(['ADMIN'])}
+          disabled={hasRole(['ADMIN']) || this.state.selectedRowKeys.length === 0}
           key='register_document'
-          onClick={()=>{
-            reduxRouter.push("create");
+          onClick={() => {
+            /*
+            * {
+                  'id': '1',
+                  'code': '00052',
+                  'name': 'ТОО TMI Company',
+                  'bin': '861207303160',
+                  'address': 'Микрорайон 4, дом 34, кв 50',
+                  'currentContacts': '+77028596963',
+                  'account': 'KZ75125KZT1001300335',
+                  'responsiblePersons': 'Ахметов Даурен',
+                }
+            * */
+            //console.log(this.state.selectedRowKeys);
+            // this.props.history.push({
+            //   pathname:"create",
+            //   // state:{
+            //   //   key:"value"
+            //   // }
+            // });
+
+            //reduxRouter.push("create");
+
+            this.props.history.push({
+              pathname: 'create',
+              state: {
+                data: {
+                  'id': '1',
+                  'code': '00052',
+                  'name': 'ТОО TMI Company',
+                  'bin': '861207303160',
+                  'address': 'Микрорайон 4, дом 34, кв 50',
+                  'currentContacts': '+77028596963',
+                  'account': 'KZ75125KZT1001300335',
+                  'responsiblePersons': 'Ахметов Даурен',
+                },
+              },
+            });
+
           }}>
-          Создать договор
-        </Menu.Item>
-      </Menu>}>
-        <Button
-          key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
-          type="down"/></Button>
-      </Dropdown>,
-    ];
+            Создать договор
+            </Menu.Item>
+            </Menu>}>
+          <Button
+            key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+            type="down"/></Button>
+        </Dropdown>,
+        ];
 
-    return (
-          <Row>
+        return (
+        <Row>
 
-            <Col sm={24} md={this.state.tablecont}>
-              {this.state.searchercont === 8 &&
-              <DataDiv/>
-              }
-              {!this.state.isForm &&
-              <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
-                <SmartGridView
-                  name='SamplePageColumns'
-                  scroll={{ x: this.state.xsize }}
-                  fixedBody
-                  selectedRowCheckBox
-                  searchButton={this.state.searchButton}
-                  selectedRowKeys={this.state.selectedRowKeys}
-                  rowKey={'id'}
-                  loading={this.props.loadingData}
-                  fixedHeader
-                  rowSelection
-                  showExportBtn={true}
-                  actionExport={() => {}}
-                  columns={this.state.columns}
-                  sorted
-                  showTotal
-                  dataSource={{
-                    total: 8921,
-                    pageSize: this.state.pagingConfig.length,
-                    page: this.state.pagingConfig.start + 1,
-                    data: [{
-                      'id': '1',
-                      'code': '00052',
-                      'name': 'ТОО TMI Company',
-                      'bin': '861207303160',
-                      'address': 'Микрорайон 4, дом 34, кв 50',
-                      'currentContacts': '+77028596963',
-                      'account': 'KZ75125KZT1001300335',
-                      'responsiblePersons': 'Ахметов Даурен',
-                    }],
-                  }}
-                  addonButtons={addonButtons}
+          <Col sm={24} md={this.state.tablecont}>
+            {this.state.searchercont === 8 &&
+            <DataDiv/>
+            }
+            {!this.state.isForm &&
+            <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
+              <SmartGridView
+                name='SamplePageColumns'
+                scroll={{ x: this.state.xsize }}
+                fixedBody
+                selectedRowCheckBox
+                searchButton={this.state.searchButton}
+                selectedRowKeys={this.state.selectedRowKeys}
+                rowKey={'id'}
+                loading={this.props.loadingData}
+                fixedHeader
+                rowSelection
+                showExportBtn={true}
+                actionExport={() => {
+                }}
+                columns={this.state.columns}
+                sorted
+                showTotal
+                dataSource={{
+                  total: 8921,
+                  pageSize: this.state.pagingConfig.length,
+                  page: this.state.pagingConfig.start + 1,
+                  data: [{
+                    'id': '1',
+                    'code': '00052',
+                    'name': 'ТОО TMI Company',
+                    'bin': '861207303160',
+                    'address': 'Микрорайон 4, дом 34, кв 50',
+                    'currentContacts': '+77028596963',
+                    'account': 'KZ75125KZT1001300335',
+                    'responsiblePersons': 'Ахметов Даурен',
+                  }],
+                }}
+                addonButtons={addonButtons}
 
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                    {/*<Button
+                onShowSizeChange={(pageNumber, pageSize) => {
+                  {/*<Button
                       disabled={hasRole(['ADMIN'])}
                       key='register_document'
                     >Зарегистрировать договор
-                    </Button>,*/}
-                  }}
-                  onSelectCell={(cellIndex, cell) => {
+                    </Button>,*/
+                  }
+                }}
+                onSelectCell={(cellIndex, cell) => {
 
-                  }}
-                  onSelectRow={() => {
+                }}
+                onSelectRow={() => {
 
-                  }}
-                  onFilter={(filters) => {
+                }}
+                onFilter={(filters) => {
 
-                  }}
-                  onRefresh={() => {
+                }}
+                onRefresh={() => {
 
-                  }}
-                  onSearch={() => {
+                }}
+                onSearch={() => {
 
-                  }}
-                  onSelectCheckboxChange={(selectedRowKeys) => {
-                    this.setState({
-                      selectedRowKeys: selectedRowKeys,
-                    });
-                  }}
-                />
-              </Spin>}
-              {this.state.isForm && <SampleForm/>}
-            </Col>
+                }}
+                onSelectCheckboxChange={(selectedRowKeys) => {
+                  this.setState({
+                    selectedRowKeys: selectedRowKeys,
+                  });
+                }}
+              />
+            </Spin>}
+            {this.state.isForm && <SampleForm/>}
+          </Col>
 
-          </Row>
-    );
-  }
-}
+        </Row>
+        );
+        }
+        }
 
-export default CounterAgent;
+        export default CounterAgent;

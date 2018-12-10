@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon, InputNumber} from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Divider,
+  DatePicker,
+  Table,
+  Row,
+  Col,
+  Tabs,
+  Card,
+  Spin,
+  Badge,
+  Icon,
+  InputNumber,
+} from 'antd';
 import styles from './style.less';
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import {  faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import SmartGridView from '@/components/SmartGridView';
 import { Tab } from '../../components/Login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,8 +40,6 @@ const formItemLayout = {
 };
 
 
-
-
 @Form.create()
 @connect(({ universal, loading }) => ({
   universal,
@@ -40,7 +54,7 @@ class ContractRequestsadd extends Component {
     super(props);
     this.state = {
 
-      actcolumns:[
+      actcolumns: [
         {
           title: 'Отчетный период(Год)',
           dataIndex: 'act_period_year',
@@ -87,7 +101,7 @@ class ContractRequestsadd extends Component {
           isVisible: true,
         },
       ],
-      actdata:[
+      actdata: [
         {
           id: '1',
           act_period_year: 'test',
@@ -110,10 +124,10 @@ class ContractRequestsadd extends Component {
           act_date: '02.12.2018',
           payment: '05.12.2018',
           podr: '06.12.2018',
-          newContract:false
+          newContract: false,
         },
       ],
-      contractcolumns:[
+      contractcolumns: [
         {
           title: 'Отчетный период',
           dataIndex: 'report_period',
@@ -165,7 +179,7 @@ class ContractRequestsadd extends Component {
           isVisible: true,
         },
       ],
-      contractdata:[
+      contractdata: [
         {
           id: '1',
           report_period: 'test',
@@ -218,39 +232,39 @@ class ContractRequestsadd extends Component {
           title: 'Сумма (тг)',
           dataIndex: 'total',
           isVisible: true,
-        }
+        },
       ],
       specfcolumn: [],
       specdata: [
         {
           key: 1,
-          id: "123qwe111",
+          id: '123qwe111',
           code: '123456',
           activity: 'Медицинское учереждение',
           present_payment: 10456,
           accept_payment: 10456,
           prepaid: 2500,
-          total: 10456
+          total: 10456,
         },
         {
           key: 2,
-          id: "123qwe222",
+          id: '123qwe222',
           code: '123456',
           activity: 'Медицинское учереждение',
           present_payment: 10456,
           accept_payment: 10456,
           prepaid: 2500,
-          total: 10456
+          total: 10456,
         },
         {
           key: 3,
-          id: "123qwe333",
+          id: '123qwe333',
           code: '123456',
           activity: 'Медицинское учереждение',
           present_payment: 10456,
           accept_payment: 10456,
           prepaid: 2500,
-          total: 10456
+          total: 10456,
         },
       ],
       ContractSelect: [],
@@ -258,9 +272,10 @@ class ContractRequestsadd extends Component {
       modal: false,
       ContractSumms: [],
       Contractpayment: [],
-      ShowClear: true
-    }
+      ShowClear: true,
+    };
   }
+
   deleteContract = () => {
     /*this.setState({
       data: this.state.data.filter((item) => {
@@ -269,7 +284,7 @@ class ContractRequestsadd extends Component {
         })*!/
       })
     })*/
-  }
+  };
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -278,18 +293,18 @@ class ContractRequestsadd extends Component {
       'periodSection',
       'organization',
       'medicalType',
-      'paymentRequestType'
-    ]
+      'paymentRequestType',
+    ];
     DicArr.forEach(function(item) {
       dispatch({
         type: 'universal/get' + item,
         payload: {
-          "start": 0,
-          "length": 1000,
-          "entity": item
+          'start': 0,
+          'length': 1000,
+          'entity': item,
         },
       });
-    })
+    });
 
 
     /*  dispatch({
@@ -326,14 +341,14 @@ class ContractRequestsadd extends Component {
 
   showModal = () => {
     this.setState({
-      modal: true
-    })
-  }
+      modal: true,
+    });
+  };
   CancelModal = () => {
     this.setState({
-      modal: false
-    })
-  }
+      modal: false,
+    });
+  };
 
 
   render() {
@@ -343,57 +358,62 @@ class ContractRequestsadd extends Component {
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
     };
-    return (<Spin
-      spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
-      <Row style={{ marginTop: '20px' }}>
-        <Form layout="horizontal" hideRequiredMark>
+    return (<Card
+      headStyle={{ padding: 0 }}
+      title={''}
+      className={styles.headPanel}
+      extra={[<Button
+        htmlType="submit"
+        onClick={() => {
 
+          this.props.form.validateFields(
+            (err, values) => {
+              if (!err) {
+                this.props.tomain();
+              }
+              else {
+
+              }
+            },
+          );
+        }}
+      >
+        Сохранить
+      </Button>]}
+      bordered={false}
+      bodyStyle={{ padding: 0 }}><Spin
+      spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+      <Row style={{ marginTop: '5px' }}>
+        <Form layout="horizontal" hideRequiredMark>
           <Tabs
+            type={'card'}
             className={styles.stepFormText}
             defaultActiveKey="form"
             onChange={(e) => {
               if (e === 'form') {
                 this.setState({
-                  ShowClear: true
-                })
+                  ShowClear: true,
+                });
               }
               else {
                 this.setState({
-                  ShowClear: false
-                })
+                  ShowClear: false,
+                });
               }
             }}
             tabPosition={'left'}>
-            <Row>
-              <div style={{ width: '100%' }}>
-                <Button
-                  htmlType="submit"
-                  style={{ float: 'left', margin: '0px 0px 10px -10px' }}
-                  onClick={()=>{
-
-                    this.props.form.validateFields(
-                      (err, values) => {
-                        if (!err) {
-                          this.props.tomain();
-                        }
-                        else {
-
-                        }
-                      },
-                    );
-                  }}
-                >
-                  Сохранить
-                </Button>
-                {this.state.ShowClear &&
-                <Button
-                  style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {
-                  this.props.form.resetFields();
-                }}>
-                  Очистить
-                </Button>}
-              </div>
-            </Row>
+            {/*<Row>*/}
+              {/*<div style={{ width: '100%' }}>*/}
+                {/**/}
+                {/*{this.state.ShowClear &&*/}
+                {/*<Button*/}
+                  {/*style={{ float: 'left', margin: '0px 0px 10px 10px' }} onClick={() => {*/}
+                  {/*this.props.form.resetFields();*/}
+                {/*}}>*/}
+                  {/*Очистить*/}
+                {/*</Button>}*/}
+              {/*</div>*/}
+            {/*</Row>*/}
             <TabPane tab="Титульная часть" key="form">
               <Card style={{ marginLeft: '-10px' }}>
                 <div style={{ margin: '10px 0', maxWidth: '70%' }}>
@@ -404,12 +424,12 @@ class ContractRequestsadd extends Component {
                     })(
                       <Select
                         allowClear
-                        style={{width:'50%'}}
+                        style={{ width: '50%' }}
                       >
-                      {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
-                        return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                      })}
-                      </Select>
+                        {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
+                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                        })}
+                      </Select>,
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Номер">
@@ -427,7 +447,7 @@ class ContractRequestsadd extends Component {
                       <DatePicker
                         format={'DD.MM.YYYY'}
                         style={{ width: '50%' }}
-                        placeholder="Выберите дату"/>
+                        placeholder="Выберите дату"/>,
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Отчетный период: год">
@@ -437,12 +457,12 @@ class ContractRequestsadd extends Component {
                     })(
                       <Select
                         allowClear
-                        style={{width:'50%'}}
+                        style={{ width: '50%' }}
                       >
                         {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
                           return <Select.Option key={item.id}>{item.year}</Select.Option>;
                         })}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Отчетный период: месяц">
@@ -452,12 +472,12 @@ class ContractRequestsadd extends Component {
                     })(
                       <Select
                         allowClear
-                        style={{width:'50%'}}
+                        style={{ width: '50%' }}
                       >
                         {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
                           return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
                         })}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Подразделение">
@@ -471,7 +491,7 @@ class ContractRequestsadd extends Component {
                         {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
                           return <Select.Option key={item.id}>{item.name}</Select.Option>;
                         })}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                   <Form.Item {...formItemLayout} label="Примечание">
@@ -479,7 +499,7 @@ class ContractRequestsadd extends Component {
                       initialValue: '',
                       rules: [{ required: false, message: 'не заполнено' }],
                     })(
-                      <Input/>
+                      <Input/>,
                     )}
                   </Form.Item>
                 </div>
@@ -637,10 +657,9 @@ class ContractRequestsadd extends Component {
             >
             </TabPane>
           </Tabs>
-
         </Form>
       </Row>
-    </Spin>);
+    </Spin></Card>);
   }
 }
 

@@ -135,7 +135,6 @@ class MainView extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            //console.log(i);
             return item.personSurname + ' ' + item.personFirstname + ' ' + item.personPatronname;
           },
         }, {

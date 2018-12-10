@@ -273,7 +273,7 @@ export default class ContractTable extends Component {
         <Menu.Item
           key="1"
           onClick={() => {
-            //router.push('/contract/contracts/new');
+            router.push('/contract/contracts/new');
           }}>
           Новый
         </Menu.Item>
@@ -291,7 +291,10 @@ export default class ContractTable extends Component {
         </Menu.Item>
         <Menu.Item
           key="5"
-          onClick={() => this.createConract()}
+          onClick={() => {
+              router.push('/contract/contracts/acts/add');
+            }
+          }
           disabled={this.state.selectedRowKeys.length === 0}
         >
           Создать акт
@@ -308,17 +311,7 @@ export default class ContractTable extends Component {
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>
-          {this.state.ShowAct && <Actsadd
-            tomain={()=>{
-              this.setState({
-                ShowMain: true,
-                ShowAct: false,
-                title: "test"
-              })
-            }}
-          />}
-          {this.state.ShowMain &&<div>
-            <Row>
+          <Row>
               <Col sm={24} md={this.state.filterContainer}>
                 <Card
                   headStyle={{
@@ -378,7 +371,6 @@ export default class ContractTable extends Component {
                 <br/>
               </Col>
             </Row>
-          </div>}
         </Card>
       </PageHeaderWrapper>
 

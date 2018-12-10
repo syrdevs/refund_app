@@ -185,10 +185,16 @@ export default [
                 path: '/contract/contracts/table',
                 component: './ContractView/ContractTable',
               },
-              /*{
+              {
                 path: '/contract/contracts/new',
+                name: 'add',
                 component: './ContractView/ContractNew',
-              },*/
+              },
+              {
+                path: '/contract/contracts/acts/add',
+                name: 'actadd',
+                component: './Acts/Actsadd',
+              },
 
             ],
           },
@@ -209,13 +215,20 @@ export default [
                 component: './Acts/main',
               },
               {
+                path: '/contract/acts/add',
+                name: 'actadd',
+                component: './Acts/Actsadd',
+              },
+              {
                 path: '/contract/acts/viewAct',
+                name: 'actadd',
                 component: './Acts/ViewAct',
               },
-             /* {
-                path: '/contract/acts/newcontractrequest',
+              {
+                path: '/contract/acts/contractrequest/add',
+                name: 'requestadd',
                 component: './ContractRequests/ContractRequestsadd',
-              },*/
+              },
             ],
           },
           {
@@ -236,6 +249,7 @@ export default [
               },
               {
                 path: '/contract/contractrequests/add',
+                name: 'add',
                 component: './ContractRequests/ContractRequestsadd',
               },
               {

@@ -154,6 +154,11 @@ export default [
                 component: './CounterAgent/CounterAgent',
               },
               {
+                path: '/contract/counteragent/viewcontract',
+                name:"viewcounteragent",
+                component: './CounterAgent/CounterAgentView',
+              },
+              {
                 path: '/contract/counteragent/create',
                 name:"contractView",
                 component: './CounterAgent/CounterAgentCreate',
@@ -228,11 +233,6 @@ export default [
               {
                 path: '/contract/contractrequests/table',
                 component: './ContractRequests/main',
-              },
-              {
-                path: '/contract/counteragent/viewcontract',
-                name:"viewcounteragent",
-                component: './CounterAgent/CounterAgentView',
               },
               {
                 path: '/contract/contractrequests/add',

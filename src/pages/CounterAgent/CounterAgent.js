@@ -123,7 +123,7 @@ class CounterAgent extends Component {
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
-          disabled={hasRole(['ADMIN']) || true}
+          disabled={hasRole(['ADMIN'])}
           onClick={() => this.goForm()}
           key='add'>
           Добавить

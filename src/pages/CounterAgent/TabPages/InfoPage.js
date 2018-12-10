@@ -180,7 +180,7 @@ export default class InfoPage extends Component {
             data={this.state.DogovorModal.record}
             onClick={(isLink, record) => {
               if (isLink) {
-                console.log(record);
+                this.setState({ DogovorModal: { visible: false, record: null } });
               } else {
                 this.setState({
                   DogovorModal: {

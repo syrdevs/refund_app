@@ -273,7 +273,7 @@ export default class ContractTable extends Component {
         <Menu.Item
           key="1"
           onClick={() => {
-            router.push('/contract/contracts/new');
+            router.push('/contract/counteragent/create');
           }}>
           Новый
         </Menu.Item>

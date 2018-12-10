@@ -397,29 +397,20 @@ export default {
   'app.footer.suppordemail': 'support@med.kz',
   'app.login.entrу': 'Вход в систему',
   'app.login.headertitle': 'ФОНД МЕДИЦИНСКОГО СТРАХОВАНИЯ',
-
-
   'menu.contract': 'Учет договоров',
   'menu.counteragent': 'Контрагенты',
   'menu.contract.acts': 'Акты',
   'menu.contract.contractrequests': 'Заявки',
   'menu.contract.contracts': 'Договоры',
-
-
   'menu.contract.acts.actadd': 'Акт выполненных работ',
   'app.module.acts.title.add': 'Акт выполненных работ',
   'menu.contract.contracts.actadd': 'Акт выполненных работ',
-
   'menu.contract.acts.table': 'Информация об Акте',
-
-
   'menu.contract.acts.requestadd': 'Заявка на оплату',
   'menu.contract.contractrequests.add': 'Заявки на оплату',
   'menu.contract.contractrequests.table': 'Информация о заявке на оплату',
-
   'menu.contract.contracts.add': 'Информация о договоре',
   'menu.contract.contracts.table': 'Информация о договоре',
-
   'menu.counteragent.create': 'Договор',
   'app.module.contract.title': 'Учет договоров',
   'app.module.contracts.title': 'Договоры',

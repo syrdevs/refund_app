@@ -34,9 +34,8 @@ function hasRole(roles) {
 }
 
 
-@connect(({ universal, loading }) => ({
-  universal,
-  loadingData: loading.effects['universal/mainviewtable'],
+@connect(({ universal2 }) => ({
+  universal2,
 }))
 class CounterAgent extends Component {
   constructor(props) {
@@ -55,7 +54,7 @@ class CounterAgent extends Component {
           isVisible: true,
         }, {
           title: 'Идентификатор',
-          dataIndex: 'bin',
+          dataIndex: 'idendifier.value',
           isVisible: true,
         }, {
           title: 'Адрес',
@@ -63,28 +62,28 @@ class CounterAgent extends Component {
           isVisible: true,
         }, {
           title: 'Актуальные контакты',
-          dataIndex: 'currentContacts',
+          dataIndex: 'contact',
           isVisible: true,
         }, {
           title: 'Банковские реквизиты',
-          dataIndex: 'account',
+          dataIndex: 'bankAccount.account',
           isVisible: true,
         }, {
           title: 'Ответственные лица',
-          dataIndex: 'responsiblePersons',
+          dataIndex: 'representative',
           isVisible: true,
         },
       ],
 
       xsize: 'auto',
 
-      pagingConfig: {
-        'start': 0,
-        'length': 15,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+      gridParameters: {
+        start: 0,
+        length: 10,
+        alias: 'clinicList',
+        entity: 'clinic',
+        filter: {},
+        sort: [],
       },
     };
   }
@@ -94,18 +93,23 @@ class CounterAgent extends Component {
   }
 
   loadMainGridData = () => {
-
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: this.state.gridParameters,
+    });
   };
 
   componentDidMount() {
     this.loadMainGridData();
   }
 
-
   toggleSearcher() {
+
   }
 
   toggleItems() {
+
   }
 
   goForm = () => {
@@ -117,8 +121,8 @@ class CounterAgent extends Component {
 
   render() {
 
-    const { universal } = this.props;
-
+    const { universal2 } = this.props;
+    const counterData = universal2.references[this.state.gridParameters.entity];
 
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
@@ -181,94 +185,76 @@ class CounterAgent extends Component {
             });
 
           }}>
-            Создать договор
-            </Menu.Item>
-            </Menu>}>
-          <Button
-            key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
-            type="down"/></Button>
-        </Dropdown>,
-        ];
+          Создать договор
+        </Menu.Item>
+      </Menu>}>
+        <Button
+          key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+          type="down"/></Button>
+      </Dropdown>,
+    ];
 
-        return (
-        <Row>
+    return (
+      <Row>
+        <Col sm={24} md={this.state.tablecont}>
+          {this.state.searchercont === 8 && <DataDiv/>}
+          {!this.state.isForm &&
+          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
+            <SmartGridView
+              name='SamplePageColumns'
+              scroll={{ x: this.state.xsize }}
+              fixedBody
+              selectedRowCheckBox
+              searchButton={this.state.searchButton}
+              selectedRowKeys={this.state.selectedRowKeys}
+              rowKey={'id'}
+              fixedHeader
+              rowSelection
+              showExportBtn={true}
+              actionExport={() => {
+              }}
+              columns={this.state.columns}
+              sorted
+              showTotal
+              dataSource={{
+                total: counterData ? counterData.totalElements : 0,
+                pageSize: counterData ? counterData.size : 0,
+                page: this.state.gridParameters.start + 1,
+                data: counterData ? counterData.content : [],
+              }}
+              addonButtons={addonButtons}
 
-          <Col sm={24} md={this.state.tablecont}>
-            {this.state.searchercont === 8 &&
-            <DataDiv/>
-            }
-            {!this.state.isForm &&
-            <Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>
-              <SmartGridView
-                name='SamplePageColumns'
-                scroll={{ x: this.state.xsize }}
-                fixedBody
-                selectedRowCheckBox
-                searchButton={this.state.searchButton}
-                selectedRowKeys={this.state.selectedRowKeys}
-                rowKey={'id'}
-                loading={this.props.loadingData}
-                fixedHeader
-                rowSelection
-                showExportBtn={true}
-                actionExport={() => {
-                }}
-                columns={this.state.columns}
-                sorted
-                showTotal
-                dataSource={{
-                  total: 8921,
-                  pageSize: this.state.pagingConfig.length,
-                  page: this.state.pagingConfig.start + 1,
-                  data: [{
-                    'id': '1',
-                    'code': '00052',
-                    'name': 'ТОО TMI Company',
-                    'bin': '861207303160',
-                    'address': 'Микрорайон 4, дом 34, кв 50',
-                    'currentContacts': '+77028596963',
-                    'account': 'KZ75125KZT1001300335',
-                    'responsiblePersons': 'Ахметов Даурен',
-                  }],
-                }}
-                addonButtons={addonButtons}
+              onShowSizeChange={(pageNumber, pageSize) => {
 
-                onShowSizeChange={(pageNumber, pageSize) => {
-                  {/*<Button
-                      disabled={hasRole(['ADMIN'])}
-                      key='register_document'
-                    >Зарегистрировать договор
-                    </Button>,*/
-                  }
-                }}
-                onSelectCell={(cellIndex, cell) => {
+              }}
+              onSelectCell={(cellIndex, cell) => {
 
-                }}
-                onSelectRow={() => {
+              }}
+              onSelectRow={() => {
 
-                }}
-                onFilter={(filters) => {
+              }}
+              onFilter={(filters) => {
 
-                }}
-                onRefresh={() => {
+              }}
+              onRefresh={() => {
 
-                }}
-                onSearch={() => {
+              }}
+              onSearch={() => {
 
-                }}
-                onSelectCheckboxChange={(selectedRowKeys) => {
-                  this.setState({
-                    selectedRowKeys: selectedRowKeys,
-                  });
-                }}
-              />
-            </Spin>}
-            {this.state.isForm && <SampleForm/>}
-          </Col>
+              }}
+              onSelectCheckboxChange={(selectedRowKeys) => {
+                this.setState({
+                  selectedRowKeys: selectedRowKeys,
+                });
+              }}
+            />
+          </Spin>}
+          {this.state.isForm && <SampleForm/>}
+        </Col>
 
-        </Row>
-        );
-        }
-        }
+      </Row>
+    );
+  }
+}
 
-        export default CounterAgent;
+export default CounterAgent;

@@ -230,6 +230,11 @@ export default [
                 component: './ContractRequests/main',
               },
               {
+                path: '/contract/counteragent/viewcontract',
+                name:"viewcounteragent",
+                component: './CounterAgent/CounterAgentView',
+              },
+              {
                 path: '/contract/contractrequests/add',
                 component: './ContractRequests/ContractRequestsadd',
               },

@@ -340,42 +340,49 @@ export async function getSearcherCalendar(params) {
     body: params.payload,
   });
 }
+
 export async function getSearcherJurCalendar(params) {
   return request('/api/rpmu/senderPeriodList', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function getSearcherData(params) {
   return request('/api/external/gbdflGetPerson', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function getSearcherRPNData(params) {
   return request('/api/external/rpnGetPerson', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function getSearcherMEDData(params) {
   return request('/api/external/medInfGetPerson', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function getSearcherJur(params) {
   return request('/api/external/rpmuGetSender', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function getActDics(params) {
   return request('/api/uicommand/getList', {
     method: 'POST',
     body: params.payload,
   });
 }
+
 export async function saveObject(params) {
   return request('/api/uicommand/saveObject', {
     method: 'POST',
@@ -383,3 +390,9 @@ export async function saveObject(params) {
   });
 }
 
+export async function getObject(params) {
+  return request('/api/uicommand/getObject', {
+    method: 'POST',
+    body: params.payload,
+  });
+}

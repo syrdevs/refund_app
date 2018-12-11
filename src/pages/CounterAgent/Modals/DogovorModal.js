@@ -2,83 +2,108 @@ import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
+import { connect } from 'dva/index';
 
+@connect(({ universal2 }) => ({
+  universal2,
+}))
 export default class DogovorModal extends Component {
   state = {
     selectedRecord: {},
-    dataSource: [
+    columns:[
       {
-        id: '1',
-        bin: 'БИН',
-        counteragent: '89999559999',
-        type_dogovor: 'Тип договора',
-        nomer: '123456478',
-        date: '09.12.2018',
-        status: 'Принято',
+        title: 'Отчетный период',
+        dataIndex: 'periodYear',
+        isVisible: true,
       },
       {
-        id: '2',
-        bin: 'БИН',
-        counteragent: '41423413255',
-        type_dogovor: 'Тип договора',
-        nomer: '123456478',
-        date: '09.12.2018',
-        status: 'Принято',
+        title: 'БИН',
+        dataIndex: 'contractParty.bin',
+        isVisible: true,
       },
       {
-        id: '3',
-        bin: 'БИН',
-        counteragent: '5123513252',
-        type_dogovor: 'Тип договора',
-        nomer: '123456478',
-        date: '09.12.2018',
-        status: 'Принято',
+        title: 'Контрагент',
+        dataIndex: 'counteragent',
+        isVisible: true,
       },
       {
-        id: '4',
-        bin: 'БИН',
-        counteragent: '734573574332',
-        type_dogovor: 'Тип договора',
-        nomer: '123456478',
-        date: '09.12.2018',
-        status: 'Принято',
+        title: 'Вид договора',
+        dataIndex: 'contractType',
+        isVisible: true,
       },
+      {
+        title: 'Номер',
+        dataIndex: 'number',
+        isVisible: true,
+      },
+      {
+        title: 'Дата',
+        dataIndex: 'documentDate',
+        isVisible: true,
+      },
+      {
+        title: 'Период с',
+        dataIndex: 'periodStart',
+        isVisible: true,
+      },
+      {
+        title: 'Период по',
+        dataIndex: 'periodEnd',
+        isVisible: true,
+      },
+      {
+        title: 'Подразделение',
+        dataIndex: 'contractParty.organization',
+        isVisible: true,
+      },
+      /*{
+        title: 'Статус',
+        dataIndex: 'status',
+        isVisible: true,
+      },*/
     ],
+    gridParameters: {
+      start: 0,
+      length: 15,
+      entity: "contract",
+      alias: "contractList",
+      filter: {},
+      sort: [],
+    },
   };
+
+  onShowSizeChange = (current, pageSize) => {
+    const {dispatch} = this.props;
+    this.setState(prevState => ({
+      gridParameters: {
+        ...prevState.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }), () => dispatch({
+      type: 'universal2/getList',
+      payload: {
+        ...this.state.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
+  };
+  loadMainGridData = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: this.state.gridParameters,
+    });
+  };
+  componentDidMount() {
+    this.loadMainGridData();
+  }
+
   render = () => {
 
-    const columns = [{
-      title: 'БИН',
-      dataIndex: 'bin',
-      isVisible:true,
-      width: 100,
-    }, {
-      title: 'Контрагент',
-      dataIndex: 'counteragent',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Вид договора',
-      dataIndex: 'type_dogovor',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Номер',
-      dataIndex: 'nomer',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Дата',
-      dataIndex: 'date',
-      isVisible:true,
-      width: 150,
-    }, {
-      title: 'Статус',
-      dataIndex: 'status',
-      isVisible:true,
-      width: 150,
-    }];
-
+    const { universal2 } = this.props;
+    const contracts = universal2.references[this.state.gridParameters.entity];
 
     return (<Modal
       style={{ top: 20 }}
@@ -94,16 +119,16 @@ export default class DogovorModal extends Component {
       <SmartGridView
         scroll={{ x: 'auto' }}
         name={'DogovorModal'}
-        columns={columns}
+        columns={this.state.columns}
         showTotal={true}
         actionExport={() => {
           console.log('export');
         }}
         dataSource={{
-          total: this.state.dataSource.length,
-          pageSize: 15,
-          page: 1,
-          data: this.state.dataSource,
+          total: contracts ? contracts.totalElements : 0,
+          pageSize: this.state.gridParameters.length,
+          page: this.state.gridParameters.start + 1,
+          data: contracts ? contracts.content : [],
         }}
         onSelectRow={(record, index) => {
           this.setState({

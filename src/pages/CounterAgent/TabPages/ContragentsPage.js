@@ -8,7 +8,6 @@ import ContragentsModal from '../Modals/ContragentsModal';
 export default class ContragentsPage extends Component {
   state = {
     isForm: false,
-
     ContragentsModal: {
       visible: false,
     },
@@ -24,7 +23,7 @@ export default class ContragentsPage extends Component {
         isVisible: true,
       }, {
         title: 'Идентификатор',
-        dataIndex: 'bin',
+        dataIndex: 'idendifier.value',
         isVisible: true,
       }, {
         title: 'Адрес',
@@ -32,28 +31,19 @@ export default class ContragentsPage extends Component {
         isVisible: true,
       }, {
         title: 'Актуальные контакты',
-        dataIndex: 'currentContacts',
+        dataIndex: 'contact',
         isVisible: true,
       }, {
         title: 'Банковские реквизиты',
-        dataIndex: 'account',
+        dataIndex: 'bankAccount.bank',
         isVisible: true,
       }, {
         title: 'Ответственные лица',
-        dataIndex: 'responsiblePersons',
+        dataIndex: 'representative',
         isVisible: true,
       },
     ],
-    dataSource: [{
-      'id': '1',
-      'code': '00052',
-      'name': 'ТОО TMI Company',
-      'bin': '861207303160',
-      'address': 'Микрорайон 4, дом 34, кв 50',
-      'currentContacts': '+77028596963',
-      'account': 'KZ75125KZT1001300335',
-      'responsiblePersons': 'Ахметов Даурен',
-    }],
+    dataSource: this.props.selectedData ? this.props.selectedData.data : [],
 
     xsize: 'auto',
 
@@ -66,32 +56,42 @@ export default class ContragentsPage extends Component {
       },
     },
   };
+
+  componentDidMount = () => {
+
+  };
+
   render = () => {
 
-    const addonButtons = [
-      <Button
+
+    /*
+    *  <Button
         key={'select-record'}
         onClick={() => this.setState({ ContragentsModal: { visible: true } })}
       >
         Выбрать
-      </Button>
+      </Button>,
+    * */
+
+    const addonButtons = [
+
     ];
 
-    if (this.state.dataSource.length > 0) {
-      addonButtons.push(<Button
-        onClick={() => {
-          this.setState({ dataSource: [] });
-        }}
-        key={'clear-records'}>
-        Очистить
-      </Button>);
-    }
+    // if (this.state.dataSource.length > 0) {
+    //   addonButtons.push(<Button
+    //     onClick={() => {
+    //       this.setState({ dataSource: [] });
+    //     }}
+    //     key={'clear-records'}>
+    //     Очистить
+    //   </Button>);
+    // }
 
     return <Card style={{ marginLeft: '-10px' }} bodyStyle={{ padding: 5 }}>
       {this.state.ContragentsModal.visible &&
       <ContragentsModal
         onSelect={(selectedRows) => {
-          console.log(selectedRows);
+
           this.setState({
             ContragentsModal: {
               visible: false,
@@ -118,7 +118,7 @@ export default class ContragentsPage extends Component {
         columns={this.state.columns}
         addonButtons={addonButtons}
         dataSource={{
-          total: 8921,
+          total: this.state.dataSource.length,
           pageSize: this.state.pagingConfig.length,
           page: this.state.pagingConfig.start + 1,
           data: this.state.dataSource,

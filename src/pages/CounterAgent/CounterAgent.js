@@ -93,7 +93,7 @@ class CounterAgent extends Component {
   }
 
   onShowSizeChange = (current, pageSize) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     this.setState(prevState => ({
       gridParameters: {
         ...prevState.gridParameters,
@@ -164,41 +164,10 @@ class CounterAgent extends Component {
           disabled={hasRole(['ADMIN']) || this.state.selectedRowKeys.length === 0}
           key='register_document'
           onClick={() => {
-            /*
-            * {
-                  'id': '1',
-                  'code': '00052',
-                  'name': 'ТОО TMI Company',
-                  'bin': '861207303160',
-                  'address': 'Микрорайон 4, дом 34, кв 50',
-                  'currentContacts': '+77028596963',
-                  'account': 'KZ75125KZT1001300335',
-                  'responsiblePersons': 'Ахметов Даурен',
-                }
-            * */
-            //console.log(this.state.selectedRowKeys);
-            // this.props.history.push({
-            //   pathname:"create",
-            //   // state:{
-            //   //   key:"value"
-            //   // }
-            // });
-
-            //reduxRouter.push("create");
-
             this.props.history.push({
               pathname: 'create',
               state: {
-                data: {
-                  'id': '1',
-                  'code': '00052',
-                  'name': 'ТОО TMI Company',
-                  'bin': '861207303160',
-                  'address': 'Микрорайон 4, дом 34, кв 50',
-                  'currentContacts': '+77028596963',
-                  'account': 'KZ75125KZT1001300335',
-                  'responsiblePersons': 'Ахметов Даурен',
-                },
+                data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
               },
             });
 

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal } from 'antd';
 import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage } from './TabPages';
-import Actsadd from '../Acts/Actsadd';
+import reduxRouter from 'umi/router';
 import styles from './CounterAgent.less';
+import moment from 'moment';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -15,34 +16,48 @@ const formItemLayout = {
   },
 };
 
+@Form.create()
 export default class CounterAgentCreate extends Component {
   state = {};
 
   componentDidMount() {
-    console.log(this.props);
+    // if (this.props.location.state) {
+    //
+    // } else {
+    //   reduxRouter.push('main');
+    // }
+  };
+
+  sendForm = (data) => {
+    console.log(moment(data.documentDate).format('DD.MM.YYYY'));
   };
 
   render = () => {
 
-    {/*<div style={{float:'right'}}>*/
-    }
-    {/*<Button key={'save_button'}*/
-    }
-    {/*style={{ margin: '0px 0px 10px' }}>Сохранить</Button>*/
-    }
-    {/*</div>*/
-    }
-
     return (
-      <Card
-        headStyle={{ padding: 0 }}
-        title={''}
-        className={styles.headPanel}
-        extra={[<Button>Сохранить</Button>]}
-        bordered={false}
-        bodyStyle={{ padding: 0 }}>
-        <Row style={{ marginTop: '5px' }}>
-          <Form layout="horizontal" hideRequiredMark>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          this.props.form.validateFields((err, fieldsValue) => {
+            if (err) {
+              return;
+            }
+
+            this.sendForm(fieldsValue);
+          });
+
+        }}
+        layout="horizontal" hideRequiredMark>
+        <Card
+          headStyle={{ padding: 0 }}
+          title={''}
+          className={styles.headPanel}
+          extra={[<Button
+            htmlType="submit">Сохранить</Button>]}
+          bordered={false}
+          bodyStyle={{ padding: 0 }}>
+          <Row style={{ marginTop: '5px' }}>
             <Tabs
               tabBarStyle={{ textAlign: 'left' }}
               type={'card'}
@@ -50,20 +65,20 @@ export default class CounterAgentCreate extends Component {
               defaultActiveKey="main"
               tabPosition={'left'}>
               <TabPane tab="Титульная часть" key="main">
-                <InfoPage formItemLayout={formItemLayout}/>
+                <InfoPage {...this.props} formItemLayout={formItemLayout}/>
               </TabPane>
               {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
-                {/*<DogovorPage/>*/}
+              {/*<DogovorPage/>*/}
               {/*</TabPane>*/}
               <TabPane tab="Спецификация" key="specification">
-                <SpecPage/>
+                <SpecPage {...this.props}/>
               </TabPane>
               <TabPane tab="Контрагенты" key="counteragents">
-                <ContragentsPage/>
+                <ContragentsPage selectedData={this.props.location.state} {...this.props}/>
               </TabPane>
             </Tabs>
-          </Form>
-        </Row>
-      </Card>);
+          </Row>
+        </Card>
+      </Form>);
   };
 }

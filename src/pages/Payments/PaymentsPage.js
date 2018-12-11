@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Card,
   Tabs,
@@ -19,34 +19,36 @@ import {
   Spin,
   Divider,
 } from 'antd';
-import {formatMessage, FormattedMessage} from 'umi/locale';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import GridFilter from '@/components/GridFilter';
-import {faTimes} from '@fortawesome/free-solid-svg-icons/index';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmartGridView from '@/components/SmartGridView';
 
 import paymentsData from './paymentsData';
 import moment from 'moment/moment';
 import classNames from 'classnames';
-import {connect} from 'dva/index';
-import {Animated} from 'react-animated-css';
+import { connect } from 'dva/index';
+import { Animated } from 'react-animated-css';
 import Searcher from '../SearchPhysical/Searcher';
 import SearcherJur from '../SearchPhysical/SearcherJur';
 import saveAs from 'file-saver';
+import PaymentsMT100 from './PaymentsMT100';
+import PaymentsMT102 from './PaymentsMT102';
 
 const FormItem = Form.Item;
-const {RangePicker} = DatePicker;
+const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
 const formItemLayout = {
-  labelCol: {span: 4},
-  wrapperCol: {span: 18},
+  labelCol: { span: 4 },
+  wrapperCol: { span: 18 },
 };
 
 const EditableContext = React.createContext();
 
-@connect(({universal, loading}) => {
+@connect(({ universal, loading }) => {
   return {
     universal,
     loadingData: loading.effects['universal/paymentsData'],
@@ -59,7 +61,7 @@ export default class PaymentsPage extends Component {
     this.selectedRecord = {};
 
     this.state = {
-
+      tabFilter: null,
       selectedRowKeys: [],
       searching: false,
       activeKey: 'searcher',
@@ -233,7 +235,7 @@ export default class PaymentsPage extends Component {
         }, {
           'title': 'Дата поступления информации',
           'dataIndex': 'createdon',
-        }
+        },
 
       ],
 
@@ -242,155 +244,155 @@ export default class PaymentsPage extends Component {
   }
 
   componentWillUnmount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
   }
 
   componentDidMount() {
-    this.loadGridData();
-    console.log(this.state.paymentspagemt100columns);
-    this.setState({
-
-      filterForm: [
-        {
-          name: 'reference',
-          label: formatMessage({id: 'menu.mainview.reference'}),
-          type: 'text',
-        },
-        {
-          name: 'paymentDate',
-          label: formatMessage({id: 'menu.filter.payment.create_date'}),
-          type: 'betweenDate',
-        },
-        /*{
-          name: 'totalAmount',
-          label: formatMessage({ id: 'menu.mainview.paymentsum' }),
-          type: 'text',
-        },*/
-        {
-          name: 'knp',
-          label: formatMessage({id: 'menu.filter.knp'}),
-          type: 'multibox',
-        },
-        // {
-        //   name: 'senderCompanyName',
-        //   label: 'Отправитель (Наименование)',
-        //   type: 'text',
-        // },
-        // {
-        //   name: 'senderBin',
-        //   label: 'Отправитель (БИН)',
-        //   type: 'text',
-        //   withMax: 12,
-        // },
-        // {
-        //   name: 'senderBankBik',
-        //   label: 'Отправитель (БИК)',
-        //   type: 'text',
-        //   withMax: 8,
-        // },
-        // {
-        //   name: 'recipientName',
-        //   label: 'Получатель (Наименование)',
-        //   type: 'text',
-        // },
-        // {
-        //   name: 'recipientBin',
-        //   label: 'Получатель (БИН)',
-        //   type: 'text',
-        //   withMax: 12,
-        // },
-        // {
-        //   name: 'recipientBankBik',
-        //   label: 'Получатель (БИК)',
-        //   type: 'text',
-        //   withMax: 8,
-        // },
-        // {
-        //   name: 'recipientAccount',
-        //   label: 'Получатель (Счет)',
-        //   type: 'text',
-        // },
-        {
-          label: 'Дата создания',
-          name: 'createdOn',
-          type: 'betweenDate',
-        },
-      ],
-      filterFormmt102: [
-        {
-          label: 'Референс',
-          name: 'reference',
-          type: 'text',
-        }, {
-          label: 'Дата платежа',
-          name: 'paymentdate',
-          type: 'betweenDate',
-        }, {
-          label: 'КНП',
-          name: 'knp',
-          type: 'multibox',
-        },
-        /*{
-          label: 'Сумма',
-          name: 'paymentsum',
-          type: 'text',
-        },*/
-        {
-          label: 'Фамилия',
-          name: 'lastname',
-          type: 'text',
-        }, {
-          label: 'Имя',
-          name: 'firstname',
-          type: 'text',
-        }, {
-          label: 'Отчество',
-          name: 'secondname',
-          type: 'text',
-        },
-        {
-          label: 'Район',
-          name: 'raion',
-          type: 'text',
-        },
-        {
-          label: 'Регион',
-          name: 'region',
-          type: 'text',
-        },
-        {
-          label: 'Дата рождения',
-          name: 'birthdate',
-          type: 'betweenDate',
-        },
-        {
-          label: 'Отправитель (БИН)',
-          name: 'senderBin',
-          type: 'text',
-          withMax: 12,
-        },
-        {
-          label: 'Отправитель (Наименование)',
-          name: 'senderName',
-          type: 'text',
-        },
-        {
-          label: 'ИИН',
-          name: 'iin',
-          type: 'text',
-          withMax: 12,
-        }, {
-          label: 'Период',
-          name: 'paymentperiod',
-          type: 'monthPicker',
-        },
-        /*{
-          label: 'Дата платежа',
-          name: 'createdon',
-          type: 'betweenDate',
-        },*/
-      ],
-    });
+    // this.loadGridData();
+    // console.log(this.state.paymentspagemt100columns);
+    // this.setState({
+    //
+    //   filterForm: [
+    //     {
+    //       name: 'reference',
+    //       label: formatMessage({ id: 'menu.mainview.reference' }),
+    //       type: 'text',
+    //     },
+    //     {
+    //       name: 'paymentDate',
+    //       label: formatMessage({ id: 'menu.filter.payment.create_date' }),
+    //       type: 'betweenDate',
+    //     },
+    //     /*{
+    //       name: 'totalAmount',
+    //       label: formatMessage({ id: 'menu.mainview.paymentsum' }),
+    //       type: 'text',
+    //     },*/
+    //     {
+    //       name: 'knp',
+    //       label: formatMessage({ id: 'menu.filter.knp' }),
+    //       type: 'multibox',
+    //     },
+    //     // {
+    //     //   name: 'senderCompanyName',
+    //     //   label: 'Отправитель (Наименование)',
+    //     //   type: 'text',
+    //     // },
+    //     // {
+    //     //   name: 'senderBin',
+    //     //   label: 'Отправитель (БИН)',
+    //     //   type: 'text',
+    //     //   withMax: 12,
+    //     // },
+    //     // {
+    //     //   name: 'senderBankBik',
+    //     //   label: 'Отправитель (БИК)',
+    //     //   type: 'text',
+    //     //   withMax: 8,
+    //     // },
+    //     // {
+    //     //   name: 'recipientName',
+    //     //   label: 'Получатель (Наименование)',
+    //     //   type: 'text',
+    //     // },
+    //     // {
+    //     //   name: 'recipientBin',
+    //     //   label: 'Получатель (БИН)',
+    //     //   type: 'text',
+    //     //   withMax: 12,
+    //     // },
+    //     // {
+    //     //   name: 'recipientBankBik',
+    //     //   label: 'Получатель (БИК)',
+    //     //   type: 'text',
+    //     //   withMax: 8,
+    //     // },
+    //     // {
+    //     //   name: 'recipientAccount',
+    //     //   label: 'Получатель (Счет)',
+    //     //   type: 'text',
+    //     // },
+    //     {
+    //       label: 'Дата создания',
+    //       name: 'createdOn',
+    //       type: 'betweenDate',
+    //     },
+    //   ],
+    //   filterFormmt102: [
+    //     {
+    //       label: 'Референс',
+    //       name: 'reference',
+    //       type: 'text',
+    //     }, {
+    //       label: 'Дата платежа',
+    //       name: 'paymentdate',
+    //       type: 'betweenDate',
+    //     }, {
+    //       label: 'КНП',
+    //       name: 'knp',
+    //       type: 'multibox',
+    //     },
+    //     /*{
+    //       label: 'Сумма',
+    //       name: 'paymentsum',
+    //       type: 'text',
+    //     },*/
+    //     {
+    //       label: 'Фамилия',
+    //       name: 'lastname',
+    //       type: 'text',
+    //     }, {
+    //       label: 'Имя',
+    //       name: 'firstname',
+    //       type: 'text',
+    //     }, {
+    //       label: 'Отчество',
+    //       name: 'secondname',
+    //       type: 'text',
+    //     },
+    //     {
+    //       label: 'Район',
+    //       name: 'raion',
+    //       type: 'text',
+    //     },
+    //     {
+    //       label: 'Регион',
+    //       name: 'region',
+    //       type: 'text',
+    //     },
+    //     {
+    //       label: 'Дата рождения',
+    //       name: 'birthdate',
+    //       type: 'betweenDate',
+    //     },
+    //     {
+    //       label: 'Отправитель (БИН)',
+    //       name: 'senderBin',
+    //       type: 'text',
+    //       withMax: 12,
+    //     },
+    //     {
+    //       label: 'Отправитель (Наименование)',
+    //       name: 'senderName',
+    //       type: 'text',
+    //     },
+    //     {
+    //       label: 'ИИН',
+    //       name: 'iin',
+    //       type: 'text',
+    //       withMax: 12,
+    //     }, {
+    //       label: 'Период',
+    //       name: 'paymentperiod',
+    //       type: 'monthPicker',
+    //     },
+    //     /*{
+    //       label: 'Дата платежа',
+    //       name: 'createdon',
+    //       type: 'betweenDate',
+    //     },*/
+    //   ],
+    // });
   }
 
   clearFilter = () => {
@@ -413,7 +415,7 @@ export default class PaymentsPage extends Component {
       sortedInfo: {},
       parameters: {
         ...this.state.parameters,
-        filter: {...filter},
+        filter: { ...filter },
         sort: [],
       },
     }, () => {
@@ -422,7 +424,7 @@ export default class PaymentsPage extends Component {
   };
 
   onShowSizeChange = (current, pageSize) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     this.setState(prevState => ({
       parameters: {
         ...prevState.parameters,
@@ -440,13 +442,13 @@ export default class PaymentsPage extends Component {
   };
 
   filterPanelState = () => {
-    this.setState(({filterContainer}) => ({
+    this.setState(({ filterContainer }) => ({
       filterContainer: filterContainer == 6 ? 0 : 6,
     }));
   };
 
   loadGridData = () => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     let sortField = this.state.sortedInfo;
     dispatch({
       type: 'universal/paymentsData',
@@ -458,20 +460,21 @@ export default class PaymentsPage extends Component {
     this.setState({
       activeKey: e,
     });
-    //test commit
+    //     //test commit
 
     if (e !== 'searcher' && e !== 'searcherJur') {
-      this.setState({
-        sortedInfo: {},
-        parameters: {
-          start: 0,
-          length: 15,
-          entity: e,
-          filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
-         // sort:[],
-           sort: e==='mt100'? [{field: "createdOn", 'desc': true}]:[{field: "createdon", 'desc': true}],
-        },
-      }, () => this.loadGridData());
+      // this.setState({
+      //   sortedInfo: {},
+      //   parameters: {
+      //     start: 0,
+      //     length: 15,
+      //     entity: e,
+      //     filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
+      //    // sort:[],
+      //      sort: e==='mt100'? [{field: "createdOn", 'desc': true}]:[{field: "createdon", 'desc': true}],
+      //   },
+      // }, () => this.loadGridData()
+      // );
     }
 
 
@@ -490,7 +493,7 @@ export default class PaymentsPage extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': this.state.parameters.entity,
-          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({id: 'menu.payments.payment100'}) : formatMessage({id: 'menu.payments.payment102'}),
+          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
           'src': {
             'searched': true,
             'data': this.state.parameters.filter,
@@ -546,282 +549,17 @@ export default class PaymentsPage extends Component {
     return decodeURI(filenames);
   };
 
+  /// todo filtersend mt102
 
   render() {
 
-    const {paymentsData} = this.props.universal;
-    const dataStore = this.state.staticdata;
-    const columns = this.state.staticolumn;
-
-    let addonButtons = [];
-    let extraButtons = [<span key={'total-count'} style={{
-      color: '#002140',
-      fontSize: '12px',
-      paddingLeft: '10px',
-    }}>{formatMessage({id: 'system.totalAmount'})}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
-
-    if (this.state.parameters.entity === 'mt100') {
-      addonButtons
-        .unshift(<Button
-          // disabled={Object.keys(this.selectedRecord).length === 0}
-          key={'mt100paymentBtn'}
-          onClick={() => {
-            if (Object.keys(this.selectedRecord).length !== 0)
-              this.tabchange('mt102', {
-                'mt100Id': this.selectedRecord.id,
-              });
-          }}>
-          Платежи МТ102</Button>);
-    }
-
-    /*const DataDiv = ({ mtcolumns, tablename }) => (
-      <Spin tip="" spinning={this.props.loadingData}>
-        <SmartGridView
-          name={tablename}
-          scroll={{ x: 'auto' }}
-          fixedBody={true}
-          actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
-          showTotal={true}
-          selectedRowCheckBox={true}
-          searchButton={false}
-          selectedRowKeys={this.state.selectedRowKeys}
-          rowKey={'id'}
-          loading={this.props.loadingData}
-          fixedHeader={true}
-          rowSelection={true}
-          rowClassName={(record) => {
-            if (record.isRefunded) {
-              return 'redRow';
-            }
-          }
-          }
-          columns={mtcolumns}
-          sorted={true}
-          sortedInfo={this.state.sortedInfo}
-          showExportBtn={true}
-          dataSource={{
-            total: paymentsData.totalElements,
-            pageSize: paymentsData.size,
-            page: this.state.parameters.start + 1,
-            data: paymentsData.content,
-          }}
-          onSort={(column) => {
-
-            if (Object.keys(column).length === 0) {
-              this.setState(prevState => ({
-                parameters: {
-                  ...prevState.parameters,
-                  sort: [],
-                },
-                sortedInfo: {},
-              }), () => {
-                this.loadGridData();
-              });
-              return;
-            }
-
-            this.setState(prevState => ({
-              sortedInfo: column,
-              parameters: {
-                ...prevState.parameters,
-                sort: [{ field: column.field, 'desc': column.order === 'descend' }],
-              },
-            }), () => {
-              this.loadGridData();
-            });
-          }}
-          actionExport={() => this.exportToExcel()}
-          extraButtons={extraButtons}
-          addonButtons={addonButtons}
-          onSelectRow={(record, index) => {
-            this.selectedRecord = record;
-          }}
-          onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-          onRefresh={() => {
-            this.loadGridData();
-          }}
-          onSearch={() => {
-            this.filterPanelState();
-          }}
-          onSelectCheckboxChange={(selectedRowKeys) => {
-            this.setState({
-              selectedRowKeys: selectedRowKeys,
-            });
-          }}
-        />
-      </Spin>
-    );*/
-
-    const DataDiv = ({mtcolumns, tablename}) => (
-      <Spin tip="" spinning={this.props.loadingData}>
-        {tablename === 'paymentspagemt100columns' ?
-          <SmartGridView
-            name={tablename}
-            scroll={{x: 'auto'}}
-            fixedBody={true}
-            actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
-            showTotal={true}
-            selectedRowCheckBox={true}
-            searchButton={false}
-            selectedRowKeys={this.state.selectedRowKeys}
-            rowKey={'id'}
-            loading={this.props.loadingData}
-            fixedHeader={true}
-            // rowSelection={true}
-            columns={mtcolumns}
-            // onColumnsChange={(isChanged, dataIndex) => {
-            //   if (isChanged === true && dataIndex === 'createdOn') {
-            //     this.setState(prevState => ({
-            //       parameters: {
-            //         ...prevState.parameters,
-            //         sort: [{field: "createdOn", 'desc': true}],
-            //       },
-            //     }), () => {
-            //       this.loadGridData();
-            //     });
-            //   }
-            // }}
-            sorted={true}
-            sortedInfo={this.state.sortedInfo}
-            showExportBtn={true}
-            dataSource={{
-              total: paymentsData.totalElements,
-              pageSize: paymentsData.size,
-              page: this.state.parameters.start + 1,
-              data: paymentsData.content,
-            }}
-            onSort={(column) => {
-
-              if (Object.keys(column).length === 0) {
-                this.setState(prevState => ({
-                  parameters: {
-                    ...prevState.parameters,
-                    sort: [],
-                  },
-                  sortedInfo: {},
-                }), () => {
-                  this.loadGridData();
-                });
-                return;
-              }
-
-              this.setState(prevState => ({
-                sortedInfo: column,
-                parameters: {
-                  ...prevState.parameters,
-                  sort: [{field: column.field, 'desc': column.order === 'descend'}],
-                },
-              }), () => {
-                this.loadGridData();
-              });
-            }}
-            actionExport={() => this.exportToExcel()}
-            extraButtons={extraButtons}
-            addonButtons={addonButtons}
-            onSelectRow={(record, index) => {
-              this.selectedRecord = record;
-            }}
-            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-            onRefresh={() => {
-              this.loadGridData();
-            }}
-            onSearch={() => {
-              this.filterPanelState();
-            }}
-            onSelectCheckboxChange={(selectedRowKeys) => {
-              this.setState({
-                selectedRowKeys: selectedRowKeys,
-              });
-            }}
-          />
-          :
-          <SmartGridView
-            name={tablename}
-            scroll={{x: 'auto'}}
-            fixedBody={true}
-            actionColumns={tablename === 'paymentspagemt100columns' ? this.state.staticmt100funcColuns : []}
-            showTotal={true}
-            // selectedRowCheckBox={true}
-            searchButton={false}
-            selectedRowKeys={this.state.selectedRowKeys}
-            rowKey={'id'}
-            loading={this.props.loadingData}
-            fixedHeader={true}
-            rowSelection={true}
-            // rowClassName={(record) => {
-            //   if (record.isRefunded) {
-            //     return 'redRow';
-            //   }
-            // }
-            // }
-            columns={mtcolumns}
-            onColumnsChange={(isChanged, dataIndex) => {
-              console.log(dataIndex)
-            }}
-            sorted={true}
-            sortedInfo={this.state.sortedInfo}
-            showExportBtn={true}
-            dataSource={{
-              total: paymentsData.totalElements,
-              pageSize: paymentsData.size,
-              page: this.state.parameters.start + 1,
-              data: paymentsData.content,
-            }}
-            onSort={(column) => {
-
-              if (Object.keys(column).length === 0) {
-                this.setState(prevState => ({
-                  parameters: {
-                    ...prevState.parameters,
-                    sort: [],
-                  },
-                  sortedInfo: {},
-                }), () => {
-                  this.loadGridData();
-                });
-                return;
-              }
-
-              this.setState(prevState => ({
-                sortedInfo: column,
-                parameters: {
-                  ...prevState.parameters,
-                  sort: [{field: column.field, 'desc': column.order === 'descend'}],
-                },
-              }), () => {
-                this.loadGridData();
-              });
-            }}
-            actionExport={() => this.exportToExcel()}
-            extraButtons={extraButtons}
-            addonButtons={addonButtons}
-            onSelectRow={(record, index) => {
-              this.selectedRecord = record;
-            }}
-            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-            onRefresh={() => {
-              this.loadGridData();
-            }}
-            onSearch={() => {
-              this.filterPanelState();
-            }}
-            onSelectCheckboxChange={(selectedRowKeys) => {
-              this.setState({
-                selectedRowKeys: selectedRowKeys,
-              });
-            }}
-          />
-        }
-      </Spin>
-    );
-
     return (
-      <PageHeaderWrapper title={formatMessage({id: 'menu.rpmu.payments'})}>
-        <Card bodyStyle={{padding: 5}}>
+      <PageHeaderWrapper title={formatMessage({ id: 'menu.rpmu.payments' })}>
+        <Card bodyStyle={{ padding: 5 }}>
           <Tabs
             activeKey={this.state.activeKey}
             onChange={this.tabchange}>
-            <TabPane tab={formatMessage({id: 'menu.payments.searchbtn'})} key="searcher">
+            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
               <Searcher
                 searchbyiin={(iin) => {
                   this.setState({
@@ -829,7 +567,7 @@ export default class PaymentsPage extends Component {
                     parameters: {
                       ...this.state.parameters,
                       'entity': 'mt102',
-                      'filter': {'iin': iin},
+                      'filter': { 'iin': iin },
                       'sort': [],
                     },
                   }, () => {
@@ -843,8 +581,7 @@ export default class PaymentsPage extends Component {
                 item={'Physic'}
               />
             </TabPane>
-
-            <TabPane tab={formatMessage({id: 'menu.payments.searchbtnJur'})} key="searcherJur">
+            <TabPane tab={formatMessage({ id: 'menu.payments.searchbtnJur' })} key="searcherJur">
               <SearcherJur
                 searchbybin={(bin) => {
                   this.setState({
@@ -852,7 +589,7 @@ export default class PaymentsPage extends Component {
                     parameters: {
                       ...this.state.parameters,
                       'entity': 'mt102',
-                      'filter': {'senderBin': bin},
+                      'filter': { 'senderBin': bin },
                       'sort': [],
                     },
                   }, () => {
@@ -866,63 +603,18 @@ export default class PaymentsPage extends Component {
                 item={'Juridic'}
               />
             </TabPane>
-
-            <TabPane tab={formatMessage({id: 'menu.payments.payment100'})} key="mt100">
-              <Row>
-                <Col sm={24} md={this.state.filterContainer}>
-                  <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-                    <Card
-                      headStyle={{
-                        padding: '0 14px',
-                      }}
-                      style={{margin: '0px 5px 10px 0px', borderRadius: '5px'}}
-                      type="inner"
-                      title={formatMessage({id: 'system.filter'})}
-                      extra={<Icon style={{'cursor': 'pointer'}} onClick={this.filterPanelState}><FontAwesomeIcon
-                        icon={faTimes}/></Icon>}>
-                      <GridFilter
-                        clearFilter={this.clearFilter}
-                        applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
-                        filterForm={this.state.filterForm}
-                        dateFormat={dateFormat}/>
-                    </Card>
-                  </Animated>
-
-                </Col>
-                <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                  <DataDiv
-                    mtcolumns={this.state.staticolumn}
-                    tablename={'paymentspagemt100columns'}
-                  />
-                </Col>
-              </Row>
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100">
+              <PaymentsMT100
+                onSelect={(recordId) => {
+                  this.setState({
+                    activeKey: 'mt102',
+                    tabFilter: recordId,
+                  });
+                }}
+              />
             </TabPane>
-            <TabPane tab={formatMessage({id: 'menu.payments.payment102'})} key="mt102">
-              <Row>
-                <Col sm={24} md={this.state.filterContainer}>
-                  <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-                    <Card
-                      style={{margin: '0px 5px 10px 0px', borderRadius: '5px'}}
-                      type="inner"
-                      title={formatMessage({id: 'system.filter'})}
-                      extra={<Icon style={{'cursor': 'pointer'}} onClick={this.filterPanelState}><FontAwesomeIcon
-                        icon={faTimes}/></Icon>}>
-                      <GridFilter
-                        clearFilter={this.clearFilter}
-                        applyFilter={(filter) => this.applyFilter(filter)}
-                        key={'2'}
-                        filterForm={this.state.filterFormmt102}
-                        dateFormat={dateFormat}/>
-                    </Card>
-                  </Animated>
-                </Col>
-                <Col sm={24} md={this.state.filterContainer != 6 ? 24 : 18}>
-                  <DataDiv
-                    mtcolumns={this.state.staticmt102columns}
-                    tablename={'paymentspagemt102columns'}
-                  />
-                </Col>
-              </Row>
+            <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
+              <PaymentsMT102/>
             </TabPane>
           </Tabs>
         </Card>

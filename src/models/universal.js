@@ -24,7 +24,7 @@ import {
   getSearcherJurCalendar,
   getSearcherRPNData,
   getSearcherMEDData,
-  getActDics
+  getActDics,
 } from '../services/api';
 
 export default {
@@ -48,18 +48,21 @@ export default {
     options: [],
     refundKnpList: [],
     modalgridviewdata: [],
-    paymentsData: [],
+    paymentsData: {
+      mt100: {},
+      mt102: {},
+    },
     searcherdata: {},
     searcherRPNdata: {},
     searcherMEDdata: {},
     searcherjur: {},
     searchercalendar: [],
     searcherjurcalendar: [],
-    periodYear:{},
+    periodYear: {},
     periodSection: {},
     organization: {},
     medicalType: {},
-    paymentRequestType: {}
+    paymentRequestType: {},
 
   },
   effects: {
@@ -102,7 +105,10 @@ export default {
 
       yield put({
         type: 'paymentsDataReducer',
-        payload: response || {},
+        payload: {
+          type: payload.payload.entity,
+          response: response || {},
+        },
       });
     },
     * getmt102(payload, { call, put }) {
@@ -308,7 +314,10 @@ export default {
     paymentsDataReducer(state, { payload }) {
       return {
         ...state,
-        paymentsData: payload,
+        paymentsData: {
+          ...state.paymentsData,
+          [payload.type]: payload.response,
+        },
       };
     },
     maintable(state, { payload }) {

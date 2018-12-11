@@ -24,25 +24,33 @@ export default class LinkModal extends Component {
 
       {!this.props.data ? <Button onClick={() => {
         this.props.onClick(false);
-      }}>Выбрать</Button> : <div><span
-        style={{
-          color: '#1890ff',
-          textDecoration: 'underline',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          window.open('viewcontract?id=1');
-        }}> Договор #12153161681 </span><span
-        onClick={() => {
-          this.props.onClick(true);
-        }}
-        style={{
-          marginLeft: '20px',
-          cursor:"pointer",
-          color: 'red',
-          textDecoration: 'underline',
-          fontSize: '11px',
-        }}>Удалить</span></div>}
+      }}>Выбрать</Button> : <div>
+
+
+
+        <span
+          style={{
+            color: '#1890ff',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            //window.open('viewcontract?id=1');
+          }}> Договор {this.props.data.contractType} </span>
+
+        <span
+          onClick={() => {
+            this.props.onClick(true);
+          }}
+          style={{
+            marginLeft: '20px',
+            cursor: 'pointer',
+            color: 'red',
+            textDecoration: 'underline',
+            fontSize: '11px',
+          }}>Удалить</span>
+
+      </div>}
 
 
     </div>);

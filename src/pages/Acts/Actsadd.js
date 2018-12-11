@@ -355,7 +355,10 @@ class Actsadd extends Component {
                   }
                 }}
                 tabPosition={'left'}>
-                <TabPane tab="Титульная часть" key="form">
+                <TabPane
+                  tab="Титульная часть"
+                  key="form"
+                  >
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
                       <Form.Item {...formItemLayout} label="Номер">
@@ -371,8 +374,8 @@ class Actsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Дата">
                         {getFieldDecorator('documentDate', {
-                          initialValue: '',
-                          rules: [{ required: false, message: 'не заполнено' }],
+                          initialValue: null,
+                          rules: [{ type: 'object', required: false, message: 'не заполнено' }],
                         })(
                           <DatePicker
                             format={'DD.MM.YYYY'}
@@ -420,7 +423,7 @@ class Actsadd extends Component {
                             allowClear
                           >
                             {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
-                              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                              return <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>;
                             })}
                           </Select>
                         )}
@@ -434,11 +437,6 @@ class Actsadd extends Component {
                         )}
                       </Form.Item>
                     </div>
-                    <Row>
-                      <div style={{width:'100%'}}>
-
-                      </div>
-                    </Row>
                   </Card>
                 </TabPane>
                 <TabPane

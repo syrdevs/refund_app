@@ -30,6 +30,10 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const dateFormat = 'DD.MM.YYYY';
+
+@connect(({ universal2 }) => ({
+  universal2,
+}))
 export default class ActsTable extends Component  {
   state = {
     selectedRowKeys: [],
@@ -113,27 +117,27 @@ export default class ActsTable extends Component  {
     columns: [
       {
         title: 'Отчетный период(Год)',
-        dataIndex: 'act_period_year',
+        dataIndex: 'periodYear.year',
         isVisible: true,
       },
       {
         title: 'Отчетный период(Месяц)',
-        dataIndex: 'act_period_month',
+        dataIndex: 'periodSection.periodSectionName',
         isVisible: true,
       },
       {
         title: 'БИН',
-        dataIndex: 'bin',
+        dataIndex: 'contragent.bin',
         isVisible: true,
       },
       {
         title: 'Контрагент',
-        dataIndex: 'counteragent',
+        dataIndex: 'contragent.organization',
         isVisible: true,
       },
       {
         title: 'Договор',
-        dataIndex: 'contract_id',
+        dataIndex: 'contract.number',
         isVisible: true,
       },
       {
@@ -143,17 +147,17 @@ export default class ActsTable extends Component  {
       },
       {
         title: 'Дата',
-        dataIndex: 'act_date',
+        dataIndex: 'documentDate',
         isVisible: true,
       },
       {
         title: 'Оплата',
-        dataIndex: 'payment',
+        dataIndex: 'documentSum',
         isVisible: true,
       },
       {
         title: 'Подразделение',
-        dataIndex: 'podr',
+        dataIndex: 'division.name',
         isVisible: true,
       },
     ],
@@ -201,7 +205,47 @@ export default class ActsTable extends Component  {
         newContract:false
       },
     ],
+    gridParameters: {
+      start: 0,
+      length: 15,
+      entity: "act",
+      alias: "actList",
+      filter: {},
+      sort: [],
+    },
   };
+
+  onShowSizeChange = (current, pageSize) => {
+    const {dispatch} = this.props;
+    this.setState(prevState => ({
+      gridParameters: {
+        ...prevState.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }), () => dispatch({
+      type: 'universal2/getList',
+      payload: {
+        ...this.state.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
+  };
+
+  loadMainGridData = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: this.state.gridParameters,
+    }).then(()=>{
+        console.log(JSON.stringify(this.props.universal2.references.act.content[0]))
+    });
+  };
+
+  componentDidMount() {
+    this.loadMainGridData();
+  }
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
@@ -218,7 +262,8 @@ export default class ActsTable extends Component  {
 
 
   render = () => {
-
+    const { universal2 } = this.props;
+    const act = universal2.references[this.state.gridParameters.entity];
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
@@ -259,63 +304,65 @@ export default class ActsTable extends Component  {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.contract.acts' })}>
-        <Card bodyStyle={{ padding: 5 }}>
-          <Row>
-            <Col sm={24} md={this.state.filterContainer}>
-              <Card
-                  headStyle={{
-                    padding: '0 14px',
-                  }}
-                  bodyStyle={{
-                    padding: 5,
-                  }}
-                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                  type="inner"
-                  title={formatMessage({ id: 'system.filter' })}
-                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                    icon={faTimes}/></Icon>}>
-                  {this.state.filterContainer === 6 && <GridFilterCollapsible
-                    clearFilter={this.clearFilter}
-                    applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
-                    filterForm={this.state.filterForm}
-                    dateFormat={dateFormat}/>}
-              </Card>
-            </Col>
-            <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-              <SmartGridView
-                  scroll={{ x: 'auto' }}
-                  name={'ContractMain'}
-                  columns={this.state.columns}
-                  showTotal={true}
-                  selectedRowCheckBox={true}
-                  selectedRowKeys={this.state.selectedRowKeys}
-                  showExportBtn={true}
-                  addonButtons={addonButtons}
-                  actionExport={() => {
-                  }}
-                  dataSource={{
-                    total: this.state.dataSource.length,
-                    pageSize: this.state.pagingConfig.length,
-                    page: this.state.pagingConfig.start + 1,
-                    data: this.state.dataSource,
-                  }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                  }}
-                  onRefresh={() => {
-                  }}
-                  onSearch={() => {
-                    this.filterPanelState();
-                  }}
-                  onSelectCheckboxChange={(selectedRowKeys) => {
-                    this.setState({
-                      selectedRowKeys: selectedRowKeys,
-                    });
-                  }}
-                />
-              <br/>
-            </Col>
-          </Row>
-        </Card>
+        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+          <Card bodyStyle={{ padding: 5 }}>
+            <Row>
+              <Col sm={24} md={this.state.filterContainer}>
+                <Card
+                    headStyle={{
+                      padding: '0 14px',
+                    }}
+                    bodyStyle={{
+                      padding: 5,
+                    }}
+                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                    type="inner"
+                    title={formatMessage({ id: 'system.filter' })}
+                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}>
+                    {this.state.filterContainer === 6 && <GridFilterCollapsible
+                      clearFilter={this.clearFilter}
+                      applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                      filterForm={this.state.filterForm}
+                      dateFormat={dateFormat}/>}
+                </Card>
+              </Col>
+              <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
+                <SmartGridView
+                    scroll={{ x: 'auto' }}
+                    name={'ActMain'}
+                    columns={this.state.columns}
+                    showTotal={true}
+                    selectedRowCheckBox={true}
+                    selectedRowKeys={this.state.selectedRowKeys}
+                    showExportBtn={true}
+                    addonButtons={addonButtons}
+                    actionExport={() => {
+                    }}
+                    dataSource={{
+                      total: act ? act.totalElements : 0,
+                      pageSize: this.state.gridParameters.length,
+                      page: this.state.gridParameters.start + 1,
+                      data: act ? act.content : [],
+                    }}
+                    onShowSizeChange={(pageNumber, pageSize) => {
+                    }}
+                    onRefresh={() => {
+                    }}
+                    onSearch={() => {
+                      this.filterPanelState();
+                    }}
+                    onSelectCheckboxChange={(selectedRowKeys) => {
+                      this.setState({
+                        selectedRowKeys: selectedRowKeys,
+                      });
+                    }}
+                  />
+                <br/>
+              </Col>
+            </Row>
+          </Card>
+        </Spin>
       </PageHeaderWrapper>
 
 

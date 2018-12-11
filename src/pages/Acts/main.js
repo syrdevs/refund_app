@@ -27,6 +27,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import style from '../CounterAgent/Modals/ContragentModalStyle.less';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -119,46 +120,55 @@ export default class ActsTable extends Component  {
         title: 'Отчетный период(Год)',
         dataIndex: 'periodYear.year',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Отчетный период(Месяц)',
         dataIndex: 'periodSection.periodSectionName',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'БИН',
         dataIndex: 'contragent.bin',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Контрагент',
         dataIndex: 'contragent.organization',
         isVisible: true,
+        width : 450,
       },
       {
         title: 'Договор',
         dataIndex: 'contract.number',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Номер',
         dataIndex: 'number',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Дата',
         dataIndex: 'documentDate',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Оплата',
         dataIndex: 'documentSum',
         isVisible: true,
+        width : 150,
       },
       {
         title: 'Подразделение',
         dataIndex: 'division.name',
         isVisible: true,
+        width : 120,
       },
     ],
     buttons:[
@@ -239,7 +249,6 @@ export default class ActsTable extends Component  {
       type: 'universal2/getList',
       payload: this.state.gridParameters,
     }).then(()=>{
-        console.log(JSON.stringify(this.props.universal2.references.act.content[0]))
     });
   };
 
@@ -274,15 +283,21 @@ export default class ActsTable extends Component  {
           Новый
         </Menu.Item>
         <Menu.Item
-          key="2">
+          key="2"
+          disabled
+        >
           Открыть/Изменить
         </Menu.Item>
         <Menu.Item
-          key="3">
+          key="3"
+          disabled
+        >
           Удалить
         </Menu.Item>
         <Menu.Item
-        key="4">
+        key="4"
+        disabled
+        >
         Включить в заявку на оплату
       </Menu.Item>
         <Menu.Item
@@ -305,7 +320,8 @@ export default class ActsTable extends Component  {
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.contract.acts' })}>
         <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
-          <Card bodyStyle={{ padding: 5 }}>
+          <Card
+            bodyStyle={{ padding: 5 }}>
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
                 <Card
@@ -328,7 +344,9 @@ export default class ActsTable extends Component  {
                 </Card>
               </Col>
               <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
+                <div className={style.SmartGridView}>
                 <SmartGridView
+                    style={{height:'500px'}}
                     scroll={{ x: 'auto' }}
                     name={'ActMain'}
                     columns={this.state.columns}
@@ -358,6 +376,7 @@ export default class ActsTable extends Component  {
                       });
                     }}
                   />
+                </div>
                 <br/>
               </Col>
             </Row>

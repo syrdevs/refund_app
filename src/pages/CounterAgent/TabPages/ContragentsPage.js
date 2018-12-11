@@ -4,7 +4,12 @@ import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs
 import reduxRouter from 'umi/router';
 import SmartGridView from '@/components/SmartGridView';
 import ContragentsModal from '../Modals/ContragentsModal';
+import { connect } from 'dva/index';
 
+@connect(({ universal, loading }) => ({
+  universal,
+  // loadingData: loading.effects['universal/saveobject'],
+}))
 export default class ContragentsPage extends Component {
   state = {
     isForm: false,
@@ -12,37 +17,47 @@ export default class ContragentsPage extends Component {
       visible: false,
     },
 
-    columns: [
-      {
-        title: 'Код',
-        dataIndex: 'code',
-        isVisible: true,
-      }, {
-        title: 'Наименование/Имя',
-        dataIndex: 'name',
-        isVisible: true,
-      }, {
-        title: 'Идентификатор',
-        dataIndex: 'idendifier.value',
-        isVisible: true,
-      }, {
-        title: 'Адрес',
-        dataIndex: 'address',
-        isVisible: true,
-      }, {
-        title: 'Актуальные контакты',
-        dataIndex: 'contact',
-        isVisible: true,
-      }, {
-        title: 'Банковские реквизиты',
-        dataIndex: 'bankAccount.bank',
-        isVisible: true,
-      }, {
-        title: 'Ответственные лица',
-        dataIndex: 'representative',
-        isVisible: true,
-      },
-    ],
+    columns: [{
+      title: 'Роль',
+      dataIndex: 'contractRole.nameRu',
+      isVisible: true,
+    }, {
+      title: 'Контрагент',
+      dataIndex: 'organization.name',
+      isVisible: true,
+    }],
+
+    //   [
+    //   {
+    //     title: 'Код',
+    //     dataIndex: 'code',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Наименование/Имя',
+    //     dataIndex: 'name',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Идентификатор',
+    //     dataIndex: 'idendifier.value',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Адрес',
+    //     dataIndex: 'address',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Актуальные контакты',
+    //     dataIndex: 'contact',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Банковские реквизиты',
+    //     dataIndex: 'bankAccount.bank',
+    //     isVisible: true,
+    //   }, {
+    //     title: 'Ответственные лица',
+    //     dataIndex: 'representative',
+    //     isVisible: true,
+    //   },
+    // ],
     dataSource: this.props.selectedData ? [this.props.selectedData.data] : [],
 
     xsize: 'auto',
@@ -58,7 +73,18 @@ export default class ContragentsPage extends Component {
   };
 
   componentDidMount = () => {
-    console.log(this.props);
+
+    let getObjectData = Object.keys(this.props.universal.getObjectData).length > 0 ? this.props.universal.getObjectData : {};
+
+    if (this.props.universal.counterAgentData && Object.keys(this.props.universal.counterAgentData).length > 0) {
+      getObjectData = this.props.universal.counterAgentData;
+    }
+
+    if (getObjectData) {
+      this.setState({
+        dataSource: getObjectData.contractPartys ? getObjectData.contractPartys : [],
+      });
+    }
   };
 
   render = () => {
@@ -107,7 +133,7 @@ export default class ContragentsPage extends Component {
         }}/>}
       <SmartGridView
         hidePagination={true}
-        name='ContragentPageView'
+        name='ContragentPageViewNew'
         rowKey={'id'}
         showExportBtn={true}
         showTotal={true}

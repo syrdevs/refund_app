@@ -29,19 +29,19 @@ export default class CounterAgentCreate extends Component {
 
     const { dispatch } = this.props;
 
+    dispatch({
+      type: 'universal/clearData',
+      payload: {
+        typeName: 'counterAgentData',
+        value: {},
+      },
+    });
+
     if (this.props.location.state) {
       dispatch({
         type: 'universal/getCounterAgentData',
         payload: {
           'contragentId': this.props.location.state.data.id,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'universal/clearData',
-        payload: {
-          typeName: 'counterAgentData',
-          value: {},
         },
       });
     }
@@ -162,9 +162,6 @@ export default class CounterAgentCreate extends Component {
     dispatch({
       type: 'universal/saveobject',
       payload: sendModel,
-    }).then((res) => {
-      console.log(this.props);
-      //history.back();
     }).catch((res) => {
       console.log(res);
     });
@@ -173,6 +170,8 @@ export default class CounterAgentCreate extends Component {
   };
 
   render = () => {
+
+    const { dispatch } = this.props;
 
     return (
       <Form
@@ -197,6 +196,14 @@ export default class CounterAgentCreate extends Component {
             htmlType="submit">Сохранить</Button>, <Button
             style={{ marginLeft: '5px' }}
             onClick={() => {
+              dispatch({
+                type: 'universal/clearData',
+                payload: {
+                  typeName: 'getObjectData',
+                  value: {},
+                },
+              });
+
               reduxRouter.push('/contract/contracts/table');
             }}>Закрыть</Button>]}
           bordered={false}

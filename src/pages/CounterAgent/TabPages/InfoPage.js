@@ -11,6 +11,82 @@ const { TextArea } = Input;
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
+function momentDefine() {
+  var suffixes = {
+    0: '-ші',
+    1: '-ші',
+    2: '-ші',
+    3: '-ші',
+    4: '-ші',
+    5: '-ші',
+    6: '-шы',
+    7: '-ші',
+    8: '-ші',
+    9: '-шы',
+    10: '-шы',
+    20: '-шы',
+    30: '-шы',
+    40: '-шы',
+    50: '-ші',
+    60: '-шы',
+    70: '-ші',
+    80: '-ші',
+    90: '-шы',
+    100: '-ші',
+  };
+
+  var kk = moment.defineLocale('en', {
+    months: 'қаңтар_ақпан_наурыз_сәуір_мамыр_маусым_шілде_тамыз_қыркүйек_қазан_қараша_желтоқсан'.split('_'),
+    monthsShort: 'қаң_ақп_нау_сәу_мам_мау_шіл_там_қыр_қаз_қар_жел'.split('_'),
+    weekdays: 'жексенбі_дүйсенбі_сейсенбі_сәрсенбі_бейсенбі_жұма_сенбі'.split('_'),
+    weekdaysShort: 'жек_дүй_сей_сәр_бей_жұм_сен'.split('_'),
+    weekdaysMin: 'жк_дй_сй_ср_бй_жм_сн'.split('_'),
+    longDateFormat: {
+      LT: 'HH:mm',
+      LTS: 'HH:mm:ss',
+      L: 'DD.MM.YYYY',
+      LL: 'D MMMM YYYY',
+      LLL: 'D MMMM YYYY HH:mm',
+      LLLL: 'dddd, D MMMM YYYY HH:mm',
+    },
+    calendar: {
+      sameDay: '[Бүгін сағат] LT',
+      nextDay: '[Ертең сағат] LT',
+      nextWeek: 'dddd [сағат] LT',
+      lastDay: '[Кеше сағат] LT',
+      lastWeek: '[Өткен аптаның] dddd [сағат] LT',
+      sameElse: 'L',
+    },
+    relativeTime: {
+      future: '%s ішінде',
+      past: '%s бұрын',
+      s: 'бірнеше секунд',
+      ss: '%d секунд',
+      m: 'бір минут',
+      mm: '%d минут',
+      h: 'бір сағат',
+      hh: '%d сағат',
+      d: 'бір күн',
+      dd: '%d күн',
+      M: 'бір ай',
+      MM: '%d ай',
+      y: 'бір жыл',
+      yy: '%d жыл',
+    },
+    dayOfMonthOrdinalParse: /\d{1,2}-(ші|шы)/,
+    ordinal: function(number) {
+      var a = number % 10,
+        b = number >= 100 ? 100 : null;
+      return number + (suffixes[number] || suffixes[a] || suffixes[b]);
+    },
+    week: {
+      dow: 1, // Monday is the first day of the week.
+      doy: 7,  // The week that contains Jan 1st is the first week of the year.
+    },
+  });
+
+}
+
 @connect(({ universal2 }) => ({
   universal2,
 }))
@@ -82,7 +158,6 @@ export default class InfoPage extends Component {
   render = () => {
     let getObjectData = Object.keys(this.props.universal.getObjectData).length > 0 ? this.props.universal.getObjectData : {};
 
-
     if (this.props.universal.counterAgentData && Object.keys(this.props.universal.counterAgentData).length > 0) {
       getObjectData = this.props.universal.counterAgentData;
     }
@@ -135,7 +210,7 @@ export default class InfoPage extends Component {
           )}
         </Form.Item>
 
-        {/*{this.state.contractAlterationReason &&*/}
+        {this.state.contractAlterationReason &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator('contractAlternation', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -146,7 +221,7 @@ export default class InfoPage extends Component {
             </Select>,
           )}
         </Form.Item>
-        {/*}*/}
+        }
 
 
         <Form.Item {...formItemLayout} label="Номер">
@@ -158,7 +233,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator('documentDate', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate) : null,
+            initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY') : null,
           })(
             <DatePicker
               format={'DD.MM.YYYY'}
@@ -182,7 +257,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator('period', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin), getObjectData.dateEnd ? getObjectData.dateEnd : null] : null,
+            initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin, 'DD.MM.YYYY'), getObjectData.dateEnd ? getObjectData.dateEnd : null] : null,
           })(
             <RangePicker
               style={{ width: '50%' }}
@@ -206,21 +281,20 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Родительский договор">
           {getFieldDecorator('parentContract', {
-
             initialValue: getObjectData.parentContract ? getObjectData.parentContract : null,
             rules: [{
-              //required: false, message: 'не заполнено',
-              validator: (rule, value, callback) => {
-                if (value !== null && value) {
-                  if (value.value !== null) {
-                    callback();
-                    return;
-                  } else {
-                    callback('не заполнено');
-                  }
-                }
-                callback('не заполнено');
-              },
+              required: false,//, message: 'не заполнено',
+              // validator: (rule, value, callback) => {
+              //   if (value !== null && value) {
+              //     if (value.value !== null) {
+              //       callback();
+              //       return;
+              //     } else {
+              //       callback('не заполнено');
+              //     }
+              //   }
+              //   callback('не заполнено');
+              // },
             }],
           })(
             <LinkModal

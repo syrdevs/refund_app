@@ -120,7 +120,7 @@ export default class DogovorModal extends Component {
       visible={true}>
       <Spin spinning={this.props.loading}>
         <SmartGridView
-          scroll={{ x: 'auto' }}
+          scroll={{ x: 'auto', y: 300 }}
           name={'DogovorModal'}
           columns={this.state.columns}
           showTotal={true}

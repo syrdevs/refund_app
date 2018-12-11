@@ -25,6 +25,7 @@ import {
   getSearcherRPNData,
   getSearcherMEDData,
   getActDics,
+  saveObject
 } from '../services/api';
 
 export default {
@@ -63,7 +64,8 @@ export default {
     organization: {},
     medicalType: {},
     paymentRequestType: {},
-    divisions:{}
+    divisions:{},
+    saveanswer: {}
 
   },
   effects: {
@@ -270,7 +272,6 @@ export default {
         payload: response,
       });
     },
-
     * getpaymentRequestType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
@@ -282,6 +283,13 @@ export default {
       const response = yield call(getActDics, payload);
       yield put({
         type: 'dicdivisionsReducer',
+        payload: response,
+      });
+    },
+    * saveobject(payload, { call, put }) {
+      const response = yield call(saveObject, payload);
+      yield put({
+        type: 'saveObjectReducer',
         payload: response,
       });
     },
@@ -450,6 +458,11 @@ export default {
         divisions: payload,
       };
     },
-
+    saveObjectReducer(state, { payload }) {
+      return {
+        ...state,
+        saveanswer: payload,
+      };
+    },
   },
 };

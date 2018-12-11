@@ -376,3 +376,10 @@ export async function getActDics(params) {
     body: params.payload,
   });
 }
+export async function saveObject(params) {
+  return request('/api/uicommand/saveObject', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+

@@ -132,7 +132,7 @@ export default class ContractTable extends Component {
       },
       {
         title: 'Контрагент',
-        dataIndex: 'counteragent',
+        dataIndex: 'contractParty.organization',
         isVisible: true,
       },
       {
@@ -152,7 +152,7 @@ export default class ContractTable extends Component {
       },
       {
         title: 'Период с',
-        dataIndex: 'periodStart',
+        dataIndex: 'dateBegin',
         isVisible: true,
       },
       {
@@ -162,7 +162,7 @@ export default class ContractTable extends Component {
       },
       {
         title: 'Подразделение',
-        dataIndex: 'contractParty.organization',
+        dataIndex: 'division',
         isVisible: true,
       },
       /*{

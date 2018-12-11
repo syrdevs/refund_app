@@ -194,7 +194,7 @@ class SpecPage extends Component {
       {
         title: 'Код',
         dataIndex: 'code',
-        width: '10%',
+        width: '5%',
         render: (text, record) => {
           return (
             <FormItem
@@ -214,7 +214,7 @@ class SpecPage extends Component {
         title: 'Вид деятельности',
         dataIndex: 'type_activities',
         type: 'combobox',
-        width: '15%',
+        width: '30%',
         render: (text, record) => {
           return (
             <FormItem>
@@ -224,7 +224,7 @@ class SpecPage extends Component {
                   message: this.state.validatemessage,
                 }],
               })(
-                <Select name={'type_activities' + record.key} style={{ width: 150 }} onChange={(e) => {
+                <Select name={'type_activities' + record.key} style={{ width: 350 }} onChange={(e) => {
                   this.identValue(e, record, 'type_activities', 'identities');
                 }}>
                   {this.props.references.knp && this.props.references.knp.map((item) => {
@@ -238,7 +238,7 @@ class SpecPage extends Component {
       {
         title: 'Единица',
         dataIndex: 'unit',
-        width: '15%',
+        width: '10%',
         render: (text, record) => {
           return (
             <FormItem
@@ -258,7 +258,7 @@ class SpecPage extends Component {
       {
         title: 'Количество',
         dataIndex: 'amount',
-        width: '15%',
+        width: '10%',
         render: (text, record) => {
           return (
             <FormItem
@@ -280,7 +280,7 @@ class SpecPage extends Component {
         dataIndex: 'tariff',
         isVisible: true,
         order: 2,
-        width: '15%',
+        width: '10%',
         key: 'tariff',
         onCell: record => {
           return {
@@ -312,7 +312,7 @@ class SpecPage extends Component {
         dataIndex: 'summa',
         isVisible: true,
         order: 2,
-        width: '15%',
+        width: '10%',
         key: 'summa',
         onCell: record => {
           return {
@@ -344,7 +344,7 @@ class SpecPage extends Component {
         dataIndex: 'avans',
         isVisible: true,
         order: 2,
-        width: '15%',
+        width: '10%',
         key: 'avans',
         onCell: record => {
           return {

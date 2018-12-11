@@ -309,7 +309,7 @@ export default {
     getObjectReducer(state, { payload }) {
       return {
         ...state,
-        getObject: payload,
+        getObjectData: payload,
       };
     },
 

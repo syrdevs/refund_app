@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import moment from 'moment';
@@ -22,6 +22,8 @@ export default class InfoPage extends Component {
       visible: false,
     },
 
+    contractAlterationReason: false,
+
     fields: {
       bin: '',
     },
@@ -37,7 +39,7 @@ export default class InfoPage extends Component {
 
     return universal2.references[code]
       ? universal2.references[code].content.map((item) => (
-        <Option value={item.id} key={item.id}>{item[propName]}</Option>))
+        <Option value={item.id} prop={item} key={item.id}>{item[propName]}</Option>))
       : null;
   };
   componentDidMount = () => {
@@ -78,6 +80,12 @@ export default class InfoPage extends Component {
   };
 
   render = () => {
+    let getObjectData = Object.keys(this.props.universal.getObjectData).length > 0 ? this.props.universal.getObjectData : {};
+
+
+    if (this.props.universal.counterAgentData && Object.keys(this.props.universal.counterAgentData).length > 0) {
+      getObjectData = this.props.universal.counterAgentData;
+    }
 
     const { form: { getFieldDecorator, validateFields }, dispatch, data, formItemLayout } = this.props;
 
@@ -110,34 +118,47 @@ export default class InfoPage extends Component {
         {/*</Form.Item>*/}
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator('contractType', {
-            rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: null,
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.contractType ? getObjectData.contractType.id : null,
           })(
-            <Select placeholder="Вид договора">
+            <Select placeholder="Вид договора"
+                    onChange={(value, option) => {
+                      if (option.props.prop.code === '3') {
+                        this.setState({ contractAlterationReason: true });
+                      } else {
+                        this.setState({ contractAlterationReason: false });
+                      }
+                    }}
+            >
               {this.getReferenceValues('contractType', 'nameRu')}
             </Select>,
           )}
         </Form.Item>
+
+        {/*{this.state.contractAlterationReason &&*/}
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator('contractAlternation', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: null,
+            initialValue: getObjectData.contractAlternation ? getObjectData.contractAlternation.id : null,
           })(
             <Select placeholder="Причина">
               {this.getReferenceValues('contractAlterationReason', 'nameRu')}
             </Select>,
           )}
         </Form.Item>
+        {/*}*/}
+
+
         <Form.Item {...formItemLayout} label="Номер">
           {getFieldDecorator('number', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: getObjectData.number ? getObjectData.number : null,
           })(<Input placeholder="Номер"/>)}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator('documentDate', {
-            rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: null,
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate) : null,
           })(
             <DatePicker
               format={'DD.MM.YYYY'}
@@ -148,8 +169,8 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator('periodYear', {
-            rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: null,
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
           })(
             <Select
               placeholder="Учетный период"
@@ -160,8 +181,8 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator('period', {
-            rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: null,
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin), getObjectData.dateEnd ? getObjectData.dateEnd : null] : null,
           })(
             <RangePicker
               style={{ width: '50%' }}
@@ -175,7 +196,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Подразделение">
           {getFieldDecorator('divisions', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: null,
+            initialValue: getObjectData.division ? getObjectData.division.id : null,
           })(
             <Select
               placeholder="Подразделение">
@@ -185,6 +206,8 @@ export default class InfoPage extends Component {
         </Form.Item>
         <Form.Item {...formItemLayout} label="Родительский договор">
           {getFieldDecorator('parentContract', {
+
+            initialValue: getObjectData.parentContract ? getObjectData.parentContract : null,
             rules: [{
               //required: false, message: 'не заполнено',
               validator: (rule, value, callback) => {
@@ -201,9 +224,9 @@ export default class InfoPage extends Component {
             }],
           })(
             <LinkModal
-              value={'Договор №1254364'}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
+                console.log(record);
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });
@@ -216,7 +239,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Примечание">
           {getFieldDecorator('descr', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: getObjectData.descr ? getObjectData.descr : null,
           })(
             <TextArea
               placeholder="Примечание"

@@ -5,10 +5,9 @@ import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col
 export default class LinkModal extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       visible: false,
-      value: null,
+      value: props.value ? props.value : null,
     };
   }
 
@@ -41,8 +40,15 @@ export default class LinkModal extends Component {
 
   render = () => {
 
+    let fileName = '';
+
     if (this.props.data && this.state.value === null) {
       this.handleChange(this.props.data);
+      fileName = `№ ${this.props.data.number} от ${this.props.data.documentDate}`;
+    }
+
+    if (this.state.value !== null) {
+      fileName = `№ ${this.state.value.number} от ${this.state.value.documentDate}`;
     }
 
     return (<div>
@@ -54,7 +60,7 @@ export default class LinkModal extends Component {
         {this.props.children}
       </Modal>
 
-      {!this.props.data ? <Button onClick={() => {
+      {!this.props.data && this.state.value === null ? <Button onClick={() => {
         this.props.onClick();
       }}>Выбрать</Button> : <div>
 
@@ -65,8 +71,10 @@ export default class LinkModal extends Component {
           cursor: 'pointer',
         }}
         onClick={() => {
-          this.props.onTarget(this.props.data);
-        }}> Договор {this.props.data.contractType} </span>
+          this.props.onTarget(this.props.data ? this.props.data : this.state.value);
+        }}>
+        {fileName}
+        </span>
 
         <span
           onClick={() => {

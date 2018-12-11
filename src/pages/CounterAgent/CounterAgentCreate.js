@@ -20,12 +20,32 @@ const formItemLayout = {
 @Form.create()
 @connect(({ universal, loading }) => ({
   universal,
-  loadingData: loading.effects['universal/saveobject'],
+  // loadingData: loading.effects['universal/saveobject'],
 }))
 export default class CounterAgentCreate extends Component {
   state = {};
 
   componentDidMount() {
+
+    const { dispatch } = this.props;
+
+    if (this.props.location.state) {
+      dispatch({
+        type: 'universal/getCounterAgentData',
+        payload: {
+          'contragentId': this.props.location.state.data.id,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'universal/clearData',
+        payload: {
+          typeName: 'counterAgentData',
+          value: {},
+        },
+      });
+    }
+
     // if (this.props.location.state) {
     //
     // } else {
@@ -33,34 +53,27 @@ export default class CounterAgentCreate extends Component {
     // }
   };
 
+  // componentWillUnmount() {
+  //   const { dispatch } = this.props;
+  //
+  //   dispatch({
+  //     type: 'universal/clearData',
+  //     payload: {
+  //       typeName: 'counterAgentData',
+  //       value: {},
+  //     },
+  //   });
+  // }
+
   sendForm = (data) => {
 
     const { dispatch } = this.props;
 
-
+//todo check model
     let sendModel = {
       'entity': 'contract',
       'alias': null,
       'data': {
-        'dateBegin': moment(data.period[0]).format('DD.MM.YYYY'),
-        'dateEnd': moment(data.period[1]).format('DD.MM.YYYY'),
-        'number': data.number,
-        'documentDate': moment(data.documentDate).format('DD.MM.YYYY'),
-        'contractAlternation': {
-          'id': data.contractAlternation,
-        },
-        'parentContract': {
-          'id': data.parentContract.value.id,
-        },
-        'division': {
-          'id': data.divisions,
-        },
-        'periodYear': {
-          'id': data.periodYear,
-        },
-        'contractType': {
-          'id': data.contractType,
-        },
         'contractPartys': [
           {
             'contractRole': {
@@ -88,13 +101,75 @@ export default class CounterAgentCreate extends Component {
         ],
       },
     };
+    if (data.period !== null && data.period.length > 0) {
+      sendModel.data.dateBegin = moment(data.period[0]).format('DD.MM.YYYY');
+      sendModel.data.dateEnd = moment(data.period[1]).format('DD.MM.YYYY');
+    }
+
+    /*
+    *  'number': data.number,
+        'parentContract': {
+          'id': data.parentContract.value.id,
+        },
+        'division': {
+          'id': data.divisions,
+        },
+        'periodYear': {
+          'id': data.periodYear,
+        },
+        'contractType': {
+          'id': data.contractType,
+        },
+    * */
+
+    if (data.number) {
+      sendModel.data.number = data.number;
+    }
+
+    if (data.parentContract) {
+      sendModel.data.parentContract = {
+        id: data.parentContract.value.id,
+      };
+    }
+
+    if (data.division) {
+      sendModel.data.division = {
+        id: data.divisions,
+      };
+    }
+
+    if (data.periodYear) {
+      sendModel.data.periodYear = {
+        'id': data.periodYear,
+      };
+    }
+
+    if (data.contractType) {
+      sendModel.data.contractType = {
+        'id': data.contractType,
+      };
+    }
+
+    if (data.documentDate)
+      sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
+
+    if (data.contractAlternation) {
+      sendModel.data.contractAlternation = {
+        'id': data.contractAlternation,
+      };
+    }
 
     dispatch({
       type: 'universal/saveobject',
       payload: sendModel,
+    }).then((res) => {
+      console.log(this.props);
+      //history.back();
+    }).catch((res) => {
+      console.log(res);
     });
 
-    history.back();
+
   };
 
   render = () => {
@@ -119,31 +194,33 @@ export default class CounterAgentCreate extends Component {
           title={''}
           className={styles.headPanel}
           extra={[<Button
-            htmlType="submit">Сохранить</Button>]}
+            htmlType="submit">Сохранить</Button>, <Button
+            style={{ marginLeft: '5px' }}
+            onClick={() => {
+              reduxRouter.push('/contract/contracts/table');
+            }}>Закрыть</Button>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
           <Row style={{ marginTop: '5px' }}>
-            <Spin spinning={this.props.loadingData !== undefined}>
-              <Tabs
-                tabBarStyle={{ textAlign: 'left' }}
-                type={'card'}
-                className={styles.stepFormText}
-                defaultActiveKey="main"
-                tabPosition={'left'}>
-                <TabPane tab="Титульная часть" key="main">
-                  <InfoPage {...this.props} formItemLayout={formItemLayout}/>
-                </TabPane>
-                {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
-                {/*<DogovorPage/>*/}
-                {/*</TabPane>*/}
-                <TabPane tab="Спецификация" key="specification">
-                  <SpecPage {...this.props}/>
-                </TabPane>
-                <TabPane tab="Контрагенты" key="counteragents">
-                  <ContragentsPage selectedData={this.props.location.state} {...this.props}/>
-                </TabPane>
-              </Tabs>
-            </Spin>
+            <Tabs
+              tabBarStyle={{ textAlign: 'left' }}
+              type={'card'}
+              className={styles.stepFormText}
+              defaultActiveKey="main"
+              tabPosition={'left'}>
+              <TabPane tab="Титульная часть" key="main">
+                <InfoPage {...this.props} formItemLayout={formItemLayout}/>
+              </TabPane>
+              {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
+              {/*<DogovorPage/>*/}
+              {/*</TabPane>*/}
+              <TabPane tab="Спецификация" key="specification">
+                <SpecPage {...this.props}/>
+              </TabPane>
+              <TabPane tab="Контрагенты" key="counteragents">
+                <ContragentsPage selectedData={this.props.location.state} {...this.props}/>
+              </TabPane>
+            </Tabs>
           </Row>
         </Card>
       </Form>);

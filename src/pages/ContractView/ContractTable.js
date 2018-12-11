@@ -236,12 +236,12 @@ export default class ContractTable extends Component {
     gridParameters: {
       start: 0,
       length: 15,
-      entity: "contract",
-      alias: "contractList",
+      entity: 'contract',
+      alias: 'contractList',
       filter: {},
       sort: [],
     },
-    title: formatMessage({ id: 'app.module.contracts.title' })
+    title: formatMessage({ id: 'app.module.contracts.title' }),
   };
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
@@ -252,14 +252,15 @@ export default class ContractTable extends Component {
     //console.log('clear filter');
   };
   applyFilter = (filters) => {
-   // console.log(filters);
+    // console.log(filters);
   };
+
   componentWillUnmount() {
 
   }
 
   onShowSizeChange = (current, pageSize) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     this.setState(prevState => ({
       gridParameters: {
         ...prevState.gridParameters,
@@ -282,6 +283,7 @@ export default class ContractTable extends Component {
       payload: this.state.gridParameters,
     });
   };
+
   componentDidMount() {
     this.loadMainGridData();
   }
@@ -301,6 +303,15 @@ export default class ContractTable extends Component {
           Новый
         </Menu.Item>
         <Menu.Item
+          disabled={this.state.selectedRowKeys === null}
+          onClick={() => {
+            this.props.history.push({
+              pathname: '/contract/counteragent/edit',
+              state: {
+                data: this.state.selectedRowKeys,
+              },
+            });
+          }}
           key="2">
           Открыть/Изменить
         </Menu.Item>
@@ -315,15 +326,15 @@ export default class ContractTable extends Component {
         <Menu.Item
           key="5"
           onClick={() => {
-              //router.push('/contract/contracts/acts/add');
-              //console.log(this.state.selectedRowKeys);
+            //router.push('/contract/contracts/acts/add');
+            //console.log(this.state.selectedRowKeys);
             this.props.history.push({
               pathname: '/contract/contracts/acts/add',
               state: {
-                data:this.state.selectedRowKeys
+                data: this.state.selectedRowKeys,
               },
             });
-            }
+          }
           }
           disabled={this.state.selectedRowKeys === null}
         >
@@ -340,69 +351,69 @@ export default class ContractTable extends Component {
         <Card bodyStyle={{ padding: 5 }}>
           <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
             <Row>
-                <Col sm={24} md={this.state.filterContainer}>
-                  <Card
-                    headStyle={{
-                      padding: '0 14px',
-                    }}
-                    bodyStyle={{
-                      padding: 5,
-                    }}
-                    style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                    type="inner"
-                    title={formatMessage({ id: 'system.filter' })}
-                    extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}>
-                    {this.state.filterContainer === 6 && <GridFilterCollapsible
-                      clearFilter={this.clearFilter}
-                      applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
-                      filterForm={this.state.filterForm}
-                      dateFormat={dateFormat}/>}
-                  </Card>
-                </Col>
-                <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-                  <SmartGridView
-                    scroll={{ x: 'auto' }}
-                    name={'ContractMain'}
-                    columns={this.state.columns}
-                    showTotal={true}
-                    /*selectedRowCheckBox={true}
-                    selectedRowKeys={this.state.selectedRowKeys}*/
-                    showExportBtn={true}
-                    addonButtons={addonButtons}
-                    actionColumns={this.state.fcolumn}
-                    actionExport={() => {
-                     // console.log('export');
-                    }}
-                    dataSource={{
-                      total: contracts ? contracts.totalElements : 0,
-                      pageSize: this.state.gridParameters.length,
-                      page: this.state.gridParameters.start + 1,
-                      data: contracts ? contracts.content : [],
-                    }}
-                    onShowSizeChange={(pageNumber, pageSize) => {
-                     // console.log('on paging');
-                    }}
-                    onRefresh={() => {
-                     // console.log('onRefresh');
-                    }}
-                    onSearch={() => {
-                      this.filterPanelState();
-                    }}
-                    onSelectRow={(record, index) => {
-                      this.setState({
-                        selectedRowKeys: record,
-                      });
-                    }}
-                    onSelectCheckboxChange={(selectedRowKeys) => {
+              <Col sm={24} md={this.state.filterContainer}>
+                <Card
+                  headStyle={{
+                    padding: '0 14px',
+                  }}
+                  bodyStyle={{
+                    padding: 5,
+                  }}
+                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                  type="inner"
+                  title={formatMessage({ id: 'system.filter' })}
+                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                    icon={faTimes}/></Icon>}>
+                  {this.state.filterContainer === 6 && <GridFilterCollapsible
+                    clearFilter={this.clearFilter}
+                    applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                    filterForm={this.state.filterForm}
+                    dateFormat={dateFormat}/>}
+                </Card>
+              </Col>
+              <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
+                <SmartGridView
+                  scroll={{ x: 'auto' }}
+                  name={'ContractMain'}
+                  columns={this.state.columns}
+                  showTotal={true}
+                  /*selectedRowCheckBox={true}
+                  selectedRowKeys={this.state.selectedRowKeys}*/
+                  showExportBtn={true}
+                  addonButtons={addonButtons}
+                  actionColumns={this.state.fcolumn}
+                  actionExport={() => {
+                    // console.log('export');
+                  }}
+                  dataSource={{
+                    total: contracts ? contracts.totalElements : 0,
+                    pageSize: this.state.gridParameters.length,
+                    page: this.state.gridParameters.start + 1,
+                    data: contracts ? contracts.content : [],
+                  }}
+                  onShowSizeChange={(pageNumber, pageSize) => {
+                    // console.log('on paging');
+                  }}
+                  onRefresh={() => {
+                    // console.log('onRefresh');
+                  }}
+                  onSearch={() => {
+                    this.filterPanelState();
+                  }}
+                  onSelectRow={(record, index) => {
+                    this.setState({
+                      selectedRowKeys: record,
+                    });
+                  }}
+                  onSelectCheckboxChange={(selectedRowKeys) => {
 
-                      this.setState({
-                        selectedRowKeys: selectedRowKeys,
-                      });
-                    }}
-                  />
-                  <br/>
-                </Col>
+                    this.setState({
+                      selectedRowKeys: selectedRowKeys,
+                    });
+                  }}
+                />
+                <br/>
+              </Col>
             </Row>
           </Spin>
         </Card>

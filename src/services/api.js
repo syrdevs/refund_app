@@ -396,3 +396,10 @@ export async function getObject(params) {
     body: params.payload,
   });
 }
+
+export async function createContractFromAgent(params) {
+  return request('/api/contract/createContractFromAgent', {
+    method: 'POST',
+    body: params.payload,
+  });
+}

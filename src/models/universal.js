@@ -27,6 +27,7 @@ import {
   getActDics,
   saveObject,
   getObject,
+  createContractFromAgent,
 } from '../services/api';
 
 export default {
@@ -68,6 +69,7 @@ export default {
     divisions: {},
     saveanswer: {},
     getObjectData: {},
+    counterAgentData: {},
 
   },
   effects: {
@@ -304,9 +306,43 @@ export default {
         payload: response,
       });
     },
+
+    * getCounterAgentData(payload, { call, put }) {
+
+      const response = yield call(createContractFromAgent, payload);
+
+      yield put({
+        type: 'createContractFromAgentReducer',
+        payload: response,
+      });
+
+    },
+
+    * clearData(payload, { call, put }) {
+
+      yield put({
+        type: 'clearDataReducer',
+        payload: {
+          typeName: payload.payload.typeName,
+          value: payload.payload.value ? payload.payload.value : [],
+        },
+      });
+    },
   },
 
   reducers: {
+    clearDataReducer(state, { payload }) {
+      return {
+        ...state,
+        [payload.typeName]: payload.value,
+      };
+    },
+    createContractFromAgentReducer(state, { payload }) {
+      return {
+        ...state,
+        counterAgentData: payload,
+      };
+    },
     getObjectReducer(state, { payload }) {
       return {
         ...state,

@@ -14,6 +14,7 @@ export default class CounterAgentMain extends Component {
     titles: {
       '/contract/counteragent/create': 'menu.contract.counteragent.contract.headTitle',
       '/contract/counteragent/viewcontract': 'menu.contract.counteragent.viewcounteragent.title',
+      '/contract/counteragent/editcontract': 'menu.contract.counteragent.editcounteragent.title',
     },
 
   };

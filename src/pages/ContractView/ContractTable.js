@@ -309,7 +309,71 @@ export default class ContractTable extends Component {
           Удалить
         </Menu.Item>
         <Menu.Item
-          key="4">
+          key="4"
+          onClick={()=>{
+            ///contract/contracts/acts/add/viewcontract/payment
+            this.props.history.push({
+              pathname: '/contract/contracts/acts/add/viewcontract/payment',
+              state: {
+                data:[this.state.selectedRowKeys],
+                columns: [
+                  {
+                    title: 'Отчетный период',
+                    dataIndex: 'periodYear',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'БИН',
+                    dataIndex: 'contractParty.bin',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Контрагент',
+                    dataIndex: 'counteragent',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Вид договора',
+                    dataIndex: 'contractType',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Номер',
+                    dataIndex: 'number',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Дата',
+                    dataIndex: 'documentDate',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Период с',
+                    dataIndex: 'periodStart',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Период по',
+                    dataIndex: 'periodEnd',
+                    isVisible: true,
+                  },
+                  {
+                    title: 'Подразделение',
+                    dataIndex: 'contractParty.organization',
+                    isVisible: true,
+                  },
+                  /*{
+                    title: 'Статус',
+                    dataIndex: 'status',
+                    isVisible: true,
+                  },*/
+                ],
+                type: "contract"
+              },
+            });
+          }}
+          disabled={this.state.selectedRowKeys === null}
+        >
           Включить в заявку на оплату
         </Menu.Item>
         <Menu.Item

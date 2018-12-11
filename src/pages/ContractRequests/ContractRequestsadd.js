@@ -671,7 +671,7 @@ class ContractRequestsadd extends Component {
                       showExportBtn={true}
                       showTotal={true}
                       hidePagination={true}
-                      columns={this.state.contractcolumns}
+                      columns={this.props.location.state.columns}
                       actionColumns={[]}
                       sorted={true}
                       onSort={(column) => {
@@ -684,10 +684,10 @@ class ContractRequestsadd extends Component {
                         //console.log(record)
                       }}
                       dataSource={{
-                        total: this.state.contractdata.length,
-                        pageSize: this.state.contractdata.length,
+                        total: this.props.location.state.data.length,
+                        pageSize: this.props.location.state.data.length,
                         page: 1,
-                        data: this.state.contractdata,
+                        data: this.props.location.state.data,
                       }}
                       onShowSizeChange={(pageNumber, pageSize) => {
                       }}

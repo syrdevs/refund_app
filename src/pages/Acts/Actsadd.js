@@ -206,65 +206,6 @@ class Actsadd extends Component {
             this.props.form.validateFields(
               (err, values) => {
                 if (!err) {
-                 /* {
-                    "entity": "act",
-                    "alias": null,
-                    "data":{
-                      "number":"б/н",
-                      "documentDate":"05.02.2019",
-                      "protocol":null,
-                      "periodYear":
-                      {
-                        "id":"830469a6-0cdf-436d-8ea4-810d870a662d"
-                      },
-                      "contract":{
-                        "id":"e8a735fc-8ccc-47dd-a7d7-92a1c9b75eaa"
-                      },
-                      "periodSection"
-                    :
-                      {
-                        "id"
-                      :
-                        "f1f2ac96-f6f6-4bd1-90dd-85d1e274622c"
-                      }
-                    ,
-                    }*/
-
-                    console.log(JSON.stringify({
-                      ...values,
-                      documentDate: values.documentDate.format("DD.MM.YYYY"),
-                      protocol: null,
-                      contract: {
-                        id: this.props.location.state.data.id
-                      },
-                      "actItems": [
-                        {
-                          "activity": {
-                            "id": "32576777-c4a9-41c9-86c4-393bb29072ef"
-                          },
-                          "contractItem": {
-                            "id": "ebbef7c1-25cf-4341-bbe2-cb0c6d391372"
-                          },
-                          "protocolItem": null,
-                          "actItemValues": [
-                            {
-                              "valueSum": 0,
-                              "sumRequested": 0,
-                              "sumAdvanceTakeout": 0,
-                              "value": 1,
-                              "valueRequested": 0,
-                              "currencyType": {
-                                "id": "5cd4e565-10da-4b79-8578-ffdd5a0d8270"
-                              },
-                              "measureUnit": {
-                                "id": "be88fc85-e565-43cd-a14a-7cdd46828f4c"
-                              },
-                              "protocolItem": null
-                            }
-                          ]
-                        }
-                      ]
-                    }));
                   dispatch({
                     type: 'universal/saveobject',
                     payload: {
@@ -311,12 +252,8 @@ class Actsadd extends Component {
                     console.log(this.props.universal.saveanswer);
                     this.props.tomain();
                   });
-//test
-
                 }
-                else {
-
-                }
+                else {}
               },
             );
           }
@@ -361,8 +298,12 @@ class Actsadd extends Component {
                   >
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
-                      <Form.Item {...formItemLayout} label="Номер">
-                          <Link to={'/contract/counteragent/viewcontract?id='+this.props.location.state.data.id}>Договор №{this.props.location.state.data.number}</Link>
+                       <Form.Item {...formItemLayout} label="Номер">
+                         {this.props.location.state &&
+                         <Link
+                           to={'/contract/counteragent/viewcontract?id='+this.props.location.state.data.id}
+                         >Договор №{this.props.location.state.data.number}</Link>}
+                         
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Номер">
                         {getFieldDecorator('number', {

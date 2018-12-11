@@ -3,8 +3,36 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col, Tabs, Card, Modal } from 'antd';
 
 export default class LinkModal extends Component {
-  state = {
-    visible: false,
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: false,
+      value: null,
+    };
+  }
+
+
+  static getDerivedStateFromProps(nextProps) {
+    // Should be a controlled component.
+    if ('value' in nextProps) {
+      return {
+        ...(nextProps.value || {}),
+      };
+    }
+    return null;
+  }
+
+
+  triggerChange = (changedValue) => {
+    const onChange = this.props.onChange;
+    if (onChange) {
+      onChange(Object.assign({}, this.state, changedValue));
+    }
+  };
+
+  handleChange = (record) => {
+    this.triggerChange({ value: record });
   };
 
   hideModal = () => {
@@ -12,6 +40,10 @@ export default class LinkModal extends Component {
   };
 
   render = () => {
+
+    if (this.props.data && this.state.value === null) {
+      this.handleChange(this.props.data);
+    }
 
     return (<div>
       <Modal
@@ -23,24 +55,23 @@ export default class LinkModal extends Component {
       </Modal>
 
       {!this.props.data ? <Button onClick={() => {
-        this.props.onClick(false);
+        this.props.onClick();
       }}>Выбрать</Button> : <div>
 
-
-
-        <span
-          style={{
-            color: '#1890ff',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            //window.open('viewcontract?id=1');
-          }}> Договор {this.props.data.contractType} </span>
+      <span
+        style={{
+          color: '#1890ff',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          this.props.onTarget(this.props.data);
+        }}> Договор {this.props.data.contractType} </span>
 
         <span
           onClick={() => {
-            this.props.onClick(true);
+            this.handleChange(null);
+            this.props.onDelete();
           }}
           style={{
             marginLeft: '20px',
@@ -51,8 +82,6 @@ export default class LinkModal extends Component {
           }}>Удалить</span>
 
       </div>}
-
-
     </div>);
   };
 }

@@ -43,7 +43,7 @@ export default class ContragentsPage extends Component {
         isVisible: true,
       },
     ],
-    dataSource: this.props.selectedData ? this.props.selectedData.data : [],
+    dataSource: this.props.selectedData ? [this.props.selectedData.data] : [],
 
     xsize: 'auto',
 
@@ -58,7 +58,7 @@ export default class ContragentsPage extends Component {
   };
 
   componentDidMount = () => {
-
+    console.log(this.props);
   };
 
   render = () => {
@@ -73,9 +73,7 @@ export default class ContragentsPage extends Component {
       </Button>,
     * */
 
-    const addonButtons = [
-
-    ];
+    const addonButtons = [];
 
     // if (this.state.dataSource.length > 0) {
     //   addonButtons.push(<Button

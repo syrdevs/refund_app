@@ -111,7 +111,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator('contractType', {
             rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <Select placeholder="Вид договора">
               {this.getReferenceValues('contractType', 'nameRu')}
@@ -119,9 +119,9 @@ export default class InfoPage extends Component {
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Причина">
-          {getFieldDecorator('reason', {
+          {getFieldDecorator('contractAlternation', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <Select placeholder="Причина">
               {this.getReferenceValues('contractAlterationReason', 'nameRu')}
@@ -137,7 +137,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator('documentDate', {
             rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <DatePicker
               format={'DD.MM.YYYY'}
@@ -149,7 +149,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator('periodYear', {
             rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <Select
               placeholder="Учетный период"
@@ -161,7 +161,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator('period', {
             rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <RangePicker
               style={{ width: '50%' }}
@@ -175,7 +175,7 @@ export default class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Подразделение">
           {getFieldDecorator('divisions', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: '',
+            initialValue: null,
           })(
             <Select
               placeholder="Подразделение">
@@ -184,22 +184,34 @@ export default class InfoPage extends Component {
           )}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Родительский договор">
-          <LinkModal
-            value={'Договор №1254364'}
-            data={this.state.DogovorModal.record}
-            onClick={(isLink, record) => {
-              console.log(record);
-              if (isLink) {
+          {getFieldDecorator('parentContract', {
+            rules: [{
+              //required: false, message: 'не заполнено',
+              validator: (rule, value, callback) => {
+                if (value !== null && value) {
+                  if (value.value !== null) {
+                    callback();
+                    return;
+                  } else {
+                    callback('не заполнено');
+                  }
+                }
+                callback('не заполнено');
+              },
+            }],
+          })(
+            <LinkModal
+              value={'Договор №1254364'}
+              data={this.state.DogovorModal.record}
+              onTarget={(record) => {
+              }}
+              onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });
-              } else {
-                this.setState({
-                  DogovorModal: {
-                    visible: true,
-                  },
-                });
-              }
-            }}>
-          </LinkModal>
+              }}
+              onClick={() => {
+                this.setState({ DogovorModal: { visible: true } });
+              }}>
+            </LinkModal>)}
         </Form.Item>
         <Form.Item {...formItemLayout} label="Примечание">
           {getFieldDecorator('descr', {

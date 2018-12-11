@@ -41,7 +41,7 @@ const dateFormat = 'DD.MM.YYYY';
 export default class ContractTable extends Component {
   state = {
 
-    selectedRowKeys: [],
+    selectedRowKeys: null,
     filterContainer: 0,
     filterForm: [
       {
@@ -290,8 +290,6 @@ export default class ContractTable extends Component {
     const { universal2 } = this.props;
     const contracts = universal2.references[this.state.gridParameters.entity];
 
-    console.log(contracts);
-
 
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
@@ -317,10 +315,17 @@ export default class ContractTable extends Component {
         <Menu.Item
           key="5"
           onClick={() => {
-              router.push('/contract/contracts/acts/add');
+              //router.push('/contract/contracts/acts/add');
+              //console.log(this.state.selectedRowKeys);
+            this.props.history.push({
+              pathname: '/contract/contracts/acts/add',
+              state: {
+                data:this.state.selectedRowKeys
+              },
+            });
             }
           }
-          disabled={this.state.selectedRowKeys.length === 0}
+          disabled={this.state.selectedRowKeys === null}
         >
           Создать акт
         </Menu.Item>
@@ -361,8 +366,8 @@ export default class ContractTable extends Component {
                     name={'ContractMain'}
                     columns={this.state.columns}
                     showTotal={true}
-                    selectedRowCheckBox={true}
-                    selectedRowKeys={this.state.selectedRowKeys}
+                    /*selectedRowCheckBox={true}
+                    selectedRowKeys={this.state.selectedRowKeys}*/
                     showExportBtn={true}
                     addonButtons={addonButtons}
                     actionColumns={this.state.fcolumn}
@@ -383,6 +388,11 @@ export default class ContractTable extends Component {
                     }}
                     onSearch={() => {
                       this.filterPanelState();
+                    }}
+                    onSelectRow={(record, index) => {
+                      this.setState({
+                        selectedRowKeys: record,
+                      });
                     }}
                     onSelectCheckboxChange={(selectedRowKeys) => {
 

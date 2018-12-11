@@ -63,6 +63,7 @@ export default {
     organization: {},
     medicalType: {},
     paymentRequestType: {},
+    divisions:{}
 
   },
   effects: {
@@ -277,6 +278,13 @@ export default {
         payload: response,
       });
     },
+    * getdivisions(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicdivisionsReducer',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -406,7 +414,6 @@ export default {
         searcherjur: payload,
       };
     },
-
     dicperiodyearReducer(state, { payload }) {
       return {
         ...state,
@@ -435,6 +442,12 @@ export default {
       return {
         ...state,
         paymentRequestType: payload,
+      };
+    },
+    dicdivisionsReducer(state, { payload }) {
+      return {
+        ...state,
+        divisions: payload,
       };
     },
 

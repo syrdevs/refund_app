@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon, InputNumber} from 'antd';
 import styles from './style.less';
+import LinkModal from '@/components/LinkModal';
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
@@ -12,6 +13,7 @@ import ActModal from './ActModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import Link from 'umi/link';
 
 
 const TabPane = Tabs.TabPane;
@@ -149,7 +151,7 @@ class Actsadd extends Component {
   const DicArr=[
     'periodYear',
     'periodSection',
-    'organization',
+    'divisions',
     'medicalType',
   ]
   DicArr.forEach(function(item) {
@@ -162,60 +164,10 @@ class Actsadd extends Component {
       },
     });
   })
-
-
-/*  dispatch({
-    type: 'universal/getActperiodYear',
-    payload: {
-      table: {
-        "start":0,
-        "length":20,
-        "entity":"periodYear"
-      },
-    },
-  });
-  dispatch({
-    type: 'universal/getActperiodYear',
-    payload: {
-      table: {
-        "start":0,
-        "length":20,
-        "entity":"periodYear"
-      },
-    },
-  });
-  dispatch({
-    type: 'universal/getActperiodYear',
-    payload: {
-      table: {
-        "start":0,
-        "length":20,
-        "entity":"periodYear"
-      },
-    },
-  });*/
+    console.log(this.props.location.state);
 }
-  showModal=()=>{
-    this.setState({
-      modal:true
-    })
-  }
-  CancelModal=()=>{
-    this.setState({
-      modal:false
-    })
-  }
+
   onChangeSumma=(e, d)=>{
-    //ContractSumms
-    /*this.setState({
-      ContractSumms:[
-        ...this.state.ContractSumms.filter((item)=>{item.id != e.id}),
-        {
-          id: e.id,
-          summ: d
-        }
-      ]
-    })*/
   }
 
   onChangePayment=(e, d)=>{
@@ -296,12 +248,18 @@ class Actsadd extends Component {
                   }
                 }}
                 tabPosition={'left'}>
-                {/*<Row>*/}
-
-                {/*</Row>*/}
                 <TabPane tab="Титульная часть" key="form">
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
+                      <Form.Item {...formItemLayout} label="Номер">
+                        {getFieldDecorator('showContract', {
+                          initialValue: '',
+                          rules: [{ required: false, message: 'не заполнено'}],
+                        })(
+                          <Link to={'/contract/counteragent/viewcontract?id='+this.props.location.state.data.id}>Договор №{this.props.location.state.data.number}</Link>
+                        )}
+                      </Form.Item>
+
                       <Form.Item {...formItemLayout} label="Номер">
                         {getFieldDecorator('number', {
                           initialValue: '',
@@ -360,7 +318,7 @@ class Actsadd extends Component {
                           <Select
                             allowClear
                           >
-                            {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
+                            {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
                               return <Select.Option key={item.id}>{item.name}</Select.Option>;
                             })}
                           </Select>

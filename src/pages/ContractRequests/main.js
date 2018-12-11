@@ -32,13 +32,14 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 
 const dateFormat = 'DD.MM.YYYY';
+
+@connect(({ universal2 }) => ({
+  universal2,
+}))
 export default class ContractRequestsTable extends Component  {
   state = {
-
     selectedRowKeys: [],
-
     filterContainer: 0,
-
     filterForm: [
       {
         title: 'Договор фильтр',
@@ -107,7 +108,6 @@ export default class ContractRequestsTable extends Component  {
         ],
       },
     ],
-
     pagingConfig: {
       'start': 0,
       'length': 15,
@@ -116,16 +116,15 @@ export default class ContractRequestsTable extends Component  {
         'data': {},
       },
     },
-
     columns: [
       {
         title: 'Отчетный период(Год)',
-        dataIndex: 'request_year',
+        dataIndex: 'periodYear.year',
         isVisible: true,
       },
       {
         title: 'Отчетный период(Месяц)',
-        dataIndex: 'request_month',
+        dataIndex: 'periodSection.periodSectionName',
         isVisible: true,
       },
       {
@@ -135,21 +134,20 @@ export default class ContractRequestsTable extends Component  {
       },
       {
         title: 'Дата',
-        dataIndex: 'data',
+        dataIndex: 'documentDate',
         isVisible: true,
       },
       {
         title: 'Оплата',
-        dataIndex: 'payments',
+        dataIndex: 'documentSum',
         isVisible: true,
       },
       {
         title: 'Подразделение',
-        dataIndex: 'podr',
+        dataIndex: 'division.name',
         isVisible: true,
       },
     ],
-
     buttons:[
       {
         type:'menu',
@@ -226,7 +224,58 @@ export default class ContractRequestsTable extends Component  {
         newContract:false
       },
     ],
+    gridParameters: {
+      start: 0,
+      length: 15,
+      entity: "paymentRequest",
+      alias: "paymentRequestList",
+      filter: {},
+      sort: [],
+    },
   };
+
+  /*
+  {
+    "start": 0,
+    "length": 20,
+    "entity": "paymentRequest",
+    "alias": "paymentRequestList"
+  }
+  */
+
+  onShowSizeChange = (current, pageSize) => {
+    const {dispatch} = this.props;
+    this.setState(prevState => ({
+      gridParameters: {
+        ...prevState.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }), () => dispatch({
+      type: 'universal2/getList',
+      payload: {
+        ...this.state.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
+  };
+
+  loadMainGridData = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: this.state.gridParameters,
+    }).then(()=>{
+      console.log(this.props.universal2.references.paymentRequest)
+    });
+  };
+
+  componentDidMount() {
+    this.loadMainGridData();
+  }
+
+
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
@@ -242,10 +291,10 @@ export default class ContractRequestsTable extends Component  {
     console.log(filters);
   };
 
-
   createConract = () => {
     this.props.createContract(this.state.selectedRowKeys);
   };
+
   contractform = () => {
     this.setState({
       newContract: !this.state.newContract
@@ -253,22 +302,30 @@ export default class ContractRequestsTable extends Component  {
   };
 
   render = () => {
+    const { universal2 } = this.props;
+
+    const paymentRequest = universal2.references[this.state.gridParameters.entity];
+
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-        <Menu.Item
+        {/*<Menu.Item
           key="1"
           onClick={()=>{
             //this.contractform();
             router.push('/contract/contractrequests/add');
           }}>
           Новый
-        </Menu.Item>
+        </Menu.Item>*/}
         <Menu.Item
-          key="2">
+          key="2"
+          disabled
+        >
           Открыть/Изменить
         </Menu.Item>
         <Menu.Item
-          key="3">
+          key="3"
+          disabled
+        >
           Удалить
         </Menu.Item>
       </Menu>}>
@@ -278,67 +335,70 @@ export default class ContractRequestsTable extends Component  {
       </Dropdown>,
     ];
 
-    return (<PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
-      <Card bodyStyle={{ padding: 5 }}>
-         <Row>
-          <Col sm={24} md={this.state.filterContainer}>
-            <Card
-              headStyle={{
-                padding: '0 14px',
-              }}
-              bodyStyle={{
-                padding: 5,
-              }}
-              style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-              type="inner"
-              title={formatMessage({ id: 'system.filter' })}
-              extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                icon={faTimes}/></Icon>}>
-              {this.state.filterContainer === 6 && <GridFilterCollapsible
-                clearFilter={this.clearFilter}
-                applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
-                filterForm={this.state.filterForm}
-                dateFormat={dateFormat}/>}
-            </Card>
-          </Col>
-          <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-            <SmartGridView
-              scroll={{ x: 'auto' }}
-              name={'ContractMain'}
-              columns={this.state.columns}
-              showTotal={true}
-              selectedRowCheckBox={true}
-              selectedRowKeys={this.state.selectedRowKeys}
-              showExportBtn={true}
-              addonButtons={addonButtons}
-              actionExport={() => {
-                console.log('export');
-              }}
-              dataSource={{
-                total: this.state.dataSource.length,
-                pageSize: this.state.pagingConfig.length,
-                page: this.state.pagingConfig.start + 1,
-                data: this.state.dataSource,
-              }}
-              onShowSizeChange={(pageNumber, pageSize) => {
-                console.log('on paging');
-              }}
-              onRefresh={() => {
-                console.log('onRefresh');
-              }}
-              onSearch={() => {
-                this.filterPanelState();
-              }}
-              onSelectCheckboxChange={(selectedRowKeys) => {
-                this.setState({
-                  selectedRowKeys: selectedRowKeys,
-                });
-              }}
-            />
-            <br/>
-          </Col>
-        </Row>
-      </Card>
+    return (
+      <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
+        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+          <Card bodyStyle={{ padding: 5 }}>
+             <Row>
+              <Col sm={24} md={this.state.filterContainer}>
+                <Card
+                  headStyle={{
+                    padding: '0 14px',
+                  }}
+                  bodyStyle={{
+                    padding: 5,
+                  }}
+                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+                  type="inner"
+                  title={formatMessage({ id: 'system.filter' })}
+                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+                    icon={faTimes}/></Icon>}>
+                  {this.state.filterContainer === 6 && <GridFilterCollapsible
+                    clearFilter={this.clearFilter}
+                    applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                    filterForm={this.state.filterForm}
+                    dateFormat={dateFormat}/>}
+                </Card>
+              </Col>
+              <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
+                <SmartGridView
+                  scroll={{ x: 'auto' }}
+                  name={'ContractRequestMain'}
+                  columns={this.state.columns}
+                  showTotal={true}
+                  selectedRowCheckBox={true}
+                  selectedRowKeys={this.state.selectedRowKeys}
+                  showExportBtn={true}
+                  addonButtons={addonButtons}
+                  actionExport={() => {
+                    console.log('export');
+                  }}
+                  dataSource={{
+                    total: paymentRequest ? paymentRequest.totalElements : 0,
+                    pageSize: this.state.gridParameters.length,
+                    page: this.state.gridParameters.start + 1,
+                    data: paymentRequest ? paymentRequest.content : [],
+                  }}
+                  onShowSizeChange={(pageNumber, pageSize) => {
+                    console.log('on paging');
+                  }}
+                  onRefresh={() => {
+                    console.log('onRefresh');
+                  }}
+                  onSearch={() => {
+                    this.filterPanelState();
+                  }}
+                  onSelectCheckboxChange={(selectedRowKeys) => {
+                    this.setState({
+                      selectedRowKeys: selectedRowKeys,
+                    });
+                  }}
+                />
+                <br/>
+              </Col>
+            </Row>
+          </Card>
+        </Spin>
       </PageHeaderWrapper>
     );
   };

@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Link from 'umi/link';
+import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 
 
 const TabPane = Tabs.TabPane;
@@ -135,7 +136,11 @@ class Actsadd extends Component {
       modal:false,
       ContractSumms:[],
       Contractpayment:[],
-      ShowClear: true
+      ShowClear: true,
+      DogovorModal: {
+        visible: false,
+        record: null
+      }
     }
   }
   deleteContract=()=>{
@@ -165,7 +170,6 @@ class Actsadd extends Component {
       },
     });
   })
-    console.log(this.props.location.state);
 }
 
   onChangeSumma=(e, d)=>{
@@ -194,6 +198,13 @@ class Actsadd extends Component {
     };
     return (
     <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
+      {this.state.DogovorModal.visible && <DogovorModal
+        onSelect={(record) => {
+          this.setState({ DogovorModal: { visible: false, record: record } });
+          console.log(this.state.DogovorModal.record)
+        }}
+        hide={() => this.setState({ DogovorModal: { visible: false } })
+        }/>}
       <Card
         headStyle={{ padding: 0 }}
         style={{padding:'10px'}}
@@ -206,6 +217,14 @@ class Actsadd extends Component {
             this.props.form.validateFields(
               (err, values) => {
                 if (!err) {
+
+                  if (this.state.DogovorModal.record) {
+                   values.contract = {
+                     id: this.state.DogovorModal.record.id
+                   }
+                   console.log(values);
+
+                  }
                   dispatch({
                     type: 'universal/saveobject',
                     payload: {
@@ -298,16 +317,46 @@ class Actsadd extends Component {
                   >
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
-                       <Form.Item {...formItemLayout} label="Номер">
+                      {this.props.location.state && <Form.Item {...formItemLayout} label="Номер">
                          {this.props.location.state &&
                          <Link
                            to={'/contract/counteragent/viewcontract?id='+this.props.location.state.data.id}
                          >Договор №{this.props.location.state.data.number}</Link>}
-                         
-                      </Form.Item>
+
+                      </Form.Item>}
+                      {!this.props.location.state &&
+                      <Form.Item {...formItemLayout} label="Родительский договор">
+                        {getFieldDecorator('contract.id', {
+                          rules: [{
+                            validator: (rule, value, callback) => {
+                              if (value !== null && value) {
+                                if (value.value !== null) {
+                                  callback();
+                                  return;
+                                } else {
+                                  callback('не заполнено');
+                                }
+                              }
+                              callback('не заполнено');
+                            },
+                          }],
+                        })(
+                          <LinkModal
+                            data={this.state.DogovorModal.record}
+                            onTarget={(record) => {
+                                  console.log(record);
+                            }}
+                            onDelete={() => {
+                              this.setState({ DogovorModal: { visible: false, record: null } });
+                            }}
+                            onClick={() => {
+                              this.setState({ DogovorModal: { visible: true } });
+                            }}>
+                          </LinkModal>)}
+                      </Form.Item>}
                       <Form.Item {...formItemLayout} label="Номер">
                         {getFieldDecorator('number', {
-                          initialValue: '',
+                          initialValue: null,
                           rules: [{ required: true, message: 'не заполнено'}],
                         })(
                           <Input style={{width:'50%'}}/>
@@ -327,7 +376,7 @@ class Actsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Отчетный период: год">
                         {getFieldDecorator('periodYear.id', {
-                          initialValue: '',
+                          initialValue: null,
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
@@ -342,7 +391,7 @@ class Actsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Отчетный период: месяц">
                         {getFieldDecorator('periodSection.id', {
-                          initialValue: '',
+                          initialValue: null,
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
@@ -357,7 +406,7 @@ class Actsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Подразделение">
                         {getFieldDecorator('divisions.id', {
-                          initialValue: '',
+                          initialValue: null,
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
@@ -371,7 +420,7 @@ class Actsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Примечание">
                         {getFieldDecorator('descr', {
-                          initialValue: '',
+                          initialValue: null,
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <TextArea rows={4}/>,

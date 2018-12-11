@@ -296,8 +296,9 @@ export default {
       });
     },
 
-    * getobject(payload, { call }) {
+    * getobject(payload, { call, put }) {
       const response = yield call(getObject, payload);
+
       yield put({
         type: 'getObjectReducer',
         payload: response,

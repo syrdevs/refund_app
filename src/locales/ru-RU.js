@@ -92,6 +92,7 @@ export default {
   'menu.contract.counteragent.contractView': 'Договор',
   'menu.contract.counteragent.viewcounteragent': 'Просмотр',
   'menu.contract.counteragent.viewcounteragent.title':"Просмотр договора",
+  'menu.contract.counteragent.editcounteragent.title':'Изменение договора',
   'menu.contract.counteragent.contract.headTitle': 'Создание договора',
   'menu.requests.nulldate': 'Установить',
   'menu.requests.servicenote': 'Cформировать служебную записку',

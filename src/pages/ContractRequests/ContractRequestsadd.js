@@ -276,6 +276,7 @@ class ContractRequestsadd extends Component {
       ContractSumms: [],
       Contractpayment: [],
       ShowClear: true,
+      data:[]
     };
   }
   deleteContract = () => {
@@ -292,7 +293,7 @@ class ContractRequestsadd extends Component {
     const DicArr = [
       'periodYear',
       'periodSection',
-      'organization',
+      'divisions',
       'medicalType',
       'paymentRequestType',
     ];
@@ -306,49 +307,8 @@ class ContractRequestsadd extends Component {
         },
       });
     });
-
-
-    /*  dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });
-      dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });
-      dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });*/
   }
-  showModal = () => {
-    this.setState({
-      modal: true,
-    });
-  };
-  CancelModal = () => {
-    this.setState({
-      modal: false,
-    });
-  };
+
   render() {
     const title = { fontSize: '12px' };
     const addonbuttons = [<Button
@@ -400,7 +360,97 @@ class ContractRequestsadd extends Component {
               this.props.form.validateFields(
                 (err, values) => {
                   if (!err) {
-                    this.props.tomain();
+                    //this.props.tomain();
+                    /*console.log(JSON.stringify({
+                      "entity": "paymentRequest",
+                      "data":
+                        {
+                          ...values,
+                          documentDate: values.documentDate.format("DD.MM.YYYY"),
+                          "paymentRequestItems": [
+                            {
+                              "contractItem": {
+                                "id": "ebbef7c1-25cf-4341-bbe2-cb0c6d391372"
+                              },
+                              "actItem": {
+                                "id": "95e6bfc3-d1d7-4e06-83da-c36287fc4356"
+                              },
+                              "activity": {
+                                "id": "32576777-c4a9-41c9-86c4-393bb29072ef"
+                              },
+                              "paymentRequestItemValues": [
+                                {
+                                  "valueSum": 0,
+                                  "sumRequested": 0,
+                                  "sumAdvanceTakeout": 0,
+                                  "value": 1,
+                                  "currencyType": {
+                                    "id": "5cd4e565-10da-4b79-8578-ffdd5a0d8270"
+                                  },
+                                  "measureUnit": {
+                                    "id": "be88fc85-e565-43cd-a14a-7cdd46828f4c"
+                                  },
+                                  "actItemValue": {
+                                    "id": "700db686-c0f3-4f19-ac07-1a839b1767e3"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                    }));*/
+                    dispatch({
+                      type: 'universal/saveobject',
+                      payload: {
+                        "entity": "paymentRequest",
+                        "data":
+                          {
+                            ...values,
+                            documentDate: values.documentDate.format("DD.MM.YYYY"),
+                            "documentSigneds": [],
+                            "documentAttacments": [],
+                            "paymentRequestItems": [
+                              {
+                                "contractItem": {
+                                  "id": "ebbef7c1-25cf-4341-bbe2-cb0c6d391372"
+                                },
+                                "actItem": {
+                                  "id": "95e6bfc3-d1d7-4e06-83da-c36287fc4356"
+                                },
+                                "activity": {
+                                  "id": "32576777-c4a9-41c9-86c4-393bb29072ef"
+                                },
+                                "paymentRequestItemValues": [
+                                  {
+                                    "valueSum": 0,
+                                    "sumRequested": 0,
+                                    "sumAdvanceTakeout": 0,
+                                    "value": 1,
+                                    "currencyType": {
+                                      "id": "5cd4e565-10da-4b79-8578-ffdd5a0d8270"
+                                    },
+                                    "measureUnit": {
+                                      "id": "be88fc85-e565-43cd-a14a-7cdd46828f4c"
+                                    },
+                                    "actItemValue": {
+                                      "id": "700db686-c0f3-4f19-ac07-1a839b1767e3"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                      },
+                    }).then(()=>{
+                      console.log(this.props.universal.saveanswer);
+                      //this.props.tomain();
+                      this.props.history.push({
+                        pathname: '/contract/acts/table',
+                        state: {
+                          data:this.state.selectedRowKeys
+                        },
+                      });
+                    });
                   }
                   else {
 
@@ -447,9 +497,9 @@ class ContractRequestsadd extends Component {
                   <Card style={{ marginLeft: '-10px' }}>
                     <div style={{ margin: '10px 0', maxWidth: '70%' }}>
                       <Form.Item {...formItemLayout} label="Вид заявки">
-                        {getFieldDecorator('contract_Type', {
+                        {getFieldDecorator('paymentRequestType.id', {
                           initialValue: '',
-                          rules: [{ required: true, message: 'не заполнено' }],
+                          rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
                             allowClear
@@ -469,7 +519,7 @@ class ContractRequestsadd extends Component {
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Дата">
 
-                        {getFieldDecorator('date-picker', {
+                        {getFieldDecorator('documentDate', {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
@@ -480,7 +530,7 @@ class ContractRequestsadd extends Component {
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Отчетный период: год">
-                        {getFieldDecorator('act_period_year', {
+                        {getFieldDecorator('periodYear.id', {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
@@ -495,7 +545,7 @@ class ContractRequestsadd extends Component {
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Отчетный период: месяц">
-                        {getFieldDecorator('act_period_month', {
+                        {getFieldDecorator('periodSection.id', {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
@@ -510,21 +560,21 @@ class ContractRequestsadd extends Component {
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Подразделение">
-                        {getFieldDecorator('podr', {
+                        {getFieldDecorator('divisions.id', {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
                           <Select
                             allowClear
                           >
-                            {this.props.universal.organization.content && this.props.universal.organization.content.map((item) => {
+                            {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
                               return <Select.Option key={item.id}>{item.name}</Select.Option>;
                             })}
                           </Select>,
                         )}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="Примечание">
-                        {getFieldDecorator('notes', {
+                        {getFieldDecorator('descr', {
                           initialValue: '',
                           rules: [{ required: false, message: 'не заполнено' }],
                         })(
@@ -534,6 +584,8 @@ class ContractRequestsadd extends Component {
                     </div>
                   </Card>
                 </TabPane>
+
+                {this.props.location.state.type === "act" &&
                 <TabPane tab="Акты"
                          key="acts"
                 >
@@ -570,7 +622,7 @@ class ContractRequestsadd extends Component {
                       showExportBtn={true}
                       showTotal={true}
                       hidePagination={true}
-                      columns={this.state.actcolumns}
+                      columns={this.props.location.state.columns}
                       actionColumns={[]}
                       sorted={true}
                       onSort={(column) => {
@@ -583,10 +635,10 @@ class ContractRequestsadd extends Component {
                         //console.log(record)
                       }}
                       dataSource={{
-                        total: this.state.actdata.length,
-                        pageSize: this.state.actdata.length,
+                        total: this.props.location.state.data.length,
+                        pageSize: this.props.location.state.data.length,
                         page: 1,
-                        data: this.state.actdata,
+                        data: this.props.location.state.data,
                       }}
                       onShowSizeChange={(pageNumber, pageSize) => {
                       }}
@@ -599,6 +651,8 @@ class ContractRequestsadd extends Component {
                     />
                   </Card>
                 </TabPane>
+                }
+                {this.props.location.state.type === "contract" &&
                 <TabPane tab="Договоры"
                          key="contracts"
                 >
@@ -646,6 +700,8 @@ class ContractRequestsadd extends Component {
                     />
                   </Card>
                 </TabPane>
+                }
+
                 <TabPane tab="Спецификация"
                          key="specifications"
                 >

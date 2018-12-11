@@ -268,7 +268,7 @@ class Actsadd extends Component {
                         }
                     },
                   }).then(()=>{
-                    console.log(this.props.universal.saveanswer);
+                    //console.log(this.props.universal.saveanswer);
                     this.props.tomain();
                   });
                 }
@@ -320,7 +320,7 @@ class Actsadd extends Component {
                       {this.props.location.state && <Form.Item {...formItemLayout} label="Номер">
                          {this.props.location.state &&
                          <Link
-                           to={'/contract/counteragent/viewcontract?id='+this.props.location.state.data.id}
+                           to={'/contract/contracts/acts/add/viewcontract?id='+this.props.location.state.data.id}
                          >Договор №{this.props.location.state.data.number}</Link>}
 
                       </Form.Item>}

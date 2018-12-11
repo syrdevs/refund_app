@@ -195,6 +195,11 @@ export default [
                 name: 'actadd',
                 component: './Acts/Actsadd',
               },
+              {
+                path: '/contract/contracts/acts/add/viewcontract',
+                name:"viewcontract",
+                component: './Acts/viewcontract',
+              },
 
             ],
           },

@@ -304,7 +304,70 @@ export default class ActsTable extends Component  {
           key="5"
           onClick={() =>
             {
-              router.push('/contract/acts/contractrequest/add');
+              //router.push('/contract/acts/contractrequest/add');
+              this.props.history.push({
+                pathname: '/contract/acts/contractrequest/add',
+                state: {
+                  data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+                  columns: [
+                    {
+                      title: 'Отчетный период(Год)',
+                      dataIndex: 'periodYear.year',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Отчетный период(Месяц)',
+                      dataIndex: 'periodSection.periodSectionName',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'БИН',
+                      dataIndex: 'contragent.bin',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Контрагент',
+                      dataIndex: 'contragent.organization',
+                      isVisible: true,
+                      width : 450,
+                    },
+                    {
+                      title: 'Договор',
+                      dataIndex: 'contract.number',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Номер',
+                      dataIndex: 'number',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Дата',
+                      dataIndex: 'documentDate',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Оплата',
+                      dataIndex: 'documentSum',
+                      isVisible: true,
+                      width : 150,
+                    },
+                    {
+                      title: 'Подразделение',
+                      dataIndex: 'division.name',
+                      isVisible: true,
+                      width : 120,
+                    },
+                  ],
+                  type: "act"
+                },
+              });
             }
           }
           disabled={this.state.selectedRowKeys.length === 0}>

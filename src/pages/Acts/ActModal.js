@@ -6,7 +6,9 @@ import { connect } from 'dva/index';
 
 const TabPane = Tabs.TabPane;
 
-
+@connect(({ universal2 }) => ({
+  universal2,
+}))
 export default class ActModal extends Component {
 
   constructor(props) {
@@ -40,6 +42,7 @@ export default class ActModal extends Component {
           title: 'Договор',
           dataIndex: 'contract_id',
           isVisible: true,
+          width: 120,
         },
         {
           title: 'Номер',
@@ -50,6 +53,7 @@ export default class ActModal extends Component {
           title: 'Дата',
           dataIndex: 'act_date',
           isVisible: true,
+          width: 120,
         },
         {
           title: 'Оплата',
@@ -90,23 +94,63 @@ export default class ActModal extends Component {
       ],
       selectedRowKeys: [],
       selectedRecord: {},
+      gridParameters: {
+        start: 0,
+        length: 15,
+        entity: "act",
+        alias: "actList",
+        filter: {},
+        sort: [],
+      },
     };
   }
+  onShowSizeChange = (current, pageSize) => {
+    const {dispatch} = this.props;
+    this.setState(prevState => ({
+      gridParameters: {
+        ...prevState.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }), () => dispatch({
+      type: 'universal2/getList',
+      payload: {
+        ...this.state.gridParameters,
+        start: current,
+        length: pageSize,
+      },
+    }));
+  };
+
+  loadMainGridData = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal2/getList',
+      payload: this.state.gridParameters,
+    }).then(()=>{
+    });
+  };
+
+  componentDidMount() {
+    this.loadMainGridData();
+  }
+
+
   cancelModal=()=>{
     this.props.onCancel();
-  }
-  componentDidMount() {
-
   }
   addAct=()=>{
     this.props.addAct(this.state.data.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1))
   }
 
   render() {
+    const { universal2 } = this.props;
+    const act = universal2.references[this.state.gridParameters.entity];
+
 
     return (<Modal
         style={{ top: 20 }}
-        width={800}
+        width={1200}
         title={'Список Актов'}
         okText={'Выбрать'}
         onCancel={() => this.cancelModal()}
@@ -115,53 +159,58 @@ export default class ActModal extends Component {
           //this.props.hide();
         }}
         visible={true}>
-      <SmartGridView
-        name={'actform'}
-        scroll={{ x: 'auto' }}
-        rowSelection={true}
-        hideFilterBtn={true}
-        hideRefreshBtn={true}
-        selectedRowCheckBox={true}
-        selectedRowKeys={this.state.selectedRowKeys}
-        onSelectCheckboxChange={(selectedRowKeys) => {
-          this.setState({ selectedRowKeys: selectedRowKeys });
-        }}
-        onSelectRow={(record, index) => {
-          this.setState({
-            selectedRecord: record,
-          });
-        }}
-        searchButton={false}
-        fixedBody={true}
-        rowKey={'id'}
-        loading={false}
-        fixedHeader={false}
-        showExportBtn={false}
-        columns={this.state.columns}
-        actionColumns={[]}
-        sorted={false}
-        showTotal={false}
-        addonButtons={[]}
-        actionExport={() => {}}
-        onSelectRow={(record, index) => {
-            this.setState({
-              selectedRow: record
-            })
-        }}
-        dataSource={{
-          total: this.state.data.length,
-          pageSize: 15,
-          page: 1,
-          data: this.state.data,
-        }}
-        onShowSizeChange={(pageNumber, pageSize) => {}}
-        onRefresh={() => {
+      <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+        <Card
+          bodyStyle={{ padding: 5 }}>
+            <SmartGridView
+                name={'actform'}
+                scroll={{ x: 'auto' }}
+                rowSelection={true}
+                hideFilterBtn={true}
+                hideRefreshBtn={true}
+                selectedRowCheckBox={true}
+                selectedRowKeys={this.state.selectedRowKeys}
+                onSelectCheckboxChange={(selectedRowKeys) => {
+                  this.setState({ selectedRowKeys: selectedRowKeys });
+                }}
+                onSelectRow={(record, index) => {
+                  this.setState({
+                    selectedRecord: record,
+                  });
+                }}
+                searchButton={false}
+                fixedBody={true}
+                rowKey={'id'}
+                loading={false}
+                fixedHeader={false}
+                showExportBtn={false}
+                columns={this.state.columns}
+                actionColumns={[]}
+                sorted={false}
+                showTotal={false}
+                addonButtons={[]}
+                actionExport={() => {}}
+                onSelectRow={(record, index) => {
+                    this.setState({
+                      selectedRow: record
+                    })
+                }}
+                dataSource={{
+                  total: act ? act.totalElements : 0,
+                  pageSize: this.state.gridParameters.length,
+                  page: this.state.gridParameters.start + 1,
+                  data: act ? act.content : [],
+                }}
+                onShowSizeChange={(pageNumber, pageSize) => {}}
+                onRefresh={() => {
+
+                }}
+                onSearch={() => {
 
         }}
-        onSearch={() => {
-
-        }}
-      />
+            />
+        </Card>
+      </Spin>
     </Modal>);
   }
 }

@@ -74,7 +74,7 @@ class CounterAgent extends Component {
           isVisible: true,
         },
       ],
-
+      selectedRecord: null,
       xsize: 'auto',
 
       gridParameters: {
@@ -161,13 +161,14 @@ class CounterAgent extends Component {
           Открыть/изменить
         </Menu.Item>
         <Menu.Item
-          disabled={hasRole(['ADMIN']) || this.state.selectedRowKeys.length === 0}
+          disabled={hasRole(['ADMIN']) || this.state.selectedRecord === null}
           key='register_document'
           onClick={() => {
             this.props.history.push({
               pathname: 'create',
               state: {
-                data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+                data: this.state.selectedRecord,
+                // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
               },
             });
 
@@ -191,12 +192,12 @@ class CounterAgent extends Component {
               name='CounterAgentPageColumns'
               scroll={{ x: this.state.xsize }}
               fixedBody
-              selectedRowCheckBox
+              //selectedRowCheckBox
               searchButton={this.state.searchButton}
-              selectedRowKeys={this.state.selectedRowKeys}
+              // selectedRowKeys={this.state.selectedRowKeys}
               rowKey={'id'}
               fixedHeader
-              rowSelection
+              //rowSelection
               showExportBtn={true}
               actionExport={() => {
               }}
@@ -215,8 +216,10 @@ class CounterAgent extends Component {
               onSelectCell={(cellIndex, cell) => {
 
               }}
-              onSelectRow={() => {
-
+              onSelectRow={(record) => {
+                this.setState({
+                  selectedRecord: record,
+                });
               }}
               onFilter={(filters) => {
 
@@ -228,9 +231,9 @@ class CounterAgent extends Component {
 
               }}
               onSelectCheckboxChange={(selectedRowKeys) => {
-                this.setState({
-                  selectedRowKeys: selectedRowKeys,
-                });
+                // this.setState({
+                //   selectedRowKeys: selectedRowKeys,
+                // });
               }}
             />
           </Spin>}

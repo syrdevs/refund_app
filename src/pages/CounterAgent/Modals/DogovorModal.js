@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card, Spin } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva/index';
 
-@connect(({ universal2 }) => ({
+@connect(({ universal2, loading }) => ({
   universal2,
+  loading: loading.effects['universal2/getList'],
 }))
 export default class DogovorModal extends Component {
   state = {
     selectedRecord: {},
-    columns:[
+    columns: [
       {
         title: 'Отчетный период',
         dataIndex: 'periodYear',
@@ -65,15 +66,15 @@ export default class DogovorModal extends Component {
     gridParameters: {
       start: 0,
       length: 15,
-      entity: "contract",
-      alias: "contractList",
+      entity: 'contract',
+      alias: 'contractList',
       filter: {},
       sort: [],
     },
   };
 
   onShowSizeChange = (current, pageSize) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     this.setState(prevState => ({
       gridParameters: {
         ...prevState.gridParameters,
@@ -96,6 +97,7 @@ export default class DogovorModal extends Component {
       payload: this.state.gridParameters,
     });
   };
+
   componentDidMount() {
     this.loadMainGridData();
   }
@@ -116,38 +118,39 @@ export default class DogovorModal extends Component {
         //this.props.hide();
       }}
       visible={true}>
-      <SmartGridView
-        scroll={{ x: 'auto' }}
-        name={'DogovorModal'}
-        columns={this.state.columns}
-        showTotal={true}
-        actionExport={() => {
-          console.log('export');
-        }}
-        dataSource={{
-          total: contracts ? contracts.totalElements : 0,
-          pageSize: this.state.gridParameters.length,
-          page: this.state.gridParameters.start + 1,
-          data: contracts ? contracts.content : [],
-        }}
-        onSelectRow={(record, index) => {
-          this.setState({
-            selectedRecord: record,
-          });
-        }}
-        onShowSizeChange={(pageNumber, pageSize) => {
-          console.log('on paging');
-        }}
-        onRefresh={() => {
-          console.log('onRefresh');
-        }}
-        onSearch={() => {
+      <Spin spinning={this.props.loading}>
+        <SmartGridView
+          scroll={{ x: 'auto' }}
+          name={'DogovorModal'}
+          columns={this.state.columns}
+          showTotal={true}
+          actionExport={() => {
+            console.log('export');
+          }}
+          dataSource={{
+            total: contracts ? contracts.totalElements : 0,
+            pageSize: this.state.gridParameters.length,
+            page: this.state.gridParameters.start + 1,
+            data: contracts ? contracts.content : [],
+          }}
+          onSelectRow={(record, index) => {
+            this.setState({
+              selectedRecord: record,
+            });
+          }}
+          onShowSizeChange={(pageNumber, pageSize) => {
+            console.log('on paging');
+          }}
+          onRefresh={() => {
+            console.log('onRefresh');
+          }}
+          onSearch={() => {
 
-        }}
-        onSelectCheckboxChange={(selectedRowKeys) => {
+          }}
+          onSelectCheckboxChange={(selectedRowKeys) => {
 
-        }}
-      />
+          }}
+        /></Spin>
     </Modal>);
   };
 }

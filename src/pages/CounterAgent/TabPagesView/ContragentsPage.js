@@ -65,7 +65,7 @@ export default class ContragentsPage extends Component {
           data: [{
             'id': '1',
             'code': '00052',
-            'name': 'ТОО TMI Company',
+            'name': 'ТОО Company',
             'bin': '861207303160',
             'address': 'Микрорайон 4, дом 34, кв 50',
             'currentContacts': '+77028596963',

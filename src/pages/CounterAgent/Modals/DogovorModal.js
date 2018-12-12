@@ -115,44 +115,46 @@ export default class DogovorModal extends Component {
       okText={'Выбрать'}
       onCancel={() => this.props.hide()}
       onOk={() => {
-        this.props.onSelect(this.state.selectedRecord);
-        //this.props.hide();
+        if (Object.keys(this.state.selectedRecord).length > 0)
+          this.props.onSelect(this.state.selectedRecord);
+        else this.props.hide();
       }}
       visible={true}>
       <Spin spinning={this.props.loading}>
         <div className={style.DogovorModal}>
-        <SmartGridView
-          scroll={{ x: 'auto', y: 300 }}
-          name={'DogovorModal'}
-          columns={this.state.columns}
-          showTotal={true}
-          actionExport={() => {
-            console.log('export');
-          }}
-          dataSource={{
-            total: contracts ? contracts.totalElements : 0,
-            pageSize: this.state.gridParameters.length,
-            page: this.state.gridParameters.start + 1,
-            data: contracts ? contracts.content : [],
-          }}
-          onSelectRow={(record, index) => {
-            this.setState({
-              selectedRecord: record,
-            });
-          }}
-          onShowSizeChange={(pageNumber, pageSize) => {
-            console.log('on paging');
-          }}
-          onRefresh={() => {
-            console.log('onRefresh');
-          }}
-          onSearch={() => {
+          <SmartGridView
+            scroll={{ x: 'auto', y: 300 }}
+            name={'DogovorModal'}
+            columns={this.state.columns}
+            showTotal={true}
+            actionExport={() => {
+              console.log('export');
+            }}
+            dataSource={{
+              total: contracts ? contracts.totalElements : 0,
+              pageSize: this.state.gridParameters.length,
+              page: this.state.gridParameters.start + 1,
+              data: contracts ? contracts.content : [],
+            }}
+            onSelectRow={(record, index) => {
+              this.setState({
+                selectedRecord: record,
+              });
+            }}
+            onShowSizeChange={(pageNumber, pageSize) => {
+              console.log('on paging');
+            }}
+            onRefresh={() => {
+              console.log('onRefresh');
+            }}
+            onSearch={() => {
 
-          }}
-          onSelectCheckboxChange={(selectedRowKeys) => {
+            }}
+            onSelectCheckboxChange={(selectedRowKeys) => {
 
-          }}
-        /></div></Spin>
+            }}
+          /></div>
+      </Spin>
     </Modal>);
   };
 }

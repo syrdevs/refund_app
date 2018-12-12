@@ -300,7 +300,7 @@ export default class InfoPage extends Component {
             <LinkModal
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
-                console.log(record);
+                window.open("viewcontract?id=1");
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });

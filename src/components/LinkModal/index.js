@@ -41,12 +41,13 @@ export default class LinkModal extends Component {
   render = () => {
 
 
-
     let fileName = '';
 
     if (this.props.data && this.state.value === null) {
-      this.handleChange(this.props.data);
-      fileName = `№ ${this.props.data.number} от ${this.props.data.documentDate}`;
+      if (this.props.data.number) {
+        this.handleChange(this.props.data);
+        fileName = `№ ${this.props.data.number} от ${this.props.data.documentDate}`;
+      }
     }
 
     if (this.state.value !== null) {

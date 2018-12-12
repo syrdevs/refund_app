@@ -198,7 +198,7 @@ export default class InfoPage extends Component {
           })(
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
-                      if (option.props.prop.code === '3') {
+                      if (option.props.prop.code === '2') {
                         this.setState({ contractAlterationReason: true });
                       } else {
                         this.setState({ contractAlterationReason: false });

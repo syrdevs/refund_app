@@ -122,11 +122,12 @@ export default class CounterAgentEdit extends Component {
 
     if (data.parentContract) {
       sendModel.data.parentContract = {
-        id: data.parentContract.value.id,
+        id: data.parentContract.id,
       };
     }
 
-    if (data.division) {
+
+    if (data.divisions) {
       sendModel.data.division = {
         id: data.divisions,
       };
@@ -156,9 +157,13 @@ export default class CounterAgentEdit extends Component {
     dispatch({
       type: 'universal/saveobject',
       payload: sendModel,
-    }).catch((res) => {
-      console.log(res);
-    });
+    }).then(()=>{
+      Modal.info({
+        title: 'Информация',
+        content: 'Изменения были успешно сохранены',
+      });
+      reduxRouter.push("/contract/contracts/table");
+    })
 
   };
 

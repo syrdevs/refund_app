@@ -431,7 +431,7 @@ export default class ActsTable extends Component  {
                     onRefresh={() => {
                     }}
                     onSearch={() => {
-                      this.filterPanelState();
+                      //this.filterPanelState();
                     }}
                     onSelectCheckboxChange={(selectedRowKeys) => {
                       this.setState({

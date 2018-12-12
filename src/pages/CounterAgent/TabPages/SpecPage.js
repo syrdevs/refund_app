@@ -251,9 +251,15 @@ class SpecPage extends Component {
                   message: this.state.validatemessage,
                 }],
               })(
-                <Input name={'unit' + record.key} onChange={(e) => {
-                  this.identValue(e.target.value, record, 'unit', 'identities');
-                }}/>)}
+                <Select name={'unit' + record.key} style={{ width: 350 }} onChange={(e) => {
+                  this.identValue(e, record, 'unit', 'identities');
+                //this.identValue(e.target.value, record, 'unit', 'identities');
+              }}>
+                {this.props.universal.measureUnit.content && this.props.universal.measureUnit.content.map((item) => {
+                  return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                })}
+                </Select>,
+              )}
             </FormItem>);
         },
       },
@@ -418,6 +424,14 @@ class SpecPage extends Component {
         "start":0,
         "length":1000,
         "entity":"activityList"
+      },
+    });
+    dispatch({
+      type: 'universal/getmeasureUnit',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"measureUnit"
       },
     });
   }

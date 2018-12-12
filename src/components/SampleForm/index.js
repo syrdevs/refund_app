@@ -110,8 +110,8 @@ const RendetField =({name, label, type, getFieldDecorator, validatemessage, refe
             }],
           })(
             <Select  key={name} style={{marginLeft:'10px', width:'95%'}} name={name}>
-              {references.knp && references.knp.map((item) => {
-                return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+              {references && references.map((item) => {
+                return <Select.Option key={item.id}>{item.name}</Select.Option>;
               })}
             </Select>)}
         </FormItem>
@@ -155,10 +155,12 @@ const RendetField =({name, label, type, getFieldDecorator, validatemessage, refe
   }
 }
 
-@connect(({ references, loading }) => ({
+@connect(({ references, universal, loading }) => ({
   references,
+  universal,
   loadingData: loading.effects['references/load'],
 }))
+
 class SampleForm extends Component {
   constructor(props) {
     super(props);
@@ -298,8 +300,8 @@ class SampleForm extends Component {
                       }],
                     })(
                       <Select name={'identitytype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'identitytype', 'identities')}}>
-                        {this.props.references.knp && this.props.references.knp.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                        {this.props.universal.identifierType.content && this.props.universal.identifierType.content.map((item) => {
+                          return <Select.Option key={item.id}>{item.name}</Select.Option>;
                         })}
                       </Select>
                     )}
@@ -495,12 +497,7 @@ class SampleForm extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <Select name={'contacttype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'contacttype', "contacts")}}>
-                      {this.props.references.knp && this.props.references.knp.map((item) => {
-                        return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                      })}
-                    </Select>
-                  )}
+                    <Input name={'contacttype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'contacttype', "contacts")}}/>)}
                 </FormItem>)
             },
           },
@@ -670,8 +667,8 @@ class SampleForm extends Component {
                       }],
                     })(
                       <Select name={'currency'+record.key} style={{ width: 150 }} onChange={(e)=>{this.identValue(e, record, 'currency', "banks")}}>
-                        {this.props.references.knp && this.props.references.knp.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                        {this.props.universal.currencyType.content && this.props.universal.currencyType.content.map((item) => {
+                          return <Select.Option key={item.id}>{item.name}</Select.Option>;
                         })}
                       </Select>
                     )}
@@ -753,12 +750,7 @@ class SampleForm extends Component {
                         message: this.state.validatemessage,
                       }],
                     })(
-                      <Select name={'position'+record.key} style={{ width: 150 }} onChange={(e)=>{this.identValue(e, record, 'position', "responses")}}>
-                        {this.props.references.knp && this.props.references.knp.map((item) => {
-                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                        })}
-                      </Select>
-                    )}
+                      <Input name={'position'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'position', "responses")}}/>)}
                   </FormItem>)
               },
             },
@@ -978,6 +970,40 @@ class SampleForm extends Component {
       type: 'references/load',
       code: 'knp',
     });
+    /*identifierType: {},
+       currencyType: {},
+       legalForm: {},*/
+
+    dispatch({
+      type: 'universal/getidentifierType',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"identifierType"
+      },
+    }).then(()=>{
+      console.log(this.props.universal)
+    });
+
+
+    dispatch({
+      type: 'universal/getcurrencyType',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"currencyType"
+      },
+    });
+
+
+    dispatch({
+      type: 'universal/getlegalForm',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"legalForm"
+      },
+    });
   }
 
   selecttypeagent = (e) => {
@@ -1181,7 +1207,7 @@ class SampleForm extends Component {
                             type={content.type}
                             getFieldDecorator={getFieldDecorator}
                             validatemessage={this.state.validatemessage}
-                            references={this.props.references}
+                            references={this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []}
                           />
                         )})}
                       </Card>
@@ -1370,3 +1396,18 @@ export default Form.create()(SampleForm);
       type: 'combobox',
     }
   ],key: '6' },*/
+/*{/!*
+<Select name={'contacttype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'contacttype', "contacts")}}>
+                      {this.props.references.knp && this.props.references.knp.map((item) => {
+                        return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                      })}
+                    </Select>*!/}*/
+
+
+
+/*{/!*<Select name={'position'+record.key} style={{ width: 150 }} onChange={(e)=>{this.identValue(e, record, 'position', "responses")}}>
+                        {this.props.references.knp && this.props.references.knp.map((item) => {
+                          return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                        })}
+                      </Select>
+                    )}*!/}*/

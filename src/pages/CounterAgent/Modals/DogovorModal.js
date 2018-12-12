@@ -3,6 +3,7 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card, Spin } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva/index';
+import style from './ContragentModalStyle.less';
 
 @connect(({ universal2, loading }) => ({
   universal2,
@@ -119,6 +120,7 @@ export default class DogovorModal extends Component {
       }}
       visible={true}>
       <Spin spinning={this.props.loading}>
+        <div className={style.DogovorModal}>
         <SmartGridView
           scroll={{ x: 'auto', y: 300 }}
           name={'DogovorModal'}
@@ -150,7 +152,7 @@ export default class DogovorModal extends Component {
           onSelectCheckboxChange={(selectedRowKeys) => {
 
           }}
-        /></Spin>
+        /></div></Spin>
     </Modal>);
   };
 }

@@ -67,6 +67,11 @@ export default {
     medicalType: {},
     paymentRequestType: {},
     divisions: {},
+    activity: {},
+    measureUnit: {},
+    identifierType: {},
+    currencyType: {},
+    legalForm: {},
     saveanswer: {},
     getObjectData: {},
     counterAgentData: {},
@@ -290,6 +295,49 @@ export default {
         payload: response,
       });
     },
+    * getactivity(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactivityReducer',
+        payload: response,
+      });
+    },
+    * getmeasureUnit(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicmeasureUnitReducer',
+        payload: response,
+      });
+    },
+    //measureUnit
+    /*identifierType: {},
+    currencyType: {},
+    legalForm: {},*/
+
+    * getidentifierType(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicidentifierTypeReducer',
+        payload: response,
+      });
+    },
+
+    * getcurrencyType(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'diccurrencyTypeReducer',
+        payload: response,
+      });
+    },
+
+    * getlegalForm(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'diclegalFormReducer',
+        payload: response,
+      });
+    },
+
     * saveobject(payload, { call, put }) {
       const response = yield call(saveObject, payload);
       yield put({
@@ -511,6 +559,43 @@ export default {
         divisions: payload,
       };
     },
+    dicactivityReducer(state, { payload }) {
+      return {
+        ...state,
+        activity: payload,
+      };
+    },
+    dicmeasureUnitReducer(state, { payload }) {
+      return {
+        ...state,
+        measureUnit: payload,
+      };
+    },
+
+
+
+    dicidentifierTypeReducer(state, { payload }) {
+      return {
+        ...state,
+        identifierType: payload,
+      };
+    },
+    diccurrencyTypeReducer(state, { payload }) {
+      return {
+        ...state,
+        currencyType: payload,
+      };
+    },
+    diclegalFormReducer(state, { payload }) {
+      return {
+        ...state,
+        legalForm: payload,
+      };
+    },
+    /*identifierType: {},
+   currencyType: {},
+   legalForm: {},*/
+
     saveObjectReducer(state, { payload }) {
       return {
         ...state,

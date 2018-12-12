@@ -121,13 +121,13 @@ class Actsadd extends Component {
       ],
       data: [
         {
-          key: 1, id:"123qwe111", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 1, id:"123qwe111", code: 'АПП.ПСМП', activity: 'Первичная медико-санитарная медицинская помощь', present_payment: 10456, accept_payment:10456, prepaid:2150, total:20430
         },
         {
-          key: 2, id:"123qwe222", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 2, id:"123qwe222", code: 'АПП.ПСМПС', activity: 'Первичная медико-санитарная медицинская помощь сельскому населению', present_payment: 14504, accept_payment:10456, prepaid:5200, total:10456
         },
         {
-          key: 3, id:"123qwe333", code: '123456', activity: 'Медицинское учереждение', present_payment: 10456, accept_payment:10456, prepaid:2500, total:10456
+          key: 3, id:"123qwe333", code: 'АПП.ДКП', activity: 'Диагностическо-консультативная помощь', present_payment: 10566, accept_payment:14033, prepaid:5020, total:14245
         },
       ],
       ContractSelect: [],
@@ -316,13 +316,13 @@ class Actsadd extends Component {
                   >
                   <Card style={{marginLeft: '-10px'}}>
                     <div style={{margin:'10px 0', maxWidth:'70%'}}>
-                      {this.props.location.state && <Form.Item {...formItemLayout} label="Номер">
+                      {this.props.location.state && <div>
                          {this.props.location.state &&
                          <Link
                            to={'/contract/contracts/acts/add/viewcontract?id='+this.props.location.state.data.id}
                          >Договор №{this.props.location.state.data.number}</Link>}
 
-                      </Form.Item>}
+                      </div>}
                       {!this.props.location.state &&
                       <Form.Item {...formItemLayout} label="Родительский договор">
                         {getFieldDecorator('contract.id', {

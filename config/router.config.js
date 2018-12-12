@@ -201,8 +201,8 @@ export default [
                 component: './Acts/viewcontract',
               },
               {
-                path: '/contract/contracts/acts/add/viewcontract/payment',
-                name: 'requestadd',
+                path: '/contract/contracts/payment/add',
+                name: 'paymentadd',
                 component: './ContractRequests/ContractRequestsadd',
               },
 

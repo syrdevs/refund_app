@@ -324,7 +324,7 @@ export default class ContractTable extends Component {
           onClick={()=>{
             ///contract/contracts/acts/add/viewcontract/payment
             this.props.history.push({
-              pathname: '/contract/contracts/acts/add/viewcontract/payment',
+              pathname: '/contract/contracts/payment/add',
               state: {
                 data:[this.state.selectedRowKeys],
                 columns: [

@@ -67,6 +67,7 @@ export default {
     medicalType: {},
     paymentRequestType: {},
     divisions: {},
+    activity: {},
     saveanswer: {},
     getObjectData: {},
     counterAgentData: {},
@@ -290,6 +291,13 @@ export default {
         payload: response,
       });
     },
+    * getactivity(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicactivityReducer',
+        payload: response,
+      });
+    },
     * saveobject(payload, { call, put }) {
       const response = yield call(saveObject, payload);
       yield put({
@@ -509,6 +517,12 @@ export default {
       return {
         ...state,
         divisions: payload,
+      };
+    },
+    dicactivityReducer(state, { payload }) {
+      return {
+        ...state,
+        activity: payload,
       };
     },
     saveObjectReducer(state, { payload }) {

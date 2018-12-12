@@ -71,7 +71,6 @@ class Actsadd extends Component {
         {
           title: 'Принято к оплате (₸)',
           dataIndex: 'accept_payment',
-          isVisible: true,
           order: 2,
           width: 200,
           key: 'accept_payment',

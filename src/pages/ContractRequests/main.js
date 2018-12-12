@@ -386,7 +386,7 @@ export default class ContractRequestsTable extends Component  {
                     console.log('onRefresh');
                   }}
                   onSearch={() => {
-                    this.filterPanelState();
+                  //  this.filterPanelState();
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
                     this.setState({

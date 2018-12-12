@@ -3,6 +3,7 @@ import { Modal, Tabs, Table, Button, Spin, Card } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import SmartGridView from '../../components/SmartGridView';
 import { connect } from 'dva/index';
+import style from '../CounterAgent/Modals/ContragentModalStyle.less';
 
 const TabPane = Tabs.TabPane;
 
@@ -20,50 +21,57 @@ export default class ActModal extends Component {
       columns: [
         {
           title: 'Отчетный период(Год)',
-          dataIndex: 'act_period_year',
+          dataIndex: 'periodYear.year',
           isVisible: true,
+          width : 150,
         },
         {
           title: 'Отчетный период(Месяц)',
-          dataIndex: 'act_period_month',
+          dataIndex: 'periodSection.periodSectionName',
           isVisible: true,
+          width : 150,
         },
         {
           title: 'БИН',
-          dataIndex: 'bin',
+          dataIndex: 'contragent.bin',
           isVisible: true,
+          width : 150,
         },
         {
           title: 'Контрагент',
-          dataIndex: 'counteragent',
+          dataIndex: 'contragent.organization',
           isVisible: true,
+          width : 800,
         },
         {
           title: 'Договор',
-          dataIndex: 'contract_id',
+          dataIndex: 'contract.number',
           isVisible: true,
-          width: 120,
+          width : 150,
         },
         {
           title: 'Номер',
           dataIndex: 'number',
           isVisible: true,
+          width : 150,
         },
         {
           title: 'Дата',
-          dataIndex: 'act_date',
+          dataIndex: 'documentDate',
           isVisible: true,
-          width: 120,
+          width : 150,
         },
         {
           title: 'Оплата',
-          dataIndex: 'payment',
+          dataIndex: 'documentSum',
           isVisible: true,
+          width : 150,
         },
         {
           title: 'Подразделение',
-          dataIndex: 'podr',
+          dataIndex: 'division.name',
           isVisible: true,
+          width : 120,
         },
       ],
       data: [
@@ -162,9 +170,10 @@ export default class ActModal extends Component {
       <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
         <Card
           bodyStyle={{ padding: 5 }}>
+          <div className={style.SmartGridView}>
             <SmartGridView
                 name={'actform'}
-                scroll={{ x: 'auto' }}
+                scroll={{ x: '2000' }}
                 rowSelection={true}
                 hideFilterBtn={true}
                 hideRefreshBtn={true}
@@ -209,6 +218,7 @@ export default class ActModal extends Component {
 
         }}
             />
+          </div>
         </Card>
       </Spin>
     </Modal>);

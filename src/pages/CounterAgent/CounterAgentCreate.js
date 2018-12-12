@@ -132,7 +132,7 @@ export default class CounterAgentCreate extends Component {
       };
     }
 
-    if (data.division) {
+    if (data.divisions) {
       sendModel.data.division = {
         id: data.divisions,
       };
@@ -162,8 +162,12 @@ export default class CounterAgentCreate extends Component {
     dispatch({
       type: 'universal/saveobject',
       payload: sendModel,
-    }).catch((res) => {
-      console.log(res);
+    }).then((res) => {
+      Modal.info({
+        title: 'Информация',
+        content: 'Договор успешно создан',
+      });
+      reduxRouter.push("/contract/contracts/table");
     });
 
 

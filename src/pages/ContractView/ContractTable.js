@@ -304,6 +304,8 @@ export default class ContractTable extends Component {
   };
   clearFilter = () => {
     //console.log('clear filter');
+
+    
   };
   applyFilter = (filters) => {
     // console.log(filters);

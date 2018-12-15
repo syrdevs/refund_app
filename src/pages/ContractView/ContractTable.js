@@ -35,8 +35,9 @@ import ContractNew from './ContractNew';
 const dateFormat = 'DD.MM.YYYY';
 
 
-@connect(({ universal2 }) => ({
+@connect(({ universal2, loading }) => ({
   universal2,
+  loadingData: loading.effects['universal2/getList'],
 }))
 export default class ContractTable extends Component {
   state = {
@@ -134,6 +135,7 @@ export default class ContractTable extends Component {
         title: 'Контрагент',
         dataIndex: 'contragent.organization',
         isVisible: true,
+        width: 360,
       },
       {
         title: 'Вид договора',
@@ -174,8 +176,7 @@ export default class ContractTable extends Component {
         title: 'Файлы',
         dataIndex: 'documentAttachmentsCount',
         isVisible: true,
-      },
-
+      }
     ],
     fcolumn: [
       {
@@ -189,7 +190,7 @@ export default class ContractTable extends Component {
               color: '#1890ff',
               textDecoration: 'underline',
               cursor: 'pointer',
-            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>
+            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>;
           }
         },
       },
@@ -204,7 +205,7 @@ export default class ContractTable extends Component {
               color: '#1890ff',
               textDecoration: 'underline',
               cursor: 'pointer',
-            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>
+            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
           }
           //***
           ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
@@ -221,7 +222,7 @@ export default class ContractTable extends Component {
               color: '#1890ff',
               textDecoration: 'underline',
               cursor: 'pointer',
-            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>
+            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>;
           }
         },
       },
@@ -305,7 +306,7 @@ export default class ContractTable extends Component {
   clearFilter = () => {
     //console.log('clear filter');
 
-    
+
   };
   applyFilter = (filters) => {
     // console.log(filters);
@@ -355,19 +356,19 @@ export default class ContractTable extends Component {
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         {/*<Menu.Item*/}
-          {/*key="1"*/}
-          {/*onClick={() => {*/}
-            {/*router.push('/contract/counteragent/create');*/}
-          {/*}}>*/}
-          {/*Новый*/}
+        {/*key="1"*/}
+        {/*onClick={() => {*/}
+        {/*router.push('/contract/counteragent/create');*/}
+        {/*}}>*/}
+        {/*Новый*/}
         {/*</Menu.Item>*/}
         <Menu.Item
-          disabled={this.state.selectedRowKeys === null}
+          disabled={this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
           onClick={() => {
             this.props.history.push({
-              pathname: '/contract/counteragent/edit',
+              pathname: '/contract/counteragent/editcontract',
               state: {
-                data: this.state.selectedRowKeys,
+                data: this.state.selectedRowKeys[0],
               },
             });
           }}
@@ -450,7 +451,7 @@ export default class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            router.push('/contract/contracts/acts/view?contractId=' + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id );
+            router.push('/contract/contracts/acts/view?contractId=' + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
             /* this.props.history.push({
                pathname: '/contract/contracts/acts/add',
                state: {
@@ -472,7 +473,7 @@ export default class ContractTable extends Component {
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>
-          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
             <Row>
               <Col sm={24} md={this.state.filterContainer}>
                 <Card
@@ -496,7 +497,7 @@ export default class ContractTable extends Component {
               </Col>
               <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
                 <SmartGridView
-                  scroll={{ x: 'auto' }}
+                  scroll={{ x: 2100}}
                   name={'ContractMain'}
                   columns={this.state.columns}
                   showTotal={true}
@@ -514,11 +515,9 @@ export default class ContractTable extends Component {
                     page: this.state.gridParameters.start + 1,
                     data: contracts ? contracts.content : [],
                   }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                    // console.log('on paging');
-                  }}
+                  onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                   onRefresh={() => {
-                    // console.log('onRefresh');
+                    this.loadMainGridData();
                   }}
                   onSearch={() => {
                     this.filterPanelState();

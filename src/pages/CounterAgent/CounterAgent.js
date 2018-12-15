@@ -34,8 +34,9 @@ function hasRole(roles) {
 }
 
 
-@connect(({ universal2 }) => ({
+@connect(({ universal2, loading }) => ({
   universal2,
+  loadingData: loading.effects['universal2/getList'],
 }))
 class CounterAgent extends Component {
   constructor(props) {
@@ -51,10 +52,11 @@ class CounterAgent extends Component {
         }, {
           title: 'Наименование/Имя',
           dataIndex: 'name',
+          width: 360,
           isVisible: true,
         }, {
           title: 'Идентификатор',
-          dataIndex: 'idendifier.value',
+          dataIndex: 'idendifier.identifiervalue',
           isVisible: true,
         }, {
           title: 'Адрес',
@@ -142,6 +144,8 @@ class CounterAgent extends Component {
     const { universal2 } = this.props;
     const counterData = universal2.references[this.state.gridParameters.entity];
 
+    console.log(universal2);
+
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         <Menu.Item
@@ -171,7 +175,6 @@ class CounterAgent extends Component {
                 // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
               },
             });
-
           }}>
           Создать договор
         </Menu.Item>
@@ -187,7 +190,7 @@ class CounterAgent extends Component {
         <Col sm={24} md={this.state.tablecont}>
           {this.state.searchercont === 8 && <DataDiv/>}
           {!this.state.isForm &&
-          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
             <SmartGridView
               name='CounterAgentPageColumns'
               scroll={{ x: this.state.xsize }}

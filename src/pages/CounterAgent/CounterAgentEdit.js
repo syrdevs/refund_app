@@ -38,16 +38,18 @@ export default class CounterAgentEdit extends Component {
       },
     });
 
-    if (this.props.location.state) {
-      dispatch({
-        type: 'universal/getobject',
-        payload: {
-          'entity': 'contract',
-          'alias': null,
-          'id': this.props.location.state.data.id,
-        },
-      });
-    }
+    console.log(this.props);
+
+    // if (this.props.location.state) {
+    //   dispatch({
+    //     type: 'universal/getobject',
+    //     payload: {
+    //       'entity': 'contract',
+    //       'alias': null,
+    //       'id': this.props.location.state.data.id,
+    //     },
+    //   });
+    // }
 
     // if (this.props.location.state) {
     //
@@ -193,7 +195,7 @@ export default class CounterAgentEdit extends Component {
             htmlType="submit">Сохранить</Button>, <Button
             style={{ marginLeft: '5px' }}
             onClick={() => {
-
+              const { dispatch } = this.props;
               dispatch({
                 type: 'universal/clearData',
                 payload: {

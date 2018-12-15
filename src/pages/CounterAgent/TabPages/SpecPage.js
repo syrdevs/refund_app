@@ -18,6 +18,7 @@ import {
   LocaleProvider,
   Badge,
 } from 'antd';
+import Guid from '@/utils/Guid';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import moment from 'moment/moment';
 import { connect } from 'dva/index';
@@ -110,154 +111,128 @@ function momentDefine() {
 
 }
 
-const RenderField = ({ name, label, type, getFieldDecorator, validatemessage, references }) => {
-  switch (type) {
-    case 'combobox': {
-      return (
-        <FormItem
-          style={{ marginBottom: '0px' }}
-          label={label}
 
-        >
-          {getFieldDecorator(name, {
-            rules: [{
-              required: true,
-              message: validatemessage,
-            }],
-          })(
-            <Select key={name} style={{ marginLeft: '10px', width: '95%' }} name={name}>
-              {references.knp && references.knp.map((item) => {
-                return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-              })}
-            </Select>)}
-        </FormItem>
-      );
-    }
-    case 'text': {
-      return (
-        <FormItem
-          style={{ marginBottom: '0px' }}
-          key={name}
-          label={label}
-        >
-          {getFieldDecorator(name, {
-            rules: [{
-              required: true,
-              message: validatemessage,
-            }],
-            initialValue: '',
-          })(
-            <Input key={name} style={{ marginLeft: '10px', width: '95%' }} name={name}/>)}
-        </FormItem>
-      );
-    }
-    case 'datePicker': {
-      return (
-        <FormItem
-          style={{ marginBottom: '0px' }}
-          label={label}
-        >
-          {getFieldDecorator(name, {
-            rules: [{
-              required: true,
-              message: validatemessage,
-            }],
-            initialValue: '',
-          })(
-            <DatePicker style={{ marginLeft: '10px', width: '95%' }} name={name} format={'DD.MM.YYYY'}/>,
-          )}
-        </FormItem>
-      );
-    }
-    default:
-      break;
-  }
-};
-
-@connect(({ references, universal, loading }) => ({
-  references,
-  universal,
-  loadingData: loading.effects['references/load'],
+@connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects['universal2/getList'],
 }))
 
 class SpecPage extends Component {
   state = {
-    /*
-    * Код 10
-Вид деятельности 15
-Единица 15
-Количество 15
-Тариф (тг) 10
-Сумма (тг) 10
-Аванс (тг) 10
-*/
-    validatemessage:"не заполнено",
+    validatemessage: 'не заполнено',
     columns: [
       {
         title: 'Код',
-        dataIndex: 'code',
+        dataIndex: 'activity.code',
         width: '5%',
         render: (text, record) => {
+
+
           return (
-            <FormItem
-            >
-              {this.props.form.getFieldDecorator('code' + record.key, {
+            <FormItem>
+              {this.props.form.getFieldDecorator('spespage.code' + record.key, {
                 rules: [{
-                  required: true,
+                  required: false,
                   message: this.state.validatemessage,
                 }],
+                initialValue: text,
               })(
-                <Input name={'code' + record.key} onChange={(e) => {
-                  this.identValue(e.target.value, record, 'code', 'identities');
-                }}/>)}
+                <Input name={'code' + record.key}
+                       onChange={(e) => {
+                         //this.identValue(e.target.value, record, 'code', 'identities');
+                       }
+
+                       }/>)}
             </FormItem>);
         },
-      }, {
+      },
+      {
         title: 'Вид деятельности',
-        dataIndex: 'type_activities',
+        dataIndex: 'activity.name',
         type: 'combobox',
         width: '30%',
         render: (text, record) => {
+
+
           return (
             <FormItem>
-              {this.props.form.getFieldDecorator('type_activities' + record.key, {
+              {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
                 rules: [{
-                  required: true,
+                  required: false,
                   message: this.state.validatemessage,
                 }],
               })(
-                <Select name={'type_activities' + record.key} style={{ width: 350 }} onChange={(e) => {
-                  this.identValue(e, record, 'type_activities', 'identities');
-                }}>
-                  {this.props.universal.activity.content && this.props.universal.activity.content.map((item) => {
-                    return <Select.Option key={item.activity.id}>{item.activity.name}</Select.Option>;
-                  })}
+                <Select
+                  name={'activity' + record.key}
+                  style={{ width: 350 }}
+                  onChange={(e, option) => {
+                    record['activity'] = {
+                      prop: option.props.prop,
+                      code: option.props.prop.activity.code,
+                      id: option.props.prop.activity.id,
+                      name: option.props.prop.activity.name,
+                    };
+
+                    // this.identValue(e, record, 'type_activities', 'identities');
+                  }}>
+                  {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
+                    <Option value={item.activity.id} prop={item}
+                            key={item.activity.id}>{item.activity.name}</Option>)}
                 </Select>,
               )}
             </FormItem>);
         },
       },
       {
-        title: 'Единица',
-        dataIndex: 'unit',
-        width: '10%',
+        title: 'Способ оплаты',
+        dataIndex: 'currencyType.nameRu',
         render: (text, record) => {
           return (
             <FormItem
             >
-              {this.props.form.getFieldDecorator('unit' + record.key, {
+              {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
                 rules: [{
-                  required: true,
+                  required: false,
                   message: this.state.validatemessage,
                 }],
               })(
-                <Select name={'unit' + record.key} style={{ width: 350 }} onChange={(e) => {
-                  this.identValue(e, record, 'unit', 'identities');
-                //this.identValue(e.target.value, record, 'unit', 'identities');
-              }}>
-                {this.props.universal.measureUnit.content && this.props.universal.measureUnit.content.map((item) => {
-                  return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                })}
+                <Select name={'paymentType' + record.key} style={{ width: 150 }} onChange={(e, option) => {
+                  record['currencyType'] = {
+                    name: option.props.prop.shortname,
+                    id: e,
+                  };
+                  //this.identValue(e, record, 'paymentType', 'identities');
+                  //this.identValue(e.target.value, record, 'unit', 'identities');
+                }}>
+                  {this.getReferenceValues('paymentType', 'shortname')}
+                </Select>,
+              )}
+            </FormItem>);
+        },
+      },
+      {
+        title: 'Единица учета',
+        dataIndex: 'measureUnit.nameRu',
+        width: 150,
+        render: (text, record) => {
+          return (
+            <FormItem
+            >
+              {this.props.form.getFieldDecorator('spespage.unit' + record.key, {
+                rules: [{
+                  required: false,
+                  message: this.state.validatemessage,
+                }],
+              })(
+                <Select name={'unit' + record.key} style={{ width: 250 }} onChange={(e, option) => {
+                  record['measureUnit'] = {
+                    id: e,
+                    name: option.props.prop.nameRu,
+                  };
+                  // this.identValue(e, record, 'unit', 'identities');
+                  //this.identValue(e.target.value, record, 'unit', 'identities');
+                }}>
+                  {this.getReferenceValues('measureUnit', 'nameRu')}
                 </Select>,
               )}
             </FormItem>);
@@ -265,27 +240,28 @@ class SpecPage extends Component {
       },
       {
         title: 'Количество',
-        dataIndex: 'amount',
+        dataIndex: 'value',
         width: '10%',
         render: (text, record) => {
           return (
             <FormItem
             >
-              {this.props.form.getFieldDecorator('amount' + record.key, {
+              {this.props.form.getFieldDecorator('spespage.amount' + record.key, {
                 rules: [{
-                  required: true,
+                  required: false,
                   message: this.state.validatemessage,
                 }],
               })(
                 <InputNumber name={'amount' + record.key} onChange={(e) => {
-                  this.identValue(e, record, 'amount', 'identities');
+                  record['value'] = e;
+                  //this.identValue(e, record, 'amount', 'identities');
                 }}/>)}
             </FormItem>);
         },
       },
       {
         title: 'Тариф (₸)',
-        dataIndex: 'tariff',
+        dataIndex: 'tariffItem.name',
         isVisible: true,
         order: 2,
         width: '10%',
@@ -299,9 +275,9 @@ class SpecPage extends Component {
         },
         render: (text, record) => (
           <FormItem>
-            {this.props.form.getFieldDecorator('tariff' + record.key, {
+            {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
               rules: [{
-                required: true,
+                required: false,
                 message: this.state.validatemessage,
               }],
             })(
@@ -309,7 +285,7 @@ class SpecPage extends Component {
                 style={{ width: '100%' }}
                 step={0.01}
                 onChange={(d) => {
-                  this.onChangePayment(text, d);
+                  //this.onChangePayment(text, d);
                 }}
               />,
             )}
@@ -317,7 +293,7 @@ class SpecPage extends Component {
       },
       {
         title: 'Сумма (₸)',
-        dataIndex: 'summa',
+        dataIndex: 'valueSum',
         isVisible: true,
         order: 2,
         width: '10%',
@@ -331,9 +307,9 @@ class SpecPage extends Component {
         },
         render: (text, record) => (
           <FormItem>
-            {this.props.form.getFieldDecorator('summa' + record.key, {
+            {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
               rules: [{
-                required: true,
+                required: false,
                 message: this.state.validatemessage,
               }],
             })(
@@ -341,7 +317,8 @@ class SpecPage extends Component {
                 style={{ width: '100%' }}
                 step={0.01}
                 onChange={(d) => {
-                  this.onChangePayment(text, d);
+                  record['valueSum'] = d;
+                  //this.onChangePayment(text, d);
                 }}
               />,
             )}
@@ -349,7 +326,7 @@ class SpecPage extends Component {
       },
       {
         title: 'Аванс (₸)',
-        dataIndex: 'avans',
+        dataIndex: 'sumAdvance',
         isVisible: true,
         order: 2,
         width: '10%',
@@ -363,9 +340,9 @@ class SpecPage extends Component {
         },
         render: (text, record) => (
           <FormItem>
-            {this.props.form.getFieldDecorator('avans' + record.key, {
+            {this.props.form.getFieldDecorator('spespage.avans' + record.key, {
               rules: [{
-                required: true,
+                required: false,
                 message: this.state.validatemessage,
               }],
             })(
@@ -373,13 +350,13 @@ class SpecPage extends Component {
                 style={{ width: '100%' }}
                 step={0.01}
                 onChange={(d) => {
-                  this.onChangePayment(text, d);
+                  record['sumAdvance'] = d;
+                  // this.onChangePayment(text, d);
                 }}
               />,
             )}
           </FormItem>),
       },
-
       {
         title: 'Действие',
         dataIndex: 'operation',
@@ -394,15 +371,19 @@ class SpecPage extends Component {
         },
       },
     ],
+
+    dataSource: [],
+
     smarttabDataSource: [],
     smarttabcols: {
       code: null,
-      type_activities: null,
-      unit: null,
-      amount: null,
-      tariff: null,
-      summa: null,
-      avans: null,
+      activity: null,
+      currencyType: null,
+      measureUnit: null,
+      value: null,
+      tariffItem: null,
+      valueSum: null,
+      sumAdvance: null,
     },
     smarttabcount: 0,
     identitiescount: 0,
@@ -413,27 +394,88 @@ class SpecPage extends Component {
 
   };
 
+  getReferenceValues = (code, propName) => {
+    const { universal2 } = this.props;
+
+    if (!universal2.references[code]) return null;
+
+    return universal2.references[code]
+      ? universal2.references[code].content.map((item) => {
+        return <Option value={item.id} prop={item} key={item.id}>{item[propName]}</Option>;
+      })
+      : null;
+  };
+
+
   componentDidMount() {
+
+    this.props.eventManager.subscribe('onSpecFormSubmit', () => {
+
+      let specifyKeys = {};
+      let specifyData = this.state.smarttabDataSource;
+
+      specifyData.forEach((item) => {
+        if (!specifyKeys[item.activity.id]) {
+          specifyKeys[item.activity.id] = {
+            'parentContractItem': {
+              'id': item.activity.prop.parentActivity ? item.activity.prop.parentActivity.id : null,
+            },
+            'activity': {
+              'id': item.activity ? item.activity.id : null,
+            },
+            'contractItemValues': [],
+          };
+
+        }
+
+        if (specifyKeys[item.activity.id]) {
+          specifyKeys[item.activity.id].contractItemValues.push({
+            'measureUnit': {
+              'id': item.measureUnit ? item.measureUnit.id : null,
+            },
+            'value': item.value ? item.value : null,
+            'currencyType': {
+              'id': item.currencyType ? item.currencyType.id : null,
+            },
+            'valueSum': item.valueSum ? item.valueSum : null,
+            'sumAdvance': item.sumAdvance ? item.sumAdvance : null,
+          });
+        }
+
+      });
+
+      return Object.keys(specifyKeys).map((specKey) => (specifyKeys[specKey]));
+    });
+
     if (getLocale() === 'en-US') {
       momentDefine();
     }
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal/getactivity',
+      type: 'universal2/getList',
       payload: {
-        "start":0,
-        "length":1000,
-        "entity":"activityList"
+        'start': 0,
+        'length': 1000,
+        'entity': 'activityList',
       },
     });
     dispatch({
-      type: 'universal/getmeasureUnit',
+      type: 'universal2/getList',
       payload: {
-        "start":0,
-        "length":1000,
-        "entity":"measureUnit"
+        'start': 0,
+        'length': 1000,
+        'entity': 'measureUnit',
       },
     });
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        'start': 0,
+        'length': 500,
+        'entity': 'paymentType',
+      },
+    });
+
   }
 
   remove = (table, key, count) => {
@@ -444,7 +486,6 @@ class SpecPage extends Component {
       smarttabcount: this.state.smarttabcount - 1,
     });
   };
-
 
   identValue = (e, record, name, arrname) => {
     this.setState({
@@ -468,6 +509,7 @@ class SpecPage extends Component {
   };
 
   render = () => {
+
     return (<Card bodyStyle={{ padding: 5 }} style={{ marginLeft: '-10px' }}>
       <Button onClick={() => {
         this.setState({
@@ -488,7 +530,8 @@ class SpecPage extends Component {
           x: 1200,
         }}
         pagination={false}
-        bordered={false} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/></Card>);
+        bordered={false} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/>
+    </Card>);
   };
 }
 

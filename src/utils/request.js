@@ -29,6 +29,7 @@ const checkStatus = response => {
     return response;
   }
 
+
   const errortext = codeMessage[response.status] || response.statusText;
   if (response.status >= 500)
     notification.error({
@@ -38,8 +39,9 @@ const checkStatus = response => {
     });
 
   if (response.status === 400 || (response.status >= 402 && response.status < 500)) {
-    if(response.statusText!=='Forbidden') {
-      response.json().then((r) => {
+
+    if (response.statusText !== 'Forbidden') {
+      response.clone().json().then((r) => {
         notification.error({
           // message: `Ошибка ${response.status}: ${response.url}`,
           message: `Ошибка статус ${response.status}`,
@@ -156,7 +158,7 @@ export default function request(url, option) {
 
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then(response => cachedSave(response, hashcode))
+    //.then(response => cachedSave(response, hashcode))
     .then(response => {
       // DELETE and 204 do not return data by default
       // using .json will report an error.
@@ -176,7 +178,10 @@ export default function request(url, option) {
           type: 'login/logout',
         });
 
-        return;
+        return {
+          status: status,
+          message: e,
+        };
       }
       // environment should not be used
       if (status === 403) {
@@ -190,5 +195,10 @@ export default function request(url, option) {
       if (status >= 404 && status < 422) {
         //router.push('/exception/404');
       }
+
+      return {
+        status: status,
+        message: e,
+      };
     });
 }

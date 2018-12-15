@@ -74,15 +74,11 @@ export default class ContragentsPage extends Component {
 
   componentDidMount = () => {
 
-    let getObjectData = Object.keys(this.props.universal.getObjectData).length > 0 ? this.props.universal.getObjectData : {};
-
-    if (this.props.universal.counterAgentData && Object.keys(this.props.universal.counterAgentData).length > 0) {
-      getObjectData = this.props.universal.counterAgentData;
-    }
+     let getObjectData = this.props.gridData;
 
     if (getObjectData) {
       this.setState({
-        dataSource: getObjectData.contractPartys ? getObjectData.contractPartys : [],
+        dataSource: getObjectData.contractParties ? getObjectData.contractParties : [],
       });
     }
   };

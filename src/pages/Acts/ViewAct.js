@@ -227,31 +227,39 @@ class ViewAct extends Component {
 
   };
   getData=(e)=>{
-
-    if (this.props.location.query.contractId ) {
-      /*console.log(JSON.stringify({
-        "contractId": this.props.location.query.contractId,
-        "periodSectionId": e
-      }));*/
-
-      this.setState({
-        periodSectionId: e,
-        loadData: true
-      },()=>{
-        this.props.dispatch({
-        type: 'universal/createActForContract',
-        payload: {
+    if (e) {
+      if (this.props.location.query.contractId) {
+        /*console.log(JSON.stringify({
           "contractId": this.props.location.query.contractId,
           "periodSectionId": e
-        },
-      }).then(()=>{
-        this.setState({
-          filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
-          loadData: false
-        })
-      })
-      })
+        }));*/
 
+        this.setState({
+          periodSectionId: e,
+          loadData: true
+        }, () => {
+          this.props.dispatch({
+            type: 'universal/createActForContract',
+            payload: {
+              "contractId": this.props.location.query.contractId,
+              "periodSectionId": e
+            },
+          }).then(() => {
+            this.setState({
+              filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index) => ({
+                "uid": index,
+                "name": item.name,
+                "status": 'done'
+              })) : [],
+              loadData: false
+            })
+          })
+        })
+
+      }
+    }
+    else {
+      this.props.universal.getObjectData=null
     }
   }
   loadData=()=>{
@@ -259,18 +267,26 @@ class ViewAct extends Component {
       loadData: true
     },()=>{
       if (this.props.location.query.contractId ) {
-        this.props.dispatch({
-          type: 'universal/createActForContract',
-          payload: {
-            "contractId": this.props.location.query.contractId,
-            "periodSectionId": this.state.periodSectionId
-          },
-        }).then(()=>{
-          this.setState({
-            filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
-            loadData:false
+        if (this.state.periodSectionId) {
+          console.log("test")
+          this.props.dispatch({
+            type: 'universal/createActForContract',
+            payload: {
+              "contractId": this.props.location.query.contractId,
+              "periodSectionId": this.state.periodSectionId
+            },
+          }).then(()=>{
+            this.setState({
+              filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
+              loadData:false
+            })
           })
-        })
+        }
+        else {
+          this.setState({
+            loadData: false
+          })
+        }
       }
       else {
         this.props.dispatch({
@@ -324,9 +340,6 @@ class ViewAct extends Component {
           return response.json();
         })
         .then(()=>{
-          Modal.success({
-            content: 'Сведения сохранены!',
-          });
         this.loadData();
         });
     }
@@ -403,7 +416,7 @@ class ViewAct extends Component {
                     {
                       ...this.props.universal.getObjectData,
                       ...values,
-                      documentDate: values.documentDate.format("DD.MM.YYYY"),
+                      documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY"): null,
                       protocol: null,
                       "contract": {
                         "id": this.props.universal.getObjectData.contract.id
@@ -413,9 +426,10 @@ class ViewAct extends Component {
                     },
                 },
               }).then(()=>{
-                Modal.success({
+                console.log(this.props.universal)
+                /*Modal.success({
                   content: 'Сведения сохранены!',
-                });
+                });*/
                 this.loadData();
                 //this.props.tomain();
               });
@@ -430,7 +444,7 @@ class ViewAct extends Component {
             {
               ...this.props.universal.getObjectData,
               ...values,
-              documentDate: values.documentDate.format("DD.MM.YYYY"),
+              documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY"): null,
               protocol: null,
               "contract": {
                 "id": this.props.universal.getObjectData.contract.id
@@ -438,13 +452,15 @@ class ViewAct extends Component {
               "actItems": this.props.universal.getObjectData.actItems
             },
         },
-      }).then(()=>{
+      })
+        .then(()=>{
+          console.log(this.props.universal)
         this.setState({
           actid:  this.props.universal.saveanswer ? this.props.universal.saveanswer.id : null
         },()=>{
-          Modal.success({
+          /*Modal.success({
             content: 'Сведения сохранены!',
-          });
+          });*/
           this.loadData();
         })
         //console.log(this.props.universal.saveanswer);
@@ -459,10 +475,10 @@ class ViewAct extends Component {
   render() {
 
     let uploadProps = {
-      defaultFileList: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((file) => ({
+      defaultFileList: this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((file) => ({
           uid: file.id,
           name: file.name,
-        })) : [],
+        })) : []) : [],
       onPreview: (file) => {
         this.downloadFile(file);
       },
@@ -474,6 +490,7 @@ class ViewAct extends Component {
 
     const { form } = this.props;
     const {getObjectData} =  this.props.universal;
+
     const { getFieldDecorator } = form;
 
     return (
@@ -583,12 +600,13 @@ class ViewAct extends Component {
 
                         </div>}
                         <Form.Item {...formItemLayout} label="Подразделение">
-                          {getFieldDecorator('divisions.id', {
-                            initialValue: getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.id : null : null,
+                          {getFieldDecorator('division.id', {
+                            initialValue: getObjectData ? (getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.id : null : null) : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <Select
                               allowClear
+                              disabled
                             >
                               {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
                                 return <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>;
@@ -597,11 +615,11 @@ class ViewAct extends Component {
                           )}
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Контрагент">
-                          <p>{getObjectData.contract ? getObjectData.contract.contragent.organization : ""}</p>
+                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contragent.organization : "") : ""}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
                           {getFieldDecorator('periodYear.id', {
-                            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
+                            initialValue: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <Select
@@ -616,7 +634,7 @@ class ViewAct extends Component {
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Учетный период: месяц">
                           {getFieldDecorator('periodSection.id', {
-                            initialValue: getObjectData.periodSection ? getObjectData.periodSection.id : null,
+                            initialValue: getObjectData ? (getObjectData.periodSection ? getObjectData.periodSection.id : null) : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <Select
@@ -631,14 +649,14 @@ class ViewAct extends Component {
                           )}
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Договор">
-                          <p>{getObjectData.contract ? getObjectData.contract.contractType+" №"+getObjectData.contract.number+" от "+getObjectData.contract.documentDate : ""}</p>
+                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType+" №"+getObjectData.contract.number+" от "+getObjectData.contract.documentDate : ""): ""}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Протокол исполнения договора">
                           {/*<p>Протокол 1</p>*/}
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Номер">
                           {getFieldDecorator('number', {
-                            initialValue: getObjectData.number,
+                            initialValue: getObjectData ? getObjectData.number : null,
                             rules: [{ required: false, message: 'не заполнено'}],
                           })(
                             <Input style={{width:'50%'}}/>
@@ -726,10 +744,10 @@ class ViewAct extends Component {
                           //console.log(record)
                         }}
                         dataSource={{
-                          total: getObjectData.actItemValues ? getObjectData.actItemValues.length: 0,
-                          pageSize: getObjectData.actItemValues ? getObjectData.actItemValues.length : 15,
+                          total: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length: 0) :0,
+                          pageSize: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length : 15) :15,
                           page: 1,
-                          data: getObjectData.actItemValues ,
+                          data: getObjectData ? getObjectData.actItemValues  :[] ,
                         }}
                         onShowSizeChange={(pageNumber, pageSize) => {}}
                         onRefresh={() => {

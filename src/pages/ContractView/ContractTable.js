@@ -41,7 +41,7 @@ const dateFormat = 'DD.MM.YYYY';
 export default class ContractTable extends Component {
   state = {
 
-    selectedRowKeys: null,
+    selectedRowKeys: [],
     filterContainer: 0,
     filterForm: [
       {
@@ -448,9 +448,7 @@ export default class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            console.log(this.state.selectedRowKeys);
-            //console.log(contracts.content.map(item=>{return item.id===this.state.selectedRowKeys}));
-            window.open('/contract/contracts/acts/view?contractId=' + this.state.selectedRowKeys.id);
+            router.push('/contract/contracts/acts/view?contractId=' + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id );
             /* this.props.history.push({
                pathname: '/contract/contracts/acts/add',
                state: {
@@ -459,7 +457,7 @@ export default class ContractTable extends Component {
              });*/
           }
           }
-          disabled={this.state.selectedRowKeys === null}
+          disabled={this.state.selectedRowKeys.length !== 1}
         >
           Создать акт
         </Menu.Item>
@@ -500,8 +498,8 @@ export default class ContractTable extends Component {
                   name={'ContractMain'}
                   columns={this.state.columns}
                   showTotal={true}
-                  /*selectedRowCheckBox={true}
-                  selectedRowKeys={this.state.selectedRowKeys}*/
+                  selectedRowCheckBox={true}
+                  selectedRowKeys={this.state.selectedRowKeys}
                   showExportBtn={true}
                   addonButtons={addonButtons}
                   actionColumns={this.state.fcolumn}
@@ -524,12 +522,11 @@ export default class ContractTable extends Component {
                     this.filterPanelState();
                   }}
                   onSelectRow={(record, index) => {
-                    this.setState({
+                    /*this.setState({
                       selectedRowKeys: record,
-                    });
+                    });*/
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
-
                     this.setState({
                       selectedRowKeys: selectedRowKeys,
                     });

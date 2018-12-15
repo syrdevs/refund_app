@@ -309,51 +309,60 @@ class ViewAct extends Component {
   }
 
   uploadFile = (data) => {
-    if (data.file.status === 'done') {
-     let authToken = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append("entity", "act")
-      formData.append("path", "documentAttachments")
-      formData.append("id", this.state.actid)
-      formData.append("filedata", JSON.stringify({
-          "entity": "documentAttachment",
-          "alias": null,
-          "data": {
-            "fileDescription": this.state.fileDesc ? this.state.fileDesc : "",
-            "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
-          }
-        }))
-      formData.append("content", data.file.originFileObj)
+    this.props.form.validateFields(
+      (err, values) => {
+        if (data.file.status === 'done') {
+          let authToken = localStorage.getItem('token');
+          const formData = new FormData();
+          formData.append("entity", "act")
+          formData.append("path", "documentAttachments")
+          formData.append("id", this.state.actid)
+          formData.append("filedata", JSON.stringify({
+            "entity": "documentAttachment",
+            "alias": null,
+            "data": {
+              "fileDescription": values.fileDescription,
+              "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
+            }
+          }))
+          formData.append("content", data.file.originFileObj)
 
-      const options = {
-        headers: {
-            Authorization: 'Bearer ' + authToken,
-        },
-        method: 'POST',
-        body: formData
-      };
-      fetch('/api/uicommand/uploadFile', options)
-        .then(function(response) {
-          if (response.status >= 400) {
-            //throw new Error("Bad response from server");
-          }
-          return response.json();
-        })
-        .then(()=>{
-        this.loadData();
-        });
-    }
+          const options = {
+            headers: {
+              Authorization: 'Bearer ' + authToken,
+            },
+            method: 'POST',
+            body: formData
+          };
+          fetch('/api/uicommand/uploadFile', options)
+            .then(function(response) {
+              if (response.status >= 400) {
+                //throw new Error("Bad response from server");
+              }
+              return response.json();
+            })
+            .then(()=>{
+              this.loadData();
+            });
+        }
+
+
+      })
+
+
   };
   removeFile = (file) => {
     const { dispatch } = this.props;
-
     dispatch({
       type: 'universal/deleteObject',
       payload: {
         "entity":"documentAttachment",
-        "id":file.uid
-        },
-    }).then(() => this.loadData());
+        "id":file.id
+      },
+    }).then(() =>{
+
+      this.loadData()
+    });
   };
   downloadFile = (file) => {
     let authToken = localStorage.getItem('token');
@@ -368,7 +377,7 @@ class ViewAct extends Component {
         body: JSON.stringify(
           {
             "entity":"documentAttachment",
-            "id":file.uid
+            "id":file.id
           }
         )
       })
@@ -474,6 +483,38 @@ class ViewAct extends Component {
 
   render() {
 
+    const columns = [
+      {
+      title: 'Документ',
+      dataIndex: 'attachmentType.nameRu',
+        width: '30%',
+    }, {
+      title: 'Коментарий',
+      dataIndex: 'fileDescription',
+      width: '50%',
+    },{
+        title: 'Файл',
+        width: '10%',
+        render: ((item) => {return <a onClick={()=>{this.downloadFile(item)}}>{item.name}</a>;}),
+    },{
+        title: 'Действие',
+        width: '10%',
+        render: ((item) => {return <a onClick={()=>{this.removeFile(item)}}>Удалить</a>;}),
+      }
+    ];
+
+    /*{
+      "fileDescription":"описание файла",
+      "name":"test.jpg",
+      "id":"ccec46f3-e584-4553-bf7c-ca73a013f459",
+      "attachmentType": {
+      "id": "cb751382-b9a9-41eb-848c-c9d332f45427", "nameRu": "Устав (с внесенными изменениями и/или дополнениями)", "code": "1", "nameKz": null
+    }
+    }*/
+
+    const data = this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments : []) : []
+
+
     let uploadProps = {
       defaultFileList: this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((file) => ({
           uid: file.id,
@@ -517,7 +558,7 @@ class ViewAct extends Component {
 
 
 
-        <Spin spinning={this.state.loadData && this.props.universal.loadingsave}>
+        <Spin spinning={this.state.loadData && this.props.universal.loadingsave && this.state.loadFile}>
         <Card
           headStyle={{ padding: 0 }}
           style={{padding:'10px'}}
@@ -765,54 +806,67 @@ class ViewAct extends Component {
                     key="attachment"
                   >
                     <Card style={{marginLeft: '-10px'}}>
-                      <div style={{margin:'10px 0', maxWidth:'70%'}}>
-                        <Form.Item {...formItemLayout} label="Документ">
-                          {getFieldDecorator('fileDoc', {
-                            initialValue: null,
-                            rules: [{ required: false, message: 'не заполнено'}],
-                          })(
-                            <Select
-                              allowClear
-                              onChange={(e)=>{
+                      <Row>
+                        <div style={{margin:'10px 0', maxWidth:'70%'}}>
+                          <Form.Item {...formItemLayout} label="Документ">
+                            {getFieldDecorator('fileDoc', {
+                              initialValue: null,
+                              rules: [{ required: false, message: 'не заполнено'}],
+                            })(
+                              <Select
+                                allowClear
+                                onChange={(e)=>{
+                                  this.setState({
+                                    selectedAttachment:e
+                                  })
+                                }}
+                              >
+                                {this.props.universal.attachmentType.content && this.props.universal.attachmentType.content.map((item) => {
+                                  return <Select.Option key={item.id} value={item.id}>{item.nameRu}</Select.Option>;
+                                })}
+                              </Select>
+                            )}
+                          </Form.Item>
+                          <Form.Item {...formItemLayout} label="Комментарий">
+                            {getFieldDecorator('fileDescription', {
+                              initialValue: null,
+                              rules: [{ required: false, message: 'не заполнено'}],
+                            })(
+                              <TextArea rows={4} onChange={(e)=>{
+
                                 this.setState({
-                                  selectedAttachment:e
+                                  fileDesc: e
                                 })
-                              }}
-                            >
-                              {this.props.universal.attachmentType.content && this.props.universal.attachmentType.content.map((item) => {
-                                return <Select.Option key={item.id} value={item.id}>{item.nameRu}</Select.Option>;
-                              })}
-                            </Select>
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Комментарий">
-                          {getFieldDecorator('fileDescription', {
-                            initialValue: null,
-                            rules: [{ required: false, message: 'не заполнено'}],
-                          })(
-                            <TextArea rows={4} onChange={(e)=>{
-                              this.setState({
-                                fileDesc: e
-                              })
-                            }}/>,
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Тип файла">
-                          {getFieldDecorator('file', {
-                            initialValue: null,
-                            rules: [{ required: false, message: 'не заполнено'}],
-                          })(
-                            <Upload
-                              {...uploadProps}
-                              name="logo"
-                            >
-                              <Button>
-                                <Icon type="upload" /> Загрузить
-                              </Button>
-                            </Upload>
-                          )}
-                        </Form.Item>
-                      </div>
+                              }}/>,
+                            )}
+                          </Form.Item>
+                          <Form.Item {...formItemLayout} label="Тип файла">
+                            {getFieldDecorator('file', {
+                              initialValue: null,
+                              rules: [{ required: false, message: 'не заполнено'}],
+                            })(
+                              <Upload
+                                {...uploadProps}
+                                showUploadList={false}
+                                name="logo"
+                              >
+                                <Button>
+                                  <Icon type="upload" /> Загрузить
+                                </Button>
+                              </Upload>
+                            )}
+                          </Form.Item>
+                        </div>
+                      </Row>
+                      <Row>
+                        <Table
+                          columns={columns}
+                          dataSource={data}
+                          pagination={{ position: 'none' }}
+                          showHeader={false}
+                        />
+                      </Row>
+
                     </Card>
                   </TabPane>}
                 </Tabs>

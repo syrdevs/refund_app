@@ -34,6 +34,8 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Link from 'umi/link';
 import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 import moment from 'moment';
+import saveAs from 'file-saver';
+import SignModal from '../../components/SignModal';
 
 
 const TabPane = Tabs.TabPane;
@@ -55,18 +57,16 @@ const formItemLayout = {
 @connect(({ universal, act, loading }) => ({
   universal,
   act,
-  loadingperiodYear: loading.effects['universal/getperiodYear'],
-  loadingperiodSection: loading.effects['universal/getperiodSection'],
-  loadingorganization: loading.effects['universal/getorganization'],
-  loadingmedicalType: loading.effects['universal/getmedicalType'],
-  loadingattachmentType: loading.effects['universal/getattachmentType'],
+ // loadinggetattachmentType: loading.effects['universal/getattachmentType'] && loading.effects['universal/getmedicalType'] && loading.effects['universal/getorganization'] & loading.effects['universal/getperiodSection'] && loading.effects['universal/getperiodYear']),
+  loadingdeleteObject: loading.effects['universal/deleteObject'],
+  loadingcreateActForContract: loading.effects['universal/createActForContract'],
+  loadinggetobject: loading.effects['universal/getobject'],
   loadingsave: loading.effects['universal/saveobject'],
 }))
 class ViewAct extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
       columns: [
         {
           'title': 'Код',
@@ -186,7 +186,12 @@ class ViewAct extends Component {
       filearr: [],
       selectedAttachment:null,
       fileDesc: null,
-      actid:null
+      actid:null,
+      loadFile: false,
+      loadData: false,
+      loadDic: false,
+      ShowSign: false
+
     }
   }
   deleteContract=()=>{
@@ -207,7 +212,7 @@ class ViewAct extends Component {
       'medicalType',
       'attachmentType'
     ]
-    DicArr.forEach(function(item) {
+    DicArr.forEach(function(item, index) {
       dispatch({
         type: 'universal/get'+item,
         payload: {
@@ -218,12 +223,11 @@ class ViewAct extends Component {
       })
     })
 
-
-
     this.loadData();
 
   };
   getData=(e)=>{
+
     if (this.props.location.query.contractId ) {
       /*console.log(JSON.stringify({
         "contractId": this.props.location.query.contractId,
@@ -231,9 +235,10 @@ class ViewAct extends Component {
       }));*/
 
       this.setState({
-        periodSectionId: e
+        periodSectionId: e,
+        loadData: true
       },()=>{
-        /*this.props.dispatch({
+        this.props.dispatch({
         type: 'universal/createActForContract',
         payload: {
           "contractId": this.props.location.query.contractId,
@@ -241,30 +246,33 @@ class ViewAct extends Component {
         },
       }).then(()=>{
         this.setState({
-          filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : []
+          filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
+          loadData: false
         })
-      })*/
+      })
       })
 
     }
   }
-
   loadData=()=>{
-    if (this.props.location.query.contractId ) {
-      this.props.dispatch({
-        type: 'universal/createActForContract',
-        payload: {
-          "contractId": this.props.location.query.contractId,
-          "periodSectionId": this.state.periodSectionId
-        },
-      }).then(()=>{
-        this.setState({
-          filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : []
+    this.setState({
+      loadData: true
+    },()=>{
+      if (this.props.location.query.contractId ) {
+        this.props.dispatch({
+          type: 'universal/createActForContract',
+          payload: {
+            "contractId": this.props.location.query.contractId,
+            "periodSectionId": this.state.periodSectionId
+          },
+        }).then(()=>{
+          this.setState({
+            filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
+            loadData:false
+          })
         })
-      })
-    }
-    else {
-      {
+      }
+      else {
         this.props.dispatch({
           type: 'universal/getobject',
           payload: {
@@ -272,31 +280,33 @@ class ViewAct extends Component {
             "alias": null,
             "id": this.props.location.query.id
           },
+        }).then(()=>{
+          this.setState({
+            actid: this.props.universal.getObjectData.id,
+            filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
+            loadData:false
+          })
         })
       }
-    }
+    })
+
   }
 
   uploadFile = (data) => {
-    console.log(data);
-    const { dispatch } = this.props;
-
     if (data.file.status === 'done') {
      let authToken = localStorage.getItem('token');
       const formData = new FormData();
       formData.append("entity", "act")
       formData.append("path", "documentAttachments")
       formData.append("id", this.state.actid)
-      if (this.state.selectedAttachment & this.state.fileDesc) {
-        formData.append("filedata", JSON.stringify({
+      formData.append("filedata", JSON.stringify({
           "entity": "documentAttachment",
           "alias": null,
           "data": {
-            "fileDescription": this.state.fileDesc,
-            "attachmentType": { "id": this.state.selectedAttachment }
+            "fileDescription": this.state.fileDesc ? this.state.fileDesc : "",
+            "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
           }
         }))
-      }
       formData.append("content", data.file.originFileObj)
 
       const options = {
@@ -306,21 +316,21 @@ class ViewAct extends Component {
         method: 'POST',
         body: formData
       };
-
       fetch('/api/uicommand/uploadFile', options)
         .then(function(response) {
           if (response.status >= 400) {
-            throw new Error("Bad response from server");
+            //throw new Error("Bad response from server");
           }
           return response.json();
         })
-        .then(function(data) {
+        .then(()=>{
+          Modal.success({
+            content: 'Сведения сохранены!',
+          });
         this.loadData();
         });
     }
   };
-
-
   removeFile = (file) => {
     const { dispatch } = this.props;
 
@@ -332,37 +342,140 @@ class ViewAct extends Component {
         },
     }).then(() => this.loadData());
   };
+  downloadFile = (file) => {
+    let authToken = localStorage.getItem('token');
+
+    fetch('/api/uicommand/downloadFile',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Bearer ' + authToken,
+        },
+        method: 'post',
+        body: JSON.stringify(
+          {
+            "entity":"documentAttachment",
+            "id":file.uid
+          }
+        )
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get('content-disposition');
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob,
+            };
+          });
+        }
+      })
+      .then(data => {
+        if (data) {
+          saveAs(data.raw, data.fileName);
+        }
+      });
+  }
+  getFileNameByContentDisposition=(contentDisposition)=>{
+      var filename = "";
+      if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = filenameRegex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+      return filename;
+  };
+
+
+  saveAct=()=>{
+    this.props.form.validateFields(
+      (err, values) => {
+        if (!err) {
+            if (this.state.actid) {
+              this.props.dispatch({
+                type: 'universal/saveobject',
+                payload: {
+                  "entity": "act",
+                  "alias": null,
+                  "data":
+                    {
+                      ...this.props.universal.getObjectData,
+                      ...values,
+                      documentDate: values.documentDate.format("DD.MM.YYYY"),
+                      protocol: null,
+                      "contract": {
+                        "id": this.props.universal.getObjectData.contract.id
+                      },
+                      "actItems": this.props.universal.getObjectData.actItems,
+                      "id": this.state.actid
+                    },
+                },
+              }).then(()=>{
+                Modal.success({
+                  content: 'Сведения сохранены!',
+                });
+                this.loadData();
+                //this.props.tomain();
+              });
+            }
+            else {
+      this.props.dispatch({
+        type: 'universal/saveobject',
+        payload: {
+          "entity": "act",
+          "alias": null,
+          "data":
+            {
+              ...this.props.universal.getObjectData,
+              ...values,
+              documentDate: values.documentDate.format("DD.MM.YYYY"),
+              protocol: null,
+              "contract": {
+                "id": this.props.universal.getObjectData.contract.id
+              },
+              "actItems": this.props.universal.getObjectData.actItems
+            },
+        },
+      }).then(()=>{
+        this.setState({
+          actid:  this.props.universal.saveanswer ? this.props.universal.saveanswer.id : null
+        },()=>{
+          Modal.success({
+            content: 'Сведения сохранены!',
+          });
+          this.loadData();
+        })
+        //console.log(this.props.universal.saveanswer);
+        //this.props.tomain();
+      });
+    }
+        }
+      },
+    );
+  }
 
   render() {
-
-
-
-
 
     let uploadProps = {
       defaultFileList: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((file) => ({
           uid: file.id,
           name: file.name,
         })) : [],
+      onPreview: (file) => {
+        this.downloadFile(file);
+      },
       onRemove: (file) => {
-        if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
-          Modal.error({
-            title: 'Внимание',
-            content: 'Файл не может быть удален. Пожалуйста, удалите сначала дату',
-          });
-          return false;
-        } else {
           this.removeFile(file);
-        }
       },
       onChange: this.uploadFile,
   };
 
-    const { form, dispatch, data } = this.props;
+    const { form } = this.props;
     const {getObjectData} =  this.props.universal;
-    const { getFieldDecorator, validateFields } = form;
-    const onValidateForm = () => {
-    };
+    const { getFieldDecorator } = form;
+
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
         {this.state.DogovorModal.visible && <DogovorModal
@@ -372,6 +485,22 @@ class ViewAct extends Component {
           }}
           hide={() => this.setState({ DogovorModal: { visible: false } })
           }/>}
+
+        {this.state.ShowSign &&
+         <SignModal
+           getKey={(e)=> {
+             this.setState({
+               ShowSign: false
+             },()=>{
+
+               console.log(e);
+             })
+           }}
+         />}
+
+
+
+        <Spin spinning={this.state.loadData && this.props.universal.loadingsave}>
         <Card
           headStyle={{ padding: 0 }}
           style={{padding:'10px'}}
@@ -380,72 +509,35 @@ class ViewAct extends Component {
             htmlType="submit"
             style={{float:'left'}}
             onClick={(e)=>{
-              console.log(this.props)
-              /*this.props.form.validateFields(
-                (err, values) => {
-                  if (!err) {
-                    console.log(values);
-                   /!* if (this.state.DogovorModal.record) {
+              //console.log(this.props.universal.getObjectData);
+                    /*if (this.state.DogovorModal.record) {
                       values.contract = {
                         id: this.state.DogovorModal.record.id
                       }
                       console.log(values);
 
-                    }
-                    dispatch({
-                      type: 'universal/saveobject',
-                      payload: {
-                        "entity": "act",
-                        "alias": null,
-                        "data":
-                          {
-                            ...values,
-                            documentDate: values.documentDate.format("DD.MM.YYYY"),
-                            protocol: null,
-                            contract: {
-                              id: this.props.location.state.data.id
-                            },
-                            "actItems": [
-                              {
-                                "activity": {
-                                  "id": "32576777-c4a9-41c9-86c4-393bb29072ef"
-                                },
-                                "contractItem": {
-                                  "id": "ebbef7c1-25cf-4341-bbe2-cb0c6d391372"
-                                },
-                                "protocolItem": null,
-                                "actItemValues": [
-                                  {
-                                    "valueSum": 0,
-                                    "sumRequested": 0,
-                                    "sumAdvanceTakeout": 0,
-                                    "value": 1,
-                                    "valueRequested": 0,
-                                    "currencyType": {
-                                      "id": "5cd4e565-10da-4b79-8578-ffdd5a0d8270"
-                                    },
-                                    "measureUnit": {
-                                      "id": "be88fc85-e565-43cd-a14a-7cdd46828f4c"
-                                    },
-                                    "protocolItem": null
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                      },
-                    }).then(()=>{
-                      //console.log(this.props.universal.saveanswer);
-                      this.props.tomain();
-                    });*!/
-                  }
-                  else {}
-                },
-              );*/
+                    }*/
+                    /*console.log({
+                      "entity": "act",
+                      "alias": null,
+                      "data":
+                        {
+                          ...this.props.universal.getObjectData,
+                          ...values,
+                          documentDate: values.documentDate.format("DD.MM.YYYY"),
+                          protocol: null,
+                        }
+                    })*/
+              this.saveAct();
+                 /*this.setState({
+                   ShowSign: true
+                 });*/
             }
             }>
             Сохранить
           </Button>,
+
+
             <div style={{float:'left'}}>
               {this.state.ShowClear &&
               <Button
@@ -458,7 +550,6 @@ class ViewAct extends Component {
           ]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType && this.props.loadingsave}>
             <Row style={{marginTop:'5px'}}>
               <Form layout="horizontal" hideRequiredMark>
                 <Tabs
@@ -493,7 +584,7 @@ class ViewAct extends Component {
                         </div>}
                         <Form.Item {...formItemLayout} label="Подразделение">
                           {getFieldDecorator('divisions.id', {
-                            initialValue: getObjectData.contract ? getObjectData.contract.division.id : null,
+                            initialValue: getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.id : null : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <Select
@@ -650,6 +741,7 @@ class ViewAct extends Component {
                       />
                     </Card>
                   </TabPane>
+                  {this.state.actid &&
                   <TabPane
                     tab="Приложения"
                     key="attachment"
@@ -657,7 +749,7 @@ class ViewAct extends Component {
                     <Card style={{marginLeft: '-10px'}}>
                       <div style={{margin:'10px 0', maxWidth:'70%'}}>
                         <Form.Item {...formItemLayout} label="Документ">
-                          {getFieldDecorator('attachmentType.Name', {
+                          {getFieldDecorator('fileDoc', {
                             initialValue: null,
                             rules: [{ required: false, message: 'не заполнено'}],
                           })(
@@ -688,7 +780,7 @@ class ViewAct extends Component {
                           )}
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Тип файла">
-                          {getFieldDecorator('fileDescription', {
+                          {getFieldDecorator('file', {
                             initialValue: null,
                             rules: [{ required: false, message: 'не заполнено'}],
                           })(
@@ -704,12 +796,12 @@ class ViewAct extends Component {
                         </Form.Item>
                       </div>
                     </Card>
-                  </TabPane>
+                  </TabPane>}
                 </Tabs>
               </Form>
             </Row>
-          </Spin>
         </Card>
+        </Spin>
       </PageHeaderWrapper>
 
     );

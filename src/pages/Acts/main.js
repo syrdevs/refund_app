@@ -322,7 +322,7 @@ export default class ActsTable extends Component  {
           key="2"
           disabled={this.state.selectedRowKeys.length!==1}
           onClick={()=>{
-            window.open("/contract/acts/viewAct?id="+this.state.selectedRowKeys[0])
+            router.push("/contract/acts/viewAct?id="+this.state.selectedRowKeys[0])
           }}>
           Открыть
         </Menu.Item>

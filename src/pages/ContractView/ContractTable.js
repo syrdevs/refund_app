@@ -281,6 +281,8 @@ export default class ContractTable extends Component {
     dispatch({
       type: 'universal2/getList',
       payload: this.state.gridParameters,
+    }).then(()=>{
+     // console.log(this.props.universal2.references[this.state.gridParameters.entity])
     });
   };
 
@@ -391,13 +393,15 @@ export default class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            //console.log(this.state.selectedRowKeys);
-            this.props.history.push({
+            console.log(this.state.selectedRowKeys);
+            //console.log(contracts.content.map(item=>{return item.id===this.state.selectedRowKeys}));
+            window.open("/contract/contracts/acts/view?contractId="+this.state.selectedRowKeys.id)
+           /* this.props.history.push({
               pathname: '/contract/contracts/acts/add',
               state: {
                 data: this.state.selectedRowKeys,
               },
-            });
+            });*/
           }
           }
           disabled={this.state.selectedRowKeys === null}

@@ -403,3 +403,24 @@ export async function createContractFromAgent(params) {
     body: params.payload,
   });
 }
+
+export async function createActForContract(params) {
+  return request('/api/contract/createActForContract', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+export async function uploadFile(params) {
+  return request('/api/uicommand/uploadFile', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+export async function deleteObject(params) {
+  return request('/api/uicommand/deleteObject', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
+

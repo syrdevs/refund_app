@@ -406,6 +406,7 @@ export default {
   'menu.contract.acts.actadd': 'Акт выполненных работ',
   'app.module.acts.title.add': 'Акт выполненных работ',
   'menu.contract.contracts.actadd': 'Акт выполненных работ',
+  'menu.contract.contracts.actview': 'Акт выполненных работ',
   'menu.contract.contracts.paymentadd': 'Заявки на оплату',
   'menu.contract.contracts.viewcontract': 'Договор',
   'menu.contract.contracts.viewcontract.payment': 'Заявка на оплату',

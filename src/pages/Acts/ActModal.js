@@ -41,7 +41,7 @@ export default class ActModal extends Component {
           title: 'Контрагент',
           dataIndex: 'contragent.organization',
           isVisible: true,
-          width : 800,
+          width : 600,
         },
         {
           title: 'Договор',
@@ -173,7 +173,7 @@ export default class ActModal extends Component {
           <div className={style.SmartGridView}>
             <SmartGridView
                 name={'actform'}
-                scroll={{ x: '2000' }}
+                scroll={{ x: '1800' }}
                 rowSelection={true}
                 hideFilterBtn={true}
                 hideRefreshBtn={true}

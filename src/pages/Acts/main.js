@@ -17,7 +17,7 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider,
+  Divider, InputNumber,
 } from 'antd';
 import GridFilterCollapsible from '@/components/GridFilterCollapsible';
 import SmartGridView from '@/components/SmartGridView';
@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import style from '../CounterAgent/Modals/ContragentModalStyle.less';
+import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -41,70 +42,52 @@ export default class ActsTable extends Component  {
     filterContainer: 0,
     filterForm: [
       {
-        title: 'Договор фильтр',
-        rootKey: 'dogovorId',
+        title: 'Акт фильтр',
+        rootKey: 'aktId',
         formElements: [
           {
-            name: 'Number',
-            label: 'Номер договора',
+            label: 'Учетный период(месяц)',
+            name: 'periodSection',
+            type: 'combobox',
+          },
+          {
+            label: 'Подразделение',
+            name: 'division',
+            type: 'text',
+          },
+
+          {
+            label: 'Контрагент',
+            name: 'division',
             type: 'text',
           },
           {
-            name: 'ParentContractId',
-            label: 'Номер родительского договора ',
+            label: 'Договор',
+            name: 'division',
             type: 'text',
           },
           {
-            name: 'knp',
-            label: 'Вид договора',
-            type: 'selectlist',
-          },
-          {
-            name: 'knp',
-            label: 'Рабочий период (год)',
-            type: 'selectlist',
-          },
-          {
-            name: 'knp',
-            label: 'Заявки на объем',
-            type: 'selectlist',
-          },
-          {
-            name: 'knp',
-            label: 'Протокол распределения объемов',
-            type: 'selectlist',
-          },
-          {
-            name: 'Date',
-            label: 'Дата заключения договора',
-            type: 'date',
-          },
-          {
-            name: 'DateBegin',
-            label: 'Дата начала действия договора',
-            type: 'date',
-          },
-          {
-            name: 'DateEnd',
-            label: 'Дата окончания действия договора',
-            type: 'date',
-          },
-          {
-            name: 'OwnerDepartment',
-            label: 'Подразделение ФСМС',
-            type: 'selectlist',
-          }],
-      },
-      {
-        title: 'Заявка фильтр',
-        rootKey: 'requestId',
-        formElements: [
-          {
-            name: 'Number',
-            label: 'Номер договора',
+            label: 'Протокол',
+            name: 'division',
             type: 'text',
           },
-        ],
+
+          {
+            label: 'Номер',
+            name: 'number',
+            type: 'text',
+          },
+          {
+            label: 'Дата',
+            name: 'documentDate',
+            type: 'dates',
+          },
+          {
+            label: 'Сумма',
+            name: 'documentSum',
+            type: 'text',
+          },
+        ]
       },
     ],
     pagingConfig: {
@@ -115,34 +98,67 @@ export default class ActsTable extends Component  {
         'data': {},
       },
     },
+    fcolumn: [
+      {
+        title: 'Контрагент',
+        dataIndex: 'contract.contragent',
+        isVisible: true,
+        width : 550,
+        order: 3,
+        key: 'contract.contragent',
+        className: 'action_column',
+        render: (item) => {
+          if (item){
+            return item.bin+"  "+item.organization;
+          }
+        },
+      },
+      {
+        title: 'Договор',
+        dataIndex: 'contract',
+        order: 4,
+        width: 500,
+        key: 'contract',
+        className: 'action_column',
+        isVisible: true,
+        render: (item) => {
+          if (item){
+            return item.contractType+" №"+item.number+" от "+item.documentDate;
+          }
+        },
+      },
+      {
+        title: 'Протокол',
+        dataIndex: 'protocol',
+        order: 5,
+        width: 200,
+        key: 'operation',
+        className: 'action_column',
+        isVisible: true,
+        render: (e) => {
+          if (e)
+          {
+            return "№"+e.number+" от "+e.documentDate;
+          }
+        },
+      }
+    ],
     columns: [
       {
-        title: 'Отчетный период(Год)',
+        title: 'Учетный период(год)',
         dataIndex: 'periodYear.year',
         isVisible: true,
         width : 150,
       },
       {
-        title: 'Отчетный период(Месяц)',
-        dataIndex: 'periodSection.periodSectionName',
+        title: 'Учетный период(месяц)',
+        dataIndex: 'periodSection.name',
         isVisible: true,
         width : 150,
       },
       {
-        title: 'БИН',
-        dataIndex: 'contragent.bin',
-        isVisible: true,
-        width : 150,
-      },
-      {
-        title: 'Контрагент',
-        dataIndex: 'contragent.organization',
-        isVisible: true,
-        width : 450,
-      },
-      {
-        title: 'Договор',
-        dataIndex: 'contract.number',
+        title: 'Подразделение',
+        dataIndex: 'division',
         isVisible: true,
         width : 150,
       },
@@ -159,19 +175,13 @@ export default class ActsTable extends Component  {
         width : 150,
       },
       {
-        title: 'Оплата',
+        title: 'Сумма',
         dataIndex: 'documentSum',
         isVisible: true,
         width : 150,
       },
-      {
-        title: 'Подразделение',
-        dataIndex: 'division.name',
-        isVisible: true,
-        width : 120,
-      },
     ],
-    buttons:[
+    /*buttons:[
       {
         type:'menu',
         name:'Новый'
@@ -188,7 +198,7 @@ export default class ActsTable extends Component  {
         type:'menu',
         name:'Включить в заявку на оплату'
       },
-    ],
+    ],*/
     dataSource: [
       {
         id: '1',
@@ -242,8 +252,8 @@ export default class ActsTable extends Component  {
       },
     }));
   };
-
   loadMainGridData = () => {
+    console.log(this.state.gridParameters);
     const { dispatch } = this.props;
     dispatch({
       type: 'universal2/getList',
@@ -251,21 +261,44 @@ export default class ActsTable extends Component  {
     }).then(()=>{
     });
   };
-
   componentDidMount() {
     this.loadMainGridData();
   }
-
   filterPanelState = () => {
-    this.setState(({ filterContainer }) => ({
-      filterContainer: filterContainer === 6 ? 0 : 6,
-    }));
+    this.setState({
+      filterContainer: this.state.filterContainer === 6 ? 0 : 6,
+    });
   };
-
   clearFilter = () => {
-  };
 
+    this.setState({
+      gridParameters: {
+        start: 0,
+        length: 15,
+        entity: "act",
+        alias: "actList",
+        filter: {},
+        sort: [],
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
   applyFilter = (filters) => {
+    this.setState({
+      gridParameters: {
+        start: 0,
+        length: 15,
+        entity: "act",
+        alias: "actList",
+        filter: filters,
+        sort: [],
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
   };
 
 
@@ -275,32 +308,37 @@ export default class ActsTable extends Component  {
     const act = universal2.references[this.state.gridParameters.entity];
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-        <Menu.Item
+
+
+
+        {/*<Menu.Item
           key="1"
           onClick={()=>{
             router.push('/contract/acts/add');
           }}>
           Новый
-        </Menu.Item>
+        </Menu.Item>*/}
         <Menu.Item
           key="2"
-          disabled
-        >
-          Открыть/Изменить
+          disabled={this.state.selectedRowKeys.length!==1}
+          onClick={()=>{
+            window.open("/contract/acts/viewAct?id="+this.state.selectedRowKeys[0])
+          }}>
+          Открыть
         </Menu.Item>
         <Menu.Item
           key="3"
-          disabled
+          disabled={this.state.selectedRowKeys.length === 0}
         >
           Удалить
         </Menu.Item>
         <Menu.Item
         key="4"
-        disabled
+        disabled={this.state.selectedRowKeys.length === 0}
         >
         Включить в заявку на оплату
       </Menu.Item>
-        <Menu.Item
+        {/*<Menu.Item
           key="5"
           onClick={() =>
             {
@@ -362,7 +400,7 @@ export default class ActsTable extends Component  {
                       title: 'Подразделение',
                       dataIndex: 'division.name',
                       isVisible: true,
-                      width : 120,
+                      width : 200,
                     },
                   ],
                   type: "act"
@@ -372,8 +410,9 @@ export default class ActsTable extends Component  {
           }
           disabled={this.state.selectedRowKeys.length === 0}>
           Создать заявку
-        </Menu.Item>
-      </Menu>}>
+        </Menu.Item>*/}
+      </Menu>
+      }>
         <Button
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
@@ -399,7 +438,7 @@ export default class ActsTable extends Component  {
                     title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}>
-                    {this.state.filterContainer === 6 && <GridFilterCollapsible
+                    {this.state.filterContainer === 6 && <DocGridCollapse
                       clearFilter={this.clearFilter}
                       applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
                       filterForm={this.state.filterForm}
@@ -413,6 +452,7 @@ export default class ActsTable extends Component  {
                     scroll={{ x: 'auto' }}
                     name={'ActMain'}
                     columns={this.state.columns}
+                    actionColumns={this.state.fcolumn}
                     showTotal={true}
                     selectedRowCheckBox={true}
                     selectedRowKeys={this.state.selectedRowKeys}
@@ -431,7 +471,7 @@ export default class ActsTable extends Component  {
                     onRefresh={() => {
                     }}
                     onSearch={() => {
-                      //this.filterPanelState();
+                      this.filterPanelState();
                     }}
                     onSelectCheckboxChange={(selectedRowKeys) => {
                       this.setState({

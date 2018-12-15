@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon, InputNumber} from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Badge, Icon, InputNumber, Upload } from 'antd';
 import styles from './style.less';
 import LinkModal from '@/components/LinkModal';
 
@@ -45,90 +45,101 @@ class Actsadd extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
       columns: [
         {
           'title': 'Код',
-          'dataIndex': 'code',
+          'dataIndex': 'activity.code',
           'isVisible': 'true',
         },
         {
           'title': 'Вид деятельности',
-          'dataIndex': 'activity',
+          'dataIndex': 'activity.name',
           'isVisible': 'true',
         },
         {
-          title: 'Вычет аванса (₸)',
-          dataIndex: 'prepaid',
+          title: 'Способ оплаты',
+          dataIndex: 'activity.paymentType',
           isVisible: true,
         },
         {
-          title: 'Итого к оплате (₸)',
-          dataIndex: 'total',
+          title: 'Единица учета',
+          dataIndex: 'measureUnit.shortName',
           isVisible: true,
-        }
-      ],
-      fcolumn: [
-        {
-          title: 'Принято к оплате (₸)',
-          dataIndex: 'accept_payment',
-          order: 2,
-          width: 200,
-          key: 'accept_payment',
-          className: 'action_column',
-          isVisible: true,
-          onCell: record => {
-            return {
-              onClick: () => {
-
-              },
-            };
-          },
-          render: (e) => (
-            <InputNumber
-              style={{width:'100%'}}
-              step={0.01}
-              onChange={(d)=>{
-                this.onChangePayment(e, d)
-              }}
-            />
-          ),
         },
         {
-          title: 'Предъявлено к оплате (₸)',
-          order: 3,
-          width: 200,
-          key: 'operation',
-          className: 'action_column',
+          title: 'Количество предъявленное',
+          dataIndex: 'valueRequested',
           isVisible: true,
-          onCell: record => {
-            return {
-              onClick: () => {
-
-              },
-            };
-          },
-          render: (e) => (
-            <InputNumber
-              style={{width:'100%'}}
-              step={0.01}
-              onChange={(d)=>{
-                /*console.log(d.target.value);*/
-                this.onChangeSumma(e, d)
-              }}
-            />
-          ),
-        }
+        },
+        {
+          title: 'Количество принятое',
+          dataIndex: 'value',
+          isVisible: true,
+        },
+        {
+          title: 'Тариф, т',
+          dataIndex: '',
+          isVisible: true,
+        },
+        {
+          title: 'Сумма предъявленная, т',
+          dataIndex: 'sumRequested',
+          isVisible: true,
+        },
+        {
+          title: 'Сумма принятая, т',
+          dataIndex: 'valueSum',
+          isVisible: true,
+        },
+        {
+          title: 'Сумма вычета аванса, т',
+          dataIndex: 'sumAdvanceTakeout',
+          isVisible: true,
+        },
       ],
+      fcolumn: [],
       data: [
         {
-          key: 1, id:"123qwe111", code: 'АПП.ПСМП', activity: 'Первичная медико-санитарная медицинская помощь', present_payment: 10456, accept_payment:10456, prepaid:2150, total:20430
+          measureUnit: {shortName: "Test"},
+          activity: {
+            paymentType: "Test1",
+            code: 'АПП.ПСМП',
+            name: 'Первичная медико-санитарная медицинская помощь',
+          },
+          valueRequested: "testvalueRequested",
+          value: "testvalue",
+          sumRequested: "testsumRequested",
+          valueSum: "testvalueSum",
+          sumAdvanceTakeout: "testsumAdvanceTakeout",
         },
         {
-          key: 2, id:"123qwe222", code: 'АПП.ПСМПС', activity: 'Первичная медико-санитарная медицинская помощь сельскому населению', present_payment: 14504, accept_payment:10456, prepaid:5200, total:10456
+          measureUnit: {shortName: "Test"},
+          activity: {
+            paymentType: "Test1",
+            code: 'АПП.ПСМП',
+            name: 'Первичная медико-санитарная медицинская помощь',
+          },
+          valueRequested: "testvalueRequested",
+          value: "testvalue",
+          sumRequested: "testsumRequested",
+          valueSum: "testvalueSum",
+          sumAdvanceTakeout: "testsumAdvanceTakeout",
         },
         {
-          key: 3, id:"123qwe333", code: 'АПП.ДКП', activity: 'Диагностическо-консультативная помощь', present_payment: 10566, accept_payment:14033, prepaid:5020, total:14245
+          measureUnit: {shortName: "Test"},
+          activity: {
+            paymentType: "Test1",
+            code: 'АПП.ПСМП',
+            name: 'Первичная медико-санитарная медицинская помощь',
+          },
+          valueRequested: "testvalueRequested",
+          value: "testvalue",
+          sumRequested: "testsumRequested",
+          valueSum: "testvalueSum",
+          sumAdvanceTakeout: "testsumAdvanceTakeout",
         },
+
       ],
       ContractSelect: [],
       selectedRowKeys: [],
@@ -323,7 +334,88 @@ class Actsadd extends Component {
                          >Договор №{this.props.location.state.data.number}</Link>}
 
                       </div>}
-                      {!this.props.location.state &&
+                      <Form.Item {...formItemLayout} label="Подразделение">
+                        {getFieldDecorator('divisions.id', {
+                          initialValue: null,
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                          >
+                            {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
+                              return <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Контрагент">
+                        <p>НАО «Фонд социального медицинского страхования»</p>
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Учетный период: год">
+                        {getFieldDecorator('periodYear.id', {
+                          initialValue: null,
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                            style={{width:'50%'}}
+                          >
+                            {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.year}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Учетный период: месяц">
+                        {getFieldDecorator('periodSection.id', {
+                          initialValue: null,
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <Select
+                            allowClear
+                            style={{width:'50%'}}
+                          >
+                            {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Договор">
+                        <p>Договор 1</p>
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Протокол исполнения договора">
+                        <p>Протокол 1</p>
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Номер">
+                        {getFieldDecorator('number', {
+                          initialValue: null,
+                          rules: [{ required: true, message: 'не заполнено'}],
+                        })(
+                          <Input style={{width:'50%'}}/>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Дата">
+                        {getFieldDecorator('documentDate', {
+                          initialValue: null,
+                          rules: [{ type: 'object', required: false, message: 'не заполнено' }],
+                        })(
+                          <DatePicker
+                            format={'DD.MM.YYYY'}
+                            style={{width:'50%'}}
+                            placeholder="Выберите дату"
+                          />
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Примечание">
+                        {getFieldDecorator('descr', {
+                          initialValue: null,
+                          rules: [{ required: false, message: 'не заполнено' }],
+                        })(
+                          <TextArea rows={4}/>,
+                        )}
+                      </Form.Item>
+                      {/*{!this.props.location.state &&
                       <Form.Item {...formItemLayout} label="Родительский договор">
                         {getFieldDecorator('contract.id', {
                           rules: [{
@@ -352,79 +444,7 @@ class Actsadd extends Component {
                               this.setState({ DogovorModal: { visible: true } });
                             }}>
                           </LinkModal>)}
-                      </Form.Item>}
-                      <Form.Item {...formItemLayout} label="Номер">
-                        {getFieldDecorator('number', {
-                          initialValue: null,
-                          rules: [{ required: true, message: 'не заполнено'}],
-                        })(
-                          <Input style={{width:'50%'}}/>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Дата">
-                        {getFieldDecorator('documentDate', {
-                          initialValue: null,
-                          rules: [{ type: 'object', required: false, message: 'не заполнено' }],
-                        })(
-                          <DatePicker
-                            format={'DD.MM.YYYY'}
-                            style={{width:'50%'}}
-                            placeholder="Выберите дату"
-                          />
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Отчетный период: год">
-                        {getFieldDecorator('periodYear.id', {
-                          initialValue: null,
-                          rules: [{ required: false, message: 'не заполнено' }],
-                        })(
-                          <Select
-                            allowClear
-                            style={{width:'50%'}}
-                          >
-                            {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
-                                    return <Select.Option key={item.id}>{item.year}</Select.Option>;
-                                })}
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Отчетный период: месяц">
-                        {getFieldDecorator('periodSection.id', {
-                          initialValue: null,
-                          rules: [{ required: false, message: 'не заполнено' }],
-                        })(
-                          <Select
-                            allowClear
-                            style={{width:'50%'}}
-                          >
-                            {this.props.universal.periodSection.content && this.props.universal.periodSection.content.map((item) => {
-                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                            })}
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Подразделение">
-                        {getFieldDecorator('divisions.id', {
-                          initialValue: null,
-                          rules: [{ required: false, message: 'не заполнено' }],
-                        })(
-                          <Select
-                            allowClear
-                          >
-                            {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
-                              return <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>;
-                            })}
-                          </Select>
-                        )}
-                      </Form.Item>
-                      <Form.Item {...formItemLayout} label="Примечание">
-                        {getFieldDecorator('descr', {
-                          initialValue: null,
-                          rules: [{ required: false, message: 'не заполнено' }],
-                        })(
-                          <TextArea rows={4}/>,
-                        )}
-                      </Form.Item>
+                      </Form.Item>}*/}
                     </div>
                   </Card>
                 </TabPane>
@@ -470,6 +490,46 @@ class Actsadd extends Component {
 
                       }}
                     />
+                  </Card>
+                </TabPane>
+                <TabPane
+                  tab="Приложения"
+                  key="attachment"
+                >
+                  <Card style={{marginLeft: '-10px'}}>
+                    <div style={{margin:'10px 0', maxWidth:'70%'}}>
+                      {/*Документ	attachmentType.Name
+                      Комментарий	fileDescription
+                      Тип файла	name*/}
+                      <Form.Item {...formItemLayout} label="Документ">
+                        {getFieldDecorator('attachmentType.Name', {
+                          initialValue: null,
+                          rules: [{ required: true, message: 'не заполнено'}],
+                        })(
+                          <Input style={{width:'50%'}}/>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Комментарий">
+                        {getFieldDecorator('fileDescription', {
+                          initialValue: null,
+                          rules: [{ required: true, message: 'не заполнено'}],
+                        })(
+                          <TextArea rows={4}/>,
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Тип файла">
+                        {getFieldDecorator('fileDescription', {
+                          initialValue: null,
+                          rules: [{ required: true, message: 'не заполнено'}],
+                        })(
+                          <Upload name="logo">
+                            <Button>
+                              <Icon type="upload" /> Загрузить
+                            </Button>
+                          </Upload>
+                        )}
+                      </Form.Item>
+                    </div>
                   </Card>
                 </TabPane>
               </Tabs>

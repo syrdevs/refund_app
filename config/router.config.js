@@ -196,6 +196,11 @@ export default [
                 component: './Acts/Actsadd',
               },
               {
+                path: '/contract/contracts/acts/view',
+                name: 'actview',
+                component: './Acts/ViewAct',
+              },
+              {
                 path: '/contract/contracts/acts/add/viewcontract',
                 name:"viewcontract",
                 component: './Acts/viewcontract',

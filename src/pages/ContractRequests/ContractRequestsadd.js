@@ -28,6 +28,7 @@ import { Tab } from '../../components/Login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'dva/index';
 import ActModal from '../Acts/ActModal';
+import ActModals from '../Acts/ActModals';
 
 
 const TabPane = Tabs.TabPane;
@@ -212,62 +213,46 @@ class ContractRequestsadd extends Component {
       ],
       speccolumns: [
         {
-          title: 'БИН',
-          dataIndex: 'bin',
+          'title': 'Код',
+          'dataIndex': 'code',
+          'isVisible': 'true',
+        },
+        {
+          'title': 'Вид деятельности',
+          'dataIndex': 'activity',
+          'isVisible': 'true',
+        },
+        {
+          title: 'Принято к оплате (₸)',
+          dataIndex: 'present_payment',
           isVisible: true,
         },
         {
-          title: 'Контрагент',
-          dataIndex: 'activity',
+          title: 'Предъявлено к оплате (₸)',
+          dataIndex: 'accept_payment',
           isVisible: true,
         },
         {
-          title: 'Код',
+          title: 'Вычет аванса (₸)',
           dataIndex: 'prepaid',
           isVisible: true,
         },
         {
-          title: 'Вид деятельности',
+          title: 'Итого к оплате (₸)',
           dataIndex: 'total',
           isVisible: true,
-        },
-        {
-          title: 'Сумма (тг)',
-          dataIndex: 'total',
-          isVisible: true,
-        },
+        }
       ],
       specfcolumn: [],
       specdata: [
         {
-          key: 1,
-          id: '123qwe111',
-          code: '123456',
-          activity: 'Медицинское учереждение',
-          present_payment: 10456,
-          accept_payment: 10456,
-          prepaid: 2500,
-          total: 10456,
+          key: 1, id:"123qwe111", code: 'АПП.ПСМП', activity: 'Первичная медико-санитарная медицинская помощь', present_payment: 10456, accept_payment:10456, prepaid:2150, total:20430
         },
         {
-          key: 2,
-          id: '123qwe222',
-          code: '123456',
-          activity: 'Медицинское учереждение',
-          present_payment: 10456,
-          accept_payment: 10456,
-          prepaid: 2500,
-          total: 10456,
+          key: 2, id:"123qwe222", code: 'АПП.ПСМПС', activity: 'Первичная медико-санитарная медицинская помощь сельскому населению', present_payment: 14504, accept_payment:10456, prepaid:5200, total:10456
         },
         {
-          key: 3,
-          id: '123qwe333',
-          code: '123456',
-          activity: 'Медицинское учереждение',
-          present_payment: 10456,
-          accept_payment: 10456,
-          prepaid: 2500,
-          total: 10456,
+          key: 3, id:"123qwe333", code: 'АПП.ДКП', activity: 'Диагностическо-консультативная помощь', present_payment: 10566, accept_payment:14033, prepaid:5020, total:14245
         },
       ],
       ContractSelect: [],
@@ -276,7 +261,16 @@ class ContractRequestsadd extends Component {
       ContractSumms: [],
       Contractpayment: [],
       ShowClear: true,
-      data:[]
+      data:[],
+      pagingConfig: {
+        'start': 0,
+        'length': 15,
+        'sort': [],
+        'src': {
+          'searched': true,
+          'data': {},
+        },
+      },
     };
   }
   deleteContract = () => {
@@ -338,15 +332,12 @@ class ContractRequestsadd extends Component {
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title.add' })}>
         {this.state.ActModal &&
-        <ActModal
-          onCancel={() => this.setState({ ActModal: false })}
-          addAct={(rows)=>{
-            console.log(rows);
-            this.setState({
-              actdata: rows,
-              ActModal: false
-            })
+        <ActModals
+          visible={true}
+          resetshow={(e) => {
+            console.log(e)
           }}
+          filter={this.state.pagingConfig}
         />}
         <Card
           headStyle={{ padding: 0 }}

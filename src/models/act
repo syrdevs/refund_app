@@ -1,0 +1,35 @@
+//http://{{host}}/api/contract/createActForContract
+//http://{{host}}/api/uicommand/downloadFile
+//
+import {
+  createActForContract,
+  uploadFile
+} from '../services/api';
+
+export default {
+  namespace: 'act',
+  state: {
+    viewact: {},
+
+  },
+  effects: {
+      * createActForContract(payload, { call, put }) {
+        const response = yield call(createActForContract, payload);
+        yield put({
+          type: 'createActForContractReducer',
+          payload: response,
+        });
+      },
+
+
+  },
+
+  reducers: {
+    createActForContractReducer(state, { payload }) {
+      return {
+        ...state,
+        viewact: payload,
+      };
+    },
+  },
+};

@@ -28,6 +28,8 @@ import {
   saveObject,
   getObject,
   createContractFromAgent,
+  createActForContract,
+  deleteObject
 } from '../services/api';
 
 export default {
@@ -65,6 +67,7 @@ export default {
     periodSection: {},
     organization: {},
     medicalType: {},
+    attachmentType: {},
     paymentRequestType: {},
     divisions: {},
     activity: {},
@@ -75,6 +78,7 @@ export default {
     saveanswer: {},
     getObjectData: {},
     counterAgentData: {},
+    uploadanswer: {},
 
   },
   effects: {
@@ -281,6 +285,13 @@ export default {
         payload: response,
       });
     },
+    * getattachmentType(payload, { call, put }) {
+      const response = yield call(getActDics, payload);
+      yield put({
+        type: 'dicattachmentTypeReducer',
+        payload: response,
+      });
+    },
     * getpaymentRequestType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
@@ -309,11 +320,6 @@ export default {
         payload: response,
       });
     },
-    //measureUnit
-    /*identifierType: {},
-    currencyType: {},
-    legalForm: {},*/
-
     * getidentifierType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
@@ -321,7 +327,6 @@ export default {
         payload: response,
       });
     },
-
     * getcurrencyType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
@@ -329,7 +334,6 @@ export default {
         payload: response,
       });
     },
-
     * getlegalForm(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
@@ -337,7 +341,6 @@ export default {
         payload: response,
       });
     },
-
     * saveobject(payload, { call, put }) {
       const response = yield call(saveObject, payload);
       yield put({
@@ -345,7 +348,6 @@ export default {
         payload: response,
       });
     },
-
     * getobject(payload, { call, put }) {
       const response = yield call(getObject, payload);
 
@@ -354,9 +356,7 @@ export default {
         payload: response,
       });
     },
-
     * getCounterAgentData(payload, { call, put }) {
-
       const response = yield call(createContractFromAgent, payload);
 
       yield put({
@@ -365,7 +365,6 @@ export default {
       });
 
     },
-
     * clearData(payload, { call, put }) {
 
       yield put({
@@ -376,9 +375,37 @@ export default {
         },
       });
     },
+    * createActForContract(payload, { call, put }) {
+      const response = yield call(createActForContract, payload);
+      yield put({
+        type: 'createActForContractReducer',
+        payload: response,
+      });
+    },
+    * deleteObject(payload, { call, put }) {
+      const response = yield call(deleteObject, payload);
+      yield put({
+        type: 'deleteObjectReducer',
+        payload: response,
+      });
+    },
+
+
   },
 
   reducers: {
+    deleteObjectReducer(state, { payload }) {
+      return {
+        ...state,
+        deletedObject: payload,
+      };
+    },
+    createActForContractReducer(state, { payload }) {
+      return {
+        ...state,
+        getObjectData: payload,
+      };
+    },
     clearDataReducer(state, { payload }) {
       return {
         ...state,
@@ -547,6 +574,12 @@ export default {
         medicalType: payload,
       };
     },
+    dicattachmentTypeReducer(state, { payload }) {
+      return {
+        ...state,
+        attachmentType: payload,
+      };
+    },
     dicpaymentRequestTypeReducer(state, { payload }) {
       return {
         ...state,
@@ -600,6 +633,13 @@ export default {
       return {
         ...state,
         saveanswer: payload,
+      };
+    },
+    uploadFileReducer(state, { payload }) {
+      console.log(payload);
+      return {
+        ...state,
+        uploadanswer: payload,
       };
     },
   },

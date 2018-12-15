@@ -121,18 +121,18 @@ export default class ContractTable extends Component {
     },
     columns: [
       {
-        title: 'Отчетный период',
+        title: 'Подразделение',
+        dataIndex: 'division',
+        isVisible: true,
+      },
+      {
+        title: 'Учетный период: год',
         dataIndex: 'periodYear',
         isVisible: true,
       },
       {
-        title: 'БИН',
-        dataIndex: 'contractParty.bin',
-        isVisible: true,
-      },
-      {
         title: 'Контрагент',
-        dataIndex: 'contractParty.organization',
+        dataIndex: 'contragent.organization',
         isVisible: true,
       },
       {
@@ -151,27 +151,81 @@ export default class ContractTable extends Component {
         isVisible: true,
       },
       {
-        title: 'Период с',
+        title: 'Дата начала',
         dataIndex: 'dateBegin',
         isVisible: true,
       },
       {
-        title: 'Период по',
-        dataIndex: 'periodEnd',
+        title: 'Дата окончания',
+        dataIndex: 'dateEnd',
         isVisible: true,
       },
       {
-        title: 'Подразделение',
-        dataIndex: 'division',
+        title: 'Сумма',
+        dataIndex: 'documentSum',
         isVisible: true,
       },
-      /*{
+      {
         title: 'Статус',
-        dataIndex: 'status',
+        dataIndex: 'documentStatus.statusName',
         isVisible: true,
-      },*/
+      },
+      {
+        title: 'Файлы',
+        dataIndex: 'documentAttachmentsCount',
+        isVisible: true,
+      },
+
     ],
-    fcolumn: [],
+    fcolumn: [
+      {
+        order: 12,
+        title: 'Протокол распределения объемов',
+        dataIndex: 'planProtocol',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.planProtocol) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>
+          }
+        },
+      },
+      {
+        title: 'Родительский договор',
+        order: 11,
+        dataIndex: 'parentContract.number',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.parentContract) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>
+          }
+          //***
+          ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
+        },
+      },
+      {
+        title: 'Заявка на объемы',
+        dataIndex: 'proposal',
+        isVisible: true,
+        order: 13,
+        render: (text, record) => {
+          if (record && record.proposal) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>
+          }
+        },
+      },
+    ],
     dataSource: [
       {
         id: '1',
@@ -281,12 +335,13 @@ export default class ContractTable extends Component {
     dispatch({
       type: 'universal2/getList',
       payload: this.state.gridParameters,
-    }).then(()=>{
-     // console.log(this.props.universal2.references[this.state.gridParameters.entity])
+    }).then(() => {
+      // console.log(this.props.universal2.references[this.state.gridParameters.entity])
     });
   };
 
   componentDidMount() {
+    console.log('did mount');
     this.loadMainGridData();
   }
 
@@ -297,13 +352,13 @@ export default class ContractTable extends Component {
 
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-        <Menu.Item
-          key="1"
-          onClick={() => {
-            router.push('/contract/counteragent/create');
-          }}>
-          Новый
-        </Menu.Item>
+        {/*<Menu.Item*/}
+          {/*key="1"*/}
+          {/*onClick={() => {*/}
+            {/*router.push('/contract/counteragent/create');*/}
+          {/*}}>*/}
+          {/*Новый*/}
+        {/*</Menu.Item>*/}
         <Menu.Item
           disabled={this.state.selectedRowKeys === null}
           onClick={() => {
@@ -315,7 +370,7 @@ export default class ContractTable extends Component {
             });
           }}
           key="2">
-          Открыть/Изменить
+          Открыть
         </Menu.Item>
         <Menu.Item
           key="3">
@@ -323,12 +378,12 @@ export default class ContractTable extends Component {
         </Menu.Item>
         <Menu.Item
           key="4"
-          onClick={()=>{
+          onClick={() => {
             ///contract/contracts/acts/add/viewcontract/payment
             this.props.history.push({
               pathname: '/contract/contracts/payment/add',
               state: {
-                data:[this.state.selectedRowKeys],
+                data: [this.state.selectedRowKeys],
                 columns: [
                   {
                     title: 'Отчетный период',
@@ -381,7 +436,7 @@ export default class ContractTable extends Component {
                     isVisible: true,
                   },*/
                 ],
-                type: "contract"
+                type: 'contract',
               },
             });
           }}
@@ -395,13 +450,13 @@ export default class ContractTable extends Component {
             //router.push('/contract/contracts/acts/add');
             console.log(this.state.selectedRowKeys);
             //console.log(contracts.content.map(item=>{return item.id===this.state.selectedRowKeys}));
-            window.open("/contract/contracts/acts/view?contractId="+this.state.selectedRowKeys.id)
-           /* this.props.history.push({
-              pathname: '/contract/contracts/acts/add',
-              state: {
-                data: this.state.selectedRowKeys,
-              },
-            });*/
+            window.open('/contract/contracts/acts/view?contractId=' + this.state.selectedRowKeys.id);
+            /* this.props.history.push({
+               pathname: '/contract/contracts/acts/add',
+               state: {
+                 data: this.state.selectedRowKeys,
+               },
+             });*/
           }
           }
           disabled={this.state.selectedRowKeys === null}

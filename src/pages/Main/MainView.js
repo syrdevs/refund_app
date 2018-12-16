@@ -144,7 +144,7 @@ class MainView extends Component {
           order: 7,
           render: (record, value) => <a
             style={{ color: this.setColor(value.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
-            href="#"> <span><Badge status={this.setBadgeStatus(value.isRefundConfirm)} /></span> {value.dappRefundStatusId.nameRu}</a>,
+            href="#"> <span><Badge status={this.setBadgeStatus(value.isRefundConfirm)} /></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}</a>,
         }],
       columns: [
         {
@@ -332,6 +332,7 @@ class MainView extends Component {
       ShowModal: true,
     });
   };
+
   setColor = (value) => {
     return '#000000a6';
   };
@@ -618,8 +619,6 @@ class MainView extends Component {
         },
       });
     }
-
-
   };
 
   AppRefundStatusAuto = () => {
@@ -703,6 +702,7 @@ class MainView extends Component {
   btnIsDisabled = (isRole, args) => {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
+
   loadRpmuData = (recordId) => {
 
     const { dispatch } = this.props;

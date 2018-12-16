@@ -6,7 +6,7 @@ import {
   getReportsList,
   getReportParameters,
   getFormedReports,
-  getList,
+  getList, getObject,
 } from '../services/api';
 
 export default {
@@ -16,11 +16,18 @@ export default {
     reportFormedData: [],
     dataStore: [],
     columns: [],
-
+    contractData: {},
     references: {},
   },
   effects: {
+    * getContractById(payload, { call, put }) {
+      const response = yield call(getObject, payload);
 
+      yield put({
+        type: 'getListDataByContract',
+        payload: response || {},
+      });
+    },
 
     * getList(payload, { call, put }) {
 
@@ -107,6 +114,14 @@ export default {
     },
   },
   reducers: {
+
+    getListDataByContract(state, { payload }) {
+      return {
+        ...state,
+        contractData: payload,
+      };
+    },
+
     loading(state, { payload }) {
       return {
         ...state,

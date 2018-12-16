@@ -127,7 +127,6 @@ class SpecPage extends Component {
         width: '5%',
         render: (text, record) => {
 
-
           return (
             <FormItem>
               {this.props.form.getFieldDecorator('spespage.code' + record.key, {
@@ -153,10 +152,10 @@ class SpecPage extends Component {
         width: '30%',
         render: (text, record) => {
 
-
           return (
             <FormItem>
               {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
+                initialValue: record.id ? record.id : null,
                 rules: [{
                   required: false,
                   message: this.state.validatemessage,
@@ -185,12 +184,13 @@ class SpecPage extends Component {
       },
       {
         title: 'Способ оплаты',
-        dataIndex: 'currencyType.nameRu',
+        dataIndex: 'paymentType.nameRu',
         render: (text, record) => {
           return (
             <FormItem
             >
               {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
+                initialValue: record.paymentType ? record.paymentType.id : null,
                 rules: [{
                   required: false,
                   message: this.state.validatemessage,
@@ -406,8 +406,50 @@ class SpecPage extends Component {
       : null;
   };
 
+  componentDidUpdate() {
+    if (this.props.forceRender) {
+      this.setState({
+        smarttabDataSource: [],
+        smarttabcount: 0,
+      }, () => {
+        this.renderData();
+        this.props.setForceRender();
+      });
+    }
+  }
+
+  renderData = () => {
+    if (this.props.gridData.contractItems) {
+
+      let dataSource = this.props
+        .gridData
+        .contractItems
+        .map((item, _idx) => {
+
+          let itemResult = {
+            itemId: item.id,
+            activity: item.activity,
+            key: _idx,
+          };
+
+          Object.keys(item.activity).forEach((contractKey) => {
+            itemResult[contractKey] = item.activity[contractKey];
+          });
+
+          return itemResult;
+        });
+
+      this.setState({
+        smarttabDataSource: dataSource,
+        smarttabcount: dataSource.length,
+      });
+
+    }
+  };
 
   componentDidMount() {
+
+    console.log('did mount');
 
     this.props.eventManager.subscribe('onSpecFormSubmit', () => {
 
@@ -446,6 +488,8 @@ class SpecPage extends Component {
 
       return Object.keys(specifyKeys).map((specKey) => (specifyKeys[specKey]));
     });
+
+    this.renderData();
 
     if (getLocale() === 'en-US') {
       momentDefine();

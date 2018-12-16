@@ -176,7 +176,7 @@ export default class ContractTable extends Component {
         title: 'Файлы',
         dataIndex: 'documentAttachmentsCount',
         isVisible: true,
-      }
+      },
     ],
     fcolumn: [
       {
@@ -352,7 +352,6 @@ export default class ContractTable extends Component {
     const { universal2 } = this.props;
     const contracts = universal2.references[this.state.gridParameters.entity];
 
-
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
         {/*<Menu.Item*/}
@@ -365,183 +364,192 @@ export default class ContractTable extends Component {
         <Menu.Item
           disabled={this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
           onClick={() => {
+
+            let recordId = this.state.selectedRowKeys[0];
+            let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
+            let contractName = 'Договор №' + record.number + ' от ' + record.documentDate;
+
             this.props.history.push({
               pathname: '/contract/counteragent/editcontract',
               state: {
-                data: this.state.selectedRowKeys[0],
+                data: {
+                  id: this.state.selectedRowKeys[0],
+                  title: contractName,
+                },
               },
             });
+
           }}
-          key="2">
-          Открыть
-        </Menu.Item>
-        <Menu.Item
-          key="3">
-          Удалить
-        </Menu.Item>
-        <Menu.Item
-          key="4"
-          onClick={() => {
+            key='2'>
+            Открыть
+            </Menu.Item>
+            <Menu.Item
+            key="3">
+            Удалить
+            </Menu.Item>
+            <Menu.Item
+            key='4'
+            onClick={() => {
             ///contract/contracts/acts/add/viewcontract/payment
             this.props.history.push({
-              pathname: '/contract/contracts/payment/add',
-              state: {
-                data: [this.state.selectedRowKeys],
-                columns: [
-                  {
-                    title: 'Отчетный период',
-                    dataIndex: 'periodYear',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'БИН',
-                    dataIndex: 'contractParty.bin',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Контрагент',
-                    dataIndex: 'counteragent',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Вид договора',
-                    dataIndex: 'contractType',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Номер',
-                    dataIndex: 'number',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Дата',
-                    dataIndex: 'documentDate',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Период с',
-                    dataIndex: 'periodStart',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Период по',
-                    dataIndex: 'periodEnd',
-                    isVisible: true,
-                  },
-                  {
-                    title: 'Подразделение',
-                    dataIndex: 'contractParty.organization',
-                    isVisible: true,
-                  },
-                  /*{
-                    title: 'Статус',
-                    dataIndex: 'status',
-                    isVisible: true,
-                  },*/
-                ],
-                type: 'contract',
-              },
-            });
+            pathname: '/contract/contracts/payment/add',
+            state: {
+            data: [this.state.selectedRowKeys],
+            columns: [
+          {
+            title: 'Отчетный период',
+            dataIndex: 'periodYear',
+            isVisible: true,
+          },
+          {
+            title: 'БИН',
+            dataIndex: 'contractParty.bin',
+            isVisible: true,
+          },
+          {
+            title: 'Контрагент',
+            dataIndex: 'counteragent',
+            isVisible: true,
+          },
+          {
+            title: 'Вид договора',
+            dataIndex: 'contractType',
+            isVisible: true,
+          },
+          {
+            title: 'Номер',
+            dataIndex: 'number',
+            isVisible: true,
+          },
+          {
+            title: 'Дата',
+            dataIndex: 'documentDate',
+            isVisible: true,
+          },
+          {
+            title: 'Период с',
+            dataIndex: 'periodStart',
+            isVisible: true,
+          },
+          {
+            title: 'Период по',
+            dataIndex: 'periodEnd',
+            isVisible: true,
+          },
+          {
+            title: 'Подразделение',
+            dataIndex: 'contractParty.organization',
+            isVisible: true,
+          },
+            /*{
+              title: 'Статус',
+              dataIndex: 'status',
+              isVisible: true,
+            },*/
+            ],
+            type: 'contract',
+          },
+          });
           }}
-          disabled={this.state.selectedRowKeys === null}
-        >
-          Включить в заявку на оплату
-        </Menu.Item>
-        <Menu.Item
-          key="5"
-          onClick={() => {
-            //router.push('/contract/contracts/acts/add');
-            router.push('/contract/contracts/acts/view?contractId=' + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
-            /* this.props.history.push({
-               pathname: '/contract/contracts/acts/add',
-               state: {
-                 data: this.state.selectedRowKeys,
-               },
-             });*/
-          }
-          }
-          disabled={this.state.selectedRowKeys.length !== 1}
-        >
-          Создать акт
-        </Menu.Item>
-      </Menu>}>
-        <Button
-          key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
-          type="down"/></Button>
-      </Dropdown>,
-    ];
-    return (
-      <PageHeaderWrapper title={this.state.title}>
-        <Card bodyStyle={{ padding: 5 }}>
-          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
+            disabled={this.state.selectedRowKeys === null}
+            >
+            Включить в заявку на оплату
+            </Menu.Item>
+            <Menu.Item
+            key="5"
+            onClick={() => {
+              //router.push('/contract/contracts/acts/add');
+              router.push('/contract/contracts/acts/view?contractId=' + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
+              /* this.props.history.push({
+                 pathname: '/contract/contracts/acts/add',
+                 state: {
+                   data: this.state.selectedRowKeys,
+                 },
+               });*/
+            }
+            }
+            disabled={this.state.selectedRowKeys.length !== 1}
+            >
+            Создать акт
+            </Menu.Item>
+            </Menu>}>
+            <Button
+            key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
+            type="down"/></Button>
+            </Dropdown>,
+            ];
+            return (
+            <PageHeaderWrapper title={this.state.title}>
+            <Card bodyStyle={{ padding: 5 }}>
+            <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
             <Row>
-              <Col sm={24} md={this.state.filterContainer}>
-                <Card
-                  headStyle={{
-                    padding: '0 14px',
-                  }}
-                  bodyStyle={{
-                    padding: 5,
-                  }}
-                  style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
-                  type="inner"
-                  title={formatMessage({ id: 'system.filter' })}
-                  extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
-                    icon={faTimes}/></Icon>}>
-                  {this.state.filterContainer === 6 && <GridFilterCollapsible
-                    clearFilter={this.clearFilter}
-                    applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
-                    filterForm={this.state.filterForm}
-                    dateFormat={dateFormat}/>}
-                </Card>
-              </Col>
-              <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-                <SmartGridView
-                  scroll={{ x: 2100}}
-                  name={'ContractMain'}
-                  columns={this.state.columns}
-                  showTotal={true}
-                  selectedRowCheckBox={true}
-                  selectedRowKeys={this.state.selectedRowKeys}
-                  showExportBtn={true}
-                  addonButtons={addonButtons}
-                  actionColumns={this.state.fcolumn}
-                  actionExport={() => {
-                    // console.log('export');
-                  }}
-                  dataSource={{
-                    total: contracts ? contracts.totalElements : 0,
-                    pageSize: this.state.gridParameters.length,
-                    page: this.state.gridParameters.start + 1,
-                    data: contracts ? contracts.content : [],
-                  }}
-                  onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-                  onRefresh={() => {
-                    this.loadMainGridData();
-                  }}
-                  onSearch={() => {
-                    this.filterPanelState();
-                  }}
-                  onSelectRow={(record, index) => {
-                    /*this.setState({
-                      selectedRowKeys: record,
-                    });*/
-                  }}
-                  onSelectCheckboxChange={(selectedRowKeys) => {
-                    this.setState({
-                      selectedRowKeys: selectedRowKeys,
-                    });
-                  }}
-                />
-                <br/>
-              </Col>
+            <Col sm={24} md={this.state.filterContainer}>
+            <Card
+            headStyle={{
+              padding: '0 14px',
+            }}
+            bodyStyle={{
+              padding: 5,
+            }}
+            style={{ margin: '0px 5px 10px 0px', borderRadius: '5px' }}
+            type="inner"
+            title={formatMessage({ id: 'system.filter' })}
+            extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
+              icon={faTimes}/></Icon>}>
+            {this.state.filterContainer === 6 && <GridFilterCollapsible
+              clearFilter={this.clearFilter}
+              applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+              filterForm={this.state.filterForm}
+              dateFormat={dateFormat}/>}
+            </Card>
+            </Col>
+            <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
+            <SmartGridView
+            scroll={{ x: 2100 }}
+            name={'ContractMain'}
+            columns={this.state.columns}
+            showTotal={true}
+            selectedRowCheckBox={true}
+            selectedRowKeys={this.state.selectedRowKeys}
+            showExportBtn={true}
+            addonButtons={addonButtons}
+            actionColumns={this.state.fcolumn}
+            actionExport={() => {
+              // console.log('export');
+            }}
+            dataSource={{
+              total: contracts ? contracts.totalElements : 0,
+              pageSize: this.state.gridParameters.length,
+              page: this.state.gridParameters.start + 1,
+              data: contracts ? contracts.content : [],
+            }}
+            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+            onRefresh={() => {
+              this.loadMainGridData();
+            }}
+            onSearch={() => {
+              this.filterPanelState();
+            }}
+            onSelectRow={(record, index) => {
+              /*this.setState({
+                selectedRowKeys: record,
+              });*/
+            }}
+            onSelectCheckboxChange={(selectedRowKeys) => {
+              this.setState({
+                selectedRowKeys: selectedRowKeys,
+              });
+            }}
+            />
+            <br/>
+            </Col>
             </Row>
-          </Spin>
-        </Card>
-      </PageHeaderWrapper>
+            </Spin>
+            </Card>
+            </PageHeaderWrapper>
 
-    );
-  };
-}
+            );
+          };
+        }
 
 

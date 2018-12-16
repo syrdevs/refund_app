@@ -157,8 +157,21 @@ export default class InfoPage extends Component {
     });
   };
 
-  checkProperty = () => {
+  getSpecifications = (id) => {
+    const { dispatch } = this.props;
 
+    dispatch({
+      type: 'universal2/getContractById',
+      payload: {
+        'entity': 'contract',
+        'alias': null,
+        'id': id,
+      },
+    }).then(() => {
+      if (this.props.universal2.contractData.contractItems) {
+        this.props.setSpecData(this.props.universal2.contractData);
+      }
+    });
   };
 
   render = () => {
@@ -190,7 +203,12 @@ export default class InfoPage extends Component {
     return (<Card style={{ marginLeft: '-10px' }}>
       {this.state.DogovorModal.visible && <DogovorModal
         onSelect={(record) => {
+
+          this.getSpecifications(record.id);
+
           this.setState({ DogovorModal: { visible: false, record: record } });
+
+
         }}
         hide={() => this.setState({ DogovorModal: { visible: false } })
         }/>}
@@ -205,18 +223,18 @@ export default class InfoPage extends Component {
         }
 
         {//(getObjectData.periodYear) &&
-        <Form.Item {...formItemLayout} label="Учетный период">
-          {getFieldDecorator('periodYear', {
-            rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
-          })(
-            <Select
-              placeholder="Учетный период"
-              style={{ width: '50%' }}>
-              {this.getReferenceValues('periodYear', 'year')}
-            </Select>,
-          )}
-        </Form.Item>
+          <Form.Item {...formItemLayout} label="Учетный период">
+            {getFieldDecorator('periodYear', {
+              rules: [{ required: false, message: 'не заполнено' }],
+              initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
+            })(
+              <Select
+                placeholder="Учетный период"
+                style={{ width: '50%' }}>
+                {this.getReferenceValues('periodYear', 'year')}
+              </Select>,
+            )}
+          </Form.Item>
         }
 
         {(getObjectData.parentContract) &&
@@ -303,12 +321,12 @@ export default class InfoPage extends Component {
         }
 
         {//(getObjectData.number) &&
-        <Form.Item {...formItemLayout} label="Номер">
-          {getFieldDecorator('number', {
-            rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: getObjectData.number ? getObjectData.number : null,
-          })(<Input placeholder="Номер"/>)}
-        </Form.Item>
+          <Form.Item {...formItemLayout} label="Номер">
+            {getFieldDecorator('number', {
+              rules: [{ required: false, message: 'не заполнено' }],
+              initialValue: getObjectData.number ? getObjectData.number : null,
+            })(<Input placeholder="Номер"/>)}
+          </Form.Item>
         }
 
         {(getObjectData.documentDate) &&

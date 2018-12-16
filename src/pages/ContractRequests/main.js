@@ -33,8 +33,9 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 const dateFormat = 'DD.MM.YYYY';
 
-@connect(({ universal2 }) => ({
+@connect(({ universal2, loading }) => ({
   universal2,
+  loadingData: loading.effects['universal2/getList'],
 }))
 export default class ContractRequestsTable extends Component  {
   state = {
@@ -337,7 +338,7 @@ export default class ContractRequestsTable extends Component  {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
-        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
           <Card bodyStyle={{ padding: 5 }}>
              <Row>
               <Col sm={24} md={this.state.filterContainer}>

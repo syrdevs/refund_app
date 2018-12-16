@@ -36,6 +36,7 @@ import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 import moment from 'moment';
 import saveAs from 'file-saver';
 import SignModal from '../../components/SignModal';
+import Graphic from './Graphic';
 
 
 const TabPane = Tabs.TabPane;
@@ -869,6 +870,12 @@ class ViewAct extends Component {
 
                     </Card>
                   </TabPane>}
+                  <TabPane
+                    tab="График"
+                    key="graphic"
+                  >
+                    <Graphic/>
+                  </TabPane>
                 </Tabs>
               </Form>
             </Row>

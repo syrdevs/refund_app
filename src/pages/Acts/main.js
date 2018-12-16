@@ -33,8 +33,9 @@ import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
 
 const dateFormat = 'DD.MM.YYYY';
 
-@connect(({ universal2 }) => ({
+@connect(({ universal2, loading  }) => ({
   universal2,
+  loadingData: loading.effects['universal2/getList'],
 }))
 export default class ActsTable extends Component  {
   state = {
@@ -253,7 +254,6 @@ export default class ActsTable extends Component  {
     }));
   };
   loadMainGridData = () => {
-    console.log(this.state.gridParameters);
     const { dispatch } = this.props;
     dispatch({
       type: 'universal2/getList',
@@ -421,7 +421,7 @@ export default class ActsTable extends Component  {
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.contract.acts' })}>
-        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={universal2.loading}>
+        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
           <Card
             bodyStyle={{ padding: 5 }}>
             <Row>

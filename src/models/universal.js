@@ -29,7 +29,8 @@ import {
   getObject,
   createContractFromAgent,
   createActForContract,
-  deleteObject
+  deleteObject, getList,
+
 } from '../services/api';
 
 export default {
@@ -80,8 +81,11 @@ export default {
     counterAgentData: {},
     uploadanswer: {},
 
+
   },
   effects: {
+
+
     * receiversRefund(payload, { call, put }) {
       yield  call(getReceiversRefund, payload);
     },
@@ -394,6 +398,8 @@ export default {
   },
 
   reducers: {
+
+
     deleteObjectReducer(state, { payload }) {
       return {
         ...state,
@@ -604,7 +610,6 @@ export default {
         measureUnit: payload,
       };
     },
-
 
 
     dicidentifierTypeReducer(state, { payload }) {

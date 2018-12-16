@@ -7,6 +7,7 @@ import {
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
+
 const dateFormat = 'DD.MM.YYYY';
 export default class CounterAgentMain extends Component {
   state = {
@@ -20,13 +21,20 @@ export default class CounterAgentMain extends Component {
   };
 
   getCardTitle = () => {
-    return this.state.titles[this.props.location.pathname] ? this.state.titles[this.props.location.pathname] : 'menu.counteragent';
+
+    if (this.props.location.state && this.props.location.state.data.title) {
+      return this.props.location.state.data.title;
+    }
+
+    let title = this.state.titles[this.props.location.pathname] ? this.state.titles[this.props.location.pathname] : 'menu.counteragent';
+
+    return formatMessage({ id: title });
   };
 
   render = () => {
     const { location, children } = this.props;
 
-    return (<PageHeaderWrapper title={formatMessage({ id: this.getCardTitle() })}>
+    return (<PageHeaderWrapper title={this.getCardTitle()}>
         <Card bodyStyle={{ padding: 5 }}>
           <div style={{ width: '100%' }}>
           </div>

@@ -24,7 +24,23 @@ const formItemLayout = {
   getLoadingData: loading.effects['universal/getobject'],
 }))
 export default class CounterAgentEdit extends Component {
-  state = {};
+  state = {
+
+    SpecData: {},
+    SpecPageForceRendered: false,
+
+    eventManager: {
+      _events: {},
+      handleEvent: (evName) => {
+        if (!this.state.eventManager._events[evName]) return [];//throw new Error('eventName not registered');
+
+        return this.state.eventManager._events[evName]();
+      },
+      subscribe: (evName, fn) => {
+        this.state.eventManager._events[evName] = fn;
+      },
+    },
+  };
 
   componentDidMount() {
 
@@ -38,18 +54,16 @@ export default class CounterAgentEdit extends Component {
       },
     });
 
-    console.log(this.props);
-
-    // if (this.props.location.state) {
-    //   dispatch({
-    //     type: 'universal/getobject',
-    //     payload: {
-    //       'entity': 'contract',
-    //       'alias': null,
-    //       'id': this.props.location.state.data.id,
-    //     },
-    //   });
-    // }
+    if (this.props.location.state) {
+      dispatch({
+        type: 'universal/getobject',
+        payload: {
+          'entity': 'contract',
+          'alias': null,
+          'id': this.props.location.state.data.id,
+        },
+      });
+    }
 
     // if (this.props.location.state) {
     //
@@ -61,6 +75,8 @@ export default class CounterAgentEdit extends Component {
   sendForm = (data) => {
 
     const { dispatch } = this.props;
+
+    let SpecFormData = this.state.eventManager.handleEvent('onSpecFormSubmit');
 
 //todo check model
     let sendModel = {
@@ -96,7 +112,9 @@ export default class CounterAgentEdit extends Component {
     };
     if (data.period !== null && data.period.length > 0) {
       sendModel.data.dateBegin = moment(data.period[0]).format('DD.MM.YYYY');
-      sendModel.data.dateEnd = moment(data.period[1]).format('DD.MM.YYYY');
+
+      if (data.period[1])
+        sendModel.data.dateEnd = moment(data.period[1]).format('DD.MM.YYYY');
     }
 
     if (this.props.location.state.data.id) {
@@ -156,17 +174,28 @@ export default class CounterAgentEdit extends Component {
       };
     }
 
-    dispatch({
-      type: 'universal/saveobject',
-      payload: sendModel,
-    }).then(()=>{
-      Modal.info({
-        title: 'Информация',
-        content: 'Изменения были успешно сохранены',
-      });
-      reduxRouter.push("/contract/contracts/table");
-    })
+    console.log(SpecFormData);
 
+    // dispatch({
+    //   type: 'universal/saveobject',
+    //   payload: sendModel,
+    // }).then((res) => {
+    //   if (!this.props.universal.saveanswer.Message) {
+    //     Modal.info({
+    //       title: 'Информация',
+    //       content: 'Изменения были успешно сохранены',
+    //     });
+    //     reduxRouter.push('/contract/contracts/table');
+    //   }
+    // });
+
+  };
+
+  setSpecData = (data) => {
+    this.setState({
+      SpecPageForceRendered: true,
+      SpecData: data,
+    });
   };
 
   render = () => {
@@ -174,62 +203,86 @@ export default class CounterAgentEdit extends Component {
     const { dispatch } = this.props;
 
     return (
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
+      <Spin spinning={this.props.getLoadingData}>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
 
-          this.props.form.validateFields((err, fieldsValue) => {
-            if (err) {
-              return;
-            }
-            this.sendForm(fieldsValue);
-          });
+            this.props.form.validateFields((err, fieldsValue) => {
+              if (err) {
+                return;
+              }
+              this.sendForm(fieldsValue);
+            });
 
-        }}
-        layout="horizontal" hideRequiredMark>
-        <Card
-          headStyle={{ padding: 0 }}
-          title={''}
-          className={styles.headPanel}
-          extra={[<Button
-            htmlType="submit">Сохранить</Button>, <Button
-            style={{ marginLeft: '5px' }}
-            onClick={() => {
-              const { dispatch } = this.props;
-              dispatch({
-                type: 'universal/clearData',
-                payload: {
-                  typeName: 'getObjectData',
-                  value: {},
-                },
-              });
+          }}
+          layout="horizontal" hideRequiredMark>
+          <Card
+            headStyle={{ padding: 0 }}
+            title={''}
+            className={styles.headPanel}
+            extra={[<Button
+              htmlType="submit">Сохранить</Button>, <Button
+              style={{ marginLeft: '5px' }}
+              onClick={() => {
+                const { dispatch } = this.props;
+                dispatch({
+                  type: 'universal/clearData',
+                  payload: {
+                    typeName: 'getObjectData',
+                    value: {},
+                  },
+                });
 
-              reduxRouter.push('/contract/contracts/table');
-            }}>Закрыть</Button>]}
-          bordered={false}
-          bodyStyle={{ padding: 0 }}>
-          <Row style={{ marginTop: '5px' }}>
-            <Tabs
-              tabBarStyle={{ textAlign: 'left' }}
-              type={'card'}
-              className={styles.stepFormText}
-              defaultActiveKey="main"
-              tabPosition={'left'}>
-              <TabPane tab="Титульная часть" key="main">
-                <InfoPage {...this.props} formItemLayout={formItemLayout}/>
-              </TabPane>
-              {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
-              {/*<DogovorPage/>*/}
-              {/*</TabPane>*/}
-              <TabPane tab="Спецификация" key="specification">
-                <SpecPage {...this.props}/>
-              </TabPane>
-              <TabPane tab="Контрагенты" key="counteragents">
-                <ContragentsPage selectedData={this.props.location.state} {...this.props}/>
-              </TabPane>
-            </Tabs>
-          </Row>
-        </Card>
-      </Form>);
+                reduxRouter.push('/contract/contracts/table');
+              }}>Закрыть</Button>]}
+            bordered={false}
+            bodyStyle={{ padding: 0 }}>
+            <Row style={{ marginTop: '5px' }}>
+              <Tabs
+                tabBarStyle={{ textAlign: 'left' }}
+                type={'card'}
+                className={styles.stepFormText}
+                defaultActiveKey="main"
+                tabPosition={'left'}>
+                <TabPane tab="Титульная часть" key="main">
+                  <InfoPage
+                    setSpecData={this.setSpecData}
+                    form={this.props.form}
+                    formData={this.props.universal.getObjectData}
+                    formItemLayout={formItemLayout}/>
+                </TabPane>
+                {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
+                {/*<DogovorPage/>*/}
+                {/*</TabPane>*/}
+                <TabPane tab="Спецификация" key="specification">
+                  {Object.keys(this.state.SpecData).length > 0 ?
+                    <SpecPage
+                      setForceRender={() => {
+                        this.setState({
+                          SpecPageForceRendered: false,
+                        });
+                      }}
+                      forceRender={this.state.SpecPageForceRendered}
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.state.SpecData}/>
+                    : <SpecPage
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.props.universal.getObjectData}/>}
+
+
+                </TabPane>
+                <TabPane tab="Контрагенты" key="counteragents">
+                  <ContragentsPage
+                    gridData={this.props.universal.getObjectData}
+                    selectedData={this.props.location.state}/>
+                </TabPane>
+              </Tabs>
+            </Row>
+          </Card>
+        </Form>
+      </Spin>);
   };
 }

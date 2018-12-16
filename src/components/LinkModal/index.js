@@ -40,7 +40,6 @@ export default class LinkModal extends Component {
 
   render = () => {
 
-
     let fileName = '';
 
     if (this.props.data && this.state.value === null) {
@@ -53,6 +52,7 @@ export default class LinkModal extends Component {
     if (this.state.value !== null) {
       fileName = `№ ${this.state.value.number} от ${this.state.value.documentDate}`;
     }
+
 
     return (<div>
       <Modal

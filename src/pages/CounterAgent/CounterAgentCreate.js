@@ -72,7 +72,6 @@ export default class CounterAgentCreate extends Component {
 
     const { dispatch } = this.props;
 
-
     let SpecFormData = this.state.eventManager.handleEvent('onSpecFormSubmit');
 
     //todo check model
@@ -219,7 +218,6 @@ export default class CounterAgentCreate extends Component {
                 </TabPane>
                 <TabPane tab="Спецификация" key="specification">
                   <SpecPage
-                    saveData={this.state.specifyData}
                     eventManager={this.state.eventManager}
                     form={this.props.form}/>
                 </TabPane>

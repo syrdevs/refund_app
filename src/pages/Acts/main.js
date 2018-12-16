@@ -149,37 +149,31 @@ export default class ActsTable extends Component  {
         title: 'Учетный период(год)',
         dataIndex: 'periodYear.year',
         isVisible: true,
-        width : 150,
       },
       {
         title: 'Учетный период(месяц)',
         dataIndex: 'periodSection.name',
         isVisible: true,
-        width : 150,
       },
       {
         title: 'Подразделение',
         dataIndex: 'division',
         isVisible: true,
-        width : 150,
       },
       {
         title: 'Номер',
         dataIndex: 'number',
         isVisible: true,
-        width : 150,
       },
       {
         title: 'Дата',
         dataIndex: 'documentDate',
         isVisible: true,
-        width : 150,
       },
       {
         title: 'Сумма',
         dataIndex: 'documentSum',
         isVisible: true,
-        width : 150,
       },
     ],
     /*buttons:[
@@ -446,10 +440,8 @@ export default class ActsTable extends Component  {
                 </Card>
               </Col>
               <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-                <div className={style.SmartGridView}>
                 <SmartGridView
-                    style={{height:'500px'}}
-                    scroll={{ x: 'auto' }}
+                    scroll={{ x: 2100 }}
                     name={'ActMain'}
                     columns={this.state.columns}
                     actionColumns={this.state.fcolumn}
@@ -479,7 +471,6 @@ export default class ActsTable extends Component  {
                       });
                     }}
                   />
-                </div>
                 <br/>
               </Col>
             </Row>

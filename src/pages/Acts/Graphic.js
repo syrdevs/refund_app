@@ -6,6 +6,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { connect } from 'dva/index';
 import SmartGridView from '../../components/SmartGridView';
 import Input from 'antd/es/input';
+import Button from 'antd/es/button';
 
 @connect(({ universal, loading  }) => ({
   universal,
@@ -75,15 +76,13 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection01.valueSection',
             key: 'periodSection01.valueSection',
             width: 200,
             render: (item) => {
               return <Input
-                        value={item}
-                        key={"test"}
-                        onChange={(e)=>{this.OnChange(e)}}
-                        ref={node => this.userNameInput = node}
+                        defaultValue={item.periodSection01.valueSection}
+                        onChange={(e)=> {this.OnChangeperiod(item, "periodSection01", "valueSection",e)}}
+
               />;
             },
           },
@@ -95,11 +94,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection01.sumAdvanceTakeout',
             key: 'periodSection01.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection01.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection01", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -109,12 +110,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection02.valueSection',
             key: 'periodSection02.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection02.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection02", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -124,11 +128,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection02.sumAdvanceTakeout',
             key: 'periodSection02.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection02.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection02", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -138,12 +144,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection03.valueSection',
             key: 'periodSection03.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection03.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection03", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -153,11 +162,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection03.sumAdvanceTakeout',
             key: 'periodSection03.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection03.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection03", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -167,12 +178,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection04.valueSection',
             key: 'periodSection04.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection04.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection04", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -182,11 +196,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection04.sumAdvanceTakeout',
             key: 'periodSection04.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection04.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection04", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -196,12 +212,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection05.valueSection',
             key: 'periodSection05.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection05.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection05", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -211,11 +230,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection05.sumAdvanceTakeout',
             key: 'periodSection05.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection05.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection05", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -225,11 +246,14 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection06.valueSection',
             key: 'periodSection06.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection06.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection06", "valueSection",e)}}
+
+              />;
             },
           },
           {
@@ -240,11 +264,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection06.sumAdvanceTakeout',
             key: 'periodSection06.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection06.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection06", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -254,12 +280,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection07.valueSection',
             key: 'periodSection07.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection07.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection07", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -269,11 +298,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection07.sumAdvanceTakeout',
             key: 'periodSection07.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection07.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection07", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -283,12 +314,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection08.valueSection',
             key: 'periodSection08.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection08.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection08", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -298,11 +332,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection08.sumAdvanceTakeout',
             key: 'periodSection08.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection08.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection08", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -312,12 +348,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection09.valueSection',
             key: 'periodSection09.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection09.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection09", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -327,11 +366,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection09.sumAdvanceTakeout',
             key: 'periodSection09.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection09.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection09", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -341,12 +382,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection10.valueSection',
             key: 'periodSection10.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection10.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection10", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -356,11 +400,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection10.sumAdvanceTakeout',
             key: 'periodSection10.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection10.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection10", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -370,12 +416,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection11.valueSection',
             key: 'periodSection11.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection11.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection11", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -385,11 +434,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection11.sumAdvanceTakeout',
             key: 'periodSection11.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection11.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection11", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -399,12 +450,15 @@ class Graphic extends Component {
         children: [
           {
             title: 'Количество',
-            dataIndex: 'periodSection12.valueSection',
             key: 'periodSection12.valueSection',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
-            },
+              return <Input
+                defaultValue={item.periodSection12.valueSection}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection12", "valueSection",e)}}
+
+              />;
+            }
           },
           {
             title: 'Сумма, т',
@@ -414,11 +468,13 @@ class Graphic extends Component {
           },
           {
             title: 'Сумма аванса, т',
-            dataIndex: 'periodSection12.sumAdvanceTakeout',
             key: 'periodSection12.sumAdvanceTakeout',
             width: 200,
             render: (item) => {
-              return <Input value={item}/>;
+              return <Input
+                defaultValue={item.periodSection12.sumAdvanceTakeout}
+                onChange={(e)=> {this.OnChangeperiod(item, "periodSection12", "sumAdvanceTakeout",e)}}
+              />;
             },
           }
         ]
@@ -444,33 +500,74 @@ class Graphic extends Component {
         "id": "E8A735FC-8CCC-47DD-A7D7-92A1C9B75EAA"
       },
     }).then(()=>{
+      (this.props.universal.getObjectData._contractItemValue ? this.props.universal.getObjectData._contractItemValue : []).map((item)=>{
+        this.setState({
+          [item.id]:{
+            "periodSection12": item.periodSection12,
+            "periodSection11": item.periodSection11,
+            "periodSection10": item.periodSection10,
+            "periodSection09": item.periodSection09,
+            "periodSection08": item.periodSection08,
+            "periodSection07": item.periodSection07,
+            "periodSection06": item.periodSection06,
+            "periodSection05": item.periodSection05,
+            "periodSection04": item.periodSection04,
+            "periodSection03": item.periodSection03,
+            "periodSection02": item.periodSection02,
+            "periodSection01": item.periodSection01,
+            "activity": item.activity,
+            "measureUnit": item.measureUnit,
+            "tariffItem": item.tariffItem,
+
+          }
+        })
+      })
     })
   }
-  OnChange=(e)=>{
+  OnChangeperiod=(item, period, value, e)=>{
+    console.log([value]);
+
     this.setState({
-      
+      [item.id]: {
+        ...this.state[item.id],
+        [period]: {
+          ...this.state[item.id][period],
+          [value]:e.target.value
+        }
+    }
     })
+  }
+  send=()=>{
+    let activities = Array.from(new Set(this.props.universal.getObjectData._contractItemValue.map(item=> item.activity)));
+    let periods = [];
+    this.props.universal.getObjectData._contractItemValue.map(item=> {
+      periods.push(this.state[item.id])
+    })
+    activities.forEach((item, i)=>{
+
+      periods.filter(period=> period.activity.id===item.id).map((j)=>{
+        delete j.activity
+        activities[i].contractItemValues=[];
+        activities[i].contractItemValues.push(j);
+      })
+    })
+
+    console.log({contractItems:activities});
   }
 
   render() {
     const data =this.props.universal.getObjectData._contractItemValue;
-   // console.log(contractItems ? contractItems.map((item)=> item.activity ) : [])
-      //const data=[];
-    /*(contractItems ? contractItems : []).forEach((item)=> {
-      (item.contractItemValues ? item.contractItemValues : []).forEach(value => {
-          data.push({
-            activity: item.activity,
-            ...value
-          })
-        })
-      this.setState({
-        loadData:false
-      })
-    })*/
-    //console.log(data);
 
-    return (<Row>
-              <Card
+    return (
+      <div>
+        <Row>
+          <Button
+          onClick={()=>{this.send()}}>
+            Send
+          </Button>
+        </Row>
+      <Row>
+        <Card
                 bordered={false}
                 bodyStyle={{ padding: 5 }}
               >
@@ -482,7 +579,8 @@ class Graphic extends Component {
                   scroll={{ x: '130%'}}
                 />,
               </Card>
-            </Row>);
+            </Row>
+    </div>);
   }
 }
 

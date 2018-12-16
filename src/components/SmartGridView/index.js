@@ -278,17 +278,7 @@ export default class SmartGridView extends Component {
        }),
      }));*/
 
-    // to do order column with actionColumns
-    if (this.props.actionColumns && this.props.actionColumns.length > 0) {
-      this.props.actionColumns.filter(x => x.isVisible).map((actcol) => {
-        if (actcol.order != null) {
-          tableOptions.columns.splice(actcol.order, 0, actcol);
-        } else {
-          tableOptions.columns.splice(1, 0, actcol);
-        }
-      });
-      //tableOptions.columns = this.props.actionColumns.filter(x => x.isVisible).concat(tableOptions.columns);
-    }
+
 
     if (this.props.sorted) {
 
@@ -321,6 +311,18 @@ export default class SmartGridView extends Component {
         return 0;*/
         //};
       });
+    }
+
+    // to do order column with actionColumns
+    if (this.props.actionColumns && this.props.actionColumns.length > 0) {
+      this.props.actionColumns.filter(x => x.isVisible).map((actcol) => {
+        if (actcol.order != null) {
+          tableOptions.columns.splice(actcol.order, 0, actcol);
+        } else {
+          tableOptions.columns.splice(1, 0, actcol);
+        }
+      });
+      //tableOptions.columns = this.props.actionColumns.filter(x => x.isVisible).concat(tableOptions.columns);
     }
 
     if (this.props.rowSelection) {

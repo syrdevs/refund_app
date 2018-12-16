@@ -166,8 +166,6 @@ export default class StaticticsView extends Component {
         dateEnd: null,
       },
     });
-
-
   };
 
   onShowSizeChange = (current, pageSize) => {

@@ -7,6 +7,7 @@ import styles from './CounterAgent.less';
 import moment from 'moment';
 import { connect } from 'dva/index';
 import error from '../Exception/models/error';
+import AttachmentPage from './TabPages/AttachmentPage';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -222,7 +223,13 @@ export default class CounterAgentCreate extends Component {
                   }).then(() => {
                     reduxRouter.push('/contract/contracts/table');
                   });
-                }}>Закрыть</Button>]}
+                }}>Закрыть</Button>,
+              <Button
+                key={'clear_btn'}
+                style={{ marginLeft: '5px' }}
+                onClick={() => {
+                  this.props.form.resetFields();
+                }}>Очистить</Button>]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: '5px' }}>
@@ -235,10 +242,11 @@ export default class CounterAgentCreate extends Component {
                 <TabPane tab="Титульная часть" key="main">
                   <InfoPage
                     form={this.props.form}
-                    formData={{...this.props.universal.counterAgentData,
-                      contract:{
-                        contragent:this.props.location.state.data
-                      }
+                    formData={{
+                      ...this.props.universal.counterAgentData,
+                      contract: {
+                        contragent: this.props.location.state.data,
+                      },
                     }}
                     setSpecData={this.setSpecData}
                     formItemLayout={formItemLayout}

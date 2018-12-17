@@ -161,6 +161,7 @@ function momentDefine() {
 {/*/>,*/
 }
 
+
 @connect(({ universal2, loading }) => ({
   universal2,
   loadingData: loading.effects['universal2/getList'],
@@ -291,7 +292,13 @@ class SpecPage extends Component {
                       name={'amount' + record.key}
                       onChange={(e) => {
                         record['value'] = e;
-                        //this.identValue(e, record, 'amount', 'identities');
+                        record['percentAdvance'] = this.calculateAllMonthValue(record);
+
+                        this.setState(prevState => ({
+                          smarttabDataSource: prevState.smarttabDataSource,
+                        }));
+
+
                       }}/>)}
                 </FormItem>);
             },
@@ -334,8 +341,8 @@ class SpecPage extends Component {
                 },
               };
             },
-            render: (text, record) => (
-              <FormItem>
+            render: (text, record) => {
+              return <FormItem>
                 {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
                   rules: [{
                     required: false,
@@ -344,7 +351,8 @@ class SpecPage extends Component {
                 })(
                   <span>{record.valueSum ? record.valueSum : 0}</span>,
                 )}
-              </FormItem>),
+              </FormItem>;
+            },
           },
           {
             title: 'Аванс (₸)',
@@ -419,6 +427,19 @@ class SpecPage extends Component {
     smarttabcount: 0,
     identitiescount: 0,
     identities: [],
+  };
+
+  calculateAllMonthValue = (record) => {
+
+    let value = record['value'] ? record['value'] : 0;
+    let allMonthSum = 0;
+    Object.keys(record.contractTimeItem).map((key) => {
+      if (record.contractTimeItem[key].valueSection || record.contractTimeItem[key].valueSection === 0) {
+        allMonthSum += record.contractTimeItem[key].valueSection;
+      }
+    });
+
+    return value - allMonthSum;
   };
 
   changeContractType = (key, contractId) => {
@@ -726,6 +747,11 @@ class SpecPage extends Component {
 
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
+                if (record) {
+                  let percentAdvance = this.calculateAllMonthValue(record);
+                  record['percentAdvance'] = isNaN(percentAdvance) ? 0 : percentAdvance;
+                }
+
                 return <InputNumber
                   defaultValue={defaultValue.hasOwnProperty('valueSection') ? defaultValue.valueSection : 0}
                   onChange={(e) => {
@@ -738,10 +764,7 @@ class SpecPage extends Component {
                       },
                     };
 
-                    let percentAdvance = Object
-                      .keys(record.contractTimeItem)
-                      .map((monthKey) => record.contractTimeItem[monthKey].valueSection ? record.contractTimeItem[monthKey].valueSection : 0)
-                      .reduce((a, b) => a + b, 0);
+                    let percentAdvance = this.calculateAllMonthValue(record);
 
                     record['percentAdvance'] = isNaN(percentAdvance) ? 0 : percentAdvance;
 
@@ -810,7 +833,7 @@ class SpecPage extends Component {
     }));
   };
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'universal/clearData',
@@ -874,9 +897,9 @@ class SpecPage extends Component {
 
           if (item.contractTimeItem) {
 
-            let contractTimeTables = [];
+            contractItemValue.contractTimeTables = [];
 
-            Object.keys(item.contractTimeItem).map((monthKey) => {
+            Object.keys(item.contractTimeItem).forEach((monthKey) => {
               let monthItem = item.contractTimeItem[monthKey];
               let contractTimeTablesItem = {
                 periodSection: {
@@ -889,10 +912,9 @@ class SpecPage extends Component {
               contractTimeTablesItem.sumSection = monthItem.sumSection ? monthItem.sumSection : 0;
               contractTimeTablesItem.sumAdvanceTakeout = monthItem.sumAdvanceTakeout ? monthItem.sumAdvanceTakeout : 0;
 
-              contractTimeTables.push(contractTimeTablesItem);
+              contractItemValue.contractTimeTables.push(contractTimeTablesItem);
             });
 
-            contractItemValue.contractTimeTables = contractTimeTables;
           }
 
           specifyKeys[item.activity.id].contractItemValues.push(contractItemValue);
@@ -991,6 +1013,70 @@ class SpecPage extends Component {
               x: 1200,
             }}
             pagination={false}
+            // components={{
+            //   body: {
+            //     wrapper: (props) => {
+            //
+            //       // let tdTotalCollection = [];
+            //       // let contractTimeIndexKeys = {};
+            //       //
+            //       // this.state.smarttabDataSource.forEach((item) => {
+            //       //   if (item.contractTimeItem) {
+            //       //     Object.keys(item.contractTimeItem).forEach((monthIndex) => {
+            //       //       if (!contractTimeIndexKeys.hasOwnProperty(monthIndex))
+            //       //         contractTimeIndexKeys[monthIndex] = {
+            //       //           valueSection: 0,
+            //       //           sumSection: 0,
+            //       //           sumAdvanceTakeout: 0,
+            //       //         };
+            //       //
+            //       //       contractTimeIndexKeys[monthIndex].valueSection += item.contractTimeItem[monthIndex].valueSection;
+            //       //       contractTimeIndexKeys[monthIndex].sumSection += item.contractTimeItem[monthIndex].sumSection;
+            //       //       contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += item.contractTimeItem[monthIndex].sumAdvanceTakeout;
+            //       //
+            //       //     });
+            //       //   }
+            //       // });
+            //       //
+            //       // Object.keys(contractTimeIndexKeys).sort((a, b) => {
+            //       //   if (a < b)
+            //       //     return -1;
+            //       //   if (a > b)
+            //       //     return 1;
+            //       //   return 0;
+            //       // }).forEach((contractTimeIndexKey) => {
+            //       //   tdTotalCollection.push(<td
+            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['valueSection']}</td>);
+            //       //   tdTotalCollection.push(<td
+            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['sumSection']}</td>);
+            //       //   tdTotalCollection.push(<td
+            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['sumAdvanceTakeout']}</td>);
+            //       // });
+            //       //
+            //       // {tdTotalCollection}
+            //
+            //       console.log(props);
+            //
+            //       return (<tbody {...props}>
+            //       <React.Fragment>
+            //         {props.children}
+            //         <tr style={{ background: '#fafafa' }} data-row-key="3" className="ant-table-row  ant-table-row-level-0">
+            //           <td><b>Итого:</b></td>
+            //           {/*<td style={{ border: 0 }}/>*/}
+            //           {/*<td style={{ border: 0 }}/>*/}
+            //           {/*<td style={{ border: 0 }}/>*/}
+            //           {/*<td style={{ border: 0 }}>0</td>*/}
+            //           {/*<td style={{ border: 0 }}>0</td>*/}
+            //           {/*<td style={{ border: 0 }}>0</td>*/}
+            //           {/*<td style={{ border: 0 }}>0</td>*/}
+            //           {/*<td style={{ border: 0 }}>0</td>*/}
+            //
+            //         </tr>
+            //       </React.Fragment>
+            //       </tbody>);
+            //     },
+            //   },
+            // }}
             bordered={true} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/>
         </div>
       </Card>

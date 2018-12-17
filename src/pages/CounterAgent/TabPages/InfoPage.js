@@ -258,7 +258,11 @@ export default class InfoPage extends Component {
           })(
             <LinkModal
               labelFormatter={(record) => {
-                return `${record.idendifier.identifiervalue} ${record.name}`;
+
+                if (record.idendifier && record.idendifier.identifiervalue) {
+                  return `${record.idendifier.identifiervalue} ${record.name}`;
+                }
+                return '';
               }}
               data={this.state.CounterAgentsModal.record}
               onTarget={(record) => {
@@ -311,7 +315,7 @@ export default class InfoPage extends Component {
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
-                window.open('viewcontract?id=1');
+                window.open('viewcontract?id=' + record.id);
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });

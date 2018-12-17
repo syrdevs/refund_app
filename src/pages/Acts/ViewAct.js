@@ -870,12 +870,6 @@ class ViewAct extends Component {
 
                     </Card>
                   </TabPane>}
-                  <TabPane
-                    tab="График"
-                    key="graphic"
-                  >
-                    <Graphic/>
-                  </TabPane>
                 </Tabs>
               </Form>
             </Row>

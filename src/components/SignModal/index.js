@@ -176,11 +176,13 @@ export default class SignModal extends Component {
     //this.state.heartbeat_interval = null;
     this.setState({
       heartbeat_interval: null
-    })
+    });
     this.state.webSocket.close();
     //this.state.webSocket = null;
     this.setState({
       webSocket: null
+    },()=>{
+      this.props.onCancel();
     })
   };
 
@@ -447,15 +449,12 @@ export default class SignModal extends Component {
 
     return (<Modal
       title="Подписать документ"
-      visible={this.state.showModal}
+      visible={this.props.visible}
       onOk={ ()=> {
         this.fNCAgetKeyList()
       }}
       onCancel={()=> {
-        this.stopLayer()
-        this.setState({
-          showModal: false
-        })
+        this.stopLayer();
       }}
     >
       <Form layout="horizontal" hideRequiredMark>

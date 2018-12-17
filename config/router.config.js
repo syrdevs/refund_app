@@ -118,6 +118,18 @@ export default [
         authority: ['ADMIN', 'FSMS2']
       },
       {
+        path: '/documents',
+        icon: 'faFileInvoice',
+        name: 'documents',
+        component: './Documents/Documents',
+        authority: ['ADMIN', 'FSMS2'],
+      },
+      {
+        path: '/documents/view',
+        component: './Documents/ViewDocument',
+      },
+
+      {
         path: '/journal',
         icon: 'faBookOpen',
         name: 'journal',

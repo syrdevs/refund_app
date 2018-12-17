@@ -43,70 +43,25 @@ export default class ContractRequestsTable extends Component  {
     filterContainer: 0,
     filterForm: [
       {
-        title: 'Договор фильтр',
+        title: 'Заявки фильтр',
         rootKey: 'dogovorId',
         formElements: [
           {
-            name: 'Number',
-            label: 'Номер договора',
+            name: 'attachmentType.Name',
+            label: 'Документ',
             type: 'text',
           },
           {
-            name: 'ParentContractId',
-            label: 'Номер родительского договора ',
+            name: 'fileDescription',
+            label: 'Комментарий',
             type: 'text',
           },
           {
-            name: 'knp',
-            label: 'Вид договора',
+            name: 'name',
+            label: 'Тип файла',
             type: 'selectlist',
           },
-          {
-            name: 'knp',
-            label: 'Рабочий период (год)',
-            type: 'selectlist',
-          },
-          {
-            name: 'knp',
-            label: 'Заявки на объем',
-            type: 'selectlist',
-          },
-          {
-            name: 'knp',
-            label: 'Протокол распределения объемов',
-            type: 'selectlist',
-          },
-          {
-            name: 'Date',
-            label: 'Дата заключения договора',
-            type: 'date',
-          },
-          {
-            name: 'DateBegin',
-            label: 'Дата начала действия договора',
-            type: 'date',
-          },
-          {
-            name: 'DateEnd',
-            label: 'Дата окончания действия договора',
-            type: 'date',
-          },
-          {
-            name: 'OwnerDepartment',
-            label: 'Подразделение ФСМС',
-            type: 'selectlist',
-          }],
-      },
-      {
-        title: 'Заявка фильтр',
-        rootKey: 'requestId',
-        formElements: [
-          {
-            name: 'Number',
-            label: 'Номер договора',
-            type: 'text',
-          },
-        ],
+          ],
       },
     ],
     pagingConfig: {
@@ -118,70 +73,52 @@ export default class ContractRequestsTable extends Component  {
       },
     },
     columns: [
-      {
-        title: 'Отчетный период(Год)',
-        dataIndex: 'periodYear.year',
-        isVisible: true,
-      },
-      {
-        title: 'Отчетный период(Месяц)',
-        dataIndex: 'periodSection.periodSectionName',
-        isVisible: true,
-      },
-      {
-        title: 'Номер',
-        dataIndex: 'number',
-        isVisible: true,
-      },
-      {
-        title: 'Дата',
-        dataIndex: 'documentDate',
-        isVisible: true,
-      },
-      {
-        title: 'Оплата',
-        dataIndex: 'documentSum',
-        isVisible: true,
-      },
-      {
-        title: 'Подразделение',
-        dataIndex: 'division.name',
-        isVisible: true,
-      },
-    ],
-    buttons:[
-      {
-        type:'menu',
-        name:'Новый'
-      },
-      {
-        type:'menu',
-        name:'Открыть/Изменить'
-      },
-      {
-        type:'menu',
-        name:'Удалить'
-      },
-      {
-        type:'menu',
-        name:'Зарегистрировать изменение'
-      },
-      {
-        type:'menu',
-        name:'Расторгнуть'
-      },
-      {
-        type:'menu',
-        name:'Отобразить (скрыть) иерархию'
-      },
-      {
-        type:'menu',
-        name:'Показать сумму'
-      },
-      {
-        type:'menu',
-        name:'Зарегистрировать акт выполненных работ'
-      }
+        {
+          title: 'Подразделение',
+          dataIndex: 'division.name',
+          isVisible: true,
+        },
+        {
+          title: 'Учетный период: год',
+          dataIndex: 'periodYear.year',
+          isVisible: true,
+        },
+        {
+          title: 'Учетный период: месяц',
+          dataIndex: 'periodSection.name',
+          isVisible: true,
+        },
+        {
+          title: 'Вид заявки',
+          dataIndex: 'paymentRequestType.nameRu',
+          isVisible: true,
+          width: 500
+        },
+        {
+          title: 'Номер',
+          dataIndex: 'number',
+          isVisible: true,
+        },
+        {
+          title: 'Дата',
+          dataIndex: 'documentDate',
+          isVisible: true,
+        },
+        {
+          title: 'Сумма, т',
+          dataIndex: 'documentSum',
+          isVisible: true,
+        },
+        {
+          title: 'Статус',
+          dataIndex: 'documentStatus.statusName',
+          isVisible: true,
+        },
+        {
+          title: 'Файлы',
+          dataIndex: 'documentAttacmentsCount',
+          isVisible: true,
+        },
     ],
     dataSource: [
       {
@@ -235,15 +172,6 @@ export default class ContractRequestsTable extends Component  {
     },
   };
 
-  /*
-  {
-    "start": 0,
-    "length": 20,
-    "entity": "paymentRequest",
-    "alias": "paymentRequestList"
-  }
-  */
-
   onShowSizeChange = (current, pageSize) => {
     const {dispatch} = this.props;
     this.setState(prevState => ({
@@ -279,9 +207,9 @@ export default class ContractRequestsTable extends Component  {
 
 
   filterPanelState = () => {
-    this.setState(({ filterContainer }) => ({
-      filterContainer: filterContainer === 6 ? 0 : 6,
-    }));
+    this.setState({
+      filterContainer: this.state.filterContainer === 6 ? 0 : 6,
+    });
   };
 
   clearFilter = () => {
@@ -306,6 +234,7 @@ export default class ContractRequestsTable extends Component  {
     const { universal2 } = this.props;
 
     const paymentRequest = universal2.references[this.state.gridParameters.entity];
+    console.log(paymentRequest);
 
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
@@ -319,13 +248,16 @@ export default class ContractRequestsTable extends Component  {
         </Menu.Item>*/}
         <Menu.Item
           key="2"
-          disabled
+          disabled={this.state.selectedRowKeys.length!==1}
+          onClick={()=>{
+            router.push("/contract/contractrequests/add?id="+this.state.selectedRowKeys[0])
+          }}
         >
-          Открыть/Изменить
+          Открыть
         </Menu.Item>
         <Menu.Item
           key="3"
-          disabled
+          disabled={this.state.selectedRowKeys.length===0}
         >
           Удалить
         </Menu.Item>
@@ -387,7 +319,7 @@ export default class ContractRequestsTable extends Component  {
                     console.log('onRefresh');
                   }}
                   onSearch={() => {
-                  //  this.filterPanelState();
+                    this.filterPanelState();
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
                     this.setState({

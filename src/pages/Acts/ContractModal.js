@@ -9,68 +9,29 @@ import style from '../CounterAgent/Modals/ContragentModalStyle.less';
   universal2,
   loading: loading.effects['universal2/getList'],
 }))
-export default class ActModal extends Component {
+export default class ContractModal extends Component {
   state = {
     selectedRecord: {},
-    fcolumn: [
-      {
-        title: 'Контрагент',
-        dataIndex: 'contract.contragent',
-        isVisible: true,
-        width : 550,
-        order: 3,
-        key: 'contract.contragent',
-        className: 'action_column',
-        render: (item) => {
-          if (item){
-            return item.bin+"  "+item.organization;
-          }
-        },
-      },
-      {
-        title: 'Договор',
-        dataIndex: 'contract',
-        order: 4,
-        width: 500,
-        key: 'contract',
-        className: 'action_column',
-        isVisible: true,
-        render: (item) => {
-          if (item){
-            return item.contractType+" №"+item.number+" от "+item.documentDate;
-          }
-        },
-      },
-      {
-        title: 'Протокол',
-        dataIndex: 'protocol',
-        order: 5,
-        width: 200,
-        key: 'operation',
-        className: 'action_column',
-        isVisible: true,
-        render: (e) => {
-          if (e)
-          {
-            return "№"+e.number+" от "+e.documentDate;
-          }
-        },
-      }
-    ],
     columns: [
-      {
-        title: 'Учетный период(год)',
-        dataIndex: 'periodYear.year',
-        isVisible: true,
-      },
-      {
-        title: 'Учетный период(месяц)',
-        dataIndex: 'periodSection.name',
-        isVisible: true,
-      },
       {
         title: 'Подразделение',
         dataIndex: 'division',
+        isVisible: true,
+      },
+      {
+        title: 'Учетный период: год',
+        dataIndex: 'periodYear',
+        isVisible: true,
+      },
+      {
+        title: 'Контрагент',
+        dataIndex: 'contragent.organization',
+        isVisible: true,
+        width: 460,
+      },
+      {
+        title: 'Вид договора',
+        dataIndex: 'contractType',
         isVisible: true,
       },
       {
@@ -84,16 +45,85 @@ export default class ActModal extends Component {
         isVisible: true,
       },
       {
+        title: 'Дата начала',
+        dataIndex: 'dateBegin',
+        isVisible: true,
+      },
+      {
+        title: 'Дата окончания',
+        dataIndex: 'dateEnd',
+        isVisible: true,
+      },
+      {
         title: 'Сумма',
         dataIndex: 'documentSum',
         isVisible: true,
+      },
+      {
+        title: 'Статус',
+        dataIndex: 'documentStatus.statusName',
+        isVisible: true,
+      },
+      {
+        title: 'Файлы',
+        dataIndex: 'documentAttachmentsCount',
+        isVisible: true,
+      },
+    ],
+    fcolumn: [
+      {
+        order: 12,
+        title: 'Протокол распределения объемов',
+        dataIndex: 'planProtocol',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.planProtocol) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>;
+          }
+        },
+      },
+      {
+        title: 'Родительский договор',
+        order: 11,
+        dataIndex: 'parentContract.number',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.parentContract) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
+          }
+          //***
+          ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
+        },
+      },
+      {
+        title: 'Заявка на объемы',
+        dataIndex: 'proposal',
+        isVisible: true,
+        order: 13,
+        render: (text, record) => {
+          if (record && record.proposal) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>;
+          }
+        },
       },
     ],
     gridParameters: {
       start: 0,
       length: 15,
-      entity: "act",
-      alias: "actList",
+      entity: 'contract',
+      alias: 'contractList',
       filter: {},
       sort: [],
     },
@@ -137,26 +167,13 @@ export default class ActModal extends Component {
     return (<Modal
       style={{ top: 0 ,paddingBottom:0}}
       width={1200}
-      title={'Список Актов'}
+      title={'Список Договоров'}
       okText={'Выбрать'}
       onCancel={() => this.props.hide()}
       onOk={() => {
-      if (this.state.selectedRowKeys.length!==0) {
-        let isOne = true;
-        act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {
-          arr.map(elem => {
-            if (elem.periodSection.id !== item.periodSection.id) {
-              isOne = false;
-            }
-          })
-        })
-        isOne ? this.props.onSelect(act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1))
-          : Modal.error({
-            title: 'Ошибка',
-            content: 'Нельзя создать заявку на разные учетные периоды (месяц)',
-          });
-
-      }
+        if (this.state.selectedRowKeys.length!==0) {
+          this.props.onSelect(act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1))
+        }
 
       }}
       visible={true}>

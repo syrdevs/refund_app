@@ -17,7 +17,7 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider, InputNumber,
+  Divider, InputNumber, Modal
 } from 'antd';
 import GridFilterCollapsible from '@/components/GridFilterCollapsible';
 import SmartGridView from '@/components/SmartGridView';
@@ -176,50 +176,6 @@ export default class ActsTable extends Component  {
         isVisible: true,
       },
     ],
-    /*buttons:[
-      {
-        type:'menu',
-        name:'Новый'
-      },
-      {
-        type:'menu',
-        name:'Открыть/Изменить'
-      },
-      {
-        type:'menu',
-        name:'Удалить'
-      },
-      {
-        type:'menu',
-        name:'Включить в заявку на оплату'
-      },
-    ],*/
-    dataSource: [
-      {
-        id: '1',
-        act_period_year: 'test',
-        act_period_month: 'test',
-        bin: 'test',
-        counteragent: 'test',
-        contract_id: 'test',
-        number: '1516512',
-        act_date: '02.12.2018',
-        payment: '05.12.2018',
-        podr: '06.12.2018',
-      }, {
-        id: '2',
-        act_period_year: 'test',
-        act_period_month: 'test',
-        bin: 'test',
-        counteragent: 'test',
-        contract_id: 'test',
-        number: '1516512',
-        act_date: '02.12.2018',
-        payment: '05.12.2018',
-        podr: '06.12.2018',
-        newContract:false
-      },
-    ],
     gridParameters: {
       start: 0,
       length: 15,
@@ -252,7 +208,6 @@ export default class ActsTable extends Component  {
     dispatch({
       type: 'universal2/getList',
       payload: this.state.gridParameters,
-    }).then(()=>{
     });
   };
   componentDidMount() {
@@ -296,7 +251,6 @@ export default class ActsTable extends Component  {
   };
 
 
-
   render = () => {
     const { universal2 } = this.props;
     const act = universal2.references[this.state.gridParameters.entity];
@@ -329,82 +283,30 @@ export default class ActsTable extends Component  {
         <Menu.Item
         key="4"
         disabled={this.state.selectedRowKeys.length === 0}
+        onClick={()=>{
+          let isOne = true;
+          act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr)=> {
+                arr.map(elem=> {
+                  if (elem.periodSection.id!==item.periodSection.id){
+                    isOne=false;
+                  }
+                })
+          })
+
+          isOne ? this.props.history.push({
+            pathname: '/contract/acts/paymentrequestadd',
+            state: {
+              data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+              type: 'act'
+            },
+          }) : Modal.error({
+            title: 'Ошибка',
+            content: 'Нельзя создать заявку на разные учетные периоды (месяц)',
+          });
+        }}
         >
-        Включить в заявку на оплату
+        Включить в заявку на аванс
       </Menu.Item>
-        {/*<Menu.Item
-          key="5"
-          onClick={() =>
-            {
-              //router.push('/contract/acts/contractrequest/add');
-              this.props.history.push({
-                pathname: '/contract/acts/contractrequest/add',
-                state: {
-                  data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-                  columns: [
-                    {
-                      title: 'Отчетный период(Год)',
-                      dataIndex: 'periodYear.year',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Отчетный период(Месяц)',
-                      dataIndex: 'periodSection.periodSectionName',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'БИН',
-                      dataIndex: 'contragent.bin',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Контрагент',
-                      dataIndex: 'contragent.organization',
-                      isVisible: true,
-                      width : 450,
-                    },
-                    {
-                      title: 'Договор',
-                      dataIndex: 'contract.number',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Номер',
-                      dataIndex: 'number',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Дата',
-                      dataIndex: 'documentDate',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Оплата',
-                      dataIndex: 'documentSum',
-                      isVisible: true,
-                      width : 150,
-                    },
-                    {
-                      title: 'Подразделение',
-                      dataIndex: 'division.name',
-                      isVisible: true,
-                      width : 200,
-                    },
-                  ],
-                  type: "act"
-                },
-              });
-            }
-          }
-          disabled={this.state.selectedRowKeys.length === 0}>
-          Создать заявку
-        </Menu.Item>*/}
       </Menu>
       }>
         <Button

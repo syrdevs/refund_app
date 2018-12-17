@@ -64,7 +64,7 @@ const formItemLayout = {
   loadinggetobject: loading.effects['universal/getobject'],
   loadingsave: loading.effects['universal/saveobject'],
 }))
-class showAct extends Component {
+class ShowAct extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -197,6 +197,7 @@ class showAct extends Component {
   }
 
   componentDidMount() {
+    console.log("test")
     const { dispatch } = this.props;
 
 
@@ -207,7 +208,7 @@ class showAct extends Component {
     this.setState({
       loadData: true
     },()=>{
-      if (this.props.location.query.contractId ) {
+      /*if (this.props.location.query.contractId ) {
         if (this.state.periodSectionId) {
           console.log("test")
           this.props.dispatch({
@@ -228,14 +229,14 @@ class showAct extends Component {
             loadData: false
           })
         }
-      }
-      else {
+      }*/
+
         this.props.dispatch({
           type: 'universal/getobject',
           payload: {
             "entity": "act",
             "alias": null,
-            "id": this.props.location.query.id
+            "id": this.props.actid //'this.props.location.query.id'
           },
         }).then(()=>{
           this.setState({
@@ -244,7 +245,7 @@ class showAct extends Component {
             loadData:false
           })
         })
-      }
+
     })
 
   }
@@ -275,17 +276,9 @@ class showAct extends Component {
         render: ((item) => {return <a onClick={()=>{this.removeFile(item)}}>Удалить</a>;}),
       }*/
     ];
-
-
     const data = this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments : []) : []
-
-
-
     const { form } = this.props;
     const {getObjectData} =  this.props.universal;
-
-
-
     const tablecolumns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -299,15 +292,6 @@ class showAct extends Component {
       width: 150,
     }
     ];
-
-
-
-
-
-
-
-    //.toUpperCase()
-
     const  tabledata = [{
       key:1,
       name: 'Подразделение',
@@ -347,9 +331,7 @@ class showAct extends Component {
     }
     ];
 
-    return (
-      <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
-        <Spin spinning={this.state.loadData && this.props.universal.loadingsave && this.state.loadFile}>
+    return (<Spin spinning={this.state.loadData && this.props.universal.loadingsave && this.state.loadFile}>
           <Card
             headStyle={{ padding: 0 }}
             style={{padding:'10px'}}
@@ -502,11 +484,11 @@ class showAct extends Component {
               </Form>
             </Row>
           </Card>
-        </Spin>
-      </PageHeaderWrapper>
-
-    );
+        </Spin>);
   }
 }
 
-export default showAct;
+export default ShowAct;
+/*
+<PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
+</PageHeaderWrapper>*/

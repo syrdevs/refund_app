@@ -56,7 +56,7 @@ const formItemLayout = {
   loadingmedicalType: loading.effects['universal/getmedicalType'],
   loadingpaymentRequestType: loading.effects['universal/getpaymentRequestType'],
 }))
-class ContractRequestsadd extends Component {
+class showPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -319,9 +319,6 @@ class ContractRequestsadd extends Component {
     })*/
   };
   componentDidMount() {
-    this.setState({
-      loadData: true
-    })
     const { dispatch } = this.props;
     const DicArr = [
       'periodYear',
@@ -344,6 +341,10 @@ class ContractRequestsadd extends Component {
   }
   loadData=()=>{
     const { dispatch } = this.props;
+    this.setState({
+      loadData: true
+    })
+
     if (this.props.location.state) {
       if (this.props.location.state.type==='act'){
         this.setState({
@@ -370,21 +371,21 @@ class ContractRequestsadd extends Component {
         this.setState({
           contractData: this.props.location.state.data
         },()=>{
-        this.props.location.state.data.forEach((item)=> {
-          dispatch({
-            type: 'universal/getobject',
-            payload: {
-              "entity": "contract",
-              "alias": null,
-              "id": item.id
-            }
-          }).then(()=>{
+          this.props.location.state.data.forEach((item)=> {
+            dispatch({
+              type: 'universal/getobject',
+              payload: {
+                "entity": "contract",
+                "alias": null,
+                "id": item.id
+              }
+            }).then(()=>{
               this.setState({
                 loadData: false,
                 specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
               })
-          })
-        });
+            })
+          });
         })
       }
     }
@@ -395,61 +396,16 @@ class ContractRequestsadd extends Component {
           "entity": "paymentRequest",
           "id": this.props.location.query.id
         }
-      }).then(()=>{
-        this.setState({
-          loadData: false
-        })
       })
     }
 
   }
 
-  changeSpec=()=>{
-    const { dispatch } = this.props;
-    this.setState({
-      specdata:[]
-    },()=>{
-      if (this.props.location.state.type==='act'){
-        this.state.actData.forEach((item) => {
-          dispatch({
-            type: 'universal/getobject',
-            payload: {
-              "entity": "act",
-              "alias": null,
-              "id": item.id
-            }
-          }).then(() => {
-            this.setState({
-              specdata: this.props.universal.getObjectData._actItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._actItemValues) : []
-            })
-          })
-        });
-      }
-      if (this.props.location.state.type==='contract'){
-
-        this.state.contractData.forEach((item)=> {
-          dispatch({
-            type: 'universal/getobject',
-            payload: {
-              "entity": "contract",
-              "alias": null,
-              "id": item.id
-            }
-          }).then(()=>{
-            this.setState({
-              specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
-            })
-          })
-        });
-      }
-    })
-  }
-
   render() {
     let getObjectData = {}
-      if (!this.props.location.state){
-        getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
-      }
+    if (!this.props.location.state){
+      getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
+    }
 
     const { form, dispatch } = this.props;
     const { getFieldDecorator } = form;
@@ -463,8 +419,6 @@ class ContractRequestsadd extends Component {
             this.setState({
               ActModal: false,
               actData: records
-            },()=>{
-              this.changeSpec();
             })
           }}
           hide={() => this.setState({
@@ -478,8 +432,6 @@ class ContractRequestsadd extends Component {
             this.setState({
               ContractModal: false,
               contractData: records
-            },()=>{
-              this.changeSpec()
             })
           }}
           hide={() => this.setState({
@@ -537,28 +489,28 @@ class ContractRequestsadd extends Component {
                         ]
                       }
                     ]*/
-                     if (this.props.location.state.type==='contract') {
-                       Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
-                         data.paymentRequestItems.push({
-                           activity: {
-                             id: item
-                           },
-                           paymentRequestItemValues: this.state.specdata.map(x => {
-                             if (x.activity.id === item){
-                               return {
-                                 "valueSum": x.valueSum,
-                                 "sumRequested": x.sumRequested,
-                                 "sumAdvanceTakeout": x.sumAdvanceTakeout,
-                                 "value": x.value,
-                                 "measureUnit": {
-                                   "id":  x.measureUnit.id
-                                 }
+                    if (this.props.location.state.type==='contract') {
+                      Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
+                        data.paymentRequestItems.push({
+                          activity: {
+                            id: item
+                          },
+                          paymentRequestItemValues: this.state.specdata.map(x => {
+                            if (x.activity.id === item){
+                              return {
+                                "valueSum": x.valueSum,
+                                "sumRequested": x.sumRequested,
+                                "sumAdvanceTakeout": x.sumAdvanceTakeout,
+                                "value": x.value,
+                                "measureUnit": {
+                                  "id":  x.measureUnit.id
+                                }
 
-                               }
-                             }
-                           }),
-                         })
-                       })
+                              }
+                            }
+                          }),
+                        })
+                      })
                       data.sourceContracts = this.state.contractData
                     }
                     if (this.props.location.state.type==='act') {
@@ -588,9 +540,9 @@ class ContractRequestsadd extends Component {
                     }
 
 
-                      this.setState({
-                        loadData:true
-                      })
+                    this.setState({
+                      loadData:true
+                    })
                     dispatch({
                       type: 'universal/saveobject',
                       payload:{
@@ -631,7 +583,7 @@ class ContractRequestsadd extends Component {
             </div>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin spinning={this.state.loadData}>
+          <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
             <Row style={{ marginTop: '5px' }}>
               <Form layout="horizontal" hideRequiredMark>
                 <Tabs
@@ -656,157 +608,26 @@ class ContractRequestsadd extends Component {
                     <Card style={{ marginLeft: '-10px' }}>
                       <div style={{ margin: '10px 0', maxWidth: '70%' }}>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
-                          {getFieldDecorator('periodYear.id', {
-                            initialValue: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(
-                            <Select
-                              allowClear
-                              style={{ width: '50%' }}
-                            >
-                              {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.year}</Select.Option>;
-                              })}
-                            </Select>,
-                          )}
+                          <p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.year : null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Вид заявки">
-                          {getFieldDecorator('paymentRequestType.id', {
-                            initialValue: getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(
-                            <Select
-                              allowClear
-                            >
-                              {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                              })}
-                            </Select>,
-                          )}
+                          <p>{getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.nameRu : null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Номер">
-                          {getFieldDecorator('number', {
-                            initialValue: getObjectData ? getObjectData.number  : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(<Input/>)}
+                          <p>{getObjectData ? getObjectData.number  : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Дата">
-                          {getFieldDecorator('documentDate', {
-                            initialValue:  getObjectData ?(getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY'): null) : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(
-                            <DatePicker
-                              format={'DD.MM.YYYY'}
-                              style={{ width: '50%' }}
-                              placeholder="Выберите дату"/>,
-                          )}
+                          <p>{getObjectData ?(getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY'): null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Комментарий">
-                          {getFieldDecorator('descr', {
-                            initialValue: getObjectData ? getObjectData.descr  : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(
-                            <TextArea rows={4}/>,
-                          )}
+                          <p>{getObjectData ? getObjectData.descr  : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Подразделение">
-                          {getFieldDecorator('division.id', {
-                            initialValue: getObjectData ? (getObjectData.division ? getObjectData.division.id : null ) : null,
-                            rules: [{ required: false, message: 'не заполнено' }],
-                          })(
-                            <Select
-                              allowClear
-                            >
-                              {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                              })}
-                            </Select>,
-                          )}
+                          <p>{getObjectData ? (getObjectData.division ? getObjectData.division.name : null ) : null}</p>
                         </Form.Item>
                       </div>
                     </Card>
                   </TabPane>
-                  {(this.props.location.state ? (this.props.location.state.type === 'act' ? true : false) : false) &&
-                  <TabPane tab="Акты"
-                           key="acts"
-                  >
-                    <Card style={{ marginLeft: '-10px' }}>
-                      <SmartGridView
-                        name={'paymentAct'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.actcolumns}
-                        actionColumns={this.state.actfcolumns}
-                        sorted={true}
-                        showTotal={true}
-                        addonButtons={[<Button
-                          onClick={() => {
-                            this.setState({
-                              ActModal: true
-                            })
-                          }}
-                          key={'select_button'}
-                          style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>]}
-                        dataSource={{
-                          total: this.state.actData.length,
-                          pageSize: this.state.actData.length,
-                          page: 1,
-                          data: this.state.actData,
-                        }}
-                      />
-                    </Card>
-                  </TabPane>
-                  }
-                  {(this.props.location.state ? (this.props.location.state.type === 'contract' ? true : false) : false) &&
-                  <TabPane tab="Договоры"
-                           key="contracts"
-                  >
-                    <Card style={{ marginLeft: '-10px' }}>
-                      <SmartGridView
-                        name={'contractform'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.contractcolumns}
-                        actionColumns={this.state.contractfcolumn}
-                        showTotal={true}
-                        addonButtons={[<Button
-                          onClick={() => {
-                            this.setState({
-                              ContractModal: true
-                            })
-                          }}
-                          key={'select_button'}
-                          style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>]}
-                        dataSource={{
-                          total: this.state.contractData.length,
-                          pageSize: this.state.contractData.length,
-                          page: 1,
-                          data: this.state.contractData,
-                        }}
-                      />
-                    </Card>
-                  </TabPane>
-                  }
                   <TabPane tab="Спецификация"
                            key="specifications"
                   >
@@ -855,7 +676,7 @@ class ContractRequestsadd extends Component {
   }
 }
 
-export default ContractRequestsadd ;
+export default showPayment ;
 
 
 /*console.log(Object.keys(uniqueItemData).map((itemKey)=>(uniqueItemData[itemKey]))[0].activity);

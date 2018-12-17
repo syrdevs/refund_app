@@ -25,6 +25,10 @@ const formItemLayout = {
 }))
 export default class CounterAgentCreate extends Component {
   state = {
+
+    SpecData: {},
+    SpecPageForceRendered: false,
+
     eventManager: {
       _events: {},
       handleEvent: (evName) => {
@@ -39,17 +43,26 @@ export default class CounterAgentCreate extends Component {
     specifyData: [],
   };
 
+  getCounterAgentById = (id) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getCounterAgentData',
+      payload: {
+        'contragentId': id,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+
+  };
+
   componentDidMount() {
 
     const { dispatch } = this.props;
 
     if (this.props.location.state) {
-      dispatch({
-        type: 'universal/getCounterAgentData',
-        payload: {
-          'contragentId': this.props.location.state.data.id,
-        },
-      });
+      this.getCounterAgentById(this.props.location.state.data.id);
     } else {
       reduxRouter.push('main');
     }
@@ -111,7 +124,7 @@ export default class CounterAgentCreate extends Component {
       sendModel.data.number = data.number;
     }
 
-    if (data.parentContract) {
+    if (data.parentContract.value) {
       sendModel.data.parentContract = {
         id: data.parentContract.value.id,
       };
@@ -148,18 +161,27 @@ export default class CounterAgentCreate extends Component {
       type: 'universal/saveobject',
       payload: sendModel,
     }).then((res) => {
-      if(!this.props.universal.saveanswer.Message){
-        Modal.info({
-          title: 'Информация',
-          content: 'Договор успешно создан',
-        });
+      if (!this.props.universal.saveanswer.Message) {
+        // Modal.info({
+        //   title: 'Информация',
+        //   content: 'Договор успешно создан',
+        // });
         reduxRouter.push('/contract/contracts/table');
       }
     });
 
   };
 
+  setSpecData = (data) => {
+    this.setState({
+      SpecPageForceRendered: true,
+      SpecData: data,
+    });
+  };
+
   render = () => {
+
+
     return (
       <Spin spinning={this.props.loadingData}>
         <Form
@@ -213,13 +235,32 @@ export default class CounterAgentCreate extends Component {
                 <TabPane tab="Титульная часть" key="main">
                   <InfoPage
                     form={this.props.form}
-                    formData={this.props.universal.counterAgentData}
-                    formItemLayout={formItemLayout}/>
+                    formData={{...this.props.universal.counterAgentData,
+                      contract:{
+                        contragent:this.props.location.state.data
+                      }
+                    }}
+                    setSpecData={this.setSpecData}
+                    formItemLayout={formItemLayout}
+                    getCounterAgentById={this.getCounterAgentById}
+                  />
                 </TabPane>
                 <TabPane tab="Спецификация" key="specification">
-                  <SpecPage
-                    eventManager={this.state.eventManager}
-                    form={this.props.form}/>
+                  {Object.keys(this.state.SpecData).length > 0 ?
+                    <SpecPage
+                      setForceRender={() => {
+                        this.setState({
+                          SpecPageForceRendered: false,
+                        });
+                      }}
+                      forceRender={this.state.SpecPageForceRendered}
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.state.SpecData}/>
+                    : <SpecPage
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.props.universal.getObjectData}/>}
                 </TabPane>
                 <TabPane tab="Контрагенты" key="counteragents">
                   <ContragentsPage

@@ -4,6 +4,7 @@ import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Co
 import SmartGridView from '@/components/SmartGridView';
 import { connect } from 'dva/index';
 import style from './ContragentModalStyle.less';
+import { Tab } from '../../../components/Login';
 
 @connect(({ universal2, loading }) => ({
   universal2,
@@ -14,19 +15,20 @@ export default class DogovorModal extends Component {
     selectedRecord: {},
     columns: [
       {
-        title: 'Отчетный период',
+        title: 'Подразделение',
+        dataIndex: 'division',
+        isVisible: true,
+      },
+      {
+        title: 'Учетный период: год',
         dataIndex: 'periodYear',
         isVisible: true,
       },
       {
-        title: 'БИН',
-        dataIndex: 'contractParty.bin',
-        isVisible: true,
-      },
-      {
         title: 'Контрагент',
-        dataIndex: 'counteragent',
+        dataIndex: 'contragent.organization',
         isVisible: true,
+        width: 460,
       },
       {
         title: 'Вид договора',
@@ -44,25 +46,79 @@ export default class DogovorModal extends Component {
         isVisible: true,
       },
       {
-        title: 'Период с',
-        dataIndex: 'periodStart',
+        title: 'Дата начала',
+        dataIndex: 'dateBegin',
         isVisible: true,
       },
       {
-        title: 'Период по',
-        dataIndex: 'periodEnd',
+        title: 'Дата окончания',
+        dataIndex: 'dateEnd',
         isVisible: true,
       },
       {
-        title: 'Подразделение',
-        dataIndex: 'contractParty.organization',
+        title: 'Сумма',
+        dataIndex: 'documentSum',
         isVisible: true,
       },
-      /*{
+      {
         title: 'Статус',
-        dataIndex: 'status',
+        dataIndex: 'documentStatus.statusName',
         isVisible: true,
-      },*/
+      },
+      {
+        title: 'Файлы',
+        dataIndex: 'documentAttachmentsCount',
+        isVisible: true,
+      },
+    ],
+    fcolumn: [
+      {
+        order: 12,
+        title: 'Протокол распределения объемов',
+        dataIndex: 'planProtocol',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.planProtocol) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>;
+          }
+        },
+      },
+      {
+        title: 'Родительский договор',
+        order: 11,
+        dataIndex: 'parentContract.number',
+        isVisible: true,
+        render: (text, record) => {
+          if (record && record.parentContract) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
+          }
+          //***
+          ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
+        },
+      },
+      {
+        title: 'Заявка на объемы',
+        dataIndex: 'proposal',
+        isVisible: true,
+        order: 13,
+        render: (text, record) => {
+          if (record && record.proposal) {
+            return <span style={{
+              color: '#1890ff',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>;
+          }
+        },
+      },
     ],
     gridParameters: {
       start: 0,
@@ -109,8 +165,8 @@ export default class DogovorModal extends Component {
     const contracts = universal2.references[this.state.gridParameters.entity];
 
     return (<Modal
-      style={{ top: 20 }}
-      width={800}
+      style={{ top: 0 ,paddingBottom:0}}
+      width={1200}
       title={'Список договоров'}
       okText={'Выбрать'}
       onCancel={() => this.props.hide()}
@@ -123,8 +179,9 @@ export default class DogovorModal extends Component {
       <Spin spinning={this.props.loading}>
         <div className={style.DogovorModal}>
           <SmartGridView
-            scroll={{ x: 'auto', y: 300 }}
+            scroll={{ x: 'auto', y:280 }}
             name={'DogovorModal'}
+            actionColumns={this.state.fcolumn}
             columns={this.state.columns}
             showTotal={true}
             actionExport={() => {
@@ -153,8 +210,10 @@ export default class DogovorModal extends Component {
             onSelectCheckboxChange={(selectedRowKeys) => {
 
             }}
-          /></div>
+          />
+        </div>
       </Spin>
     </Modal>);
   };
 }
+

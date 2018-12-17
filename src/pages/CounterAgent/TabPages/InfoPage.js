@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Spin, Modal } from 'antd';
 import SmartGridView from '@/components/SmartGridView';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import moment from 'moment';
 import LinkModal from '@/components/LinkModal';
 import DogovorModal from '../Modals/DogovorModal';
+import CounterAgentModal from '../Modals/ContragentsModal';
 
+const confirm = Modal.confirm;
 const { TextArea } = Input;
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
@@ -93,6 +95,11 @@ function momentDefine() {
 export default class InfoPage extends Component {
   state = {
 
+    CounterAgentsModal: {
+      record: null,
+      visible: false,
+    },
+
     DogovorModal: {
       record: null,
       visible: false,
@@ -113,7 +120,7 @@ export default class InfoPage extends Component {
   getReferenceValues = (code, propName) => {
     const { universal2 } = this.props;
 
-    if (!universal2.references[code]) return null;
+    if (universal2.references[code] === undefined) return null;
 
     return universal2.references[code]
       ? universal2.references[code].content.map((item) => (
@@ -157,6 +164,12 @@ export default class InfoPage extends Component {
     });
   };
 
+  clearSpecifications = () => {
+    if (this.props.setSpecData) {
+      this.props.setSpecData({ clear: true });
+    }
+  };
+
   getSpecifications = (id) => {
     const { dispatch } = this.props;
 
@@ -168,7 +181,7 @@ export default class InfoPage extends Component {
         'id': id,
       },
     }).then(() => {
-      if (this.props.universal2.contractData.contractItems) {
+      if (this.props.universal2.contractData.contractItems && this.props.setSpecData) {
         this.props.setSpecData(this.props.universal2.contractData);
       }
     });
@@ -181,66 +194,53 @@ export default class InfoPage extends Component {
     /// formItemLayout
     /// form
 
-    /*
-    * Контрагент	contract.contragent.bin contract.contragent.name
-      Учетный период: год	periodYear.year
-      Родительский договор	<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
-      Протокол распределения объемов	№<planProtocol.number> от < planProtocol.documentDate>
-      Заявка на объемы	№<proposal.number> от < proposal.documentDate>
-      Вид договора	contractType
-      Причина	contractAlterationReason.name
-      Номер	number
-      Дата	documentDate
-      Дата начала	dateBegin
-      Дата окончания	dateEnd
-      Комментарий	Descr
-      Подразделение	contract.divisionName
-    * */
-
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? this.props.formData : {};
 
+
     return (<Card style={{ marginLeft: '-10px' }}>
-      {this.state.DogovorModal.visible && <DogovorModal
+
+      {this.state.CounterAgentsModal.visible && <CounterAgentModal
+        onSelect={(record) => {
+          if (this.props.getCounterAgentById) {
+            this.props.getCounterAgentById(record.id);
+          }
+          this.setState({ CounterAgentsModal: { visible: false, record: record } });
+        }}
+        hide={() => this.setState({ CounterAgentsModal: { visible: false } })}/>
+      }
+
+      {this.state.DogovorModal.visible &&
+      <DogovorModal
         onSelect={(record) => {
 
-          this.getSpecifications(record.id);
-
-          this.setState({ DogovorModal: { visible: false, record: record } });
+          confirm({
+            title: 'Подтверждение',
+            content: 'Существующая спецификация документа будет заменена, хотите продолжить?',
+            okText: 'Да',
+            cancelText: 'Нет',
+            onOk: () => {
+              this.getSpecifications(record.id);
+              this.setState({ DogovorModal: { visible: false, record: record } });
+            },
+            onCancel: () => {
+              this.setState({ DogovorModal: { visible: false, record: record } });
+            },
+          });
 
 
         }}
-        hide={() => this.setState({ DogovorModal: { visible: false } })
-        }/>}
+        hide={() => this.setState({ DogovorModal: { visible: false } })}/>}
 
 
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
 
-        {(getObjectData.contract && getObjectData.contract.contragent.bin && getObjectData.contract.contragent.name) &&
+        {getObjectData.contract &&
         <Form.Item {...formItemLayout} label="Контрагент">
-          <span className="ant-form-text">{contract.contragent.bin} {contract.contragent.name}</span>
-        </Form.Item>
-        }
-
-        {//(getObjectData.periodYear) &&
-          <Form.Item {...formItemLayout} label="Учетный период">
-            {getFieldDecorator('periodYear', {
-              rules: [{ required: false, message: 'не заполнено' }],
-              initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
-            })(
-              <Select
-                placeholder="Учетный период"
-                style={{ width: '50%' }}>
-                {this.getReferenceValues('periodYear', 'year')}
-              </Select>,
-            )}
-          </Form.Item>
-        }
-
-        {(getObjectData.parentContract) &&
-        <Form.Item {...formItemLayout} label="Родительский договор">
-          {getFieldDecorator('parentContract', {
-            initialValue: getObjectData.parentContract ? getObjectData.parentContract : null,
+          {getFieldDecorator('counterAgent', {
+            initialValue: {
+              value: getObjectData.contract ? getObjectData.contract.contragent : null,
+            },
             rules: [{
               required: false,//, message: 'не заполнено',
               // validator: (rule, value, callback) => {
@@ -257,36 +257,107 @@ export default class InfoPage extends Component {
             }],
           })(
             <LinkModal
+              labelFormatter={(record) => {
+                return `${record.idendifier.identifiervalue} ${record.name}`;
+              }}
+              data={this.state.CounterAgentsModal.record}
+              onTarget={(record) => {
+
+              }}
+              onDelete={() => {
+                this.setState({ CounterAgentsModal: { visible: false, record: null } });
+              }}
+              onClick={() => {
+                this.setState({ CounterAgentsModal: { visible: true } });
+              }}>
+            </LinkModal>)}
+        </Form.Item>}
+
+
+        <Form.Item {...formItemLayout} label="Учетный период">
+          {getFieldDecorator('periodYear', {
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
+          })(
+            <Select
+              placeholder="Учетный период"
+              style={{ width: '50%' }}>
+              {this.getReferenceValues('periodYear', 'year')}
+            </Select>,
+          )}
+        </Form.Item>
+
+        <Form.Item {...formItemLayout} label="Родительский договор">
+          {getFieldDecorator('parentContract', {
+            initialValue: { value: getObjectData.parentContract ? getObjectData.parentContract : null },
+            rules: [{
+              required: false,//, message: 'не заполнено',
+              // validator: (rule, value, callback) => {
+              //   if (value !== null && value) {
+              //     if (value.value !== null) {
+              //       callback();
+              //       return;
+              //     } else {
+              //       callback('не заполнено');
+              //     }
+              //   }
+              //   callback('не заполнено');
+              // },
+            }],
+          })(
+            <LinkModal
+              labelFormatter={(record) => {
+                return `№ ${record.number} от ${record.documentDate}`;
+              }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
                 window.open('viewcontract?id=1');
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });
+                const { dispatch } = this.props;
+
+                confirm({
+                  title: 'Подтверждение',
+                  okText: 'Да',
+                  cancelText: 'Нет',
+                  content: 'Существующая спецификация документа будет заменена, хотите продолжить?',
+                  onOk: () => {
+
+                    dispatch({
+                      type: 'universal2/clearContract',
+                      payload: {},
+                    }).then(() => {
+                      this.clearSpecifications();
+                    });
+                  },
+                });
+
+
               }}
               onClick={() => {
                 this.setState({ DogovorModal: { visible: true } });
               }}>
             </LinkModal>)}
         </Form.Item>
-        }
 
 
-        {(getObjectData.planProtocol && getObjectData.planProtocol.number && getObjectData.planProtocol.documentDate) &&
         <Form.Item {...formItemLayout} label="Протокол распределения объемов">
+          {(getObjectData.planProtocol && getObjectData.planProtocol.number) &&
           <span
             className="ant-form-text">№ {getObjectData.planProtocol.number} от {getObjectData.planProtocol.documentDate}</span>
-        </Form.Item>}
+          }
+        </Form.Item>
 
 
-        {(getObjectData.proposal && getObjectData.proposal.number && getObjectData.proposal.documentDate) &&
         <Form.Item {...formItemLayout} label="Заявка на объемы">
+          {(getObjectData.proposal && getObjectData.proposal.number) &&
           <span
             className="ant-form-text">№{getObjectData.proposal.number} от {getObjectData.proposal.documentDate}</span>
-        </Form.Item>}
+          }
+        </Form.Item>
 
 
-        {(getObjectData.contractType && getObjectData.contractType.id) &&
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator('contractType', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -304,8 +375,6 @@ export default class InfoPage extends Component {
             </Select>,
           )}
         </Form.Item>
-        }
-
 
         {this.state.contractAlterationReason &&
         <Form.Item {...formItemLayout} label="Причина">
@@ -320,16 +389,15 @@ export default class InfoPage extends Component {
         </Form.Item>
         }
 
-        {//(getObjectData.number) &&
-          <Form.Item {...formItemLayout} label="Номер">
-            {getFieldDecorator('number', {
-              rules: [{ required: false, message: 'не заполнено' }],
-              initialValue: getObjectData.number ? getObjectData.number : null,
-            })(<Input placeholder="Номер"/>)}
-          </Form.Item>
-        }
 
-        {(getObjectData.documentDate) &&
+        <Form.Item {...formItemLayout} label="Номер">
+          {getFieldDecorator('number', {
+            rules: [{ required: false, message: 'не заполнено' }],
+            initialValue: getObjectData.number ? getObjectData.number : null,
+          })(<Input placeholder="Номер"/>)}
+        </Form.Item>
+
+
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator('documentDate', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -342,9 +410,8 @@ export default class InfoPage extends Component {
               placeholder="Выберите дату"/>,
           )}
         </Form.Item>
-        }
 
-        {(getObjectData.dateBegin) &&
+
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator('period', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -359,10 +426,8 @@ export default class InfoPage extends Component {
               ]}/>,
           )}
         </Form.Item>
-        }
 
 
-        {(getObjectData.descr) &&
         <Form.Item {...formItemLayout} label="Примечание">
           {getFieldDecorator('descr', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -373,9 +438,8 @@ export default class InfoPage extends Component {
               rows={4}/>,
           )}
         </Form.Item>
-        }
 
-        {(getObjectData.division && getObjectData.division.id) &&
+
         <Form.Item {...formItemLayout} label="Подразделение">
           {getFieldDecorator('divisions', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -387,7 +451,6 @@ export default class InfoPage extends Component {
             </Select>,
           )}
         </Form.Item>
-        }
 
 
       </div>

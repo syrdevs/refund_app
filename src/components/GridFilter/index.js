@@ -462,14 +462,15 @@ export default class GridFilter extends Component {
           <Select
             {...params}
             style={{ width: '100%' }}
-            placeholder=""
+            placeholder={filterItem.label && filterItem.label}
             onChange={(value) => {
               this.fieldOnChange(filterItem, value);
             }}
           >
             <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
             {references[filterItem.name] && references[filterItem.name].map((item) => {
-              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+              return <Select.Option
+                key={item.id}>{filterItem.displayField ? item[filterItem.displayField] : item.nameRu}</Select.Option>;
             })}
           </Select>
         </div>);

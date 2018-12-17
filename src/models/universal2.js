@@ -112,6 +112,13 @@ export default {
         payload: response,
       });
     },
+
+    * clearContract(payload, { call, put }) {
+      yield put({
+        type: 'clearContractData',
+        payload: {},
+      });
+    },
   },
   reducers: {
 
@@ -167,6 +174,13 @@ export default {
       return {
         ...state,
         reportParametersData: payload,
+      };
+    },
+
+    clearContractData(state, { payload }) {
+      return {
+        ...state,
+        contractData: {},
       };
     },
   },

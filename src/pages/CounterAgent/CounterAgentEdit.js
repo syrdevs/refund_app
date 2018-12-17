@@ -60,6 +60,7 @@ export default class CounterAgentEdit extends Component {
         payload: {
           'entity': 'contract',
           'alias': null,
+          //todo get object
           'id': this.props.location.state.data.id,
         },
       });
@@ -78,36 +79,14 @@ export default class CounterAgentEdit extends Component {
 
     let SpecFormData = this.state.eventManager.handleEvent('onSpecFormSubmit');
 
-//todo check model
+
+    //todo check model
     let sendModel = {
       'entity': 'contract',
       'alias': null,
       'data': {
-        'contractPartys': [
-          {
-            'contractRole': {
-              'id': '4c5c28e5-afd5-42bc-b8a4-209cc149687a',
-            },
-            'organization': {
-              'id': '1b0e836c-3f9c-4438-8ef8-a4d8018664ea',
-            },
-          },
-          {
-            'contractRole': {
-              'id': '59425c7f-022e-4606-a895-085613e3990a',
-            },
-            'organization': {
-              'id': '73b39727-9ac0-4d67-9120-9a2d743d9a35',
-            },
-          },
-        ],
-        'contractItems': [
-          {
-            'activity': {
-              'id': '32576777-c4a9-41c9-86c4-393bb29072ef',
-            },
-          },
-        ],
+        'contractPartys': this.props.universal.getObjectData.contractParties,
+        'contractItems': SpecFormData,
       },
     };
     if (data.period !== null && data.period.length > 0) {
@@ -140,12 +119,15 @@ export default class CounterAgentEdit extends Component {
       sendModel.data.number = data.number;
     }
 
-    if (data.parentContract) {
+    if (data.parentContract.value) {
       sendModel.data.parentContract = {
-        id: data.parentContract.id,
+        id: data.parentContract.value.id,
       };
     }
 
+    if (data.descr) {
+      sendModel.data.descr = data.descr;
+    }
 
     if (data.divisions) {
       sendModel.data.division = {
@@ -174,20 +156,18 @@ export default class CounterAgentEdit extends Component {
       };
     }
 
-    console.log(SpecFormData);
-
-    // dispatch({
-    //   type: 'universal/saveobject',
-    //   payload: sendModel,
-    // }).then((res) => {
-    //   if (!this.props.universal.saveanswer.Message) {
-    //     Modal.info({
-    //       title: 'Информация',
-    //       content: 'Изменения были успешно сохранены',
-    //     });
-    //     reduxRouter.push('/contract/contracts/table');
-    //   }
-    // });
+    dispatch({
+      type: 'universal/saveobject',
+      payload: sendModel,
+    }).then((res) => {
+      if (!this.props.universal.saveanswer.Message) {
+        Modal.info({
+          title: 'Информация',
+          content: 'Сведения сохранены',
+        });
+        // reduxRouter.push('/contract/contracts/table');
+      }
+    });
 
   };
 
@@ -222,20 +202,23 @@ export default class CounterAgentEdit extends Component {
             title={''}
             className={styles.headPanel}
             extra={[<Button
-              htmlType="submit">Сохранить</Button>, <Button
-              style={{ marginLeft: '5px' }}
-              onClick={() => {
-                const { dispatch } = this.props;
-                dispatch({
-                  type: 'universal/clearData',
-                  payload: {
-                    typeName: 'getObjectData',
-                    value: {},
-                  },
-                });
+              key={'save_btn'}
+              htmlType="submit">Сохранить</Button>,
+              <Button
+                key={'delete_btn'}
+                style={{ marginLeft: '5px' }}
+                onClick={() => {
+                  const { dispatch } = this.props;
+                  dispatch({
+                    type: 'universal/clearData',
+                    payload: {
+                      typeName: 'getObjectData',
+                      value: {},
+                    },
+                  });
 
-                reduxRouter.push('/contract/contracts/table');
-              }}>Закрыть</Button>]}
+                  reduxRouter.push('/contract/contracts/table');
+                }}>Закрыть</Button>]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: '5px' }}>

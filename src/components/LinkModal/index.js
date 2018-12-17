@@ -2,6 +2,8 @@ import React, { Component, PureComponent } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col, Tabs, Card, Modal } from 'antd';
 
+
+
 export default class LinkModal extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +14,7 @@ export default class LinkModal extends Component {
   }
 
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, nextState) {
     // Should be a controlled component.
     if ('value' in nextProps) {
       return {
@@ -21,7 +23,6 @@ export default class LinkModal extends Component {
     }
     return null;
   }
-
 
   triggerChange = (changedValue) => {
     const onChange = this.props.onChange;
@@ -43,14 +44,25 @@ export default class LinkModal extends Component {
     let fileName = '';
 
     if (this.props.data && this.state.value === null) {
-      if (this.props.data.number) {
+      if (Object.keys(this.props.data).length > 0) {
         this.handleChange(this.props.data);
-        fileName = `№ ${this.props.data.number} от ${this.props.data.documentDate}`;
+
+        if (this.props.labelFormatter) {
+          fileName = this.props.labelFormatter(this.props.data);
+        }
       }
     }
 
     if (this.state.value !== null) {
-      fileName = `№ ${this.state.value.number} от ${this.state.value.documentDate}`;
+      if (this.props.data) {
+        if (this.state.value.id !== this.props.data.id) {
+          this.handleChange(this.props.data);
+        }
+      }
+
+      if (this.props.labelFormatter) {
+        fileName = this.props.labelFormatter(this.state.value);
+      }
     }
 
 
@@ -81,15 +93,25 @@ export default class LinkModal extends Component {
 
         <span
           onClick={() => {
-            this.handleChange(null);
-            this.props.onDelete();
+            this.props.onClick();
           }}
           style={{
             marginLeft: '20px',
             cursor: 'pointer',
+            textDecoration: 'underline',
+            fontSize: '14px',
+          }}>Изменить</span>
+        <span
+          onClick={() => {
+            this.handleChange(null);
+            this.props.onDelete();
+          }}
+          style={{
+            marginLeft: '10px',
+            cursor: 'pointer',
             color: 'red',
             textDecoration: 'underline',
-            fontSize: '11px',
+            fontSize: '14px',
           }}>Удалить</span>
 
       </div>}

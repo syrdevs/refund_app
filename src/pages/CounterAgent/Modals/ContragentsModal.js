@@ -17,37 +17,37 @@ export default class ContragentsModal extends Component {
         title: 'Код',
         dataIndex: 'code',
         isVisible: true,
-        width:100
+        width: 100,
       }, {
         title: 'Наименование/Имя',
         dataIndex: 'name',
         isVisible: true,
-        width:400
+        width: 400,
       }, {
         title: 'Идентификатор',
-        dataIndex: 'idendifier.value',
+        dataIndex: 'idendifier.identifiervalue',
         isVisible: true,
-        width:200
+        width: 200,
       }, {
         title: 'Адрес',
         dataIndex: 'address',
         isVisible: true,
-        width:200
+        width: 200,
       }, {
         title: 'Актуальные контакты',
         dataIndex: 'contact',
         isVisible: true,
-        width:200
+        width: 200,
       }, {
         title: 'Банковские реквизиты',
         dataIndex: 'bankAccount.bank',
         isVisible: true,
-        width:200
+        width: 200,
       }, {
         title: 'Ответственные лица',
         dataIndex: 'representative',
         isVisible: true,
-        width:200
+        width: 200,
       },
     ],
     gridParameters: {
@@ -77,24 +77,28 @@ export default class ContragentsModal extends Component {
     const counterData = universal2.references[this.state.gridParameters.entity];
 
     return (<Modal
-      style={{ top: 0 }}
-      width={1000}
+      style={{ top: 0,paddingBottom:0 }}
+      width={1200}
       title={'Список контрагентов'}
       okText={'Выбрать'}
       onCancel={() => this.props.hide()}
       onOk={() => {
-        this.props.onSelect(counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1));
+        //this.props.onSelect(counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1));
+
+        if (Object.keys(this.state.selectedRecord).length > 0)
+          this.props.onSelect(this.state.selectedRecord);
+
       }}
       visible={true}>
       <div className={style.SmartGridView}>
         <SmartGridView
-          scroll={{ x: 1400, y: 300 }}
+          scroll={{ x: 'auto', y: 280 }}
           name={'ContragentsModal'}
           rowSelection={true}
           hideFilterBtn={true}
           hideRefreshBtn={true}
-          selectedRowCheckBox={true}
-          selectedRowKeys={this.state.selectedRowKeys}
+          // selectedRowCheckBox={true}
+          // selectedRowKeys={this.state.selectedRowKeys}
           columns={this.state.columns}
           showTotal={true}
           actionExport={() => {

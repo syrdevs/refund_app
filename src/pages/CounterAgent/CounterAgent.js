@@ -144,26 +144,24 @@ class CounterAgent extends Component {
     const { universal2 } = this.props;
     const counterData = universal2.references[this.state.gridParameters.entity];
 
-    console.log(universal2);
-
     const addonButtons = [
       <Dropdown key={'dropdown'} trigger={['click']} overlay={<Menu>
-        <Menu.Item
-          disabled={hasRole(['ADMIN'])}
-          onClick={() => this.goForm()}
-          key='add'>
-          Добавить
-        </Menu.Item>
-        <Menu.Item
-          disabled={hasRole(['ADMIN']) || true}
-          key='delete'>
-          Удалить
-        </Menu.Item>
-        <Menu.Item
-          disabled={hasRole(['ADMIN']) || true}
-          key='update'>
-          Открыть/изменить
-        </Menu.Item>
+        {/*<Menu.Item*/}
+          {/*disabled={hasRole(['ADMIN'])}*/}
+          {/*onClick={() => this.goForm()}*/}
+          {/*key='add'>*/}
+          {/*Добавить*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+          {/*disabled={hasRole(['ADMIN']) || true}*/}
+          {/*key='delete'>*/}
+          {/*Удалить*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+          {/*disabled={hasRole(['ADMIN']) || true}*/}
+          {/*key='update'>*/}
+          {/*Открыть/изменить*/}
+        {/*</Menu.Item>*/}
         <Menu.Item
           disabled={hasRole(['ADMIN']) || this.state.selectedRecord === null}
           key='register_document'

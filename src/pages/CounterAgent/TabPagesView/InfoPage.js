@@ -5,46 +5,6 @@ import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 
 export default class InfoPage extends Component {
   state = {
-    dataSource: [
-      {
-        name: 'Вид договора',
-        value: 'Договор субподряда к договору на ГОБМП',
-      },
-      {
-        name: 'Причина',
-        value: 'Соглашение о расторжении',
-      },
-      {
-        name: 'Номер',
-        value: '525684844866',
-      },
-      {
-        name: 'Дата',
-        value: '10.12.2018',
-      },
-      {
-        name: 'Отчетный период',
-        value: '2018',
-      },
-      {
-        name: 'Период',
-        value: '01.02.2018 - 10.12.2018',
-      },
-      {
-        name: 'Подразделение',
-        value: 'НАО «Фонд социального медицинского страхования»',
-      },
-      {
-        name: 'Примечание',
-        value: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      },
-      {
-        name: 'Родительский договор',
-        href: '#test',
-        value: 'Договор №12032585',
-      },
-
-    ],
     columns: [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -65,7 +25,7 @@ export default class InfoPage extends Component {
               cursor: 'pointer',
             }}
             onClick={() => {
-              window.open("viewcontract?id=2")
+              window.open('viewcontract?id=' + record.href);
             }}>{text}</div>;
         }
         return text;
@@ -75,12 +35,101 @@ export default class InfoPage extends Component {
 
   render = () => {
 
+    const { formData } = this.props;
+    let dataSourceItem = [];
+
+    if (formData.parentContract) {
+      dataSourceItem.push({
+        href: formData.parentContract.id,
+        name: 'Родительский договор',
+        value: `${formData.parentContract.contractType}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
+      });
+    }
+
+    if (formData.planProtocol) {
+      dataSourceItem.push({
+        name: 'Протокол распределения объемов',
+        value: `№${formData.planProtocol.number} от ${formData.planProtocol.number}`,
+      });
+    }
+
+    if (formData.proposal) {
+      dataSourceItem.push({
+        name: 'Заявка на объемы',
+        value: `№${formData.proposal.number} от ${formData.proposal.number}`,
+      });
+    }
+
+    if (formData.periodYear) {
+      dataSourceItem.push({
+        name: 'Учетный период: год',
+        value: formData.periodYear.year,
+      });
+    }
+
+    if (formData.contractType) {
+      dataSourceItem.push({
+        name: 'Вид договора',
+        value: formData.contractType.nameRu,
+      });
+    }
+
+    if (formData.contractAlterationReason) {
+      dataSourceItem.push({
+        name: 'Причина',
+        value: formData.contractAlterationReason.name,
+      });
+    }
+
+    if (formData.number) {
+      dataSourceItem.push({
+        name: 'Номер',
+        value: formData.number,
+      });
+    }
+
+    if (formData.documentDate) {
+      dataSourceItem.push({
+        name: 'Дата',
+        value: formData.documentDate,
+      });
+    }
+
+    if (formData.dateBegin) {
+      dataSourceItem.push({
+        name: 'Дата начала',
+        value: formData.dateBegin,
+      });
+    }
+
+    if (formData.dateEnd) {
+      dataSourceItem.push({
+        name: 'Дата окончания',
+        value: formData.dateEnd,
+      });
+    }
+
+    if (formData.descr) {
+      dataSourceItem.push({
+        name: 'Комментарий',
+        value: formData.descr,
+      });
+    }
+
+    if (formData.division) {
+      dataSourceItem.push({
+        name: 'Подразделение',
+        value: formData.division.name,
+      });
+    }
+
+
     return (<Card style={{ marginLeft: '-10px' }}>
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
         <Table pagination={{ position: 'none' }}
                showHeader={false}
                columns={this.state.columns}
-               dataSource={this.state.dataSource}/>
+               dataSource={dataSourceItem}/>
       </div>
     </Card>);
   };

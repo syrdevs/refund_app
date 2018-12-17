@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal, Spin } from 'antd';
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage } from './TabPages';
+import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, AttachmentPage } from './TabPages';
 import reduxRouter from 'umi/router';
 import styles from './CounterAgent.less';
 import moment from 'moment';
@@ -41,6 +41,21 @@ export default class CounterAgentEdit extends Component {
       },
     },
   };
+  getContractData = () => {
+    const { dispatch } = this.props;
+
+    if (this.props.location.state) {
+      dispatch({
+        type: 'universal/getobject',
+        payload: {
+          'entity': 'contract',
+          'alias': null,
+          //todo get object
+          'id': this.props.location.state.data.id,
+        },
+      });
+    }
+  };
 
   componentDidMount() {
 
@@ -54,17 +69,7 @@ export default class CounterAgentEdit extends Component {
       },
     });
 
-    if (this.props.location.state) {
-      dispatch({
-        type: 'universal/getobject',
-        payload: {
-          'entity': 'contract',
-          'alias': null,
-          //todo get object
-          'id': this.props.location.state.data.id,
-        },
-      });
-    }
+    this.getContractData();
 
     // if (this.props.location.state) {
     //
@@ -218,7 +223,24 @@ export default class CounterAgentEdit extends Component {
                   });
 
                   reduxRouter.push('/contract/contracts/table');
-                }}>Закрыть</Button>]}
+                }}>Закрыть</Button>,
+              <Button
+                key={'clear_btn'}
+                style={{ marginLeft: '5px' }}
+                onClick={() => {
+                  const { dispatch } = this.props;
+                  dispatch({
+                    type: 'universal/clearData',
+                    payload: {
+                      typeName: 'getObjectData',
+                      value: {},
+                    },
+                  }).then(()=>{
+                    this.props.form.resetFields();
+                  });
+
+
+                }}>Очистить</Button>]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: '5px' }}>
@@ -261,6 +283,14 @@ export default class CounterAgentEdit extends Component {
                   <ContragentsPage
                     gridData={this.props.universal.getObjectData}
                     selectedData={this.props.location.state}/>
+                </TabPane>
+                <TabPane tab={'Приложения'} key="attachments">
+                  <AttachmentPage
+                    getContractData={this.getContractData}
+                    filesData={this.props.universal.getObjectData}
+                    contractId={this.props.location.state.data.id}
+                    formItemLayout={formItemLayout}
+                  />
                 </TabPane>
               </Tabs>
             </Row>

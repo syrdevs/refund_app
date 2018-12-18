@@ -114,8 +114,10 @@ export default class DropDownAction extends Component {
 
     return (<Dropdown
       trigger={'click'}
+      disabled={this.props.disabled}
       overlay={menu}>
-      <Button loading={this.state.loading} style={{ marginLeft: 5 }}>
+      <Button
+        loading={this.state.loading} style={{ marginLeft: 5 }}>
         Отчеты <Icon type="down"/>
       </Button>
     </Dropdown>);

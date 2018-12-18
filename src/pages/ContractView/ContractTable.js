@@ -31,6 +31,7 @@ import Actsadd from '../Acts/Actsadd';
 import Options from '../Options/Options';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import ContractNew from './ContractNew';
+import DropDownAction from '@/components/DropDownAction/';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -449,15 +450,15 @@ export default class ContractTable extends Component {
         <Menu.Item
           key='4'
           disabled={this.state.selectedRowKeys.length === 0}
-          onClick={()=>{
-              this.props.history.push({
-                pathname: '/contract/contracts/paymentadd',
-                state: {
-                  data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-                  type: 'contract'
-                },
-              });
-            }}
+          onClick={() => {
+            this.props.history.push({
+              pathname: '/contract/contracts/paymentadd',
+              state: {
+                data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+                type: 'contract',
+              },
+            });
+          }}
 
         >
           Включить в заявку на оплату
@@ -484,6 +485,12 @@ export default class ContractTable extends Component {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
+      <DropDownAction
+        disabled={this.state.selectedRowKeys.length === 0}
+        contractId={this.state.selectedRowKeys}
+        entity={'contract'}
+        type={2}
+      />,
     ];
     return (
       <PageHeaderWrapper title={this.state.title}>

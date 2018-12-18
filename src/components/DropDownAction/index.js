@@ -100,9 +100,11 @@ export default class DropDownAction extends Component {
 
   render = () => {
 
+    let menuData = this.props.universal.commandResult.length > 0 ? this.props.universal.commandResult : [];
+
     const menu = (
       <Menu>
-        {this.props.universal.commandResult.map((item) =>
+        {menuData.map((item) =>
           <Menu.Item
             onClick={() => {
               this.downloadFile(this.props.contractId, item.id);
@@ -113,7 +115,7 @@ export default class DropDownAction extends Component {
     );
 
     return (<Dropdown
-      trigger={'click'}
+      trigger={['click']}
       disabled={this.props.disabled}
       overlay={menu}>
       <Button

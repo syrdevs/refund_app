@@ -31,6 +31,27 @@ const formItemLayout = {
     span: 14,
   },
 };
+/*
+* <Button
+                key={'clear_btn'}
+                style={{ marginLeft: '5px' }}
+                onClick={() => {
+                  // const { dispatch } = this.props;
+                  // dispatch({
+                  //   type: 'universal/clearData',
+                  //   payload: {
+                  //     typeName: 'getObjectData',
+                  //     value: {},
+                  //   },
+                  // }).then(() => {
+                  //
+                  // });
+                  //this.props.form.resetFields();
+
+                }}>Очистить</Button>,
+*
+* */
+
 
 @Form.create()
 @connect(({ universal, loading }) => ({
@@ -99,14 +120,17 @@ export default class CounterAgentEdit extends Component {
 
     let SpecFormData = this.state.eventManager.handleEvent('onSpecFormSubmit');
 
+
     //todo check model
     let sendModel = {
       'entity': 'contract',
       'alias': null,
-      'data': {
-        'contractItems': SpecFormData,
-      },
+      'data': {},
     };
+
+    if (SpecFormData.length > 0) {
+      sendModel.contractItems = SpecFormData;
+    }
 
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {
 
@@ -256,23 +280,7 @@ export default class CounterAgentEdit extends Component {
 
                   reduxRouter.push('/contract/contracts/table');
                 }}>Закрыть</Button>,
-              <Button
-                key={'clear_btn'}
-                style={{ marginLeft: '5px' }}
-                onClick={() => {
-                  // const { dispatch } = this.props;
-                  // dispatch({
-                  //   type: 'universal/clearData',
-                  //   payload: {
-                  //     typeName: 'getObjectData',
-                  //     value: {},
-                  //   },
-                  // }).then(() => {
-                  //
-                  // });
-                  //this.props.form.resetFields();
 
-                }}>Очистить</Button>,
               <DropDownAction
                 contractId={this.props.location.state.data.id}
                 entity={'contract'}

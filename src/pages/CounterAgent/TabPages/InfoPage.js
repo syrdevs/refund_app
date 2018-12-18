@@ -105,7 +105,7 @@ export default class InfoPage extends Component {
       visible: false,
     },
 
-    contractAlterationReason: false,
+    contractAlterationReason: null,
 
     fields: {
       bin: '',
@@ -195,8 +195,13 @@ export default class InfoPage extends Component {
     /// form
 
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
-    let getObjectData = this.props.formData ? this.props.formData : {};
+    let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
+    if (this.state.contractAlterationReason === null && getObjectData.contractType && getObjectData.contractType.code === '2') {
+      this.setState({
+        contractAlterationReason: getObjectData.contractType.code,
+      });
+    }
 
     return (<Card style={{ marginLeft: '-10px' }}>
 
@@ -280,7 +285,7 @@ export default class InfoPage extends Component {
 
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator('periodYear', {
-            rules: [{ required: false, message: 'не заполнено' }],
+            rules: [{ required: true, message: 'не заполнено' }],
             initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
           })(
             <Select
@@ -364,23 +369,19 @@ export default class InfoPage extends Component {
 
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator('contractType', {
-            rules: [{ required: false, message: 'не заполнено' }],
+            rules: [{ required: true, message: 'не заполнено' }],
             initialValue: getObjectData.contractType ? getObjectData.contractType.id : null,
           })(
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
-                      if (option.props.prop.code === '2') {
-                        this.setState({ contractAlterationReason: true });
-                      } else {
-                        this.setState({ contractAlterationReason: false });
-                      }
+                      this.setState({ contractAlterationReason: option.props.prop.code });
                     }}>
               {this.getReferenceValues('contractType', 'nameRu')}
             </Select>,
           )}
         </Form.Item>
 
-        {this.state.contractAlterationReason &&
+        {this.state.contractAlterationReason === '2' &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator('contractAlternation', {
             rules: [{ required: false, message: 'не заполнено' }],
@@ -396,7 +397,7 @@ export default class InfoPage extends Component {
 
         <Form.Item {...formItemLayout} label="Номер">
           {getFieldDecorator('number', {
-            rules: [{ required: false, message: 'не заполнено' }],
+            rules: [{ required: true, message: 'не заполнено' }],
             initialValue: getObjectData.number ? getObjectData.number : null,
           })(<Input placeholder="Номер"/>)}
         </Form.Item>
@@ -404,7 +405,7 @@ export default class InfoPage extends Component {
 
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator('documentDate', {
-            rules: [{ required: false, message: 'не заполнено' }],
+            rules: [{ required: true, message: 'не заполнено' }],
             initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY') : null,
           })(
             <DatePicker

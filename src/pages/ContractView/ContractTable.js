@@ -61,6 +61,7 @@ export default class ContractTable extends Component {
       {
         name: 'contractType',
         displayField: 'nameRu',
+        filterName:'contractType',
         label: 'Вид договора',
         type: 'combobox',
       },
@@ -210,7 +211,7 @@ export default class ContractTable extends Component {
       },
       {
         title: 'Статус',
-        dataIndex: 'documentStatus.statusName',
+        dataIndex: '_currentStatusText',
         isVisible: true,
       },
       {
@@ -486,6 +487,7 @@ export default class ContractTable extends Component {
           type="down"/></Button>
       </Dropdown>,
       <DropDownAction
+        key={"dropdown_btn"}
         disabled={this.state.selectedRowKeys.length === 0}
         contractId={this.state.selectedRowKeys}
         entity={'contract'}

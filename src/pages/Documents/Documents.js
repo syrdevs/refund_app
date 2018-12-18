@@ -555,6 +555,8 @@ class Documents extends Component {
                     mode="inline"
                     openKeys={this.state.openKeys}
                     onOpenChange={this.onOpenChange}
+                    defaultSelectedKeys={['3']}
+
                   >
                     {/*<SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faFolderOpen}/></Icon><span>Документы</span></span>}>*/}
                       <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faEnvelope}/></Icon><span>Входящие</span></span>}  >

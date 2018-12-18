@@ -30,6 +30,7 @@ import router from 'umi/router';
 import ContractRequestsadd from './ContractRequestsadd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
+import DropDownAction from '@/components/DropDownAction/';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -317,6 +318,12 @@ export default class ContractRequestsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
+      <DropDownAction
+        disabled={this.state.selectedRowKeys.length === 0}
+        contractId={this.state.selectedRowKeys}
+        entity={'paymentRequest'}
+        type={2}
+      />,
     ];
 
     return (

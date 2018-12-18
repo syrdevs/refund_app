@@ -136,11 +136,11 @@ export default class GridFilter extends Component {
     if (Object.keys(fields).length === 0) {
 
       let _fields = {};
-
       this.props.filterForm.forEach((filterItem, idx) => {
         _fields[filterItem.name] = {
           disabled: false,
           type: filterItem.type,
+          filterName: filterItem.filterName
         };
 
         if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
@@ -230,13 +230,18 @@ export default class GridFilter extends Component {
     const { fields, formFilters } = this.state;
     const { applyFilter, miniForm } = this.props;
 
+
     let filterData = {};
     Object.keys(fields).forEach((field) => {
       if (formFilters[field]) {
 
 
         if (['multibox', 'combobox'].indexOf(fields[field].type) !== -1) {
-          let properyName = fields[field].type == 'multibox' ? field + 'List' : field + 'Id';
+
+          let properyName = fields[field].type == 'multibox' ? field + 'List' :  field + 'Id';
+          if ( fields[field].filterName) {
+             properyName = fields[field].filterName;
+          }
           let propertyValue = fields[field].type == 'multibox' ?
             formFilters[field].map((valueId) => ({
               id: valueId,
@@ -302,7 +307,8 @@ export default class GridFilter extends Component {
           },
           format: dateFormat,
           onChange: (moment, dateString) => {
-            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''));
+            filterItem.filterName ?  this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString) :
+              this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''))
           },
         };
 

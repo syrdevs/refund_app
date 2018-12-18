@@ -656,7 +656,7 @@ class ViewAct extends Component {
                               <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.name : null : null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Контрагент">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contragent.organization : "") : ""}</p>
+                          <p>{getObjectData ? (getObjectData.contract ? (getObjectData.contract.contragent ? getObjectData.contract.contragent.organization : null) : "") : ""}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
                           {getFieldDecorator('periodYear.id', {

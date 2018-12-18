@@ -29,6 +29,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import router from 'umi/router';
 import ContractRequestsadd from './ContractRequestsadd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -41,28 +42,54 @@ export default class ContractRequestsTable extends Component  {
   state = {
     selectedRowKeys: [],
     filterContainer: 0,
-    filterForm: [
+    filterForm:  [
       {
-        title: 'Заявки фильтр',
-        rootKey: 'dogovorId',
-        formElements: [
-          {
-            name: 'attachmentType.Name',
-            label: 'Документ',
-            type: 'text',
-          },
-          {
-            name: 'fileDescription',
-            label: 'Комментарий',
-            type: 'text',
-          },
-          {
-            name: 'name',
-            label: 'Тип файла',
-            type: 'selectlist',
-          },
-          ],
+        label: 'Подразделение',
+        displayField: 'name',
+        filterName: 'divisions',
+        name: 'divisions',
+        type: 'combobox',
       },
+      {
+        label: 'Учетный период(месяц)',
+        name: 'periodSection',
+        filterName: 'periodSection',
+        type: 'combobox',
+      },
+      {
+        label: 'Учетный период(год)',
+        displayField: 'year',
+        filterName: 'periodYear',
+        name: 'periodYear',
+        type: 'combobox',
+      },
+      {
+        label: 'Вид заявки',
+        filterName: 'paymentRequestType',
+        name: 'paymentRequestType',
+        type: 'combobox',
+      },
+      {
+        label: 'Номер',
+        name: 'number',
+        type: 'text',
+      },
+      {
+        label: 'Дата',
+        name: 'documentDate',
+        filterName: 'periodSection',
+        type: 'date',
+      },
+      {
+        label: 'Сумма',
+        name: 'documentSum',
+        type: 'text',
+      },
+      /*{
+        label: 'Статус',
+        name: 'documentStatus',
+        type: 'combobox',
+      },*/
     ],
     pagingConfig: {
       'start': 0,
@@ -213,11 +240,35 @@ export default class ContractRequestsTable extends Component  {
   };
 
   clearFilter = () => {
-    console.log('clear filter');
-  };
 
+    this.setState({
+      gridParameters: {
+        start: 0,
+        length: 15,
+        entity: "paymentRequest",
+        alias: "paymentRequestList",
+        filter: {},
+        sort: [],
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
   applyFilter = (filters) => {
-    console.log(filters);
+    this.setState({
+      gridParameters: {
+        start: 0,
+        length: 15,
+        entity: "paymentRequest",
+        alias: "paymentRequestList",
+        filter: filters,
+        sort: [],
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
   };
 
   createConract = () => {
@@ -286,9 +337,14 @@ export default class ContractRequestsTable extends Component  {
                   title={formatMessage({ id: 'system.filter' })}
                   extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                     icon={faTimes}/></Icon>}>
-                  {this.state.filterContainer === 6 && <GridFilterCollapsible
-                    clearFilter={this.clearFilter}
-                    applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                  {this.state.filterContainer === 6 && <GridFilter
+                    clearFilter={() => {
+                      this.clearFilter();
+                    }}
+                    applyFilter={(filters) => {
+                      this.applyFilter(filters);
+                    }}
+                    key={'1'}
                     filterForm={this.state.filterForm}
                     dateFormat={dateFormat}/>}
                 </Card>
@@ -312,9 +368,7 @@ export default class ContractRequestsTable extends Component  {
                     page: this.state.gridParameters.start + 1,
                     data: paymentRequest ? paymentRequest.content : [],
                   }}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                    console.log('on paging');
-                  }}
+                  onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                   onRefresh={() => {
                     console.log('onRefresh');
                   }}

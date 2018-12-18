@@ -29,6 +29,8 @@ import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import style from '../CounterAgent/Modals/ContragentModalStyle.less';
 import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
+import DocGridFilter from '../../components/DocGridFilter';
+import GridFilter from '@/components/GridFilter';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -41,35 +43,40 @@ export default class ActsTable extends Component  {
   state = {
     selectedRowKeys: [],
     filterContainer: 0,
-    filterForm: [
-      {
-        title: 'Акт фильтр',
-        rootKey: 'aktId',
-        formElements: [
+    filterForm:  [
           {
             label: 'Учетный период(месяц)',
             name: 'periodSection',
+            filterName: 'periodSection',
+            type: 'combobox',
+          },
+          {
+            label: 'Учетный период(год)',
+            displayField: 'year',
+            filterName: 'periodYear',
+            name: 'periodYear',
             type: 'combobox',
           },
           {
             label: 'Подразделение',
-            name: 'division',
-            type: 'text',
+            displayField: 'name',
+            filterName: 'divisions',
+            name: 'divisions',
+            type: 'combobox',
           },
-
           {
             label: 'Контрагент',
-            name: 'division',
+            name: 'contragent',
             type: 'text',
           },
           {
             label: 'Договор',
-            name: 'division',
+            name: 'contract',
             type: 'text',
           },
           {
             label: 'Протокол',
-            name: 'division',
+            name: 'protocol',
             type: 'text',
           },
 
@@ -81,16 +88,15 @@ export default class ActsTable extends Component  {
           {
             label: 'Дата',
             name: 'documentDate',
-            type: 'dates',
+            filterName: 'periodSection',
+            type: 'date',
           },
           {
             label: 'Сумма',
             name: 'documentSum',
             type: 'text',
           },
-        ]
-      },
-    ],
+        ],
     pagingConfig: {
       'start': 0,
       'length': 15,
@@ -334,9 +340,14 @@ export default class ActsTable extends Component  {
                     title={formatMessage({ id: 'system.filter' })}
                     extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}>
-                    {this.state.filterContainer === 6 && <DocGridCollapse
-                      clearFilter={this.clearFilter}
-                      applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
+                    {this.state.filterContainer === 6 && <GridFilter
+                      clearFilter={() => {
+                        this.clearFilter();
+                      }}
+                      applyFilter={(filters) => {
+                        this.applyFilter(filters);
+                      }}
+                      key={'1'}
                       filterForm={this.state.filterForm}
                       dateFormat={dateFormat}/>}
                 </Card>
@@ -360,8 +371,7 @@ export default class ActsTable extends Component  {
                       page: this.state.gridParameters.start + 1,
                       data: act ? act.content : [],
                     }}
-                    onShowSizeChange={(pageNumber, pageSize) => {
-                    }}
+                    onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                     onRefresh={() => {
                     }}
                     onSearch={() => {

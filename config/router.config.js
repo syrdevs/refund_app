@@ -119,7 +119,7 @@ export default [
       },
       {
         path: '/documents',
-        icon: 'faFileInvoice',
+        icon: 'faFolderOpen',
         name: 'documents',
         component: './Documents/Documents',
         authority: ['ADMIN', 'FSMS2'],

@@ -490,6 +490,25 @@ class ViewAct extends Component {
     this.props.form.validateFields(
       (err, values) => {
         if (!err) {
+          let data = this.props.universal.getObjectData;
+          data.actItems.forEach((item, index, array)=>{
+            if (data.actItems[index].actItemValues) {
+              data.actItems[index].actItemValues.forEach((it, i , arr)=>{
+                data.actItems[index].actItemValues[i].valueSum= this.props.universal.getObjectData.actItems[index].actItemValues[i].valueSum ? this.props.universal.getObjectData.actItems[index].actItemValues[i].valueSum : 0
+                data.actItems[index].actItemValues[i].sumRequested= this.props.universal.getObjectData.actItems[index].actItemValues[i].sumRequested ? this.props.universal.getObjectData.actItems[index].actItemValues[i].sumRequested : 0
+                data.actItems[index].actItemValues[i].sumAdvanceTakeout= this.props.universal.getObjectData.actItems[index].actItemValues[i].sumAdvanceTakeout ? this.props.universal.getObjectData.actItems[index].actItemValues[i].sumAdvanceTakeout : 0
+                data.actItems[index].actItemValues[i].value= this.props.universal.getObjectData.actItems[index].actItemValues[i].value ? this.props.universal.getObjectData.actItems[index].actItemValues[i].value : 0
+                data.actItems[index].actItemValues[i].valueRequested= this.props.universal.getObjectData.actItems[index].actItemValues[i].valueRequested ? this.props.universal.getObjectData.actItems[index].actItemValues[i].valueRequested : 0
+                data.actItems[index].actItemValues[i].protocolItem= this.props.universal.getObjectData.actItems[index].actItemValues[i].protocolItem ? this.props.universal.getObjectData.actItems[index].actItemValues[i].protocolItem : 0
+                if (data.actItems[index].actItemValues[i].currencyType){
+                  data.actItems[index].actItemValues[i].currencyType= this.props.universal.getObjectData.actItems[index].actItemValues[i].currencyType ? this.props.universal.getObjectData.actItems[index].actItemValues[i].currencyType : {}
+                }
+                if (data.actItems[index].actItemValues[i].measureUnit) {
+                  data.actItems[index].actItemValues[i].measureUnit = this.props.universal.getObjectData.actItems[index].actItemValues[i].measureUnit ? this.props.universal.getObjectData.actItems[index].actItemValues[i].measureUnit : {}
+                }
+              })
+            }
+          })
             if (this.state.actid) {
               this.props.dispatch({
                 type: 'universal/saveobject',
@@ -498,22 +517,25 @@ class ViewAct extends Component {
                   "alias": null,
                   "data":
                     {
-                      ...this.props.universal.getObjectData,
+                      ...data,
                       ...values,
                       documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY"): null,
                       protocol: null,
                       "contract": {
-                        "id": this.props.universal.getObjectData.contract.id
+                        "id": data.contract.id
                       },
-                      "actItems": this.props.universal.getObjectData.actItems,
+                      "actItems": data.actItems,
                       "id": this.state.actid
                     },
                 },
               }).then(()=>{
-                console.log(this.props.universal)
-                /*Modal.success({
-                  content: 'Сведения сохранены!',
-                });*/
+                console.log(this.props.universal.saveanswer);
+                if (!this.props.universal.saveanswer.Message) {
+                  Modal.info({
+                    title: 'Информация',
+                    content: 'Сведения сохранены',
+                  });
+                }
                 this.loadData();
                 //this.props.tomain();
               });
@@ -526,14 +548,14 @@ class ViewAct extends Component {
           "alias": null,
           "data":
             {
-              ...this.props.universal.getObjectData,
+              ...data,
               ...values,
               documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY"): null,
               protocol: null,
               "contract": {
-                "id": this.props.universal.getObjectData.contract.id
+                "id": data.contract.id
               },
-              "actItems": this.props.universal.getObjectData.actItems
+              "actItems": data.actItems
             },
         },
       })
@@ -542,9 +564,12 @@ class ViewAct extends Component {
         this.setState({
           actid:  this.props.universal.saveanswer ? this.props.universal.saveanswer.id : null
         },()=>{
-          /*Modal.success({
-            content: 'Сведения сохранены!',
-          });*/
+          if (!this.props.universal.saveanswer.Message) {
+            Modal.info({
+              title: 'Информация',
+              content: 'Сведения сохранены',
+            });
+          }
           this.loadData();
         })
         //console.log(this.props.universal.saveanswer);

@@ -15,6 +15,9 @@ import documentStyle from "./Documents.less";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import {faReply} from "@fortawesome/free-solid-svg-icons/faReply";
 import {faFolderOpen} from "@fortawesome/free-solid-svg-icons/faFolderOpen";
+import {faFolder} from "@fortawesome/free-solid-svg-icons/faFolder";
+import {faCheckSquare} from "@fortawesome/free-solid-svg-icons/faCheckSquare";
+import {faClock} from "@fortawesome/free-solid-svg-icons/faClock";
 
 const SubMenu = Menu.SubMenu;
 const {Header, Sider, Content} = Layout;
@@ -548,24 +551,27 @@ class Documents extends Component {
                   {/*</Menu.Item>*/}
                   {/*</Menu>*/}
                   <Menu
+                    // style={{minWidth:'230px'}}
                     mode="inline"
                     openKeys={this.state.openKeys}
                     onOpenChange={this.onOpenChange}
+                    defaultSelectedKeys={['3']}
+
                   >
-                    <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faFolderOpen}/></Icon><span>Документы</span></span>}>
-                      <SubMenu key="sub2" title={<span><Icon><FontAwesomeIcon icon={faEnvelope}/></Icon>Входящие</span>}  >
-                        <Menu.Item key="3">Все</Menu.Item>
-                        <Menu.Item key="1">Исполненные</Menu.Item>
-                        <Menu.Item key="2">На исполнение</Menu.Item>
+                    {/*<SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faFolderOpen}/></Icon><span>Документы</span></span>}>*/}
+                      <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faEnvelope}/></Icon><span>Входящие</span></span>}  >
+                        <Menu.Item key="3"><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
+                        <Menu.Item key="1"><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Исполненные</span></Menu.Item>
+                        <Menu.Item key="2"><span><Icon><FontAwesomeIcon icon={faClock}/></Icon>На исполнение</span></Menu.Item>
                       </SubMenu>
-                      <Menu.Item key="4"><span><Icon><FontAwesomeIcon icon={faReply}/></Icon>Исходящие</span></Menu.Item>
-                    </SubMenu>
+                      {/*<Menu.Item key="4"><span><Icon><FontAwesomeIcon icon={faReply}/></Icon>Исходящие</span></Menu.Item>*/}
+                    {/*</SubMenu>*/}
                   </Menu>
                 </Sider>
                 <Layout>
-                  <Header style={{background: '#fff', padding: 0}}>
+                  <Header style={{background: '#fff', padding: '0'}}>
                     <Icon
-                      className="trigger"
+                      className={documentStyle.trigger}
                       type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                       onClick={this.toggle}
                     />

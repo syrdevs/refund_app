@@ -14,7 +14,7 @@ import {
   Spin,
   Badge,
   Icon,
-  InputNumber, Tag,
+  InputNumber, Tag, Modal,
 } from 'antd';
 import styles from './style.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -103,7 +103,6 @@ class ContractRequestsadd extends Component {
           width : 550,
           order: 3,
           key: 'contract.contragent',
-          className: 'action_column',
           render: (item) => {
             if (item){
               return item.bin+"  "+item.organization;
@@ -116,7 +115,6 @@ class ContractRequestsadd extends Component {
           order: 4,
           width: 500,
           key: 'contract',
-          className: 'action_column',
           isVisible: true,
           render: (item) => {
             if (item){
@@ -130,7 +128,6 @@ class ContractRequestsadd extends Component {
           order: 5,
           width: 200,
           key: 'operation',
-          className: 'action_column',
           isVisible: true,
           render: (e) => {
             if (e)
@@ -567,6 +564,7 @@ class ContractRequestsadd extends Component {
                       }
                       uniqueItemData[item.activity.id].Values.push(item);
                     });
+
                     let data = {
                       ...values,
                       documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY") : "",
@@ -596,51 +594,63 @@ class ContractRequestsadd extends Component {
                         ]
                       }
                     ]*/
-                     if (this.props.location.state.type==='contract') {
-                       Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
-                         data.paymentRequestItems.push({
-                           activity: {
-                             id: item
-                           },
-                           paymentRequestItemValues: this.state.specdata.map(x => {
-                             if (x.activity.id === item){
-                               return {
-                                 "valueSum": x.valueSum,
-                                 "sumRequested": x.sumRequested,
-                                 "sumAdvanceTakeout": x.sumAdvanceTakeout,
-                                 "value": x.value,
-                                 "measureUnit": {
-                                   "id":  x.measureUnit.id
-                                 }
+                     if ((this.props.location.state ? this.props.location.state.type==='contract': false)) {
 
+                       Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
+
+                         if (item != 'undefined'){
+                           console.log(item);
+                           data.paymentRequestItems.push({
+                             activity: {
+                               id: item
+                             },
+                             paymentRequestItemValues: this.state.specdata.map(x => {
+
+                               if (x.activity.id === item){
+                                 return {
+                                   "valueSum": x.valueSum ? x.valueSum : 0,
+                                   "sumRequested": x.sumRequested ? x.sumRequested : 0,
+                                   "sumAdvanceTakeout": x.sumAdvanceTakeout ? x.sumAdvanceTakeout : 0,
+                                   "value": x.value ? x.value : 0,
+                                   "valueRequested": x.valueRequested ? x.valueRequested : 0,
+                                   "measureUnit": {
+                                     "id":  x.measureUnit ? x.measureUnit.id : 0
+                                   }
+
+                                 }
                                }
-                             }
-                           }),
-                         })
+                             }),
+                           })
+                         }
+
                        })
                       data.sourceContracts = this.state.contractData
                     }
-                    if (this.props.location.state.type==='act') {
-                      Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
-                        data.paymentRequestItems.push({
-                          activity: {
-                            id: item
-                          },
-                          paymentRequestItemValues: this.state.specdata.map(x => {
-                            if (x.activity.id === item){
-                              return {
-                                "valueSum": x.valueSum,
-                                "sumRequested": x.sumRequested,
-                                "sumAdvanceTakeout": x.sumAdvanceTakeout,
-                                "value": x.value,
-                                "measureUnit": {
-                                  "id":  x.measureUnit.id
-                                }
+                    if ((this.props.location.state ? this.props.location.state.type==='act': false)) {
 
+                      Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
+                        if (item != 'undefined'){
+                          data.paymentRequestItems.push({
+                            activity: {
+                              id: item
+                            },
+                            paymentRequestItemValues: this.state.specdata.map(x => {
+                              if (x.activity.id === item){
+                                return {
+                                  "valueSum": x.valueSum ? x.valueSum : 0,
+                                  "sumRequested": x.sumRequested ? x.sumRequested : 0,
+                                  "sumAdvanceTakeout": x.sumAdvanceTakeout ? x.sumAdvanceTakeout : 0,
+                                  "value": x.value ? x.value : 0,
+                                  "valueRequested": x.valueRequested ? x.valueRequested : 0,
+                                  "measureUnit": {
+                                    "id":  x.measureUnit ? x.measureUnit.id : 0
+                                  }
+
+                                }
                               }
-                            }
-                          }),
-                        })
+                            }),
+                          })
+                        }
                       })
                       data.sourceActs = this.state.actData
                       data.periodSection = {id: this.state.actData[0].periodSection.id};
@@ -650,6 +660,17 @@ class ContractRequestsadd extends Component {
                       this.setState({
                         loadData:true
                       })
+
+                    if (data.division.id ===null || JSON.stringify(data.division) === '{}'){
+                      delete data["division"];
+                    }
+                    if (data.periodYear.id ===null || JSON.stringify(data.periodYear) === '{}'){
+                      delete data["periodYear"];
+                    }
+                    if (data.paymentRequestType.id ===null || JSON.stringify(data.paymentRequestType) === '{}'){
+                     console.log(data.paymentRequestItems);
+                      delete data["paymentRequestType"];
+                    }
                     dispatch({
                       type: 'universal/saveobject',
                       payload:{
@@ -659,6 +680,13 @@ class ContractRequestsadd extends Component {
                     }).then(()=>{
                       this.setState({
                         loadData:false
+                      },()=>{
+                        if (!this.props.universal.saveanswer.Message) {
+                          Modal.info({
+                            title: 'Информация',
+                            content: 'Сведения сохранены',
+                          });
+                        }
                       })
                     });
 

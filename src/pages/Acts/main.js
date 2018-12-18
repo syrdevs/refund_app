@@ -114,7 +114,6 @@ export default class ActsTable extends Component  {
         width : 550,
         order: 3,
         key: 'contract.contragent',
-        className: 'action_column',
         render: (item) => {
           if (item){
             return item.bin+"  "+item.organization;
@@ -127,7 +126,6 @@ export default class ActsTable extends Component  {
         order: 4,
         width: 500,
         key: 'contract',
-        className: 'action_column',
         isVisible: true,
         render: (item) => {
           if (item){
@@ -141,7 +139,6 @@ export default class ActsTable extends Component  {
         order: 5,
         width: 200,
         key: 'operation',
-        className: 'action_column',
         isVisible: true,
         render: (e) => {
           if (e)

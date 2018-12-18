@@ -90,6 +90,8 @@ export default class CounterAgentEdit extends Component {
           'id': this.props.location.state.data.id,
         },
       });
+    } else {
+      reduxRouter.push('main');
     }
   };
 

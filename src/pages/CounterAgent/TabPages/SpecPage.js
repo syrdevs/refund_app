@@ -176,6 +176,10 @@ class SpecPage extends Component {
         dataIndex: 'activity.code',
         render: (text, record) => {
 
+          if (record.key === 'total') {
+            return <span><b>{record.activity.code}</b></span>;
+          }
+
           return (
             <FormItem>
               {this.props.form.getFieldDecorator('spespage.code' + record.key, {
@@ -200,6 +204,10 @@ class SpecPage extends Component {
         type: 'combobox',
         width: '30%',
         render: (text, record) => {
+
+          if (record.key === 'total') {
+            return '';
+          }
 
           return (
             <FormItem>
@@ -238,6 +246,10 @@ class SpecPage extends Component {
         dataIndex: 'paymentType.nameRu',
         width: 150,
         render: (text, record) => {
+          if (record.key === 'total') {
+            return '';
+          }
+
           return (
             <FormItem>
               {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
@@ -254,6 +266,10 @@ class SpecPage extends Component {
         dataIndex: 'measureUnit.nameRu',
         width: 150,
         render: (text, record) => {
+
+          if (record.key === 'total') {
+            return '';
+          }
 
           return (
             <FormItem>
@@ -277,6 +293,13 @@ class SpecPage extends Component {
             dataIndex: 'value',
             width: '10%',
             render: (text, record) => {
+
+              if (record.key === 'total' && record.hasOwnProperty('valueTotal')) {
+                return <Input disabled={true} value={record.valueTotal}/>;
+              }
+
+              record['percentAdvance'] = this.calculateAllMonthValue(record);
+
               return (
                 <FormItem
                 >
@@ -317,15 +340,21 @@ class SpecPage extends Component {
                 },
               };
             },
-            render: (text, record) => (
-              <FormItem>
+            render: (text, record) => {
+
+              if (record.key === 'total' && record.hasOwnProperty("tariffItemTotal")) {
+                return <span>{record.tariffItemTotal}</span>;
+              }
+
+              return <FormItem>
                 {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
                   rules: [{
                     required: false,
                     message: this.state.validatemessage,
                   }],
                 })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
-              </FormItem>),
+              </FormItem>;
+            },
           },
           {
             title: 'Сумма (₸)',
@@ -342,6 +371,12 @@ class SpecPage extends Component {
               };
             },
             render: (text, record) => {
+
+
+              if (record.key === 'total' && record.hasOwnProperty('valueSumTotal')) {
+                return <span>{record.valueSumTotal}</span>;
+              }
+
               return <FormItem>
                 {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
                   rules: [{
@@ -368,8 +403,14 @@ class SpecPage extends Component {
                 },
               };
             },
-            render: (text, record) => (
-              <FormItem>
+            render: (text, record) => {
+
+              if (record.key === 'total' && record.hasOwnProperty('sumAdvanceTotal')) {
+                // return <span>{record.sumAdvanceTotal}</span>;
+                return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+              }
+
+              return <FormItem>
                 {this.props.form.getFieldDecorator('spespage.avans' + record.key, {
                   initialValue: record.sumAdvance ? record.sumAdvance : 0,
                   rules: [{
@@ -386,7 +427,8 @@ class SpecPage extends Component {
                     }}
                   />,
                 )}
-              </FormItem>),
+              </FormItem>;
+            },
           }],
       },
       {
@@ -418,10 +460,10 @@ class SpecPage extends Component {
       activity: null,
       currencyType: null,
       measureUnit: null,
-      value: null,
-      tariffItem: null,
-      valueSum: null,
-      sumAdvance: null,
+      value: 0,
+      tariffItem: 0,
+      valueSum: 0,
+      sumAdvance: 0,
       contractTimeItem: null,
     },
     smarttabcount: 0,
@@ -433,11 +475,14 @@ class SpecPage extends Component {
 
     let value = record['value'] ? record['value'] : 0;
     let allMonthSum = 0;
-    Object.keys(record.contractTimeItem).map((key) => {
-      if (record.contractTimeItem[key].valueSection || record.contractTimeItem[key].valueSection === 0) {
-        allMonthSum += record.contractTimeItem[key].valueSection;
-      }
-    });
+
+    if (record.contractTimeItem)
+
+      Object.keys(record.contractTimeItem).map((key) => {
+        if (record.contractTimeItem[key].valueSection || record.contractTimeItem[key].valueSection === 0) {
+          allMonthSum += record.contractTimeItem[key].valueSection;
+        }
+      });
 
     return value - allMonthSum;
   };
@@ -745,12 +790,20 @@ class SpecPage extends Component {
               width: 200,
               render: (record) => {
 
-                let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
+                if (record.key === 'total' && record.hasOwnProperty('total')) {
+                  let value = record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].valueSection : '0';
 
-                if (record) {
-                  let percentAdvance = this.calculateAllMonthValue(record);
-                  record['percentAdvance'] = isNaN(percentAdvance) ? 0 : percentAdvance;
+                  return <Input disabled={true} value={value}/>;
+
                 }
+
+
+                let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
+                //
+                // if (record) {
+                //   let percentAdvance = this.calculateAllMonthValue(record);
+                //   record['percentAdvance'] = isNaN(percentAdvance) ? 0 : percentAdvance;
+                // }
 
                 return <InputNumber
                   defaultValue={defaultValue.hasOwnProperty('valueSection') ? defaultValue.valueSection : 0}
@@ -783,6 +836,11 @@ class SpecPage extends Component {
               key: `periodSection${recordItem.periodSection.index}.sumSection`,
               width: 200,
               render: (record) => {
+
+                if (record.key === 'total' && record.hasOwnProperty('total')) {
+                  return record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].sumSection : '0';
+                }
+
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
                 return <span>{defaultValue.hasOwnProperty('valueSection') ? defaultValue.sumSection : 0}</span>;
@@ -793,6 +851,12 @@ class SpecPage extends Component {
               key: `periodSection${recordItem.periodSection.index}.sumAdvanceTakeout`,
               width: 200,
               render: (record) => {
+                if (record.key === 'total' && record.hasOwnProperty('total')) {
+                  let value = record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].sumAdvanceTakeout : '0';
+
+                  return <Input disabled={true} value={value}/>;
+                }
+
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
                 return <InputNumber
@@ -807,6 +871,10 @@ class SpecPage extends Component {
                         sumAdvanceTakeout: e,
                       },
                     };
+
+                    this.setState(prevState => ({
+                      smarttabDataSource: prevState.smarttabDataSource,
+                    }));
 
                     //this.OnChangeperiod(item, 'periodSection01', 'sumAdvanceTakeout', e);
                   }}
@@ -854,6 +922,9 @@ class SpecPage extends Component {
       let specifyData = this.state.smarttabDataSource;
 
       specifyData.forEach((item) => {
+
+        if (item.key === 'total') return;
+
         if (!specifyKeys[item.activity.id]) {
           specifyKeys[item.activity.id] = {
             // 'parentContractItem': {
@@ -988,8 +1059,95 @@ class SpecPage extends Component {
     });
   };
 
+  calculateMainSum = (columnName) => {
+
+    let result = 0;
+
+    this.state.smarttabDataSource.forEach((item) => {
+
+      if (columnName === 'tariff') {
+        if (item.tariffItem && item.tariffItem.tariffValue) {
+          result += item.tariffItem.tariffValue;
+        }
+      }
+
+      if (columnName === 'sumAdvance') {
+        if (item.sumAdvance) {
+          result += item.sumAdvance;
+        }
+      }
+
+      if (columnName === 'valueSum') {
+        if (item.valueSum) {
+          result += item.valueSum;
+        }
+      }
+
+      if (columnName === 'value') {
+        if (item.value) {
+          result += item.value;
+        }
+      }
+
+      if (columnName === 'percentAdvance') {
+        if (item.percentAdvance) {
+          result += item.percentAdvance;
+        }
+      }
+
+    });
+
+
+    return result;
+
+  };
+
+  calculateSum = () => {
+    let contractTimeIndexKeys = {};
+
+    this.state.smarttabDataSource.forEach((item) => {
+      if (item.contractTimeItem) {
+        Object.keys(item.contractTimeItem).forEach((monthIndex) => {
+          if (!contractTimeIndexKeys.hasOwnProperty(monthIndex))
+            contractTimeIndexKeys[monthIndex] = {
+              valueSection: 0,
+              sumSection: 0,
+              sumAdvanceTakeout: 0,
+            };
+
+          if (item.contractTimeItem[monthIndex].valueSection)
+            contractTimeIndexKeys[monthIndex].valueSection += item.contractTimeItem[monthIndex].valueSection;
+
+          if (item.contractTimeItem[monthIndex].sumSection)
+            contractTimeIndexKeys[monthIndex].sumSection += item.contractTimeItem[monthIndex].sumSection;
+
+          if (item.contractTimeItem[monthIndex].sumAdvanceTakeout)
+            contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += item.contractTimeItem[monthIndex].sumAdvanceTakeout;
+
+        });
+      }
+    });
+    return contractTimeIndexKeys;
+  };
+
   render = () => {
 
+    let dataSource = this.state.smarttabDataSource;
+
+    if (dataSource.length > 0) {
+      dataSource = this.state.smarttabDataSource.concat([{
+        key: 'total',
+        activity: {
+          code: 'Итого:',
+        },
+        tariffItemTotal: this.calculateMainSum('tariff'),
+        sumAdvanceTotal: this.calculateMainSum('sumAdvance'),
+        valueSumTotal: this.calculateMainSum('valueSum'),
+        valueTotal: this.calculateMainSum('value'),
+        percentAdvance: this.calculateMainSum('percentAdvance'),
+        total: this.calculateSum(),
+      }]);
+    }
 
     return (<Spin spinning={this.props.loadingData}>
       <Card bodyStyle={{ padding: 5 }} style={{ marginLeft: '-10px' }}>
@@ -1013,71 +1171,8 @@ class SpecPage extends Component {
               x: 1200,
             }}
             pagination={false}
-            // components={{
-            //   body: {
-            //     wrapper: (props) => {
-            //
-            //       // let tdTotalCollection = [];
-            //       // let contractTimeIndexKeys = {};
-            //       //
-            //       // this.state.smarttabDataSource.forEach((item) => {
-            //       //   if (item.contractTimeItem) {
-            //       //     Object.keys(item.contractTimeItem).forEach((monthIndex) => {
-            //       //       if (!contractTimeIndexKeys.hasOwnProperty(monthIndex))
-            //       //         contractTimeIndexKeys[monthIndex] = {
-            //       //           valueSection: 0,
-            //       //           sumSection: 0,
-            //       //           sumAdvanceTakeout: 0,
-            //       //         };
-            //       //
-            //       //       contractTimeIndexKeys[monthIndex].valueSection += item.contractTimeItem[monthIndex].valueSection;
-            //       //       contractTimeIndexKeys[monthIndex].sumSection += item.contractTimeItem[monthIndex].sumSection;
-            //       //       contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += item.contractTimeItem[monthIndex].sumAdvanceTakeout;
-            //       //
-            //       //     });
-            //       //   }
-            //       // });
-            //       //
-            //       // Object.keys(contractTimeIndexKeys).sort((a, b) => {
-            //       //   if (a < b)
-            //       //     return -1;
-            //       //   if (a > b)
-            //       //     return 1;
-            //       //   return 0;
-            //       // }).forEach((contractTimeIndexKey) => {
-            //       //   tdTotalCollection.push(<td
-            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['valueSection']}</td>);
-            //       //   tdTotalCollection.push(<td
-            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['sumSection']}</td>);
-            //       //   tdTotalCollection.push(<td
-            //       //     style={{ border: 0 }}>{contractTimeIndexKeys[contractTimeIndexKey]['sumAdvanceTakeout']}</td>);
-            //       // });
-            //       //
-            //       // {tdTotalCollection}
-            //
-            //       console.log(props);
-            //
-            //       return (<tbody {...props}>
-            //       <React.Fragment>
-            //         {props.children}
-            //         <tr style={{ background: '#fafafa' }} data-row-key="3" className="ant-table-row  ant-table-row-level-0">
-            //           <td><b>Итого:</b></td>
-            //           {/*<td style={{ border: 0 }}/>*/}
-            //           {/*<td style={{ border: 0 }}/>*/}
-            //           {/*<td style={{ border: 0 }}/>*/}
-            //           {/*<td style={{ border: 0 }}>0</td>*/}
-            //           {/*<td style={{ border: 0 }}>0</td>*/}
-            //           {/*<td style={{ border: 0 }}>0</td>*/}
-            //           {/*<td style={{ border: 0 }}>0</td>*/}
-            //           {/*<td style={{ border: 0 }}>0</td>*/}
-            //
-            //         </tr>
-            //       </React.Fragment>
-            //       </tbody>);
-            //     },
-            //   },
-            // }}
-            bordered={true} dataSource={this.state.smarttabDataSource} columns={this.state.columns}/>
+            bordered={true}
+            dataSource={dataSource} columns={this.state.columns}/>
         </div>
       </Card>
     </Spin>);

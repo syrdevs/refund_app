@@ -503,17 +503,18 @@ class ContractRequestsadd extends Component {
   }
 
   render() {
-
+    let title = "Заявка"
     let getObjectData = {}
       if (!this.props.location.state){
         getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
+        title = "Заявка №" + getObjectData.number + " от "+getObjectData.documentDate
       }
 
     const { form, dispatch } = this.props;
     const { getFieldDecorator } = form;
 
     return (
-      <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title.add' })}>
+      <PageHeaderWrapper title={title}>
         {this.state.ActModal &&
         <ActModal
           onSelect={(records) => {

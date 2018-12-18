@@ -81,7 +81,7 @@ class ViewAct extends Component {
         },
         {
           title: 'Способ оплаты',
-          dataIndex: 'activity.paymentType',
+          dataIndex: 'activity.paymentType.shortname',
           isVisible: true,
         },
         {
@@ -191,7 +191,8 @@ class ViewAct extends Component {
       loadFile: false,
       loadData: false,
       loadDic: false,
-      ShowSign: false
+      ShowSign: false,
+      isContractAct: false
 
     }
   }
@@ -228,6 +229,7 @@ class ViewAct extends Component {
 
   };
   getData=(e)=>{
+
     if (e) {
       if (this.props.location.query.contractId) {
         /*console.log(JSON.stringify({
@@ -237,7 +239,8 @@ class ViewAct extends Component {
 
         this.setState({
           periodSectionId: e,
-          loadData: true
+          loadData: true,
+          isContractAct: true,
         }, () => {
           this.props.dispatch({
             type: 'universal/createActForContract',
@@ -299,6 +302,7 @@ class ViewAct extends Component {
           },
         }).then(()=>{
           this.setState({
+            isContractAct: true,
             actid: this.props.universal.getObjectData.id,
             filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
             loadData:false
@@ -410,8 +414,6 @@ class ViewAct extends Component {
       }
       return filename;
   };
-
-
   saveAct=()=>{
     this.props.form.validateFields(
       (err, values) => {
@@ -504,15 +506,6 @@ class ViewAct extends Component {
       }
     ];
 
-    /*{
-      "fileDescription":"описание файла",
-      "name":"test.jpg",
-      "id":"ccec46f3-e584-4553-bf7c-ca73a013f459",
-      "attachmentType": {
-      "id": "cb751382-b9a9-41eb-848c-c9d332f45427", "nameRu": "Устав (с внесенными изменениями и/или дополнениями)", "code": "1", "nameKz": null
-    }
-    }*/
-
     const data = this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments : []) : []
 
 
@@ -531,7 +524,11 @@ class ViewAct extends Component {
   };
 
     const { form } = this.props;
-    const {getObjectData} =  this.props.universal;
+    //const {getObjectData} =  this.props.universal;
+    let getObjectData = {}
+    if (this.state.isContractAct){
+      getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
+    }
 
     const { getFieldDecorator } = form;
 
@@ -642,7 +639,7 @@ class ViewAct extends Component {
 
                         </div>}
                         <Form.Item {...formItemLayout} label="Подразделение">
-                          {getFieldDecorator('division.id', {
+                          {/*{getFieldDecorator('division.id', {
                             initialValue: getObjectData ? (getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.id : null : null) : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
@@ -653,11 +650,13 @@ class ViewAct extends Component {
                               {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
                                 return <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>;
                               })}
-                            </Select>
+                               </Select>
                           )}
+                              */}
+                              <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.name : null : null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Контрагент">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contragent.organization : "") : ""}</p>
+                          <p>{getObjectData ? (getObjectData.contract ? (getObjectData.contract.contragent ? getObjectData.contract.contragent.organization : null) : "") : ""}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
                           {getFieldDecorator('periodYear.id', {
@@ -706,7 +705,7 @@ class ViewAct extends Component {
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Дата">
                           {getFieldDecorator('documentDate', {
-                            initialValue:getObjectData ? moment(getObjectData.documentDate, 'DD.MM.YYYY') : null,
+                            initialValue:getObjectData ? (getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY') : null ) : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <DatePicker
@@ -786,10 +785,10 @@ class ViewAct extends Component {
                           //console.log(record)
                         }}
                         dataSource={{
-                          total: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length: 0) :0,
-                          pageSize: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length : 15) :15,
+                          total: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length: 0) :0,
+                          pageSize: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length : 15) :15,
                           page: 1,
-                          data: getObjectData ? getObjectData.actItemValues  :[] ,
+                          data: getObjectData ? getObjectData._actItemValues  :[] ,
                         }}
                         onShowSizeChange={(pageNumber, pageSize) => {}}
                         onRefresh={() => {

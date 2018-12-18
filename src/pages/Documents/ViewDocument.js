@@ -13,6 +13,7 @@ import moment from "moment";
 import router from "umi/router";
 import styles from "../../components/SmartGridView/index.less";
 import SignModal from "../../components/SignModal";
+import ShowAct from '../Acts/ShowAct';
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -30,7 +31,7 @@ class ViewDocument extends Component {
     this.setState({
                   ShowSign: true
                 });
-  };
+      };
 
 
 
@@ -109,6 +110,9 @@ class ViewDocument extends Component {
               </div>
             </TabPane>
           </Tabs>
+          <ShowAct
+            actid='eceb5e9c-38d2-4246-b101-1c08288c3c87'
+          />
         </Row>
       </Card>
     </PageHeaderWrapper>)

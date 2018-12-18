@@ -219,7 +219,7 @@ export default [
                 component: './Acts/viewcontract',
               },
               {
-                path: '/contract/contracts/payment/add',
+                path: '/contract/contracts/paymentadd',
                 name: 'paymentadd',
                 component: './ContractRequests/ContractRequestsadd',
               },
@@ -253,7 +253,7 @@ export default [
                 component: './Acts/ViewAct',
               },
               {
-                path: '/contract/acts/contractrequest/add',
+                path: '/contract/acts/paymentrequestadd',
                 name: 'requestadd',
                 component: './ContractRequests/ContractRequestsadd',
               },
@@ -282,7 +282,7 @@ export default [
               },
               {
                 path: '/contract/contractrequests/view',
-                component: './ContractRequests/ViewRequest',
+                component: './ContractRequests/showPayment',
               },
             ],
           },

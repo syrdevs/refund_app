@@ -338,7 +338,7 @@ class ContractRequestsadd extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const DicArr = [
+    /*const DicArr = [
       'periodYear',
       'periodSection',
       'organization',
@@ -354,39 +354,7 @@ class ContractRequestsadd extends Component {
           'entity': item,
         },
       });
-    });
-
-
-    /*  dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });
-      dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });
-      dispatch({
-        type: 'universal/getActperiodYear',
-        payload: {
-          table: {
-            "start":0,
-            "length":20,
-            "entity":"periodYear"
-          },
-        },
-      });*/
+    });*/
   }
 
   showModal = () => {
@@ -406,8 +374,6 @@ class ContractRequestsadd extends Component {
     const rowSelection = {};
     const { form, dispatch, data } = this.props;
     const { getFieldDecorator, validateFields } = form;
-    const onValidateForm = () => {
-    };
     return (<Card
       headStyle={{ padding: 0 }}
       style={{padding:'10px'}}

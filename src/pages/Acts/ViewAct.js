@@ -16,7 +16,7 @@ import {
   Icon,
   InputNumber,
   Upload,
-  Modal,
+  Modal, Tag,
 } from 'antd';
 import styles from './style.less';
 import LinkModal from '@/components/LinkModal';
@@ -37,6 +37,7 @@ import moment from 'moment';
 import saveAs from 'file-saver';
 import SignModal from '../../components/SignModal';
 import Graphic from './Graphic';
+import TabPageStyle from '../CounterAgent/TabPages/TabPages.less';
 
 
 const TabPane = Tabs.TabPane;
@@ -85,11 +86,6 @@ class ViewAct extends Component {
           isVisible: true,
         },
         {
-          title: 'Единица учета',
-          dataIndex: 'measureUnit.shortname',
-          isVisible: true,
-        },
-        {
           title: 'Количество предъявленное',
           dataIndex: 'valueRequested',
           isVisible: true,
@@ -120,7 +116,19 @@ class ViewAct extends Component {
           isVisible: true,
         },
       ],
-      fcolumn: [],
+      fcolumn: [{
+        title: 'Единица учета',
+        dataIndex: 'measureUnit.nameRu',
+        order: 3,
+        isVisible: true,
+        width: 300,
+        render: (text, index) => {
+          if (index.key === 'total') {
+            return '';
+          }
+          return (<Tag color="blue">{text}</Tag>)
+        }
+      }],
       data: [
         {
           measureUnit: {shortName: "Test"},
@@ -192,7 +200,8 @@ class ViewAct extends Component {
       loadData: false,
       loadDic: false,
       ShowSign: false,
-      isContractAct: false
+      isContractAct: false,
+      specdata: []
 
     }
   }
@@ -255,7 +264,24 @@ class ViewAct extends Component {
                 "name": item.name,
                 "status": 'done'
               })) : [],
-              loadData: false
+              loadData: false,
+              specdata: this.props.universal.getObjectData._actItemValues ? this.props.universal.getObjectData._actItemValues : []
+            },()=>{
+              if (this.state.specdata.length>0) {
+                this.setState({
+                  specdata: this.state.specdata.concat([{
+                    key: 'total',
+                    activity: {
+                      code: "Итого:"
+                    },
+                    sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                    sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                    value: this.calculateRow('value', this.state.specdata),
+                    valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                    valueSum: this.calculateRow('valueSum', this.state.specdata),
+                  }])
+                })
+              }
             })
           })
         })
@@ -282,7 +308,24 @@ class ViewAct extends Component {
           }).then(()=>{
             this.setState({
               filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
-              loadData:false
+              loadData:false,
+              specdata: this.props.universal.getObjectData._actItemValues ? this.props.universal.getObjectData._actItemValues : []
+            },()=>{
+              if (this.state.specdata.length>0) {
+                this.setState({
+                  specdata: this.state.specdata.concat([{
+                    key: 'total',
+                    activity: {
+                      code: "Итого:"
+                    },
+                    sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                    sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                    value: this.calculateRow('value', this.state.specdata),
+                    valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                    valueSum: this.calculateRow('valueSum', this.state.specdata),
+                  }])
+                })
+              }
             })
           })
         }
@@ -305,12 +348,39 @@ class ViewAct extends Component {
             isContractAct: true,
             actid: this.props.universal.getObjectData.id,
             filearr: this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((item, index)=> ({"uid": index,"name": item.name,"status": 'done'})) : [],
-            loadData:false
+            loadData:false,
+            specdata: this.props.universal.getObjectData._actItemValues ? this.props.universal.getObjectData._actItemValues : []
+          },()=>{
+            if (this.state.specdata.length>0) {
+              this.setState({
+                specdata: this.state.specdata.concat([{
+                  key: 'total',
+                  activity: {
+                    code: "Итого:"
+                  },
+                  sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                  sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                  value: this.calculateRow('value', this.state.specdata),
+                  valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                  valueSum: this.calculateRow('valueSum', this.state.specdata),
+                }])
+              })
+            }
           })
         })
       }
     })
 
+  }
+  calculateRow=(name, data)=>{
+    let count=0;
+    data.forEach((item)=> {
+      if (!isNaN(item[name]))
+      {
+        count=count+item[name];
+      }
+    })
+    return count;
   }
 
   uploadFile = (data) => {
@@ -484,6 +554,9 @@ class ViewAct extends Component {
     );
   }
 
+
+
+
   render() {
 
     const columns = [
@@ -505,10 +578,7 @@ class ViewAct extends Component {
         render: ((item) => {return <a onClick={()=>{this.removeFile(item)}}>Удалить</a>;}),
       }
     ];
-
     const data = this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments : []) : []
-
-
     let uploadProps = {
       defaultFileList: this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments.map((file) => ({
           uid: file.id,
@@ -761,43 +831,45 @@ class ViewAct extends Component {
                     key="specifications"
                   >
                     <Card style={{marginLeft: '-10px'}}>
-                      <SmartGridView
-                        name={'specform'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        hidePagination={true}
-                        columns={this.state.columns}
-                        actionColumns={this.state.fcolumn}
-                        sorted={true}
-                        onSort={(column) => {}}
-                        showTotal={true}
-                        addonButtons={[]}
-                        actionExport={() => {}}
-                        onSelectRow={(record, index) => {
-                          //console.log(record)
-                        }}
-                        dataSource={{
-                          total: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length: 0) :0,
-                          pageSize: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length : 15) :15,
-                          page: 1,
-                          data: getObjectData ? getObjectData._actItemValues  :[] ,
-                        }}
-                        onShowSizeChange={(pageNumber, pageSize) => {}}
-                        onRefresh={() => {
+                      <div className={TabPageStyle.SpesPage}>
+                        <SmartGridView
+                          name={'specform'}
+                          scroll={{ x: 'auto' }}
+                          searchButton={false}
+                          fixedBody={true}
+                          rowKey={'id'}
+                          loading={false}
+                          fixedHeader={false}
+                          hideRefreshBtn={true}
+                          hideFilterBtn={true}
+                          rowSelection={true}
+                          showExportBtn={true}
+                          hidePagination={true}
+                          columns={this.state.columns}
+                          actionColumns={this.state.fcolumn}
+                          sorted={true}
+                          onSort={(column) => {}}
+                          showTotal={true}
+                          addonButtons={[]}
+                          actionExport={() => {}}
+                          onSelectRow={(record, index) => {
+                            //console.log(record)
+                          }}
+                          dataSource={{
+                            total: this.state.specdata.length,
+                            pageSize: this.state.specdata.length,
+                            page: 1,
+                            data: this.state.specdata ,
+                          }}
+                          onShowSizeChange={(pageNumber, pageSize) => {}}
+                          onRefresh={() => {
 
-                        }}
-                        onSearch={() => {
+                          }}
+                          onSearch={() => {
 
-                        }}
-                      />
+                          }}
+                        />
+                      </div>
                     </Card>
                   </TabPane>
                   {this.state.actid &&

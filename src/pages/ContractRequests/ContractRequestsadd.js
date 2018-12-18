@@ -14,7 +14,7 @@ import {
   Spin,
   Badge,
   Icon,
-  InputNumber,
+  InputNumber, Tag,
 } from 'antd';
 import styles from './style.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -32,6 +32,7 @@ import ActModals from '../Acts/ActModals';
 import moment from 'moment';
 import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 import ContractModal from '../Acts/ContractModal';
+import TabPageStyle from '../CounterAgent/TabPages/TabPages.less';
 
 
 const TabPane = Tabs.TabPane;
@@ -262,11 +263,6 @@ class ContractRequestsadd extends Component {
           isVisible: true,
         },
         {
-          title: 'Единица учета',
-          dataIndex: 'measureUnit.shortname',
-          isVisible: true,
-        },
-        {
           title: 'Количество предъявленное',
           dataIndex: 'valueRequested',
           isVisible: true,
@@ -297,7 +293,19 @@ class ContractRequestsadd extends Component {
           isVisible: true,
         },
       ],
-      specfcolumn: [],
+      specfcolumn: [{
+        title: 'Единица учета',
+        dataIndex: 'measureUnit.nameRu',
+        order: 3,
+        isVisible: true,
+        width: 300,
+        render: (text, index) => {
+          if (index.key === 'total') {
+            return '';
+          }
+          return (<Tag color="blue">{text}</Tag>)
+        }
+      }],
       specdata: [],
       contractData: [],
       actData: [],
@@ -309,15 +317,6 @@ class ContractRequestsadd extends Component {
       loadData: false
     };
   }
-  deleteContract = () => {
-    /*this.setState({
-      data: this.state.data.filter((item) => {
-        /!*this.state.ContractTable.filter((select)=>{
-          select.key==item.key
-        })*!/
-      })
-    })*/
-  };
   componentDidMount() {
     this.setState({
       loadData: true
@@ -361,6 +360,22 @@ class ContractRequestsadd extends Component {
               this.setState({
                 loadData: false,
                 specdata: this.props.universal.getObjectData._actItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._actItemValues) : []
+              },()=>{
+                if (this.state.specdata.length>0) {
+                  this.setState({
+                    specdata: this.state.specdata.concat([{
+                      key: 'total',
+                      activity: {
+                        code: "Итого:"
+                      },
+                      sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                      sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                      value: this.calculateRow('value', this.state.specdata),
+                      valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                      valueSum: this.calculateRow('valueSum', this.state.specdata),
+                    }])
+                  })
+                }
               })
             })
           });
@@ -382,6 +397,22 @@ class ContractRequestsadd extends Component {
               this.setState({
                 loadData: false,
                 specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
+              },()=>{
+                if (this.state.specdata.length>0) {
+                  this.setState({
+                    specdata: this.state.specdata.concat([{
+                      key: 'total',
+                      activity: {
+                        code: "Итого:"
+                      },
+                      sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                      sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                      value: this.calculateRow('value', this.state.specdata),
+                      valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                      valueSum: this.calculateRow('valueSum', this.state.specdata),
+                    }])
+                  })
+                }
               })
           })
         });
@@ -397,11 +428,38 @@ class ContractRequestsadd extends Component {
         }
       }).then(()=>{
         this.setState({
-          loadData: false
+          loadData: false,
+          specdata: this.props.universal.getObjectData._paymentRequestItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._paymentRequestItemValues) : []
+        },()=>{
+          if (this.state.specdata.length>0) {
+            this.setState({
+              specdata: this.state.specdata.concat([{
+                key: 'total',
+                activity: {
+                  code: "Итого:"
+                },
+                sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                value: this.calculateRow('value', this.state.specdata),
+                valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                valueSum: this.calculateRow('valueSum', this.state.specdata),
+              }])
+            })
+          }
         })
       })
     }
 
+  }
+  calculateRow=(name, data)=>{
+    let count=0;
+    data.forEach((item)=> {
+      if (!isNaN(item[name]))
+      {
+        count=count+item[name];
+      }
+    })
+    return count;
   }
 
   changeSpec=()=>{
@@ -446,6 +504,7 @@ class ContractRequestsadd extends Component {
   }
 
   render() {
+
     let getObjectData = {}
       if (!this.props.location.state){
         getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
@@ -731,39 +790,41 @@ class ContractRequestsadd extends Component {
                            key="acts"
                   >
                     <Card style={{ marginLeft: '-10px' }}>
-                      <SmartGridView
-                        name={'paymentAct'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.actcolumns}
-                        actionColumns={this.state.actfcolumns}
-                        sorted={true}
-                        showTotal={true}
-                        addonButtons={[<Button
-                          onClick={() => {
-                            this.setState({
-                              ActModal: true
-                            })
+
+                        <SmartGridView
+                          name={'paymentAct'}
+                          scroll={{ x: 'auto' }}
+                          searchButton={false}
+                          fixedBody={true}
+                          rowKey={'id'}
+                          loading={false}
+                          fixedHeader={false}
+                          hideRefreshBtn={true}
+                          hideFilterBtn={true}
+                          rowSelection={true}
+                          showExportBtn={true}
+                          showTotal={true}
+                          hidePagination={true}
+                          columns={this.state.actcolumns}
+                          actionColumns={this.state.actfcolumns}
+                          sorted={true}
+                          showTotal={true}
+                          addonButtons={[<Button
+                            onClick={() => {
+                              this.setState({
+                                ActModal: true
+                              })
+                            }}
+                            key={'select_button'}
+                            style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>]}
+                          dataSource={{
+                            total: this.state.actData.length,
+                            pageSize: this.state.actData.length,
+                            page: 1,
+                            data: this.state.actData,
                           }}
-                          key={'select_button'}
-                          style={{ margin: '0px 0px 10px 5px' }}>Выбрать</Button>]}
-                        dataSource={{
-                          total: this.state.actData.length,
-                          pageSize: this.state.actData.length,
-                          page: 1,
-                          data: this.state.actData,
-                        }}
-                      />
+                        />
+
                     </Card>
                   </TabPane>
                   }
@@ -811,34 +872,36 @@ class ContractRequestsadd extends Component {
                            key="specifications"
                   >
                     <Card style={{ marginLeft: '-10px' }}>
-                      <SmartGridView
-                        name={'specform'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.speccolumns}
-                        actionColumns={this.state.specfcolumn}
-                        sorted={true}
-                        onSort={(column) => {
-                        }}
-                        showTotal={true}
-                        addonButtons={[]}
-                        dataSource={{
-                          total: this.state.specdata.length,
-                          pageSize: this.state.specdata.length,
-                          page: 1,
-                          data: this.state.specdata,
-                        }}
-                      />
+                      <div className={TabPageStyle.SpesPage}>
+                        <SmartGridView
+                          name={'specform'}
+                          scroll={{ x: 'auto' }}
+                          searchButton={false}
+                          fixedBody={true}
+                          rowKey={'id'}
+                          loading={false}
+                          fixedHeader={false}
+                          hideRefreshBtn={true}
+                          hideFilterBtn={true}
+                          rowSelection={true}
+                          showExportBtn={true}
+                          showTotal={true}
+                          hidePagination={true}
+                          columns={this.state.speccolumns}
+                          actionColumns={this.state.specfcolumn}
+                          sorted={true}
+                          onSort={(column) => {
+                          }}
+                          showTotal={true}
+                          addonButtons={[]}
+                          dataSource={{
+                            total: this.state.specdata.length,
+                            pageSize: this.state.specdata.length,
+                            page: 1,
+                            data: this.state.specdata,
+                          }}
+                        />
+                      </div>
                     </Card>
                   </TabPane>
                   <TabPane tab="Проводки"

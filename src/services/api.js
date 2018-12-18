@@ -423,4 +423,8 @@ export async function deleteObject(params) {
   });
 }
 
+export async function getCommands(params) {
+  return request(`/api/uicommand/getCommands?${stringify(params.payload)}`);
+}
+
 

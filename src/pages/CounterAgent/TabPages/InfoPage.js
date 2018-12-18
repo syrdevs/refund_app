@@ -120,7 +120,7 @@ export default class InfoPage extends Component {
   getReferenceValues = (code, propName) => {
     const { universal2 } = this.props;
 
-    if (universal2.references[code] === undefined) return null;
+    if (!universal2.references.hasOwnProperty(code)) return null;
 
     return universal2.references[code]
       ? universal2.references[code].content.map((item) => (

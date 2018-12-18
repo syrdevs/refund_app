@@ -149,6 +149,10 @@ export default class CounterAgentCreate extends Component {
       };
     }
 
+    if (data.descr) {
+      sendModel.data.descr = data.descr;
+    }
+
     if (data.documentDate)
       sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
 

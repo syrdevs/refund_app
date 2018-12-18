@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage, getLocale } from 'umi/locale';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal, Spin } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Divider,
+  DatePicker,
+  Table,
+  Row,
+  Col,
+  Tabs,
+  Card,
+  Modal,
+  Spin,
+} from 'antd';
 import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, AttachmentPage } from './TabPages';
 import reduxRouter from 'umi/router';
 import styles from './CounterAgent.less';
 import moment from 'moment';
 import { connect } from 'dva/index';
+import DropDownAction from '@/components/DropDownAction/';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -84,16 +99,31 @@ export default class CounterAgentEdit extends Component {
 
     let SpecFormData = this.state.eventManager.handleEvent('onSpecFormSubmit');
 
-
     //todo check model
     let sendModel = {
       'entity': 'contract',
       'alias': null,
       'data': {
-        'contractPartys': this.props.universal.getObjectData.contractParties,
         'contractItems': SpecFormData,
       },
     };
+
+    if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {
+
+      sendModel.data.contractPartys =
+        this.props.universal.getObjectData.contractParties.map((contractParty) => {
+          return {
+            contractRole: {
+              id: contractParty.contractRole.id,
+            },
+            organization: {
+              id: contractParty.organization.id,
+            },
+          };
+        });
+
+    }
+
     if (data.period !== null && data.period.length > 0) {
       sendModel.data.dateBegin = moment(data.period[0]).format('DD.MM.YYYY');
 
@@ -161,6 +191,7 @@ export default class CounterAgentEdit extends Component {
       };
     }
 
+
     dispatch({
       type: 'universal/saveobject',
       payload: sendModel,
@@ -186,6 +217,7 @@ export default class CounterAgentEdit extends Component {
   render = () => {
 
     const { dispatch } = this.props;
+
 
     return (
       <Spin spinning={this.props.getLoadingData}>
@@ -228,19 +260,24 @@ export default class CounterAgentEdit extends Component {
                 key={'clear_btn'}
                 style={{ marginLeft: '5px' }}
                 onClick={() => {
-                  const { dispatch } = this.props;
-                  dispatch({
-                    type: 'universal/clearData',
-                    payload: {
-                      typeName: 'getObjectData',
-                      value: {},
-                    },
-                  }).then(()=>{
-                    this.props.form.resetFields();
-                  });
+                  // const { dispatch } = this.props;
+                  // dispatch({
+                  //   type: 'universal/clearData',
+                  //   payload: {
+                  //     typeName: 'getObjectData',
+                  //     value: {},
+                  //   },
+                  // }).then(() => {
+                  //
+                  // });
+                  //this.props.form.resetFields();
 
-
-                }}>Очистить</Button>]}
+                }}>Очистить</Button>,
+              <DropDownAction
+                contractId={this.props.location.state.data.id}
+                entity={'contract'}
+                type={2}/>,
+            ]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: '5px' }}>

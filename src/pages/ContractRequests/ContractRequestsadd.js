@@ -33,6 +33,8 @@ import moment from 'moment';
 import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 import ContractModal from '../Acts/ContractModal';
 import TabPageStyle from '../CounterAgent/TabPages/TabPages.less';
+import DropDownAction from '@/components/DropDownAction/';
+import reduxRouter from 'umi/router';
 
 
 const TabPane = Tabs.TabPane;
@@ -518,7 +520,6 @@ class ContractRequestsadd extends Component {
         {this.state.ActModal &&
         <ActModal
           onSelect={(records) => {
-            console.log(records);
             this.setState({
               ActModal: false,
               actData: records
@@ -533,7 +534,6 @@ class ContractRequestsadd extends Component {
         {this.state.ContractModal &&
         <ContractModal
           onSelect={(records) => {
-            console.log(records);
             this.setState({
               ContractModal: false,
               contractData: records
@@ -680,6 +680,23 @@ class ContractRequestsadd extends Component {
             Сохранить
           </Button>,
             <div style={{float:'left'}}>
+              <Button
+                style={{margin: '0px 0px 10px 10px'}} onClick={() => {
+
+                  if (this.props.location.state) {
+                    if ( this.props.location.state.type==='act'){
+                      reduxRouter.push('/contract/acts/table');
+                    }
+                    if (this.props.location.state.type==='contract'){
+                      reduxRouter.push('/contract/contracts/table');
+                    }
+                  }
+                  else{
+                  reduxRouter.push('/contract/contractrequests/table');
+                }
+              }}>
+                Закрыть
+              </Button>
               {this.state.ShowClear &&
               <Button
                 style={{margin: '0px 0px 10px 10px'}} onClick={() => {
@@ -687,7 +704,13 @@ class ContractRequestsadd extends Component {
               }}>
                 Очистить
               </Button>}
-            </div>]}
+            </div>,
+            ,
+            <DropDownAction
+              disabled={!this.props.location.query}
+              contractId={this.props.location.query.id}
+              entity={'paymentRequest'}
+              type={2}/>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
           <Spin spinning={this.state.loadData}>

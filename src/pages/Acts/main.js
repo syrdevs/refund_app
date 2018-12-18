@@ -31,6 +31,7 @@ import style from '../CounterAgent/Modals/ContragentModalStyle.less';
 import DocGridCollapse from '../../components/DocGridFilter/DocGridCollapse';
 import DocGridFilter from '../../components/DocGridFilter';
 import GridFilter from '@/components/GridFilter';
+import DropDownAction from '@/components/DropDownAction/';
 
 
 const dateFormat = 'DD.MM.YYYY';
@@ -319,6 +320,12 @@ export default class ActsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
+      <DropDownAction
+        disabled={this.state.selectedRowKeys.length === 0}
+        contractId={this.state.selectedRowKeys}
+        entity={'act'}
+        type={2}
+      />,
     ];
 
     return (

@@ -38,6 +38,8 @@ import saveAs from 'file-saver';
 import SignModal from '../../components/SignModal';
 import Graphic from './Graphic';
 import TabPageStyle from '../CounterAgent/TabPages/TabPages.less';
+import DropDownAction from '@/components/DropDownAction/';
+import reduxRouter from 'umi/router';
 
 
 const TabPane = Tabs.TabPane;
@@ -635,36 +637,23 @@ class ViewAct extends Component {
             htmlType="submit"
             style={{float:'left'}}
             onClick={(e)=>{
-              //console.log(this.props.universal.getObjectData);
-                    /*if (this.state.DogovorModal.record) {
-                      values.contract = {
-                        id: this.state.DogovorModal.record.id
-                      }
-                      console.log(values);
-
-                    }*/
-                    /*console.log({
-                      "entity": "act",
-                      "alias": null,
-                      "data":
-                        {
-                          ...this.props.universal.getObjectData,
-                          ...values,
-                          documentDate: values.documentDate.format("DD.MM.YYYY"),
-                          protocol: null,
-                        }
-                    })*/
               this.saveAct();
-                 /*this.setState({
-                   ShowSign: true
-                 });*/
             }
             }>
             Сохранить
           </Button>,
-
-
             <div style={{float:'left'}}>
+              <Button
+                style={{margin: '0px 0px 10px 10px'}} onClick={() => {
+                if (this.props.location.query.contractId ){
+                  reduxRouter.push('/contract/contracts/table');
+                }
+                else {
+                  reduxRouter.push('/contract/acts/table');
+                }
+              }}>
+                Закрыть
+              </Button>
               {this.state.ShowClear &&
               <Button
                 style={{margin: '0px 0px 10px 10px'}} onClick={() => {
@@ -672,7 +661,12 @@ class ViewAct extends Component {
               }}>
                 Очистить
               </Button>}
-            </div>
+            </div>,
+            <DropDownAction
+              disabled={!this.props.location.query.id}
+              contractId={this.props.location.query.id}
+              entity={'act'}
+              type={2}/>
           ]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>

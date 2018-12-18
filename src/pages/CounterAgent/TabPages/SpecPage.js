@@ -169,6 +169,8 @@ function momentDefine() {
 
 class SpecPage extends Component {
   state = {
+    selectedRowKeys: [],
+
     validatemessage: 'не заполнено',
     columns: [
       {
@@ -342,7 +344,7 @@ class SpecPage extends Component {
             },
             render: (text, record) => {
 
-              if (record.key === 'total' && record.hasOwnProperty("tariffItemTotal")) {
+              if (record.key === 'total' && record.hasOwnProperty('tariffItemTotal')) {
                 return <span>{record.tariffItemTotal}</span>;
               }
 
@@ -1132,6 +1134,18 @@ class SpecPage extends Component {
 
   render = () => {
 
+    let selectedRowKeys = this.state.selectedRowKeys;
+
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys: selectedRowKeys });
+      },
+      getCheckboxProps: record => ({
+        disabled: record.key === 'total',
+      }),
+    };
+
     let dataSource = this.state.smarttabDataSource;
 
     if (dataSource.length > 0) {
@@ -1165,11 +1179,34 @@ class SpecPage extends Component {
         }} style={{ marginBottom: 16 }}>
           Добавить
         </Button>
+
+
+        <Button
+          disabled={this.state.selectedRowKeys.length === 0}
+          onClick={() => {
+
+            let selectedRowKeys = this.state.selectedRowKeys;
+
+            this.setState({
+              selectedRowKeys: [],
+            }, () => {
+              selectedRowKeys.forEach((id) => {
+                this.remove(null, id);
+              });
+            });
+          }} style={{
+          marginLeft: 5,
+          marginBottom: 16,
+        }}>
+          Удалить
+        </Button>
+
         <div className={TabPageStyle.SpesPage}>
           <Table
             scroll={{
               x: 1200,
             }}
+            rowSelection={rowSelection}
             pagination={false}
             bordered={true}
             dataSource={dataSource} columns={this.state.columns}/>

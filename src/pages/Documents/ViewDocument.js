@@ -91,7 +91,7 @@ class ViewDocument extends Component {
           this.setState({
             ShowSign: false
           }, () => {
-
+            router.push('/documents');
             console.log(e);
           })
         }}

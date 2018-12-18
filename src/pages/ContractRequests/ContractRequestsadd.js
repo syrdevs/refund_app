@@ -309,15 +309,6 @@ class ContractRequestsadd extends Component {
       loadData: false
     };
   }
-  deleteContract = () => {
-    /*this.setState({
-      data: this.state.data.filter((item) => {
-        /!*this.state.ContractTable.filter((select)=>{
-          select.key==item.key
-        })*!/
-      })
-    })*/
-  };
   componentDidMount() {
     this.setState({
       loadData: true
@@ -397,7 +388,8 @@ class ContractRequestsadd extends Component {
         }
       }).then(()=>{
         this.setState({
-          loadData: false
+          loadData: false,
+          specdata: this.props.universal.getObjectData._paymentRequestItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._paymentRequestItemValues) : []
         })
       })
     }

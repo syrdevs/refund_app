@@ -72,7 +72,7 @@ export default class ContractTable extends Component {
       },
       {
         name: 'documentDate',
-        label: 'Дата',
+        label: 'Дата договора',
         type: 'betweenDate',
       },
       {
@@ -485,15 +485,19 @@ export default class ContractTable extends Component {
         <Button
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
-      </Dropdown>,
-      <DropDownAction
+      </Dropdown>
+
+    ];
+
+    if(this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push(<DropDownAction
         key={"dropdown_btn"}
-        disabled={this.state.selectedRowKeys.length === 0}
         contractId={this.state.selectedRowKeys}
         entity={'contract'}
         type={2}
-      />,
-    ];
+      />);
+    }
+
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>

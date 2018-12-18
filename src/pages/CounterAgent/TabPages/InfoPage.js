@@ -95,6 +95,9 @@ function momentDefine() {
 export default class InfoPage extends Component {
   state = {
 
+    counterAgentId: null,
+    yearSectionId: null,
+
     CounterAgentsModal: {
       record: null,
       visible: false,
@@ -203,14 +206,45 @@ export default class InfoPage extends Component {
       });
     }
 
+    if (this.state.counterAgentId === null
+      && this.state.yearSectionId === null
+      && getObjectData._contragent) {
+
+      if (getObjectData.periodYear) {
+        this.setState({
+          counterAgentId: getObjectData._contragent.id,
+          yearSectionId: getObjectData.periodYear,
+        });
+      } else {
+        this.setState({
+          counterAgentId: getObjectData._contragent.id,
+        });
+      }
+    }
+
+
+    if (!getObjectData.hasOwnProperty('_contragent') && this.state.yearSectionId === null && getObjectData.periodYear) {
+      this.setState({
+        yearSectionId: getObjectData.periodYear,
+      });
+    }
+
     return (<Card style={{ marginLeft: '-10px' }}>
 
       {this.state.CounterAgentsModal.visible && <CounterAgentModal
         onSelect={(record) => {
-          if (this.props.getCounterAgentById) {
-            this.props.getCounterAgentById(record.id);
+          // if (this.props.getCounterAgentById) {
+          //   this.setState({
+          //    ,
+          //   });
+          //   // this.props.getCounterAgentById(record.id);
+          // }
+
+          if (this.state.yearSectionId) {
+            this.props.getCounterAgentById(record.id, this.state.yearSectionId.year);
           }
-          this.setState({ CounterAgentsModal: { visible: false, record: record } });
+
+          this.setState({ counterAgentId: record.id, CounterAgentsModal: { visible: false, record: record } });
         }}
         hide={() => this.setState({ CounterAgentsModal: { visible: false } })}/>
       }
@@ -240,11 +274,16 @@ export default class InfoPage extends Component {
 
       <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
 
-        {getObjectData.contract &&
+        {/*{getObjectData._contragent && <Form.Item {...formItemLayout} label="Контрагент">*/}
+        {/*<span*/}
+        {/*className="ant-form-text">{getObjectData._contragent.bin} {getObjectData._contragent.shortName}</span>*/}
+        {/*</Form.Item>}*/}
+
+
         <Form.Item {...formItemLayout} label="Контрагент">
           {getFieldDecorator('counterAgent', {
             initialValue: {
-              value: getObjectData.contract ? getObjectData.contract.contragent : null,
+              value: getObjectData._contragent ? getObjectData._contragent : null,
             },
             rules: [{
               required: false,//, message: 'не заполнено',
@@ -264,9 +303,12 @@ export default class InfoPage extends Component {
             <LinkModal
               labelFormatter={(record) => {
 
-                if (record.idendifier && record.idendifier.identifiervalue) {
-                  return `${record.idendifier.identifiervalue} ${record.name}`;
+                if (!record._organization) {
+                  return `${record.bin} ${record.name}`;
+                } else if (record) {
+                  return `${record._organization.bin} ${record._organization.name}`;
                 }
+
                 return '';
               }}
               data={this.state.CounterAgentsModal.record}
@@ -274,23 +316,32 @@ export default class InfoPage extends Component {
 
               }}
               onDelete={() => {
-                this.setState({ CounterAgentsModal: { visible: false, record: null } });
+                this.setState({ counterAgentId: 0, CounterAgentsModal: { visible: false, record: null } });
               }}
               onClick={() => {
                 this.setState({ CounterAgentsModal: { visible: true } });
               }}>
             </LinkModal>)}
-        </Form.Item>}
-
+        </Form.Item>
 
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator('periodYear', {
             rules: [{ required: true, message: 'не заполнено' }],
-            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : null,
+            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : this.state.yearSectionId ? this.state.yearSectionId.id : null,
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: '50%' }}>
+              style={{ width: '50%' }}
+              onChange={(value, option) => {
+                this.setState({
+                  yearSectionId: option.props.prop,
+                });
+
+                if (this.state.counterAgentId !== 0) {
+                  this.props.getCounterAgentById(this.state.counterAgentId, option.props.prop.year);
+                }
+
+              }}>
               {this.getReferenceValues('periodYear', 'year')}
             </Select>,
           )}
@@ -326,21 +377,21 @@ export default class InfoPage extends Component {
                 this.setState({ DogovorModal: { visible: false, record: null } });
                 const { dispatch } = this.props;
 
-                confirm({
-                  title: 'Подтверждение',
-                  okText: 'Да',
-                  cancelText: 'Нет',
-                  content: 'Существующая спецификация документа будет заменена, хотите продолжить?',
-                  onOk: () => {
-
-                    dispatch({
-                      type: 'universal2/clearContract',
-                      payload: {},
-                    }).then(() => {
-                      this.clearSpecifications();
-                    });
-                  },
-                });
+                // confirm({
+                //   title: 'Подтверждение',
+                //   okText: 'Да',
+                //   cancelText: 'Нет',
+                //   content: 'Существующая спецификация документа будет заменена, хотите продолжить?',
+                //   onOk: () => {
+                //
+                //     dispatch({
+                //       type: 'universal2/clearContract',
+                //       payload: {},
+                //     }).then(() => {
+                //       this.clearSpecifications();
+                //     });
+                //   },
+                // });
 
 
               }}

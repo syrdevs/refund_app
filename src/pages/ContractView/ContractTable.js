@@ -166,7 +166,7 @@ export default class ContractTable extends Component {
     columns: [
       {
         title: 'Подразделение',
-        dataIndex: 'division',
+        dataIndex: 'division.name',
         isVisible: true,
       },
       {
@@ -477,12 +477,14 @@ export default class ContractTable extends Component {
           Включить в заявку на аванс
         </Menu.Item>
         <Menu.Item
-          disabled={this.state.selectedRow === null}
+          disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
+            let recordId = this.state.selectedRowKeys[0];
+            let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
             this.props.history.push({
               pathname: '/contract/counteragent/create',
               state: {
-                data: this.state.selectedRow,
+                data: record,
                 type: 'setContract',
               },
             });
@@ -590,9 +592,9 @@ export default class ContractTable extends Component {
                     this.filterPanelState();
                   }}
                   onSelectRow={(record, index) => {
-                    this.setState({
-                      selectedRow: record,
-                    });
+                    // this.setState({
+                    //   selectedRow: record,
+                    // });
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
                     this.setState({

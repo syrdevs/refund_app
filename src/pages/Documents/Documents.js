@@ -57,7 +57,7 @@ class Documents extends Component {
         'dataIndex': 'status.statusName',
         order: 1,
         render: (record, value) => <a
-          href="#"> <span><Badge status={this.setBadgeStatus(value.status.statusName)} /></span> {value.status.statusName} </a> ,
+          href="#"> <span><Badge status={this.setBadgeStatus(value.status.result)} /></span> {value.status.statusName} </a> ,
       }],
     columns: [
       {
@@ -146,14 +146,14 @@ class Documents extends Component {
   };
 
   setBadgeStatus = (value) => {
-    if (value==='Подписан') {
+    if (value===0) {
       return 'success';
     }
-    else if (value === 'На подписании') {
-      return 'default';
+    else if (value === 1) {
+      return 'error';
     }
     else {
-      return 'error';
+      return 'default';
     }
   };
 

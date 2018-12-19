@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Row, Tabs, Steps, Menu, Icon, Col, Layout, Progress, Button, Dropdown, Spin, Badge} from "antd";
+import {Card, Row, Tabs, Steps, Menu, Icon, Col, Layout, Progress, Button, Dropdown, Spin, Badge, Modal} from "antd";
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import {formatMessage, FormattedMessage} from 'umi/locale';
 import {Animated} from 'react-animated-css';
@@ -16,6 +16,7 @@ import SignModal from "../../components/SignModal";
 import ShowAct from '../Acts/ShowAct';
 import DogovorModal from "../CounterAgent/Modals/DogovorModal";
 import RejectModal from "./RejectModal";
+import CounterAgentView from "../CounterAgent/CounterAgentView";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -39,6 +40,7 @@ class ViewDocument extends Component {
         visible: false,
       },
       data:{},
+      dataRoutePath:[]
     }
   }
 
@@ -46,8 +48,8 @@ class ViewDocument extends Component {
     this.props.dispatch({
       type: 'universal/getobject',
       payload: {
-        "entity": "contract",
-        "alias": null,
+        "entity": "documentToSign",
+        "alias": "routes",
         "id": id //'this.props.location.query.id'
       },
     }).then(()=>{
@@ -60,7 +62,8 @@ class ViewDocument extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    this.loadActData(this.props.location.query.id)
+    this.loadActData(this.props.location.query.id);
+    this.loadDocRoutePath();
 
   }
 
@@ -71,6 +74,27 @@ class ViewDocument extends Component {
     );
   };
 
+  loadDocRoutePath=()=>{
+    fetch('/api/contract/getDocumentRoutePath', {
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+      method: 'post',
+      body: JSON.stringify({
+        "entity": "contract",
+        "id":this.props.location.query.id
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+            dataRoutePath: data,
+          },
+        );
+      })
+  };
+
 
   viewRejectModal = () => {
     this.setState({
@@ -79,7 +103,7 @@ class ViewDocument extends Component {
       }
     })
 
-  }
+  };
 
 
   callback = (key) => {
@@ -97,6 +121,7 @@ class ViewDocument extends Component {
     const CardHeight = {height: 'auto', marginBottom: '10px'};
     return (<PageHeaderWrapper title={formatMessage({id: 'app.module.documents.title.view'})}>
       {this.state.rejectModal.visible && <RejectModal
+        rejectid={this.props.location.query.id}
         hide={() => {
           this.setState({
             rejectModal: {visible: false}
@@ -121,12 +146,34 @@ class ViewDocument extends Component {
         }}
         visible={this.state.ShowSign}
         getKey={(e) => {
-          this.setState({
-            ShowSign: false
-          }, () => {
-            router.push('/documents');
-            console.log(e);
+
+          fetch('/api/contract/uploadSignedDocument', {
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+            method: 'post',
+            body: JSON.stringify({
+              "entity": "contract",
+              "alias": null,
+              "id": this.props.location.query.id,
+              "xml": e[0].xml
+            }),
           })
+            .then(data => {
+              console.log(data);
+              this.setState({
+                ShowSign: false
+              }, () => {
+                router.push('/documents');
+                console.log(e);
+              })
+            })
+            .catch(function(e) {
+              Modal.error({
+                content: 'some messages...some messages...',
+              });
+            });
         }}
       />}
       <Card style={{borderRadius: '5px', marginBottom: '10px'}} bodyStyle={{padding: 0}} bordered={true}>
@@ -157,9 +204,9 @@ class ViewDocument extends Component {
 
 
                   <p style={{marginTop: '10px'}}><h3>Заголовок письма</h3></p>
-                  <p>Отправитель: {this.state.data.initiatorUser?this.state.data.initiatorUser:''}</p>
-                  <p>Тип документа: {this.state.data.documentType?this.state.data.documentType.entDesc:''}</p>
-                  <p>{this.state.data.entryDateTime?this.state.data.entryDateTime:''}</p>
+                  <p>Отправитель: {this.state.data.initiatorUser ?this.state.data.initiatorUser.userName : ''}</p>
+                  <p>Тип документа: Договор</p>
+                  <p>{this.state.data.status?this.state.data.status.statusDate:''}</p>
 
 
                 </Card>
@@ -169,9 +216,8 @@ class ViewDocument extends Component {
                   bodyStyle={{padding: 25}}
                   title={<div>Документ № {this.state.data?this.state.data.number:''} от {this.state.data?this.state.data.documentDate:''}</div>}
                 >
-                  {this.props.location.query.type === 'act' && <ShowAct
-                    actid={this.props.location.query.id}
-                  />}</Card>
+                  <CounterAgentView contractId={this.props.location.query.id}/>
+                </Card>
                 {/*</Card>*/}
               </div>
             </TabPane>
@@ -183,8 +229,12 @@ class ViewDocument extends Component {
                   bodyStyle={{padding: 25}}
                   title={'Ход работы'}
                 >
+                  {/*current={this.state.dataRoutePath}*/}
                   <Steps direction="vertical">
-                    {/*<p>Сегодня</p>*/}
+                    {this.state.dataRoutePath.map(item => <Step key={item.stepName} title={item.stepName} description={item.completeText} />)}
+                  </Steps>
+                  {/*<Steps direction="vertical">
+                    <p>Сегодня</p>
                     <Step status="finish" title={<Row>
                       <Col sm={24} md={24} xs={24}>
                         <div>
@@ -197,7 +247,7 @@ class ViewDocument extends Component {
                     <Step status="finish" title="Куаныш Айдын" description="Подписал документ 16.12.2018 14:26"/>
                     <Step status="finish" title="Ахметов Нурбек Саматович"
                           description="Подписал документ 16.12.2018 16:48"/>
-                  </Steps>
+                  </Steps>*/}
                 </Card>
               </div>
             </TabPane>

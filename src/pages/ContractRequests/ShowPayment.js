@@ -14,7 +14,7 @@ import {
   Spin,
   Badge,
   Icon,
-  InputNumber,
+  InputNumber, Tag, Modal,
 } from 'antd';
 import styles from './style.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -32,6 +32,9 @@ import ActModals from '../Acts/ActModals';
 import moment from 'moment';
 import DogovorModal from '../CounterAgent/Modals/DogovorModal';
 import ContractModal from '../Acts/ContractModal';
+import TabPageStyle from '../CounterAgent/TabPages/TabPages.less';
+import DropDownAction from '@/components/DropDownAction/';
+import reduxRouter from 'umi/router';
 
 
 const TabPane = Tabs.TabPane;
@@ -56,7 +59,7 @@ const formItemLayout = {
   loadingmedicalType: loading.effects['universal/getmedicalType'],
   loadingpaymentRequestType: loading.effects['universal/getpaymentRequestType'],
 }))
-class showPayment extends Component {
+class ShowPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -100,7 +103,6 @@ class showPayment extends Component {
           width : 550,
           order: 3,
           key: 'contract.contragent',
-          className: 'action_column',
           render: (item) => {
             if (item){
               return item.bin+"  "+item.organization;
@@ -113,7 +115,6 @@ class showPayment extends Component {
           order: 4,
           width: 500,
           key: 'contract',
-          className: 'action_column',
           isVisible: true,
           render: (item) => {
             if (item){
@@ -127,7 +128,6 @@ class showPayment extends Component {
           order: 5,
           width: 200,
           key: 'operation',
-          className: 'action_column',
           isVisible: true,
           render: (e) => {
             if (e)
@@ -262,11 +262,6 @@ class showPayment extends Component {
           isVisible: true,
         },
         {
-          title: 'Единица учета',
-          dataIndex: 'measureUnit.shortname',
-          isVisible: true,
-        },
-        {
           title: 'Количество предъявленное',
           dataIndex: 'valueRequested',
           isVisible: true,
@@ -297,7 +292,19 @@ class showPayment extends Component {
           isVisible: true,
         },
       ],
-      specfcolumn: [],
+      specfcolumn: [{
+        title: 'Единица учета',
+        dataIndex: 'measureUnit.nameRu',
+        order: 3,
+        isVisible: true,
+        width: 300,
+        render: (text, index) => {
+          if (index.key === 'total') {
+            return '';
+          }
+          return (<Tag color="blue">{text}</Tag>)
+        }
+      }],
       specdata: [],
       contractData: [],
       actData: [],
@@ -309,16 +316,10 @@ class showPayment extends Component {
       loadData: false
     };
   }
-  deleteContract = () => {
-    /*this.setState({
-      data: this.state.data.filter((item) => {
-        /!*this.state.ContractTable.filter((select)=>{
-          select.key==item.key
-        })*!/
-      })
-    })*/
-  };
   componentDidMount() {
+    this.setState({
+      loadData: true
+    })
     const { dispatch } = this.props;
     const DicArr = [
       'periodYear',
@@ -340,250 +341,73 @@ class showPayment extends Component {
     this.loadData();
   }
   loadData=()=>{
-    const { dispatch } = this.props;
-    this.setState({
-      loadData: true
-    })
-
-    if (this.props.location.state) {
-      if (this.props.location.state.type==='act'){
-        this.setState({
-          actData: this.props.location.state.data
-        },()=> {
-          this.props.location.state.data.forEach((item) => {
-            dispatch({
-              type: 'universal/getobject',
-              payload: {
-                "entity": "act",
-                "alias": null,
-                "id": item.id
-              }
-            }).then(() => {
-              this.setState({
-                loadData: false,
-                specdata: this.props.universal.getObjectData._actItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._actItemValues) : []
-              })
-            })
-          });
-        });
-      }
-      if (this.props.location.state.type==='contract'){
-        this.setState({
-          contractData: this.props.location.state.data
-        },()=>{
-          this.props.location.state.data.forEach((item)=> {
-            dispatch({
-              type: 'universal/getobject',
-              payload: {
-                "entity": "contract",
-                "alias": null,
-                "id": item.id
-              }
-            }).then(()=>{
-              this.setState({
-                loadData: false,
-                specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
-              })
-            })
-          });
-        })
-      }
-    }
-    else {
       this.props.dispatch({
         type: 'universal/getobject',
         payload: {
           "entity": "paymentRequest",
-          "id": this.props.location.query.id
+          "id": this.props.id
         }
+      }).then(()=>{
+        this.setState({
+          loadData: false,
+          specdata: this.props.universal.getObjectData._paymentRequestItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._paymentRequestItemValues) : []
+        },()=>{
+          if (this.state.specdata.length>0) {
+            this.setState({
+              specdata: this.state.specdata.concat([{
+                key: 'total',
+                activity: {
+                  code: "Итого:"
+                },
+                sumAdvanceTakeout: this.calculateRow('sumAdvanceTakeout', this.state.specdata),
+                sumRequested: this.calculateRow('sumRequested', this.state.specdata),
+                value: this.calculateRow('value', this.state.specdata),
+                valueRequested: this.calculateRow('valueRequested', this.state.specdata),
+                valueSum: this.calculateRow('valueSum', this.state.specdata),
+              }])
+            })
+          }
+        })
       })
-    }
 
   }
+  calculateRow=(name, data)=>{
+    let count=0;
+    data.forEach((item)=> {
+      if (!isNaN(item[name]))
+      {
+        count=count+item[name];
+      }
+    })
+    return count;
+  }
+
 
   render() {
+    let title = "Заявка"
+    let periodYear = null;
     let getObjectData = {}
-    if (!this.props.location.state){
       getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
-    }
+      title = "Заявка №" + getObjectData.number + " от "+getObjectData.documentDate;
+      periodYear = getObjectData.periodYear ? getObjectData.periodYear.id :null;
 
     const { form, dispatch } = this.props;
     const { getFieldDecorator } = form;
 
     return (
-      <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title.add' })}>
-        {this.state.ActModal &&
-        <ActModal
-          onSelect={(records) => {
-            console.log(records);
-            this.setState({
-              ActModal: false,
-              actData: records
-            })
-          }}
-          hide={() => this.setState({
-            ActModal: false
-          })
-          }/>}
-        {this.state.ContractModal &&
-        <ContractModal
-          onSelect={(records) => {
-            console.log(records);
-            this.setState({
-              ContractModal: false,
-              contractData: records
-            })
-          }}
-          hide={() => this.setState({
-            ContractModal: false
-          })
-          }/>}
+      <PageHeaderWrapper title={title}>
         <Card
           headStyle={{ padding: 0 }}
           style={{padding:'10px'}}
           className={styles.headPanel}
-          extra={[<Button
-            htmlType="submit"
-            style={{float:'left'}}
-            onClick={() => {
-
-              this.props.form.validateFields(
-                (err, values) => {
-                  if (!err) {
-                    let uniqueItemData = {};
-                    this.state.specdata.forEach((item) => {
-                      if (!uniqueItemData[item.activity.id]) {
-                        uniqueItemData[item.activity.id] = {
-                          activity: item.activity,
-                          Values: [],
-                        };
-                      }
-                      uniqueItemData[item.activity.id].Values.push(item);
-                    });
-                    let data = {
-                      ...values,
-                      documentDate: values.documentDate ? values.documentDate.format("DD.MM.YYYY") : "",
-                      "documentSigneds": [],
-                      "documentAttacments": [],
-                      "paymentRequestItems": []
-                    }
-
-                    /*data.paymentRequestItems = [
-                      {
-                        "activity": {
-                          "id": "32576777-c4a9-41c9-86c4-393bb29072ef"
-                        },
-                        "paymentRequestItemValues": [
-                          {
-                            "valueSum": 15,
-                            "sumRequested": 0,
-                            "sumAdvanceTakeout": 0,
-                            "value": 1,
-                            "currencyType": {
-                              "id": "5cd4e565-10da-4b79-8578-ffdd5a0d8270"
-                            },
-                            "measureUnit": {
-                              "id": "be88fc85-e565-43cd-a14a-7cdd46828f4c"
-                            }
-                          }
-                        ]
-                      }
-                    ]*/
-                    if (this.props.location.state.type==='contract') {
-                      Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
-                        data.paymentRequestItems.push({
-                          activity: {
-                            id: item
-                          },
-                          paymentRequestItemValues: this.state.specdata.map(x => {
-                            if (x.activity.id === item){
-                              return {
-                                "valueSum": x.valueSum,
-                                "sumRequested": x.sumRequested,
-                                "sumAdvanceTakeout": x.sumAdvanceTakeout,
-                                "value": x.value,
-                                "measureUnit": {
-                                  "id":  x.measureUnit.id
-                                }
-
-                              }
-                            }
-                          }),
-                        })
-                      })
-                      data.sourceContracts = this.state.contractData
-                    }
-                    if (this.props.location.state.type==='act') {
-                      Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=>{
-                        data.paymentRequestItems.push({
-                          activity: {
-                            id: item
-                          },
-                          paymentRequestItemValues: this.state.specdata.map(x => {
-                            if (x.activity.id === item){
-                              return {
-                                "valueSum": x.valueSum,
-                                "sumRequested": x.sumRequested,
-                                "sumAdvanceTakeout": x.sumAdvanceTakeout,
-                                "value": x.value,
-                                "measureUnit": {
-                                  "id":  x.measureUnit.id
-                                }
-
-                              }
-                            }
-                          }),
-                        })
-                      })
-                      data.sourceActs = this.state.actData
-                      data.periodSection = {id: this.state.actData[0].periodSection.id};
-                    }
-
-
-                    this.setState({
-                      loadData:true
-                    })
-                    dispatch({
-                      type: 'universal/saveobject',
-                      payload:{
-                        "entity": "paymentRequest",
-                        "data": data
-                      },
-                    }).then(()=>{
-                      this.setState({
-                        loadData:false
-                      })
-                    });
-
-                  }
-                  else {
-
-                  }
-                },
-              );
-              //this.props.tomain();
-              /*this.props.history.push({
-                pathname: '/contract/acts/table',
-                state: {
-                  data:this.state.selectedRowKeys
-                },
-              });*/
-            }}
-          >
-            Сохранить
-          </Button>,
-            <div style={{float:'left'}}>
-              {this.state.ShowClear &&
-              <Button
-                style={{margin: '0px 0px 10px 10px'}} onClick={() => {
-                this.props.form.resetFields();
-              }}>
-                Очистить
-              </Button>}
-            </div>]}
+          extra={[<DropDownAction
+              disabled={!this.props.location.query}
+              contractId={this.props.location.query.id}
+              entity={'paymentRequest'}
+              type={2}/>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType}>
+          <Spin spinning={this.state.loadData}>
             <Row style={{ marginTop: '5px' }}>
               <Form layout="horizontal" hideRequiredMark>
                 <Tabs
@@ -608,22 +432,22 @@ class showPayment extends Component {
                     <Card style={{ marginLeft: '-10px' }}>
                       <div style={{ margin: '10px 0', maxWidth: '70%' }}>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
-                          <p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.year : null) : null}</p>
+                            <p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id: null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Вид заявки">
-                          <p>{getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.nameRu : null) : null}</p>
+                            <p>{getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Номер">
                           <p>{getObjectData ? getObjectData.number  : null}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Дата">
-                          <p>{getObjectData ?(getObjectData.documentDate ? moment(getObjectData.documentDate, 'DD.MM.YYYY'): null) : null}</p>
+                            <p>{ getObjectData ? getObjectData.documentDate : null}</p>,
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Комментарий">
-                          <p>{getObjectData ? getObjectData.descr  : null}</p>
+                            <p>{getObjectData ? getObjectData.descr  : null}</p>,
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Подразделение">
-                          <p>{getObjectData ? (getObjectData.division ? getObjectData.division.name : null ) : null}</p>
+                            <p>{getObjectData ? (getObjectData.division ? getObjectData.division.id : null ) : null}</p>
                         </Form.Item>
                       </div>
                     </Card>
@@ -632,34 +456,36 @@ class showPayment extends Component {
                            key="specifications"
                   >
                     <Card style={{ marginLeft: '-10px' }}>
-                      <SmartGridView
-                        name={'specform'}
-                        scroll={{ x: 'auto' }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={'id'}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.speccolumns}
-                        actionColumns={this.state.specfcolumn}
-                        sorted={true}
-                        onSort={(column) => {
-                        }}
-                        showTotal={true}
-                        addonButtons={[]}
-                        dataSource={{
-                          total: this.state.specdata.length,
-                          pageSize: this.state.specdata.length,
-                          page: 1,
-                          data: this.state.specdata,
-                        }}
-                      />
+                      <div className={TabPageStyle.SpesPage}>
+                        <SmartGridView
+                          name={'specform'}
+                          scroll={{ x: 'auto' }}
+                          searchButton={false}
+                          fixedBody={true}
+                          rowKey={'id'}
+                          loading={false}
+                          fixedHeader={false}
+                          hideRefreshBtn={true}
+                          hideFilterBtn={true}
+                          rowSelection={true}
+                          showExportBtn={true}
+                          showTotal={true}
+                          hidePagination={true}
+                          columns={this.state.speccolumns}
+                          actionColumns={this.state.specfcolumn}
+                          sorted={true}
+                          onSort={(column) => {
+                          }}
+                          showTotal={true}
+                          addonButtons={[]}
+                          dataSource={{
+                            total: this.state.specdata.length,
+                            pageSize: this.state.specdata.length,
+                            page: 1,
+                            data: this.state.specdata,
+                          }}
+                        />
+                      </div>
                     </Card>
                   </TabPane>
                   <TabPane tab="Проводки"
@@ -676,35 +502,7 @@ class showPayment extends Component {
   }
 }
 
-export default showPayment ;
-
-
-/*console.log(Object.keys(uniqueItemData).map((itemKey)=>(uniqueItemData[itemKey]))[0].activity);
-
-     console.log(Object.keys(uniqueItemData).map((itemKey)=>(uniqueItemData[itemKey].activity)));*/
-/**/
-
-/*Object.keys(uniqueItemData).map((itemKey)=>(itemKey)).forEach((item)=> {
-  console.log(item);
-})*/
-//console.log(Array.from(new Set(this.state.specdata.map(item => item.activity))));
-/*let payload = {
-  "entity": "paymentRequest",
-  "data":
-    {
-      ...values,
-      documentDate: values.documentDate.format("DD.MM.YYYY"),
-      "documentSigneds": [],
-      "documentAttacments": [],
-      "paymentRequestItems": []
-    }
-};
+export default ShowPayment ;
 
 
 
-dispatch({
-  type: 'universal/saveobject',
-  payload: payload,
-}).then(()=>{
-
-});*/

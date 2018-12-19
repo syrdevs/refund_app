@@ -64,9 +64,11 @@ export default class CounterAgentCreate extends Component {
     const { dispatch } = this.props;
 
     if (this.props.location.state) {
+//this.props.location.state
+
       //this.getCounterAgentById(this.props.location.state.data.id);
     } else {
-      reduxRouter.push('main');
+      //reduxRouter.push('main');
     }
 
   };
@@ -187,6 +189,14 @@ export default class CounterAgentCreate extends Component {
 
   render = () => {
 
+    const createFormFromContract = () => {
+      if (this.props.location.state && this.props.location.state.type === 'setContract' && Object.keys(this.props.universal.counterAgentData).length === 0) {
+        return true;
+      }
+
+      return false;
+    };
+
     return (
 
       <Form
@@ -244,9 +254,12 @@ export default class CounterAgentCreate extends Component {
               defaultActiveKey="main"
               tabPosition={'left'}>
               <TabPane tab="Титульная часть" key="main">
+
                 <InfoPage
                   form={this.props.form}
-                  formData={{
+                  formData={createFormFromContract() ? {
+                    parentContract: this.props.location.state.data,
+                  } : {
                     ...this.props.universal.counterAgentData,
                     _contragent: this.props.location.state ? this.props.location.state.data._organization : {},
                   }}
@@ -254,6 +267,7 @@ export default class CounterAgentCreate extends Component {
                   formItemLayout={formItemLayout}
                   getCounterAgentById={this.getCounterAgentById}
                 />
+
               </TabPane>
               <TabPane tab="Спецификация" key="specification">
                 {Object.keys(this.state.SpecData).length > 0 ?

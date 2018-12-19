@@ -42,12 +42,13 @@ const dateFormat = 'DD.MM.YYYY';
 }))
 export default class ContractTable extends Component {
   state = {
-
+    selectedRow: null,
     selectedRowKeys: [],
     filterContainer: 0,
     filterForm: [
       {
         name: 'divisions',
+        filterName:"divisions.id",
         displayField: 'name',
         label: 'Подразделение',
         type: 'combobox',
@@ -61,7 +62,7 @@ export default class ContractTable extends Component {
       {
         name: 'contractType',
         displayField: 'nameRu',
-        filterName:'contractType',
+        filterName: 'contractType',
         label: 'Вид договора',
         type: 'combobox',
       },
@@ -170,7 +171,7 @@ export default class ContractTable extends Component {
       },
       {
         title: 'Учетный период: год',
-        dataIndex: 'periodYear',
+        dataIndex: 'periodYear.year',
         isVisible: true,
       },
       {
@@ -465,6 +466,20 @@ export default class ContractTable extends Component {
           Включить в заявку на аванс
         </Menu.Item>
         <Menu.Item
+          disabled={this.state.selectedRow === null}
+          onClick={() => {
+            this.props.history.push({
+              pathname: '/contract/counteragent/create',
+              state: {
+                data: this.state.selectedRow,
+                type: 'setContract',
+              },
+            });
+          }}
+          key="6">
+          Создать договор
+        </Menu.Item>
+        <Menu.Item
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
@@ -485,13 +500,13 @@ export default class ContractTable extends Component {
         <Button
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
-      </Dropdown>
+      </Dropdown>,
 
     ];
 
-    if(this.state.selectedRowKeys.length !== 0) {
+    if (this.state.selectedRowKeys.length !== 0) {
       addonButtons.push(<DropDownAction
-        key={"dropdown_btn"}
+        key={'dropdown_btn'}
         contractId={this.state.selectedRowKeys}
         entity={'contract'}
         type={2}
@@ -564,9 +579,9 @@ export default class ContractTable extends Component {
                     this.filterPanelState();
                   }}
                   onSelectRow={(record, index) => {
-                    /*this.setState({
-                      selectedRowKeys: record,
-                    });*/
+                    this.setState({
+                      selectedRow: record,
+                    });
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
                     this.setState({

@@ -16,12 +16,12 @@ export default class DogovorModal extends Component {
     columns: [
       {
         title: 'Подразделение',
-        dataIndex: 'division',
+        dataIndex: 'division.name',
         isVisible: true,
       },
       {
         title: 'Учетный период: год',
-        dataIndex: 'periodYear',
+        dataIndex: 'periodYear.year',
         isVisible: true,
       },
       {

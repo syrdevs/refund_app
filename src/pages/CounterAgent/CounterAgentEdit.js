@@ -21,6 +21,7 @@ import styles from './CounterAgent.less';
 import moment from 'moment';
 import { connect } from 'dva/index';
 import DropDownAction from '@/components/DropDownAction/';
+import CounterAgentView from './CounterAgentView';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -272,9 +273,14 @@ export default class CounterAgentEdit extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlternation = {
-        'id': data.contractAlternation,
-      };
+      sendModel.data.contractAlterationReasons = [
+        {
+          'dictionaryBase': {
+            id: data.contractAlternation,
+          },
+        },
+      ];
+
     }
 
 
@@ -321,6 +327,7 @@ export default class CounterAgentEdit extends Component {
 
 
     return (
+
       <Spin spinning={this.props.getLoadingData}>
         <Form
           onSubmit={(e) => {

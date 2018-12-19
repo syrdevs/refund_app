@@ -369,10 +369,10 @@ export default class InfoPage extends Component {
           })(
             <LinkModal
               labelFormatter={(record) => {
-                if(record)
-                return `№ ${record.number} от ${record.documentDate}`;
+                if (record)
+                  return `№ ${record.number} от ${record.documentDate}`;
 
-                return "";
+                return '';
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
@@ -444,11 +444,12 @@ export default class InfoPage extends Component {
           )}
         </Form.Item>
 
+
         {this.state.contractAlterationReason === '2' &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator('contractAlternation', {
             rules: [{ required: false, message: 'не заполнено' }],
-            initialValue: getObjectData.contractAlternation ? getObjectData.contractAlternation.id : null,
+            initialValue: getObjectData.contractAlterationReasons ? getObjectData.contractAlterationReasons[0].dictionaryBase.id : null,
           })(
             <Select placeholder="Причина">
               {this.getReferenceValues('contractAlterationReason', 'nameRu')}

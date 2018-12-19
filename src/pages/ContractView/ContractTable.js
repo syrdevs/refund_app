@@ -48,13 +48,14 @@ export default class ContractTable extends Component {
     filterForm: [
       {
         name: 'divisions',
-        filterName:"divisions.id",
+        filterName: 'division.id',
         displayField: 'name',
         label: 'Подразделение',
         type: 'combobox',
       },
       {
         name: 'periodYear',
+        filterName: 'periodYear.id',
         displayField: 'year',
         label: 'Учетный период: год',
         type: 'combobox',
@@ -62,7 +63,7 @@ export default class ContractTable extends Component {
       {
         name: 'contractType',
         displayField: 'nameRu',
-        filterName: 'contractType',
+        filterName: 'contractType.id',
         label: 'Вид договора',
         type: 'combobox',
       },
@@ -454,13 +455,13 @@ export default class ContractTable extends Component {
           disabled={this.state.selectedRowKeys.length === 0}
           onClick={() => {
             let isOne = true;
-            contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr)=> {
-              arr.map(elem=> {
-                if (elem.periodYear.id!==item.periodYear.id){
-                  isOne=false;
+            contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {
+              arr.map(elem => {
+                if (elem.periodYear.id !== item.periodYear.id) {
+                  isOne = false;
                 }
-              })
-            })
+              });
+            });
             isOne ? this.props.history.push({
               pathname: '/contract/contracts/paymentadd',
               state: {
@@ -545,7 +546,6 @@ export default class ContractTable extends Component {
                   extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                     icon={faTimes}/></Icon>}>
 
-                  {this.state.filterContainer === 6 &&
                   <GridFilter
                     clearFilter={() => {
                       this.clearFilter();
@@ -554,7 +554,7 @@ export default class ContractTable extends Component {
                       this.applyFilter(filters);
                     }}
                     filterForm={this.state.filterForm}
-                    dateFormat={dateFormat}/>}
+                    dateFormat={dateFormat}/>
 
                   {/*{this.state.filterContainer === 6 && <GridFilterCollapsible*/}
                   {/*clearFilter={this.clearFilter}*/}

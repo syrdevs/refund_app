@@ -259,7 +259,13 @@ export default class GridFilter extends Component {
           return;
         }
 
-        filterData[field] = fields[field].disabled ? null : formFilters[field];
+        if(fields[field].filterName)
+        {
+          filterData[fields[field].filterName] = fields[field].disabled ? null : formFilters[field];
+        }else{
+          filterData[field] = fields[field].disabled ? null : formFilters[field];
+        }
+
       }
     });
 

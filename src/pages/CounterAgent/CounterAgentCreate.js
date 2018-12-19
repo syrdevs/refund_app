@@ -174,9 +174,14 @@ export default class CounterAgentCreate extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlternation = {
-        'id': data.contractAlternation,
-      };
+      sendModel.data.contractAlterationReasons = [
+        {
+          'dictionaryBase': {
+            id: data.contractAlternation,
+          },
+        },
+      ];
+
     }
 
     dispatch({

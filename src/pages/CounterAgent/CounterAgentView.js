@@ -39,13 +39,13 @@ export default class CounterAgentView extends Component {
   getContractData = () => {
     const { dispatch } = this.props;
 
-    if (this.props.location.query && this.props.location.query.id) {
+    if ((this.props.location.query && this.props.location.query.id) || this.props.contractId) {
       dispatch({
         type: 'universal/getobject',
         payload: {
           'entity': 'contract',
           'alias': null,
-          'id': this.props.location.query.id,
+          'id': this.props.location.query.id ? this.props.location.query.id : this.props.contractId,
         },
       }).then(() => {
 

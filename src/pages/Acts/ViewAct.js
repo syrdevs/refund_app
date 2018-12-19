@@ -619,18 +619,23 @@ class ViewAct extends Component {
       },
       onChange: this.uploadFile,
   };
+    let title = "Акт выполненных работ"
 
     const { form } = this.props;
     //const {getObjectData} =  this.props.universal;
     let getObjectData = {}
     if (this.state.isContractAct){
       getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
+      if (!this.props.location.query.contractId){
+        title = "Акт выполненных работ №" + getObjectData.number + " от "+getObjectData.documentDate
+      }
     }
+
 
     const { getFieldDecorator } = form;
 
     return (
-      <PageHeaderWrapper title={formatMessage({ id: 'app.module.acts.title.add' })}>
+      <PageHeaderWrapper title={title}>
         {this.state.DogovorModal.visible && <DogovorModal
           onSelect={(record) => {
             this.setState({ DogovorModal: { visible: false, record: record } });
@@ -931,7 +936,7 @@ class ViewAct extends Component {
                               }}/>,
                             )}
                           </Form.Item>
-                          <Form.Item {...formItemLayout} label="Тип файла">
+                          <Form.Item {...formItemLayout} label="Файл">
                             {getFieldDecorator('file', {
                               initialValue: null,
                               rules: [{ required: false, message: 'не заполнено'}],

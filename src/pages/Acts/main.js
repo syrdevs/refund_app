@@ -309,7 +309,7 @@ export default class ActsTable extends Component  {
           });
         }}
         >
-        Включить в заявку на аванс
+        Включить в заявку на оплату
       </Menu.Item>
       </Menu>
       }>
@@ -317,13 +317,15 @@ export default class ActsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
-      <DropDownAction
-        disabled={this.state.selectedRowKeys.length === 0}
+
+    ];
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push( <DropDownAction
         contractId={this.state.selectedRowKeys}
         entity={'act'}
         type={2}
-      />,
-    ];
+      />)
+    }
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.contract.acts' })}>

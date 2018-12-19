@@ -462,7 +462,7 @@ export default class ContractTable extends Component {
           }}
 
         >
-          Включить в заявку на оплату
+          Включить в заявку на аванс
         </Menu.Item>
         <Menu.Item
           key="5"

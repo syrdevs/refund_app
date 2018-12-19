@@ -318,13 +318,14 @@ export default class ContractRequestsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
-      <DropDownAction
-        disabled={this.state.selectedRowKeys.length === 0}
+    ];
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push(<DropDownAction
         contractId={this.state.selectedRowKeys}
         entity={'paymentRequest'}
         type={2}
-      />,
-    ];
+      />)
+    }
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>

@@ -115,6 +115,20 @@ export default class CounterAgentEdit extends Component {
     });
   }
 
+  getSubContractById = (contractId, contractTypeId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getSubContract',
+      payload: {
+        'contractId': contractId,
+        'contractTypeId': contractTypeId,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+  };
+
   componentDidMount() {
 
 
@@ -179,7 +193,7 @@ export default class CounterAgentEdit extends Component {
 
     }
 
-    if (Object.keys(this.props.universal.counterAgentData).length > 0 && this.props.universal.counterAgentData.hasOwnProperty("contractParties")) {
+    if (Object.keys(this.props.universal.counterAgentData).length > 0 && this.props.universal.counterAgentData.hasOwnProperty('contractParties')) {
 
       sendModel.data.contractParties =
         this.props.universal.counterAgentData.contractParties.map((contractParty) => {
@@ -369,6 +383,7 @@ export default class CounterAgentEdit extends Component {
                 tabPosition={'left'}>
                 <TabPane tab="Титульная часть" key="main">
                   <InfoPage
+                    getSubContractById={this.getSubContractById}
                     setSpecData={this.setSpecData}
                     form={this.props.form}
                     formData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}

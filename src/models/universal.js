@@ -32,6 +32,7 @@ import {
   deleteObject,
   getList,
   getCommands,
+  createSubContract
 } from '../services/api';
 
 export default {
@@ -365,6 +366,15 @@ export default {
 
       yield put({
         type: 'getObjectReducer',
+        payload: response,
+      });
+    },
+
+    * getSubContract(payload, { call, put }) {
+      const response = yield call(createSubContract, payload);
+
+      yield put({
+        type: 'createContractFromAgentReducer',
         payload: response,
       });
     },

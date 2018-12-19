@@ -44,6 +44,20 @@ export default class CounterAgentCreate extends Component {
     specifyData: [],
   };
 
+  getSubContractById = (contractId, contractTypeId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getSubContract',
+      payload: {
+        'contractId': contractId,
+        'contractTypeId': contractTypeId,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+  };
+
   getCounterAgentById = (id, year) => {
     const { dispatch } = this.props;
 
@@ -256,6 +270,7 @@ export default class CounterAgentCreate extends Component {
               <TabPane tab="Титульная часть" key="main">
 
                 <InfoPage
+                  getSubContractById={this.getSubContractById}
                   form={this.props.form}
                   formData={createFormFromContract() ? {
                     parentContract: this.props.location.state.data,

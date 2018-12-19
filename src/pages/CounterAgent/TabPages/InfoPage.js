@@ -97,6 +97,7 @@ export default class InfoPage extends Component {
 
     counterAgentId: null,
     yearSectionId: null,
+    dogovorId: null,
 
     CounterAgentsModal: {
       record: null,
@@ -228,6 +229,7 @@ export default class InfoPage extends Component {
         yearSectionId: getObjectData.periodYear,
       });
     }
+
 
     return (<Card style={{ marginLeft: '-10px' }}>
 
@@ -367,7 +369,10 @@ export default class InfoPage extends Component {
           })(
             <LinkModal
               labelFormatter={(record) => {
+                if(record)
                 return `№ ${record.number} от ${record.documentDate}`;
+
+                return "";
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
@@ -426,6 +431,13 @@ export default class InfoPage extends Component {
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
                       this.setState({ contractAlterationReason: option.props.prop.code });
+
+                      let parentContract = this.props.form.getFieldValue('parentContract').value;
+
+                      if ((option.props.prop.code === '3' || option.props.prop.code === '2') && parentContract !== null) {
+                        this.props.getSubContractById(parentContract.id, value);
+                      }
+
                     }}>
               {this.getReferenceValues('contractType', 'nameRu')}
             </Select>,

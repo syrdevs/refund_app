@@ -433,5 +433,8 @@ export async function deleteObject(params) {
 export async function getCommands(params) {
   return request(`/api/uicommand/getCommands?${stringify(params.payload)}`);
 }
+export async function getPublish(params) {
+  return request("/api/contract/publishDocument?entity=contract&id="+params.payload.id);
+}
 
 

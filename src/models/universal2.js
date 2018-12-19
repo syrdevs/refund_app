@@ -6,7 +6,7 @@ import {
   getReportsList,
   getReportParameters,
   getFormedReports,
-  getList, getObject,
+  getList, getObject, getPublish
 } from '../services/api';
 
 export default {
@@ -18,6 +18,7 @@ export default {
     columns: [],
     contractData: {},
     references: {},
+    publish: {}
   },
   effects: {
     * getContractById(payload, { call, put }) {
@@ -28,11 +29,17 @@ export default {
         payload: response || {},
       });
     },
+    * getPublish(payload, { call, put }) {
+      const response = yield call(getPublish, payload);
+
+      yield put({
+        type: 'getPublishReducer',
+        payload: response || {},
+      });
+    },
 
     * getList(payload, { call, put }) {
-
       const response = yield call(getList, payload);
-
       yield put({
         type: 'getListData',
         payload: {
@@ -69,7 +76,6 @@ export default {
         payload: response || {},
       });
     },
-
     * statisticsData(payload, { call, put }) {
       const response = yield call(getStaticticsData, payload);
 
@@ -78,7 +84,6 @@ export default {
         payload: response || {},
       });
     },
-
     * journalData(payload, { call, put }) {
       const response = yield call(getJournalData, payload);
 
@@ -87,13 +92,11 @@ export default {
         payload: response || {},
       });
     },
-
     * clear(payload, { call, put }) {
       yield put({
         type: 'clearData',
       });
     },
-
     * data(payload, { call, put }) {
 
       const response = yield call(getData, payload);
@@ -112,7 +115,6 @@ export default {
         payload: response,
       });
     },
-
     * clearContract(payload, { call, put }) {
       yield put({
         type: 'clearContractData',
@@ -121,7 +123,12 @@ export default {
     },
   },
   reducers: {
-
+    getPublishReducer(state, { payload }) {
+      return {
+        ...state,
+        publish: payload,
+      };
+    },
     getListDataByContract(state, { payload }) {
       return {
         ...state,

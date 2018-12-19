@@ -47,8 +47,9 @@ export default class ActsTable extends Component  {
     filterForm:  [
           {
             label: 'Учетный период(месяц)',
+            displayField: 'nameRu',
             name: 'periodSection',
-            filterName: 'periodSection',
+            filterName: 'periodSection.id',
             type: 'combobox',
           },
           {
@@ -73,6 +74,7 @@ export default class ActsTable extends Component  {
           {
             label: 'Договор',
             name: 'contract',
+            filterName: 'contract.number',
             type: 'text',
           },
           {
@@ -89,7 +91,7 @@ export default class ActsTable extends Component  {
           {
             label: 'Дата',
             name: 'documentDate',
-            filterName: 'periodSection.id',
+            filterName: 'documentDate',
             type: 'date',
           },
           {

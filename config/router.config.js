@@ -127,6 +127,7 @@ export default [
       {
         path: '/documents/view',
         component: './Documents/ViewDocument',
+
       },
 
       {

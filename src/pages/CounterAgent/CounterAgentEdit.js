@@ -55,17 +55,17 @@ const formItemLayout = {
 
 
 @Form.create()
-@connect(({ universal, loading }) => ({
+@connect(({ universal, universal2, loading }) => ({
   universal,
+    universal2,
   saveLoadingData: loading.effects['universal/saveobject'],
   getLoadingData: loading.effects['universal/getobject'],
 }))
 export default class CounterAgentEdit extends Component {
   state = {
-
     SpecData: {},
     SpecPageForceRendered: false,
-
+    publish: true,
     eventManager: {
       _events: {},
       handleEvent: (evName) => {
@@ -324,7 +324,10 @@ export default class CounterAgentEdit extends Component {
   render = () => {
 
     const { dispatch } = this.props;
-
+    const documentStatus =  this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
+   // console.log((documentStatus ? ((documentStatus!==null && documentStatus.result === 2) ? true : false ) :false));
+    console.log(documentStatus);
+      //documentStatus !==null && _documentStatus.result === 2
 
     return (
 
@@ -349,11 +352,44 @@ export default class CounterAgentEdit extends Component {
             extra={[<Button
               key={'save_btn'}
               htmlType="submit">Сохранить</Button>,
+              <span>
+                {(documentStatus ===null || documentStatus===2 ) &&
+                  <span>
+                    { this.state.publish &&
+                    <Button
+                      key={'publish'}
+                      style={{marginLeft:'5px'}}
+                      onClick={()=>{
+                        dispatch({
+                          type: 'universal2/getPublish',
+                          payload: {
+                            'id': this.props.location.state.data.id,
+                          },
+                        }).then(()=>{
+
+                          if (!this.props.universal2.publish.Message) {
+                            this.setState({
+                              publish: false
+                            },()=>{
+                              Modal.info({
+                                title: 'Информация',
+                                content: 'Документ опубликован!',
+                              });
+                            })
+                          }
+
+                        })
+                      }}
+                      >Опубликовать</Button>
+                    }
+                  </span>
+                }
+              </span>,
+
               <Button
                 key={'delete_btn'}
                 style={{ marginLeft: '5px' }}
                 onClick={() => {
-
                   const { dispatch } = this.props;
                   dispatch({
                     type: 'universal/clearData',
@@ -362,7 +398,6 @@ export default class CounterAgentEdit extends Component {
                       value: {},
                     },
                   });
-
                   dispatch({
                     type: 'universal/clearData',
                     payload: {
@@ -370,10 +405,8 @@ export default class CounterAgentEdit extends Component {
                       value: {},
                     },
                   });
-
                   reduxRouter.push('/contract/contracts/table');
                 }}>Закрыть</Button>,
-
               <DropDownAction
                 contractId={this.props.location.state.data.id}
                 entity={'contract'}

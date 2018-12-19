@@ -78,7 +78,7 @@ export default class ContractRequestsTable extends Component  {
       {
         label: 'Дата',
         name: 'documentDate',
-        filterName: 'periodSection.id',
+        filterName: 'documentDate',
         type: 'date',
       },
       {

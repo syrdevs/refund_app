@@ -39,13 +39,37 @@ export default class CounterAgentView extends Component {
   getContractData = () => {
     const { dispatch } = this.props;
 
+    if (this.props.contractId) {
+
+      dispatch({
+        type: 'universal/getobject',
+        payload: {
+          'entity': 'contract',
+          'alias': null,
+          'id': this.props.contractId,
+        },
+      }).then(() => {
+
+        let result = this.props.universal.getObjectData;
+        if (result.Message) {
+          this.setState({
+            errorText: result.Message,
+          });
+        }
+
+
+      });
+
+      return;
+    }
+
     if (this.props.location.query && this.props.location.query.id) {
       dispatch({
         type: 'universal/getobject',
         payload: {
           'entity': 'contract',
           'alias': null,
-          'id': this.props.location.query.id,
+          'id': this.props.location.query.id
         },
       }).then(() => {
 

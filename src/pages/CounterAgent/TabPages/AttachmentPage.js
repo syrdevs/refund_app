@@ -257,7 +257,7 @@ class AttachmentPage extends Component {
                 <TextArea rows={4}/>,
               )}
             </Form.Item>
-            <Form.Item {...formItemLayout} label="Тип файла">
+            <Form.Item {...formItemLayout} label="Файл">
               {getFieldDecorator('file', {
                 initialValue: null,
                 rules: [{ required: false, message: 'не заполнено' }],

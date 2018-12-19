@@ -74,10 +74,10 @@ export default class InfoPage extends Component {
       });
     }
 
-    if (formData.contractAlterationReason) {
+    if (formData.contractAlterationReasons) {
       dataSourceItem.push({
         name: 'Причина',
-        value: formData.contractAlterationReason.name,
+        value: formData.contractAlterationReasons[0].dictionaryBase.nameRu,
       });
     }
 

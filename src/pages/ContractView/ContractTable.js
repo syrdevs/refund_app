@@ -42,18 +42,20 @@ const dateFormat = 'DD.MM.YYYY';
 }))
 export default class ContractTable extends Component {
   state = {
-
+    selectedRow: null,
     selectedRowKeys: [],
     filterContainer: 0,
     filterForm: [
       {
         name: 'divisions',
+        filterName: 'division.id',
         displayField: 'name',
         label: 'Подразделение',
         type: 'combobox',
       },
       {
         name: 'periodYear',
+        filterName: 'periodYear.id',
         displayField: 'year',
         label: 'Учетный период: год',
         type: 'combobox',
@@ -61,7 +63,7 @@ export default class ContractTable extends Component {
       {
         name: 'contractType',
         displayField: 'nameRu',
-        filterName:'contractType',
+        filterName: 'contractType.id',
         label: 'Вид договора',
         type: 'combobox',
       },
@@ -72,7 +74,7 @@ export default class ContractTable extends Component {
       },
       {
         name: 'documentDate',
-        label: 'Дата',
+        label: 'Дата договора',
         type: 'betweenDate',
       },
       {
@@ -165,12 +167,12 @@ export default class ContractTable extends Component {
     columns: [
       {
         title: 'Подразделение',
-        dataIndex: 'division',
+        dataIndex: 'division.name',
         isVisible: true,
       },
       {
         title: 'Учетный период: год',
-        dataIndex: 'periodYear',
+        dataIndex: 'periodYear.year',
         isVisible: true,
       },
       {
@@ -452,17 +454,44 @@ export default class ContractTable extends Component {
           key='4'
           disabled={this.state.selectedRowKeys.length === 0}
           onClick={() => {
-            this.props.history.push({
+            let isOne = true;
+            contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {
+              arr.map(elem => {
+                if (elem.periodYear.id !== item.periodYear.id) {
+                  isOne = false;
+                }
+              });
+            });
+            isOne ? this.props.history.push({
               pathname: '/contract/contracts/paymentadd',
               state: {
                 data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
                 type: 'contract',
               },
+            }) : Modal.error({
+              title: 'Ошибка',
+              content: 'Нельзя создать заявку на разные учетные периоды',
             });
           }}
 
         >
-          Включить в заявку на оплату
+          Включить в заявку на аванс
+        </Menu.Item>
+        <Menu.Item
+          disabled={this.state.selectedRowKeys.length !== 1}
+          onClick={() => {
+            let recordId = this.state.selectedRowKeys[0];
+            let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
+            this.props.history.push({
+              pathname: '/contract/counteragent/create',
+              state: {
+                data: record,
+                type: 'setContract',
+              },
+            });
+          }}
+          key="6">
+          Создать договор
         </Menu.Item>
         <Menu.Item
           key="5"
@@ -486,14 +515,18 @@ export default class ContractTable extends Component {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
-      <DropDownAction
-        key={"dropdown_btn"}
-        disabled={this.state.selectedRowKeys.length === 0}
+
+    ];
+
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push(<DropDownAction
+        key={'dropdown_btn'}
         contractId={this.state.selectedRowKeys}
         entity={'contract'}
         type={2}
-      />,
-    ];
+      />);
+    }
+
     return (
       <PageHeaderWrapper title={this.state.title}>
         <Card bodyStyle={{ padding: 5 }}>
@@ -513,7 +546,6 @@ export default class ContractTable extends Component {
                   extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                     icon={faTimes}/></Icon>}>
 
-                  {this.state.filterContainer === 6 &&
                   <GridFilter
                     clearFilter={() => {
                       this.clearFilter();
@@ -522,7 +554,7 @@ export default class ContractTable extends Component {
                       this.applyFilter(filters);
                     }}
                     filterForm={this.state.filterForm}
-                    dateFormat={dateFormat}/>}
+                    dateFormat={dateFormat}/>
 
                   {/*{this.state.filterContainer === 6 && <GridFilterCollapsible*/}
                   {/*clearFilter={this.clearFilter}*/}
@@ -560,9 +592,9 @@ export default class ContractTable extends Component {
                     this.filterPanelState();
                   }}
                   onSelectRow={(record, index) => {
-                    /*this.setState({
-                      selectedRowKeys: record,
-                    });*/
+                    // this.setState({
+                    //   selectedRow: record,
+                    // });
                   }}
                   onSelectCheckboxChange={(selectedRowKeys) => {
                     this.setState({

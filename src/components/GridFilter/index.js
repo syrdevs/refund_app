@@ -140,7 +140,7 @@ export default class GridFilter extends Component {
         _fields[filterItem.name] = {
           disabled: false,
           type: filterItem.type,
-          filterName: filterItem.filterName
+          filterName: filterItem.filterName,
         };
 
         if (['multibox', 'combobox'].indexOf(filterItem.type) !== -1) {
@@ -238,14 +238,14 @@ export default class GridFilter extends Component {
 
         if (['multibox', 'combobox'].indexOf(fields[field].type) !== -1) {
 
-          let properyName = fields[field].type == 'multibox' ? field + 'List' :  field + 'Id';
-          if ( fields[field].filterName) {
-             properyName = fields[field].filterName;
+          let properyName = fields[field].type == 'multibox' ? field + 'List' : field + 'Id';
+          if (fields[field].filterName) {
+            properyName = fields[field].filterName;
           }
           let propertyValue = fields[field].type == 'multibox' ?
             formFilters[field].map((valueId) => ({
               id: valueId,
-            })) : { id: formFilters[field] };
+            })) : fields[field].filterName ? formFilters[field] : { id: formFilters[field] };
 
           filterData[properyName] = fields[field].disabled ? null : propertyValue;
 
@@ -259,7 +259,13 @@ export default class GridFilter extends Component {
           return;
         }
 
-        filterData[field] = fields[field].disabled ? null : formFilters[field];
+        if(fields[field].filterName)
+        {
+          filterData[fields[field].filterName] = fields[field].disabled ? null : formFilters[field];
+        }else{
+          filterData[field] = fields[field].disabled ? null : formFilters[field];
+        }
+
       }
     });
 
@@ -307,8 +313,8 @@ export default class GridFilter extends Component {
           },
           format: dateFormat,
           onChange: (moment, dateString) => {
-            filterItem.filterName ?  this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString) :
-              this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''))
+            filterItem.filterName ? this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString) :
+              this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace('.', ''));
           },
         };
 

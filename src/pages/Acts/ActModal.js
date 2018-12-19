@@ -143,18 +143,27 @@ export default class ActModal extends Component {
       onOk={() => {
       if (this.state.selectedRowKeys.length!==0) {
         let isOne = true;
-        act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {
-          arr.map(elem => {
-            if (elem.periodSection.id !== item.periodSection.id) {
-              isOne = false;
+        act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr)=> {
+          arr.map(elem=> {
+            if (elem.periodSection.id!==item.periodSection.id){
+              isOne=false;
+            }
+            if (elem.periodYear.id!==item.periodYear.id){
+              isOne=false;
             }
           })
         })
-        isOne ? this.props.onSelect(act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1))
-          : Modal.error({
-            title: 'Ошибка',
-            content: 'Нельзя создать заявку на разные учетные периоды (месяц)',
-          });
+
+        isOne ? this.props.history.push({
+          pathname: '/contract/acts/paymentrequestadd',
+          state: {
+            data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+            type: 'act'
+          },
+        }) : Modal.error({
+          title: 'Ошибка',
+          content: 'Нельзя создать заявку на разные учетные периоды',
+        });
 
       }
 

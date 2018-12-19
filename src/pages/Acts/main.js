@@ -54,14 +54,14 @@ export default class ActsTable extends Component  {
           {
             label: 'Учетный период(год)',
             displayField: 'year',
-            filterName: 'periodYear',
+            filterName: 'periodYear.id',
             name: 'periodYear',
             type: 'combobox',
           },
           {
             label: 'Подразделение',
             displayField: 'name',
-            filterName: 'divisions',
+            filterName: 'division.id',
             name: 'divisions',
             type: 'combobox',
           },
@@ -89,7 +89,7 @@ export default class ActsTable extends Component  {
           {
             label: 'Дата',
             name: 'documentDate',
-            filterName: 'periodSection',
+            filterName: 'periodSection.id',
             type: 'date',
           },
           {
@@ -114,7 +114,6 @@ export default class ActsTable extends Component  {
         width : 550,
         order: 3,
         key: 'contract.contragent',
-        className: 'action_column',
         render: (item) => {
           if (item){
             return item.bin+"  "+item.organization;
@@ -127,7 +126,6 @@ export default class ActsTable extends Component  {
         order: 4,
         width: 500,
         key: 'contract',
-        className: 'action_column',
         isVisible: true,
         render: (item) => {
           if (item){
@@ -141,7 +139,6 @@ export default class ActsTable extends Component  {
         order: 5,
         width: 200,
         key: 'operation',
-        className: 'action_column',
         isVisible: true,
         render: (e) => {
           if (e)
@@ -164,7 +161,7 @@ export default class ActsTable extends Component  {
       },
       {
         title: 'Подразделение',
-        dataIndex: 'division',
+        dataIndex: 'division.name',
         isVisible: true,
       },
       {
@@ -297,6 +294,9 @@ export default class ActsTable extends Component  {
                   if (elem.periodSection.id!==item.periodSection.id){
                     isOne=false;
                   }
+                  if (elem.periodYear.id!==item.periodYear.id){
+                    isOne=false;
+                  }
                 })
           })
 
@@ -308,11 +308,11 @@ export default class ActsTable extends Component  {
             },
           }) : Modal.error({
             title: 'Ошибка',
-            content: 'Нельзя создать заявку на разные учетные периоды (месяц)',
+            content: 'Нельзя создать заявку на разные учетные периоды',
           });
         }}
         >
-        Включить в заявку на аванс
+        Включить в заявку на оплату
       </Menu.Item>
       </Menu>
       }>
@@ -320,13 +320,15 @@ export default class ActsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
-      <DropDownAction
-        disabled={this.state.selectedRowKeys.length === 0}
+
+    ];
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push( <DropDownAction
         contractId={this.state.selectedRowKeys}
         entity={'act'}
         type={2}
-      />,
-    ];
+      />)
+    }
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'menu.contract.acts' })}>
@@ -380,6 +382,7 @@ export default class ActsTable extends Component  {
                     }}
                     onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                     onRefresh={() => {
+                      this.loadMainGridData();
                     }}
                     onSearch={() => {
                       this.filterPanelState();

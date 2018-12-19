@@ -47,26 +47,26 @@ export default class ContractRequestsTable extends Component  {
       {
         label: 'Подразделение',
         displayField: 'name',
-        filterName: 'divisions',
+        filterName: 'division.id',
         name: 'divisions',
         type: 'combobox',
       },
       {
         label: 'Учетный период(месяц)',
         name: 'periodSection',
-        filterName: 'periodSection',
+        filterName: 'periodSection.id',
         type: 'combobox',
       },
       {
         label: 'Учетный период(год)',
         displayField: 'year',
-        filterName: 'periodYear',
+        filterName: 'periodYear.id',
         name: 'periodYear',
         type: 'combobox',
       },
       {
         label: 'Вид заявки',
-        filterName: 'paymentRequestType',
+        filterName: 'paymentRequestType.id',
         name: 'paymentRequestType',
         type: 'combobox',
       },
@@ -78,7 +78,7 @@ export default class ContractRequestsTable extends Component  {
       {
         label: 'Дата',
         name: 'documentDate',
-        filterName: 'periodSection',
+        filterName: 'periodSection.id',
         type: 'date',
       },
       {
@@ -223,8 +223,6 @@ export default class ContractRequestsTable extends Component  {
     dispatch({
       type: 'universal2/getList',
       payload: this.state.gridParameters,
-    }).then(()=>{
-      console.log(this.props.universal2.references.paymentRequest)
     });
   };
 
@@ -318,13 +316,14 @@ export default class ContractRequestsTable extends Component  {
           key={'action'}>{formatMessage({ id: 'menu.mainview.actionBtn' })} <Icon
           type="down"/></Button>
       </Dropdown>,
-      <DropDownAction
-        disabled={this.state.selectedRowKeys.length === 0}
+    ];
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push(<DropDownAction
         contractId={this.state.selectedRowKeys}
         entity={'paymentRequest'}
         type={2}
-      />,
-    ];
+      />)
+    }
 
     return (
       <PageHeaderWrapper title={formatMessage({ id: 'app.module.contractrequests.title' })}>
@@ -377,7 +376,7 @@ export default class ContractRequestsTable extends Component  {
                   }}
                   onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                   onRefresh={() => {
-                    console.log('onRefresh');
+                    this.loadMainGridData();
                   }}
                   onSearch={() => {
                     this.filterPanelState();

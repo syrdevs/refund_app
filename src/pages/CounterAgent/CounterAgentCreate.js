@@ -44,13 +44,28 @@ export default class CounterAgentCreate extends Component {
     specifyData: [],
   };
 
-  getCounterAgentById = (id) => {
+  getSubContractById = (contractId, contractTypeId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getSubContract',
+      payload: {
+        'contractId': contractId,
+        'contractTypeId': contractTypeId,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+  };
+
+  getCounterAgentById = (id, year) => {
     const { dispatch } = this.props;
 
     dispatch({
       type: 'universal/getCounterAgentData',
       payload: {
         'contragentId': id,
+        'year': year,
       },
     }).then(() => {
       this.props.form.resetFields();
@@ -63,9 +78,11 @@ export default class CounterAgentCreate extends Component {
     const { dispatch } = this.props;
 
     if (this.props.location.state) {
-      this.getCounterAgentById(this.props.location.state.data.id);
+//this.props.location.state
+
+      //this.getCounterAgentById(this.props.location.state.data.id);
     } else {
-      reduxRouter.push('main');
+      //reduxRouter.push('main');
     }
 
   };
@@ -157,9 +174,14 @@ export default class CounterAgentCreate extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlternation = {
-        'id': data.contractAlternation,
-      };
+      sendModel.data.contractAlterationReasons = [
+        {
+          'dictionaryBase': {
+            id: data.contractAlternation,
+          },
+        },
+      ];
+
     }
 
     dispatch({
@@ -186,103 +208,112 @@ export default class CounterAgentCreate extends Component {
 
   render = () => {
 
+    const createFormFromContract = () => {
+      if (this.props.location.state && this.props.location.state.type === 'setContract' && Object.keys(this.props.universal.counterAgentData).length === 0) {
+        return true;
+      }
+
+      return false;
+    };
 
     return (
-      <Spin spinning={this.props.loadingData}>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
 
-            this.props.form.validateFields((err, fieldsValue) => {
-              if (err) {
-                return;
-              }
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
 
-              this.sendForm(fieldsValue);
-            });
+          this.props.form.validateFields((err, fieldsValue) => {
+            if (err) {
+              return;
+            }
 
-          }}
-          layout="horizontal" hideRequiredMark>
-          <Card
-            headStyle={{ padding: 0 }}
-            title={''}
-            className={styles.headPanel}
-            extra={[<Button
-              key={'save_btn'}
-              htmlType="submit">Сохранить</Button>,
+            this.sendForm(fieldsValue);
+          });
 
-              <Button
-                key={'delete_btn'}
-                style={{ marginLeft: '5px' }}
-                onClick={() => {
+        }}
+        layout="horizontal" hideRequiredMark>
+        <Card
+          headStyle={{ padding: 0 }}
+          title={''}
+          className={styles.headPanel}
+          extra={[<Button
+            key={'save_btn'}
+            htmlType="submit">Сохранить</Button>,
 
-                  const { dispatch } = this.props;
+            <Button
+              key={'delete_btn'}
+              style={{ marginLeft: '5px' }}
+              onClick={() => {
 
-                  dispatch({
-                    type: 'universal/clearData',
-                    payload: {
-                      typeName: 'getObjectData',
-                      value: {},
-                    },
-                  }).then(() => {
-                    reduxRouter.push('/contract/contracts/table');
-                  });
-                }}>Закрыть</Button>,
-              <Button
-                key={'clear_btn'}
-                style={{ marginLeft: '5px' }}
-                onClick={() => {
-                  this.props.form.resetFields();
-                }}>Очистить</Button>]}
-            bordered={false}
-            bodyStyle={{ padding: 0 }}>
-            <Row style={{ marginTop: '5px' }}>
-              <Tabs
-                tabBarStyle={{ textAlign: 'left' }}
-                type={'card'}
-                className={styles.stepFormText}
-                defaultActiveKey="main"
-                tabPosition={'left'}>
-                <TabPane tab="Титульная часть" key="main">
-                  <InfoPage
-                    form={this.props.form}
-                    formData={{
-                      ...this.props.universal.counterAgentData,
-                      contract: {
-                        contragent: this.props.location.state.data,
-                      },
+                const { dispatch } = this.props;
+
+                dispatch({
+                  type: 'universal/clearData',
+                  payload: {
+                    typeName: 'getObjectData',
+                    value: {},
+                  },
+                }).then(() => {
+                  reduxRouter.push('/contract/contracts/table');
+                });
+              }}>Закрыть</Button>,
+            <Button
+              key={'clear_btn'}
+              style={{ marginLeft: '5px' }}
+              onClick={() => {
+                this.props.form.resetFields();
+              }}>Очистить</Button>]}
+          bordered={false}
+          bodyStyle={{ padding: 0 }}>
+          <Row style={{ marginTop: '5px' }}>
+            <Tabs
+              tabBarStyle={{ textAlign: 'left' }}
+              type={'card'}
+              className={styles.stepFormText}
+              defaultActiveKey="main"
+              tabPosition={'left'}>
+              <TabPane tab="Титульная часть" key="main">
+
+                <InfoPage
+                  getSubContractById={this.getSubContractById}
+                  form={this.props.form}
+                  formData={createFormFromContract() ? {
+                    parentContract: this.props.location.state.data,
+                  } : {
+                    ...this.props.universal.counterAgentData,
+                    _contragent: this.props.location.state ? this.props.location.state.data._organization : {},
+                  }}
+                  setSpecData={this.setSpecData}
+                  formItemLayout={formItemLayout}
+                  getCounterAgentById={this.getCounterAgentById}
+                />
+
+              </TabPane>
+              <TabPane tab="Спецификация" key="specification">
+                {Object.keys(this.state.SpecData).length > 0 ?
+                  <SpecPage
+                    setForceRender={() => {
+                      this.setState({
+                        SpecPageForceRendered: false,
+                      });
                     }}
-                    setSpecData={this.setSpecData}
-                    formItemLayout={formItemLayout}
-                    getCounterAgentById={this.getCounterAgentById}
-                  />
-                </TabPane>
-                <TabPane tab="Спецификация" key="specification">
-                  {Object.keys(this.state.SpecData).length > 0 ?
-                    <SpecPage
-                      setForceRender={() => {
-                        this.setState({
-                          SpecPageForceRendered: false,
-                        });
-                      }}
-                      forceRender={this.state.SpecPageForceRendered}
-                      eventManager={this.state.eventManager}
-                      form={this.props.form}
-                      gridData={this.state.SpecData}/>
-                    : <SpecPage
-                      eventManager={this.state.eventManager}
-                      form={this.props.form}
-                      gridData={this.props.universal.getObjectData}/>}
-                </TabPane>
-                <TabPane tab="Контрагенты" key="counteragents">
-                  <ContragentsPage
-                    gridData={this.props.universal.counterAgentData}
-                    selectedData={this.props.location.state}/>
-                </TabPane>
-              </Tabs>
-            </Row>
-          </Card>
-        </Form>
-      </Spin>);
+                    forceRender={this.state.SpecPageForceRendered}
+                    eventManager={this.state.eventManager}
+                    form={this.props.form}
+                    gridData={this.state.SpecData}/>
+                  : <SpecPage
+                    eventManager={this.state.eventManager}
+                    form={this.props.form}
+                    gridData={this.props.universal.getObjectData}/>}
+              </TabPane>
+              <TabPane tab="Контрагенты" key="counteragents">
+                <ContragentsPage
+                  gridData={this.props.universal.counterAgentData}
+                  selectedData={this.props.location.state}/>
+              </TabPane>
+            </Tabs>
+          </Row>
+        </Card>
+      </Form>);
   };
 }

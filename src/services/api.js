@@ -404,6 +404,13 @@ export async function createContractFromAgent(params) {
   });
 }
 
+export async function createSubContract(params) {
+  return request('/api/contract/createSubContract', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 export async function createActForContract(params) {
   return request('/api/contract/createActForContract', {
     method: 'POST',

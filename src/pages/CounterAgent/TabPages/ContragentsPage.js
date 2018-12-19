@@ -72,18 +72,9 @@ export default class ContragentsPage extends Component {
     },
   };
 
-  componentDidMount = () => {
-
-     let getObjectData = this.props.gridData;
-
-    if (getObjectData) {
-      this.setState({
-        dataSource: getObjectData.contractParties ? getObjectData.contractParties : [],
-      });
-    }
-  };
 
   render = () => {
+    let getObjectData = this.props.gridData.contractParties ?  this.props.gridData.contractParties : [];
 
 
     /*
@@ -138,10 +129,10 @@ export default class ContragentsPage extends Component {
         columns={this.state.columns}
         addonButtons={addonButtons}
         dataSource={{
-          total: this.state.dataSource.length,
+          total: getObjectData.length,
           pageSize: this.state.pagingConfig.length,
           page: this.state.pagingConfig.start + 1,
-          data: this.state.dataSource,
+          data: getObjectData,
         }}
         actionExport={() => {
         }}

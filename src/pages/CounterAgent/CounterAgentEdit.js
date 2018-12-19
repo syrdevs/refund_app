@@ -21,6 +21,7 @@ import styles from './CounterAgent.less';
 import moment from 'moment';
 import { connect } from 'dva/index';
 import DropDownAction from '@/components/DropDownAction/';
+import CounterAgentView from './CounterAgentView';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -95,7 +96,42 @@ export default class CounterAgentEdit extends Component {
     }
   };
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/clearData',
+      payload: {
+        typeName: 'getObjectData',
+        value: {},
+      },
+    });
+
+    dispatch({
+      type: 'universal/clearData',
+      payload: {
+        typeName: 'counterAgentData',
+        value: {},
+      },
+    });
+  }
+
+  getSubContractById = (contractId, contractTypeId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getSubContract',
+      payload: {
+        'contractId': contractId,
+        'contractTypeId': contractTypeId,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+  };
+
   componentDidMount() {
+
 
     const { dispatch } = this.props;
 
@@ -103,6 +139,14 @@ export default class CounterAgentEdit extends Component {
       type: 'universal/clearData',
       payload: {
         typeName: 'getObjectData',
+        value: {},
+      },
+    });
+
+    dispatch({
+      type: 'universal/clearData',
+      payload: {
+        typeName: 'getCounterAgentData',
         value: {},
       },
     });
@@ -131,12 +175,12 @@ export default class CounterAgentEdit extends Component {
     };
 
     if (SpecFormData.length > 0) {
-      sendModel.contractItems = SpecFormData;
+      sendModel.data.contractItems = SpecFormData;
     }
 
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {
 
-      sendModel.data.contractPartys =
+      sendModel.data.contractParties =
         this.props.universal.getObjectData.contractParties.map((contractParty) => {
           return {
             contractRole: {
@@ -149,6 +193,23 @@ export default class CounterAgentEdit extends Component {
         });
 
     }
+
+    if (Object.keys(this.props.universal.counterAgentData).length > 0 && this.props.universal.counterAgentData.hasOwnProperty('contractParties')) {
+
+      sendModel.data.contractParties =
+        this.props.universal.counterAgentData.contractParties.map((contractParty) => {
+          return {
+            contractRole: {
+              id: contractParty.contractRole.id,
+            },
+            organization: {
+              id: contractParty.organization.id,
+            },
+          };
+        });
+
+    }
+
 
     if (data.period !== null && data.period.length > 0) {
       sendModel.data.dateBegin = moment(data.period[0]).format('DD.MM.YYYY');
@@ -212,9 +273,14 @@ export default class CounterAgentEdit extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format('DD.MM.YYYY');
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlternation = {
-        'id': data.contractAlternation,
-      };
+      sendModel.data.contractAlterationReasons = [
+        {
+          'dictionaryBase': {
+            id: data.contractAlternation,
+          },
+        },
+      ];
+
     }
 
 
@@ -233,6 +299,21 @@ export default class CounterAgentEdit extends Component {
 
   };
 
+  getCounterAgentById = (id, year) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'universal/getCounterAgentData',
+      payload: {
+        'contragentId': id,
+        'year': year,
+      },
+    }).then(() => {
+      this.props.form.resetFields();
+    });
+
+  };
+
   setSpecData = (data) => {
     this.setState({
       SpecPageForceRendered: true,
@@ -246,6 +327,7 @@ export default class CounterAgentEdit extends Component {
 
 
     return (
+
       <Spin spinning={this.props.getLoadingData}>
         <Form
           onSubmit={(e) => {
@@ -271,11 +353,20 @@ export default class CounterAgentEdit extends Component {
                 key={'delete_btn'}
                 style={{ marginLeft: '5px' }}
                 onClick={() => {
+
                   const { dispatch } = this.props;
                   dispatch({
                     type: 'universal/clearData',
                     payload: {
                       typeName: 'getObjectData',
+                      value: {},
+                    },
+                  });
+
+                  dispatch({
+                    type: 'universal/clearData',
+                    payload: {
+                      typeName: 'counterAgentData',
                       value: {},
                     },
                   });
@@ -299,10 +390,13 @@ export default class CounterAgentEdit extends Component {
                 tabPosition={'left'}>
                 <TabPane tab="Титульная часть" key="main">
                   <InfoPage
+                    getSubContractById={this.getSubContractById}
                     setSpecData={this.setSpecData}
                     form={this.props.form}
-                    formData={this.props.universal.getObjectData}
-                    formItemLayout={formItemLayout}/>
+                    formData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
+                    formItemLayout={formItemLayout}
+                    getCounterAgentById={this.getCounterAgentById}
+                  />
                 </TabPane>
                 {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
                 {/*<DogovorPage/>*/}
@@ -322,13 +416,13 @@ export default class CounterAgentEdit extends Component {
                     : <SpecPage
                       eventManager={this.state.eventManager}
                       form={this.props.form}
-                      gridData={this.props.universal.getObjectData}/>}
+                      gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}/>}
 
 
                 </TabPane>
                 <TabPane tab="Контрагенты" key="counteragents">
                   <ContragentsPage
-                    gridData={this.props.universal.getObjectData}
+                    gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
                     selectedData={this.props.location.state}/>
                 </TabPane>
                 <TabPane tab={'Приложения'} key="attachments">

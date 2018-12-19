@@ -20,6 +20,16 @@ import RejectModal from "./RejectModal";
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 
+
+@connect(({ universal, act, loading }) => ({
+  universal,
+  act,
+  // loadinggetattachmentType: loading.effects['universal/getattachmentType'] && loading.effects['universal/getmedicalType'] && loading.effects['universal/getorganization'] & loading.effects['universal/getperiodSection'] && loading.effects['universal/getperiodYear']),
+  loadingdeleteObject: loading.effects['universal/deleteObject'],
+  loadingcreateActForContract: loading.effects['universal/createActForContract'],
+  loadinggetobject: loading.effects['universal/getobject'],
+  loadingsave: loading.effects['universal/saveobject'],
+}))
 class ViewDocument extends Component {
   constructor(props) {
     super(props);
@@ -27,11 +37,31 @@ class ViewDocument extends Component {
       ShowSign: false,
       rejectModal: {
         visible: false,
-      }
+      },
+      data:{},
     }
   }
 
+  loadActData=(id)=>{
+    this.props.dispatch({
+      type: 'universal/getobject',
+      payload: {
+        "entity": "contract",
+        "alias": null,
+        "id": id //'this.props.location.query.id'
+      },
+    }).then(()=>{
+      this.setState({
+        data: this.props.universal.getObjectData
+      });
+      console.log(this.state.data)
+    })
+  };
+
   componentDidMount() {
+    const { dispatch } = this.props;
+    this.loadActData(this.props.location.query.id)
+
   }
 
   viewKeyModal = () => {
@@ -57,10 +87,13 @@ class ViewDocument extends Component {
 
 
   render() {
+    // console.log(this.props.location.state ? this.props.location.state.data : null);
     const smart_grid_controls_right = {
       display: 'inline-block',
       float: 'right'
     };
+
+
     const CardHeight = {height: 'auto', marginBottom: '10px'};
     return (<PageHeaderWrapper title={formatMessage({id: 'app.module.documents.title.view'})}>
       {this.state.rejectModal.visible && <RejectModal
@@ -70,14 +103,14 @@ class ViewDocument extends Component {
           })
         }}
         onOk={() => {
-            console.log("ok")
+          console.log("ok")
         }}
         onCancel={() => {
           this.setState({
             rejectModal: {visible: false}
           })
         }}
-        />}
+      />}
 
       {this.state.ShowSign &&
       <SignModal
@@ -124,9 +157,9 @@ class ViewDocument extends Component {
 
 
                   <p style={{marginTop: '10px'}}><h3>Заголовок письма</h3></p>
-                  <p>Отправитель: Султанов Усен Ибраевич</p>
-                  <p>Тип документа: Контрагент</p>
-                  <p>сегодня, 16:40</p>
+                  <p>Отправитель: {this.state.data.initiatorUser?this.state.data.initiatorUser:''}</p>
+                  <p>Тип документа: {this.state.data.documentType?this.state.data.documentType.entDesc:''}</p>
+                  <p>{this.state.data.entryDateTime?this.state.data.entryDateTime:''}</p>
 
 
                 </Card>
@@ -134,11 +167,11 @@ class ViewDocument extends Component {
                   style={{margin: '10px'}}
                   type="inner"
                   bodyStyle={{padding: 25}}
-                  title={<div>Документ №135</div>}
+                  title={<div>Документ № {this.state.data?this.state.data.number:''} от {this.state.data?this.state.data.documentDate:''}</div>}
                 >
-                  <ShowAct
-                    actid='eceb5e9c-38d2-4246-b101-1c08288c3c87'
-                  /></Card>
+                  {this.props.location.query.type === 'act' && <ShowAct
+                    actid={this.props.location.query.id}
+                  />}</Card>
                 {/*</Card>*/}
               </div>
             </TabPane>

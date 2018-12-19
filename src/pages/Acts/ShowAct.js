@@ -303,11 +303,11 @@ class ShowAct extends Component {
     },  {
       key:3,
       name: 'Учетный период: год',
-      value: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null,
+      value: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.year : null) : null,
     }, {
       key:4,
       name: ' Учетный период: месяц',
-      value: getObjectData ? (getObjectData.periodSection ? getObjectData.periodSection.id : null) : null,
+      value: getObjectData ? (getObjectData.periodSection ? getObjectData.periodSection.nameRu : null) : null,
     }, {
       key:5,
       name: 'Договор',

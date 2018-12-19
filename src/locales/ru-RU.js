@@ -423,5 +423,5 @@ export default {
   'app.module.contractrequests.title': 'Заявки',
   'app.module.contractrequests.title.add': 'Заявка на оплату',
   'app.module.documents.title.view': 'Просмотр документа',
-  'menu.documents': 'Документы',
+  'menu.documents': 'Корреспонденция',
 };

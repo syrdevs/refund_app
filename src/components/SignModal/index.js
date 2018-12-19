@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Input, Form, Icon, Button, Row, Select, Card } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import {connect} from "dva";
 
 
 const formItemLayout = {
@@ -12,6 +13,11 @@ const formItemLayout = {
   },
 };
 
+
+
+@connect(({ universal }) => ({
+  universal,
+}))
 export default class SignModal extends Component {
 
 
@@ -19,7 +25,7 @@ export default class SignModal extends Component {
     super(props);
     this.state = {
       rw:null,
-
+      xml:null,
       arrsignXML: [],
       infosignXML: {
         storageAlias: '',
@@ -88,8 +94,41 @@ export default class SignModal extends Component {
 
 
   componentDidMount() {
+
+    const { dispatch } = this.props;
+    this.loadXml();
     this.startLayer();
+
   }
+
+  loadXml=()=>{
+    console.log('тесткойЫ');
+   /* this.props.dispatch({
+      type: 'universal/getXml',
+      payload: {
+        "entity": "contract",
+        "id":  '25e78a7f-d4b0-4de4-a129-5b5954b35731'//this.props.location.query.id  // this.props.state.data.documentType.id
+      },
+    }).then(()=>{
+      this.setState({
+        xml: this.props.universal.getXml
+      });
+     console.log(this.props.universal.getXml)
+    })*/
+    fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+      method: 'get',
+    })
+      .then(response => response.text())
+      .then(data => {
+        this.setState({
+          xml: data
+        })
+      })
+
+  };
 
 
   // var heartbeat_interval = null;
@@ -292,7 +331,7 @@ export default class SignModal extends Component {
           this.state.infosignXML.storagePath = storagePath;
           this.state.infosignXML.alias = alias;
           this.state.infosignXML.storagePassword = storagePassword;
-          this.state.arrsignXML.push({signed: false, xml: '<?xml version="1.0" encoding="UTF-8"?><data>sdfas</data>', signXML: ''});
+          this.state.arrsignXML.push({signed: false, xml: this.state.xml, signXML: ''});
           this.fNCAsignXmlRec();
         } else {
           alert("Вы не выбрали ключ!");

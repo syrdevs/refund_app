@@ -23,11 +23,12 @@ const SubMenu = Menu.SubMenu;
 const {Header, Sider, Content} = Layout;
 
 
-@connect(({universal2, universal, loading}) => ({
-  universal2,
-  universal,
-  loadingData: loading.effects['universal2/data'],
-}))
+@connect(({ universal, loading }) => {
+  return {
+    universal,
+    loadingData: loading.effects['universal/paymentsData'],
+  };
+})
 class Documents extends Component {
   constructor(props) {
     super(props);
@@ -38,23 +39,25 @@ class Documents extends Component {
   state = {
     collapsed: false,
     openKeys: ['sub1'],
+    selectedRow :{},
     fcolumn:
-      [{
-        'title': '',
-        isVisible: true,
-
-        'dataIndex': 'progressStst',
-        order: 0,
-        render: (record, value) => <a
-          href="#"> <Progress type="circle" percent={this.setPercent(value.status)} status={this.setStatusProg(value.status)} width={29} /></a> ,
-      },
+      [
+      //   {
+      //   'title': '',
+      //   isVisible: true,
+      //
+      //   'dataIndex': 'progressStst',
+      //   order: 0,
+      //   render: (record, value) => <a
+      //     href="#"> <Progress type="circle" percent={this.setPercent(value.status)} status={this.setStatusProg(value.status)} width={29} /></a> ,
+      // },
         {
         'title': 'Статус',
         isVisible: true,
-        'dataIndex': 'status',
-        order: 2,
+        'dataIndex': 'status.statusName',
+        order: 1,
         render: (record, value) => <a
-          href="#"> <span><Badge status={this.setBadgeStatus(value.status)} /></span> {value.status} </a> ,
+          href="#"> <span><Badge status={this.setBadgeStatus(value.status.statusName)} /></span> {value.status.statusName} </a> ,
       }],
     columns: [
       {
@@ -101,6 +104,12 @@ class Documents extends Component {
       value: null,
     },
     ShowModal: false,
+    parameters: {
+      start: 0,
+      length: 20,
+      entity: 'documentToSign',
+      alias:'routes'
+    },
     // searchButton: false,
     serverFileList: [],
     sortedInfo: {},
@@ -148,6 +157,15 @@ class Documents extends Component {
     }
   };
 
+  loadDocument = () => {
+    const { dispatch } = this.props;
+    // let sortField = this.state.sortedInfo;
+    dispatch({
+      type: 'universal/paymentsData',
+      payload: this.state.parameters,
+    }).then(()=>{console.log(this.props.universal)});
+  };
+
   hideleft() {
     this.setState({
       // searchButton: false,
@@ -174,59 +192,59 @@ class Documents extends Component {
     }
   };
 
-  componentWillUnmount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'universal2/clear',
-      payload: {
-        table: 'getApplicationPage',
-      },
-    });
-  }
+  // componentWillUnmount() {
+  //   const {dispatch} = this.props;
+  //   dispatch({
+  //     type: 'universal2/clear',
+  //     payload: {
+  //       table: 'getApplicationPage',
+  //     },
+  //   });
+  // }
 
   componentDidMount() {
     const {dispatch} = this.props;
-    this.loadMainGridData();
+    this.loadDocument();
 
-    this.setState({
-      filterForm: [
-        {
-          name: 'appNumber',
-          label: formatMessage({id: 'menu.filter.numberrequest'}),
-          type: 'text',
-        },
-        {
-          name: 'appDate',
-          label: 'Дата заявки',
-          type: 'betweenDate',
-        },
-        {
-          name: 'reference',
-          label: formatMessage({id: 'menu.filter.reference'}),
-          type: 'text',
-        },
-        {
-          name: 'payOrderNum',
-          label: formatMessage({id: 'menu.filter.paymentnumber'}),
-          type: 'text',
-        },
-        {
-          name: 'payOrderDate',
-          label: formatMessage({id: 'menu.filter.payment.date'}),
-          type: 'betweenDate',
-        },
-        {
-          name: 'receiptAppdateToFsms',
-          label: formatMessage({id: 'menu.filter.refundadd'}),
-          type: 'betweenDate',
-        },
-        {
-          name: 'knp',
-          label: formatMessage({id: 'menu.filter.knp'}),
-          type: 'multibox',
-        },
-      ],
-    });
+    // this.setState({
+    //   filterForm: [
+    //     {
+    //       name: 'appNumber',
+    //       label: formatMessage({id: 'menu.filter.numberrequest'}),
+    //       type: 'text',
+    //     },
+    //     {
+    //       name: 'appDate',
+    //       label: 'Дата заявки',
+    //       type: 'betweenDate',
+    //     },
+    //     {
+    //       name: 'reference',
+    //       label: formatMessage({id: 'menu.filter.reference'}),
+    //       type: 'text',
+    //     },
+    //     {
+    //       name: 'payOrderNum',
+    //       label: formatMessage({id: 'menu.filter.paymentnumber'}),
+    //       type: 'text',
+    //     },
+    //     {
+    //       name: 'payOrderDate',
+    //       label: formatMessage({id: 'menu.filter.payment.date'}),
+    //       type: 'betweenDate',
+    //     },
+    //     {
+    //       name: 'receiptAppdateToFsms',
+    //       label: formatMessage({id: 'menu.filter.refundadd'}),
+    //       type: 'betweenDate',
+    //     },
+    //     {
+    //       name: 'knp',
+    //       label: formatMessage({id: 'menu.filter.knp'}),
+    //       type: 'multibox',
+    //     },
+    //   ],
+    // });
   }
 
   componentWillReceiveProps(props) {
@@ -359,54 +377,13 @@ class Documents extends Component {
       });
   };
 
-  loadMainGridData = () => {
 
-    const {dispatch} = this.props;
-
-    dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'getApplicationPage',
-        ...this.state.pagingConfig,
-      },
-    });
-  };
 
 
   render() {
-    const dateFormat = 'DD.MM.YYYY';
-    // let {columns2, dataStore2} = this.props.universal2;
-    let dataStore =
-      {
-        size: 10,
-        totalElements: 1,
-        totalPages: 133,
-        content: [
-          {
-            typeDoc: 'Заявка',
-            status: 'Подписан',
+    let {documentToSign} = this.props.universal.paymentsData;
 
-            datePost: '15.12.2018 13:54',
-            dateReceipt: '14.12.2018',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-          {
-            typeDoc: 'Договор',
-            status: 'На подписании',
-            dateReceipt: '16.12.2018',
-            datePost: '',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-          {
-            typeDoc: 'Контрагент',
-            status: 'Отклонен',
-            dateReceipt: '14.11.2018',
-            receipt:'asd',
-            datePost: '26.11.2018 13:26',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
-          },
-        ]
-      };
+
 
     let columns = [
       // {
@@ -416,8 +393,15 @@ class Documents extends Component {
       // },
       {
         'title': 'Тип документа',
+        'width':200,
         'isVisible': true,
-        'dataIndex': 'typeDoc',
+        'dataIndex': 'documentType.entDesc',
+
+      },
+      {
+        'title': 'Номер',
+        'isVisible': true,
+        'dataIndex': 'number',
       },
       // {
       //   'title': 'Статус',
@@ -427,103 +411,22 @@ class Documents extends Component {
       {
         'title': 'Дата поступления',
         'isVisible': true,
-        'dataIndex': 'dateReceipt',
+        'dataIndex': 'entryDateTime',
       },
 
       {
         'title': 'Дата подписания',
         'isVisible': true,
-        'dataIndex': 'datePost',
+        'dataIndex':  'status.statusDate',
       },
       {
         'title': 'Загаловок',
         'isVisible': true,
-        'dataIndex': 'description',
+        'dataIndex': 'descr',
       },
     ];
 
-    let actionColumns = [];
-    let propColumns = [];
 
-    columns.forEach((column) => {
-      if (['receiptAppdateToFsms'].indexOf(column.dataIndex) !== -1) {
-        actionColumns.push({
-          ...column,
-          order: 2,
-          render: (text, row) => {
-            if (!text) {
-              return (<a
-                onClick={(e) => {
-                  this.setState({
-                    ShowModal: true,
-                    ColType: column.dataIndex,
-                    ModalData: {
-                      id: row.id,
-                      key: column.dataIndex,
-                      value: text,
-                    },
-                  });
-                }}
-              >{formatMessage({id: 'menu.requests.nulldate'})}</a>);
-            } else {
-              return (<a
-                onClick={(e) => {
-                  this.setState({
-                    ShowModal: true,
-                    ColType: column.dataIndex,
-                    ModalData: {
-                      id: row.id,
-                      key: column.dataIndex,
-                      value: text,
-                    },
-                  });
-                }}
-              >{text}</a>);
-            }
-          },
-        });
-      } else if (['appEndDate'].indexOf(column.dataIndex) !== -1) {
-        actionColumns.push({
-          ...column,
-          order: 3,
-          render: (text, row) => {
-            if (!text) {
-              return (<a
-                onClick={(e) => {
-
-
-                  this.setState({
-                    ShowModal: true,
-                    ColType: column.dataIndex,
-                    ModalData: {
-                      id: row.id,
-                      key: column.dataIndex,
-                      value: text,
-                    },
-                  });
-                }}
-              >{formatMessage({id: 'menu.requests.nulldate'})}</a>);
-            } else {
-              return (<a
-                onClick={(e) => {
-                  this.setState({
-                    ShowModal: true,
-                    ColType: column.dataIndex,
-                    ModalData: {
-                      id: row.id,
-                      key: column.dataIndex,
-                      value: '',
-                    },
-                  });
-                }}
-              >{text}</a>);
-            }
-          },
-        });
-      } else {
-        propColumns.push(column);
-      }
-    });
 
     return (<PageHeaderWrapper title={formatMessage({id: 'menu.documents'})}>
         <Card style={{borderRadius: '5px', marginBottom: '10px'}} bodyStyle={{padding: 0}} bordered={true}>
@@ -535,21 +438,7 @@ class Documents extends Component {
                   collapsible
                   collapsed={this.state.collapsed}
                 >
-                  {/*<div className="logo" />*/}
-                  {/*<Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>*/}
-                  {/*<Menu.Item key="1">*/}
-                  {/*<Icon type="user" />*/}
-                  {/*<span>nav 1</span>*/}
-                  {/*</Menu.Item>*/}
-                  {/*<Menu.Item key="2">*/}
-                  {/*<Icon type="video-camera" />*/}
-                  {/*<span>nav 2</span>*/}
-                  {/*</Menu.Item>*/}
-                  {/*<Menu.Item key="3">*/}
-                  {/*<Icon type="upload" />*/}
-                  {/*<span>nav 3</span>*/}
-                  {/*</Menu.Item>*/}
-                  {/*</Menu>*/}
+
                   <Menu
                     // style={{minWidth:'230px'}}
                     mode="inline"
@@ -582,37 +471,11 @@ class Documents extends Component {
                   >
                     <Card bodyStyle={{padding: 5}}>
                       <Row>
-                        {/*<Col sm={24} md={this.state.searchercont}>*/}
-                          {/*{!this.state.isSearcher &&*/}
-                          {/*<Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>*/}
-                            {/*<Card*/}
-                              {/*style={{margin: '0px 5px 10px 0px', borderRadius: '5px'}}*/}
-                              {/*type="inner"*/}
-                              {/*headStyle={{*/}
-                                {/*padding: '0 14px',*/}
-                              {/*}}*/}
-                              {/*title={formatMessage({id: 'system.filter'})}*/}
-                              {/*extra={<Icon style={{'cursor': 'pointer'}}*/}
-                                           {/*onClick={event => this.hideleft()}><FontAwesomeIcon icon={faTimes}/></Icon>}*/}
-                            {/*>*/}
-                              {/*<GridFilter*/}
-                                {/*clearFilter={() => {*/}
-                                  {/*this.clearFilter();*/}
-                                {/*}}*/}
-                                {/*applyFilter={(filters) => {*/}
-                                  {/*// console.log(filters);*/}
-                                  {/*this.setFilter(filters);*/}
-                                {/*}}*/}
-                                {/*filterForm={this.state.filterForm}*/}
-                                {/*dateFormat={dateFormat}*/}
-                              {/*/>*/}
-                            {/*</Card>*/}
-                          {/*</Animated>}*/}
-                        {/*</Col>*/}
+
                         <Col sm={24} md={this.state.tablecont}>
                           <Spin tip={formatMessage({id: 'system.loading'})} spinning={this.props.loadingData}>
                             <div className={documentStyle.documentTable}> <SmartGridView
-                              name='RequestPageColumns'
+                              name='DocumentPage'
                              // searchButton={false}
                               hideFilterBtn={true}
                               fixedBody={true}
@@ -628,34 +491,16 @@ class Documents extends Component {
                               showExportBtn={true}
 
                               dataSource={{
-                                total: dataStore.totalElements,
+                                total: documentToSign?documentToSign.totalElements:0,
                                 pageSize: this.state.pagingConfig.length,
                                 page: this.state.pagingConfig.start + 1,
-                                data: dataStore.content,
+                                data: documentToSign?documentToSign.content:null,
                               }}
                               actionExport={() => this.exportToExcel()}
                               onShowSizeChange={(pageNumber, pageSize) => {
                                 this.onShowSizeChange(pageNumber, pageSize);
                               }}
-                              // addonButtons={[
-                              //   <Dropdown key={'dropdown'} trigger={['click']} overlay={
-                              //     <Menu>
-                              //
-                              //       <Menu.Item key="4" onClick={() => {
-                              //
-                              //         this.getservicenote();
-                              //       }}>
-                              //         {formatMessage({id: 'menu.requests.servicenote'})}
-                              //       </Menu.Item>
-                              //     </Menu>}>
-                              //     <Button
-                              //       key='action'
-                              //     >{formatMessage({id: 'menu.mainview.actionBtn'})}
-                              //       <Icon
-                              //         type="down"/>
-                              //     </Button>
-                              //   </Dropdown>,
-                              // ]}
+
                               onSort={(column) => {
 
                                 if (Object.keys(column).length === 0) {
@@ -686,7 +531,17 @@ class Documents extends Component {
 
                               }}
                               onSelectRow={(record) => {
-                                router.push('/documents/view');
+
+
+                                /*this.props.history.push({
+                                  pathname: '/documents/view?id='+record.id,
+                                  state: {
+                                    data: record,
+                                  },
+                                })*/
+
+                               router.push('/documents/view?id='+record.id);
+
                               }}
                               onFilter={(filters) => {
 
@@ -694,9 +549,7 @@ class Documents extends Component {
                               onRefresh={() => {
                                 this.refreshTable();
                               }}
-                              // onSearch={() => {
-                              //   this.toggleSearcher();
-                              // }}
+
                             /></div>
 
                           </Spin>

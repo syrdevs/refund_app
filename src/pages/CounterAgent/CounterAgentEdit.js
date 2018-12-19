@@ -159,7 +159,7 @@ export default class CounterAgentEdit extends Component {
     };
 
     if (SpecFormData.length > 0) {
-      sendModel.contractItems = SpecFormData;
+      sendModel.data.contractItems = SpecFormData;
     }
 
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {

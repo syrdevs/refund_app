@@ -504,10 +504,16 @@ class ContractRequestsadd extends Component {
 
   render() {
     let title = "Заявка"
+    let periodYear = null;
     let getObjectData = {}
       if (!this.props.location.state){
         getObjectData =  this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
-        title = "Заявка №" + getObjectData.number + " от "+getObjectData.documentDate
+        title = "Заявка №" + getObjectData.number + " от "+getObjectData.documentDate;
+        periodYear = getObjectData.periodYear.id;
+      }
+      else {
+        console.log(this.props.location.state.data);
+        periodYear = this.props.location.state.data[0].periodYear.id;
       }
 
     const { form, dispatch } = this.props;
@@ -768,7 +774,7 @@ class ContractRequestsadd extends Component {
                       <div style={{ margin: '10px 0', maxWidth: '70%' }}>
                         <Form.Item {...formItemLayout} label="Учетный период: год">
                           {getFieldDecorator('periodYear.id', {
-                            initialValue: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null,
+                            initialValue: periodYear ? periodYear : null,
                             rules: [{ required: false, message: 'не заполнено' }],
                           })(
                             <Select

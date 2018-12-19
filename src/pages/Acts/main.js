@@ -54,14 +54,14 @@ export default class ActsTable extends Component  {
           {
             label: 'Учетный период(год)',
             displayField: 'year',
-            filterName: 'periodYear',
+            filterName: 'periodYear.id',
             name: 'periodYear',
             type: 'combobox',
           },
           {
             label: 'Подразделение',
             displayField: 'name',
-            filterName: 'divisions',
+            filterName: 'division.id',
             name: 'divisions',
             type: 'combobox',
           },
@@ -89,7 +89,7 @@ export default class ActsTable extends Component  {
           {
             label: 'Дата',
             name: 'documentDate',
-            filterName: 'periodSection',
+            filterName: 'periodSection.id',
             type: 'date',
           },
           {
@@ -161,7 +161,7 @@ export default class ActsTable extends Component  {
       },
       {
         title: 'Подразделение',
-        dataIndex: 'division',
+        dataIndex: 'division.name',
         isVisible: true,
       },
       {
@@ -294,6 +294,9 @@ export default class ActsTable extends Component  {
                   if (elem.periodSection.id!==item.periodSection.id){
                     isOne=false;
                   }
+                  if (elem.periodYear.id!==item.periodYear.id){
+                    isOne=false;
+                  }
                 })
           })
 
@@ -305,7 +308,7 @@ export default class ActsTable extends Component  {
             },
           }) : Modal.error({
             title: 'Ошибка',
-            content: 'Нельзя создать заявку на разные учетные периоды (месяц)',
+            content: 'Нельзя создать заявку на разные учетные периоды',
           });
         }}
         >
@@ -379,6 +382,7 @@ export default class ActsTable extends Component  {
                     }}
                     onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
                     onRefresh={() => {
+                      this.loadMainGridData();
                     }}
                     onSearch={() => {
                       this.filterPanelState();

@@ -282,7 +282,7 @@ export default [
               },
               {
                 path: '/contract/contractrequests/view',
-                component: './ContractRequests/showPayment',
+                component: './ContractRequests/ShowPayment',
               },
             ],
           },

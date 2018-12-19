@@ -453,12 +453,23 @@ export default class ContractTable extends Component {
           key='4'
           disabled={this.state.selectedRowKeys.length === 0}
           onClick={() => {
-            this.props.history.push({
+            let isOne = true;
+            contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr)=> {
+              arr.map(elem=> {
+                if (elem.periodYear.id!==item.periodYear.id){
+                  isOne=false;
+                }
+              })
+            })
+            isOne ? this.props.history.push({
               pathname: '/contract/contracts/paymentadd',
               state: {
                 data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
                 type: 'contract',
               },
+            }) : Modal.error({
+              title: 'Ошибка',
+              content: 'Нельзя создать заявку на разные учетные периоды',
             });
           }}
 

@@ -17,6 +17,8 @@ import ShowAct from '../Acts/ShowAct';
 import DogovorModal from "../CounterAgent/Modals/DogovorModal";
 import RejectModal from "./RejectModal";
 import CounterAgentView from "../CounterAgent/CounterAgentView";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
+import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -64,6 +66,31 @@ class ViewDocument extends Component {
     const { dispatch } = this.props;
     this.loadActData(this.props.location.query.id);
     this.loadDocRoutePath();
+
+  }
+
+  getIconStep=(index)=>{
+    if(index===0){
+      return <Icon><FontAwesomeIcon icon={faEnvelope}/></Icon>
+    }else{
+      return <Icon><FontAwesomeIcon icon={faCheck}/></Icon>
+    }
+  }
+
+  stepDescr=(value,index)=>{
+    if(index===0){
+      return 'Опубликовал документ'
+    }
+    if(value===0){
+      return 'На рассмотрении'
+    }
+    if(value===1){
+      return 'Подписал'
+    }
+    if(value===2){
+      Отклонил
+    }
+
 
   }
 
@@ -231,7 +258,7 @@ class ViewDocument extends Component {
                 >
                   {/*current={this.state.dataRoutePath}*/}
                   <Steps direction="vertical">
-                    {this.state.dataRoutePath.map(item => <Step key={item.stepName} title={item.stepName} description={item.stepDescr} />)}
+                    {this.state.dataRoutePath.map((item,index )=> <Step key={item.stepName} title={item.stepName} description={this.stepDescr(item.stepStatus,index)} status="finish" icon={this.getIconStep(index)} />)}
                   </Steps>
                   {/*<Steps direction="vertical">
                     <p>Сегодня</p>

@@ -250,15 +250,19 @@ class Documents extends Component {
   componentWillReceiveProps(props) {
   }
 
+  refreshTable = () => {
+    this.loadDocument();
+  };
+
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
     const {dispatch} = this.props;
     dispatch({
-      type: 'universal2/data',
+      type: 'universal/paymentsData',
       payload: {
         ...this.state.pagingConfig,
-        table: 'getApplicationPage',
+        // table: 'getApplicationPage',
         start: current,
         length: pageSize,
       },

@@ -22,6 +22,7 @@ import moment from 'moment';
 import { connect } from 'dva/index';
 import DropDownAction from '@/components/DropDownAction/';
 import CounterAgentView from './CounterAgentView';
+import Guid from '@/utils/Guid';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -57,12 +58,15 @@ const formItemLayout = {
 @Form.create()
 @connect(({ universal, universal2, loading }) => ({
   universal,
-    universal2,
+  universal2,
   saveLoadingData: loading.effects['universal/saveobject'],
   getLoadingData: loading.effects['universal/getobject'],
 }))
 export default class CounterAgentEdit extends Component {
   state = {
+
+    dataStoreGuid: Guid.newGuid(),
+
     SpecData: {},
     SpecPageForceRendered: false,
     publish: true,
@@ -132,7 +136,6 @@ export default class CounterAgentEdit extends Component {
 
   componentDidMount() {
 
-
     const { dispatch } = this.props;
 
     dispatch({
@@ -152,6 +155,11 @@ export default class CounterAgentEdit extends Component {
     });
 
     this.getContractData();
+
+    this.setState({
+      dataStoreGuid: Guid.newGuid(),
+    });
+
 
     // if (this.props.location.state) {
     //
@@ -310,12 +318,16 @@ export default class CounterAgentEdit extends Component {
       },
     }).then(() => {
       this.props.form.resetFields();
+      this.setState({
+        dataStoreGuid: Guid.newGuid(),
+      });
     });
 
   };
 
   setSpecData = (data) => {
     this.setState({
+      dataStoreGuid: Guid.newGuid(),
       SpecPageForceRendered: true,
       SpecData: data,
     });
@@ -324,10 +336,10 @@ export default class CounterAgentEdit extends Component {
   render = () => {
 
     const { dispatch } = this.props;
-    const documentStatus =  this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
-   // console.log((documentStatus ? ((documentStatus!==null && documentStatus.result === 2) ? true : false ) :false));
-    console.log(documentStatus);
-      //documentStatus !==null && _documentStatus.result === 2
+    const documentStatus = this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
+    // console.log((documentStatus ? ((documentStatus!==null && documentStatus.result === 2) ? true : false ) :false));
+    // console.log(documentStatus);
+    //documentStatus !==null && _documentStatus.result === 2
 
     return (
 
@@ -353,34 +365,34 @@ export default class CounterAgentEdit extends Component {
               key={'save_btn'}
               htmlType="submit">Сохранить</Button>,
               <span>
-                {(documentStatus ===null || documentStatus===2 ) &&
-                  <span>
-                    { this.state.publish &&
+                {(documentStatus === null || documentStatus === 2) &&
+                <span>
+                    {this.state.publish &&
                     <Button
                       key={'publish'}
-                      style={{marginLeft:'5px'}}
-                      onClick={()=>{
+                      style={{ marginLeft: '5px' }}
+                      onClick={() => {
                         dispatch({
                           type: 'universal2/getPublish',
                           payload: {
                             'id': this.props.location.state.data.id,
                           },
-                        }).then(()=>{
+                        }).then(() => {
 
                           if (!this.props.universal2.publish.Message) {
                             this.setState({
-                              publish: false
-                            },()=>{
+                              publish: false,
+                            }, () => {
                               Modal.info({
                                 title: 'Информация',
                                 content: 'Документ опубликован!',
                               });
-                            })
+                            });
                           }
 
-                        })
+                        });
                       }}
-                      >Опубликовать</Button>
+                    >Опубликовать</Button>
                     }
                   </span>
                 }
@@ -426,7 +438,7 @@ export default class CounterAgentEdit extends Component {
                     getSubContractById={this.getSubContractById}
                     setSpecData={this.setSpecData}
                     form={this.props.form}
-                    formData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
+                    formData={this.props.universal.getObjectData}
                     formItemLayout={formItemLayout}
                     getCounterAgentById={this.getCounterAgentById}
                   />
@@ -437,9 +449,11 @@ export default class CounterAgentEdit extends Component {
                 <TabPane tab="Спецификация" key="specification">
                   {Object.keys(this.state.SpecData).length > 0 ?
                     <SpecPage
+                      dataGuid={this.state.dataStoreGuid}
                       setForceRender={() => {
                         this.setState({
                           SpecPageForceRendered: false,
+                          SpecData: [],
                         });
                       }}
                       forceRender={this.state.SpecPageForceRendered}
@@ -447,9 +461,17 @@ export default class CounterAgentEdit extends Component {
                       form={this.props.form}
                       gridData={this.state.SpecData}/>
                     : <SpecPage
+                      dataGuid={this.state.dataStoreGuid}
+                      setForceRender={() => {
+                        this.setState({
+                          SpecPageForceRendered: false,
+                          SpecData: [],
+                        });
+                      }}
                       eventManager={this.state.eventManager}
                       form={this.props.form}
-                      gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}/>}
+                      gridData={this.props.universal.getObjectData}
+                    />}
 
 
                 </TabPane>

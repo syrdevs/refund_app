@@ -171,6 +171,7 @@ class SpecPage extends Component {
   state = {
     selectedRowKeys: [],
 
+    dataStoreGuid: null,
     validatemessage: 'не заполнено',
     columns: [
       {
@@ -296,6 +297,11 @@ class SpecPage extends Component {
             width: '10%',
             render: (text, record) => {
 
+              let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
+              let countValue = record.value ? record.value : 0;
+
+              record['valueSum'] = tariffValue * countValue;
+
               if (record.key === 'total' && record.hasOwnProperty('valueTotal')) {
                 return <Input disabled={true} value={record.valueTotal}/>;
               }
@@ -318,6 +324,11 @@ class SpecPage extends Component {
                       onChange={(e) => {
                         record['value'] = e;
                         record['percentAdvance'] = this.calculateAllMonthValue(record);
+
+                        let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
+                        let countValue = record.value ? record.value : 0;
+
+                        record['valueSum'] = tariffValue * countValue;
 
                         this.setState(prevState => ({
                           smarttabDataSource: prevState.smarttabDataSource,
@@ -374,10 +385,10 @@ class SpecPage extends Component {
             },
             render: (text, record) => {
 
-
               if (record.key === 'total' && record.hasOwnProperty('valueSumTotal')) {
                 return <span>{record.valueSumTotal}</span>;
               }
+
 
               return <FormItem>
                 {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
@@ -387,6 +398,50 @@ class SpecPage extends Component {
                   }],
                 })(
                   <span>{record.valueSum ? record.valueSum : 0}</span>,
+                )}
+              </FormItem>;
+            },
+          },
+          {
+            title: '% Аванса',
+            dataIndex: 'percentAvance',
+            isVisible: true,
+            order: 2,
+            width: '20%',
+            key: 'percentAvance',
+            onCell: record => {
+              return {
+                onClick: () => {
+
+                },
+              };
+            },
+            render: (text, record) => {
+
+              if (record.key === 'total') {
+                return <Input disabled={true} value={record.percentAvanceTotal ? record.percentAvanceTotal : 0}/>;
+              }
+
+              record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
+
+
+              return <FormItem>
+                {this.props.form.getFieldDecorator('spespage.sumAvance' + record.key, {
+                  initialValue: record['percentAvance'] ? record['percentAvance'] : 0,
+                  rules: [{
+                    required: false,
+                    message: this.state.validatemessage,
+                  }],
+                })(
+                  <InputNumber onChange={(e) => {
+                    record['percentAvance'] = e;
+                    record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
+
+                    this.setState(prevState => ({
+                      smarttabDataSource: prevState.smarttabDataSource,
+                    }));
+
+                  }}/>,
                 )}
               </FormItem>;
             },
@@ -408,28 +463,47 @@ class SpecPage extends Component {
             render: (text, record) => {
 
               if (record.key === 'total' && record.hasOwnProperty('sumAdvanceTotal')) {
-                // return <span>{record.sumAdvanceTotal}</span>;
-                return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+                return <span>{record.sumAdvanceTotal ? record.sumAdvanceTotal : 0}</span>;
+                //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
               }
 
-              return <FormItem>
-                {this.props.form.getFieldDecorator('spespage.avans' + record.key, {
-                  initialValue: record.sumAdvance ? record.sumAdvance : 0,
-                  rules: [{
-                    required: false,
-                    message: this.state.validatemessage,
-                  }],
-                })(
-                  <InputNumber
-                    style={{ width: 90 }}
-                    step={0.01}
-                    onChange={(d) => {
-                      record['sumAdvance'] = d;
-                      // this.onChangePayment(text, d);
-                    }}
-                  />,
-                )}
-              </FormItem>;
+              return <span>{record.sumAdvance ? record.sumAdvance : 0}</span>;
+              {/*<FormItem>*/
+              }
+              {/*{this.props.form.getFieldDecorator('spespage.avans' + record.key, {*/
+              }
+              {/*initialValue: record.sumAdvance ? record.sumAdvance : 0,*/
+              }
+              {/*rules: [{*/
+              }
+              {/*required: false,*/
+              }
+              {/*message: this.state.validatemessage,*/
+              }
+              {/*}],*/
+              }
+              {/*})(*/
+              }
+              {/*<InputNumber*/
+              }
+              {/*style={{ width: 90 }}*/
+              }
+              {/*step={0.01}*/
+              }
+              {/*onChange={(d) => {*/
+              }
+              {/*record['sumAdvance'] = d;*/
+              }
+              {/*// this.onChangePayment(text, d);*/
+              }
+              {/*}}*/
+              }
+              {/*/>,*/
+              }
+              {/*)}*/
+              }
+              {/*</FormItem>;*/
+              }
             },
           }],
       },
@@ -437,6 +511,15 @@ class SpecPage extends Component {
         title: 'Остаток',
         dataIndex: 'percentAdvance',
         width: '20%',
+        render: (text, record) => {
+
+          if (record.key === 'total' && record.hasOwnProperty('percentAdvanceTotal')) {
+            return <span>{record.percentAdvanceTotal ? record.percentAdvanceTotal : 0}</span>;
+            //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+          }
+
+          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
+        },
       },
 
       // {
@@ -496,7 +579,7 @@ class SpecPage extends Component {
       type: 'universal2/getList',
       payload: {
         'start': 0,
-        'length': 20,
+        'length': 500,
         'entity': 'activityMeasureUnit',
         'alias': 'activityWithMeasureUnits',
         'filter': {
@@ -544,6 +627,7 @@ class SpecPage extends Component {
   componentDidUpdate() {
     if (this.props.forceRender) {
       this.setState({
+        dataStoreGuid: this.props.dataGuid,
         smarttabDataSource: [],
         smarttabcount: 0,
       }, () => {
@@ -551,6 +635,18 @@ class SpecPage extends Component {
         this.props.setForceRender();
       });
     }
+
+
+    if (this.props.dataGuid !== this.state.dataStoreGuid && !this.props.forceRender) {
+      this.setState({
+        dataStoreGuid: this.props.dataGuid,
+        smarttabDataSource: [],
+        smarttabcount: 0,
+      }, () => {
+        this.renderData();
+      });
+    }
+
   }
 
   renderData = () => {
@@ -593,9 +689,37 @@ class SpecPage extends Component {
 
               dataSource.push(itemResult);
             });
+          } else {
+
+            let itemResult = {
+              itemId: item.id,
+              activity: item.activity,
+              sumAdvance: 0,
+              key: _index++,
+              contractTimeItem: {},
+              percentAdvance: 0,
+            };
+
+            Object.keys(item.activity).forEach((contractKey) => {
+              itemResult[contractKey] = item.activity[contractKey];
+            });
+
+            if (itemResult.activityMeasureUnits && itemResult.activityMeasureUnits.length > 0) {
+
+              if (itemResult.activityMeasureUnits[0].measureUnit)
+                itemResult.measureUnit = itemResult.activityMeasureUnits[0].measureUnit;
+
+
+              if (itemResult.activityMeasureUnits[0] && itemResult.activityMeasureUnits[0].tariffItems && itemResult.activityMeasureUnits[0].tariffItems.length > 0)
+                itemResult.tariffItem = itemResult.activityMeasureUnits[0].tariffItems[0];
+
+            }
+
+            itemResult.sumAdvance = itemResult.sumAdvance ? itemResult.sumAdvance : 0;
+
+            dataSource.push(itemResult);
           }
         });
-
 
       this.setState({
         smarttabDataSource: dataSource,
@@ -1012,22 +1136,22 @@ class SpecPage extends Component {
         'entity': 'activityList',
       },
     });
-    dispatch({
-      type: 'universal2/getList',
-      payload: {
-        'start': 0,
-        'length': 1000,
-        'entity': 'measureUnit',
-      },
-    });
-    dispatch({
-      type: 'universal2/getList',
-      payload: {
-        'start': 0,
-        'length': 500,
-        'entity': 'paymentType',
-      },
-    });
+    // dispatch({
+    //   type: 'universal2/getList',
+    //   payload: {
+    //     'start': 0,
+    //     'length': 1000,
+    //     'entity': 'measureUnit',
+    //   },
+    // });
+    // dispatch({
+    //   type: 'universal2/getList',
+    //   payload: {
+    //     'start': 0,
+    //     'length': 500,
+    //     'entity': 'paymentType',
+    //   },
+    // });
 
   }
 
@@ -1097,6 +1221,12 @@ class SpecPage extends Component {
         }
       }
 
+      if (columnName === 'percentAvance') {
+        if (item.percentAvance) {
+          result += item.percentAvance;
+        }
+      }
+
     });
 
 
@@ -1158,7 +1288,8 @@ class SpecPage extends Component {
         sumAdvanceTotal: this.calculateMainSum('sumAdvance'),
         valueSumTotal: this.calculateMainSum('valueSum'),
         valueTotal: this.calculateMainSum('value'),
-        percentAdvance: this.calculateMainSum('percentAdvance'),
+        percentAdvanceTotal: this.calculateMainSum('percentAdvance'),
+        percentAvanceTotal: this.calculateMainSum('percentAvance'),
         total: this.calculateSum(),
       }]);
     }

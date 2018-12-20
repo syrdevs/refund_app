@@ -45,20 +45,22 @@ class CounterAgent extends Component {
       selectedRowKeys: [],
       isForm: false,
       columns: [
+        // {
+        //   title: 'Код',
+        //   dataIndex: 'code',
+        //   isVisible: true,
+        // },
         {
-          title: 'Код',
-          dataIndex: 'code',
+          title: 'БИН/ИИН',
+          dataIndex: 'idendifier.identifiervalue',
           isVisible: true,
-        }, {
+        },
+        {
           title: 'Наименование/Имя',
           dataIndex: 'name',
           width: 360,
           isVisible: true,
-        }, {
-          title: 'Идентификатор',
-          dataIndex: 'idendifier.identifiervalue',
-          isVisible: true,
-        }, {
+        },  {
           title: 'Адрес',
           dataIndex: 'address',
           isVisible: true,

@@ -8,6 +8,7 @@ import moment from 'moment';
 import { connect } from 'dva/index';
 import error from '../Exception/models/error';
 import AttachmentPage from './TabPages/AttachmentPage';
+import Guid from '@/utils/Guid';
 
 const TabPane = Tabs.TabPane;
 const formItemLayout = {
@@ -26,6 +27,8 @@ const formItemLayout = {
 }))
 export default class CounterAgentCreate extends Component {
   state = {
+
+    dataStoreGuid: Guid.newGuid(),
 
     SpecData: {},
     SpecPageForceRendered: false,
@@ -69,7 +72,9 @@ export default class CounterAgentCreate extends Component {
       },
     }).then(() => {
       this.props.form.resetFields();
-      this.setSpecData(this.props.universal.counterAgentData);
+      this.setState({
+        dataStoreGuid: Guid.newGuid(),
+      });
     });
 
   };
@@ -77,6 +82,10 @@ export default class CounterAgentCreate extends Component {
   componentDidMount() {
 
     const { dispatch } = this.props;
+
+    this.setState({
+      dataStoreGuid: Guid.newGuid(),
+    });
 
     if (this.props.location.state) {
 //this.props.location.state
@@ -202,6 +211,7 @@ export default class CounterAgentCreate extends Component {
 
   setSpecData = (data) => {
     this.setState({
+      dataStoreGuid: Guid.newGuid(),
       SpecPageForceRendered: true,
       SpecData: data,
     });
@@ -210,7 +220,7 @@ export default class CounterAgentCreate extends Component {
   render = () => {
 
     const createFormFromContract = () => {
-      if (this.props.location.state && this.props.location.state.type === 'setContract' && Object.keys(this.props.universal.counterAgentData).length === 0) {
+      if (this.props.location.state && this.props.location.state.type === 'setContract') {
         return true;
       }
 
@@ -293,9 +303,11 @@ export default class CounterAgentCreate extends Component {
               <TabPane tab="Спецификация" key="specification">
                 {Object.keys(this.state.SpecData).length > 0 ?
                   <SpecPage
+                    dataGuid={this.state.dataStoreGuid}
                     setForceRender={() => {
                       this.setState({
                         SpecPageForceRendered: false,
+                        SpecData: [],
                       });
                     }}
                     forceRender={this.state.SpecPageForceRendered}
@@ -303,6 +315,13 @@ export default class CounterAgentCreate extends Component {
                     form={this.props.form}
                     gridData={this.state.SpecData}/>
                   : <SpecPage
+                    setForceRender={() => {
+                      this.setState({
+                        SpecPageForceRendered: false,
+                        SpecData: [],
+                      });
+                    }}
+                    dataGuid={this.state.dataStoreGuid}
                     eventManager={this.state.eventManager}
                     form={this.props.form}
                     gridData={this.props.universal.getObjectData}/>}

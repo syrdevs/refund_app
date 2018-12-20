@@ -198,6 +198,12 @@ export default class InfoPage extends Component {
     /// formItemLayout
     /// form
 
+    let contractTypeDataSource = this.getReferenceValues('contractType', 'nameRu');
+
+    if (this.props.form.getFieldValue('parentContract') && this.props.form.getFieldValue('parentContract').hasOwnProperty("value") && this.props.form.getFieldValue('parentContract').value !== null) {
+      contractTypeDataSource = contractTypeDataSource.filter(x => x.props.prop.code !== '1');
+    }
+
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
@@ -437,9 +443,8 @@ export default class InfoPage extends Component {
                       if ((option.props.prop.code === '3' || option.props.prop.code === '2') && parentContract !== null) {
                         this.props.getSubContractById(parentContract.id, value);
                       }
-
                     }}>
-              {this.getReferenceValues('contractType', 'nameRu')}
+              {contractTypeDataSource}
             </Select>,
           )}
         </Form.Item>

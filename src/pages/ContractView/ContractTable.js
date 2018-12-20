@@ -430,7 +430,10 @@ export default class ContractTable extends Component {
 
             let recordId = this.state.selectedRowKeys[0];
             let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
-            let contractName = 'Договор №' + record.number + ' от ' + record.documentDate;
+
+            let contractType = record.contractType ? record.contractType : '';
+
+            let contractName = contractType + ' №' + record.number + ' от ' + record.documentDate;
 
             this.props.history.push({
               pathname: '/contract/counteragent/editcontract',

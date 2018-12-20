@@ -445,7 +445,7 @@ export default {
     createContractFromAgentReducer(state, { payload }) {
       return {
         ...state,
-        counterAgentData: payload,
+        getObjectData: payload,
       };
     },
     getObjectReducer(state, { payload }) {

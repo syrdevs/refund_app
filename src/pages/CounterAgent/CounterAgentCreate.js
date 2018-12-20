@@ -69,6 +69,7 @@ export default class CounterAgentCreate extends Component {
       },
     }).then(() => {
       this.props.form.resetFields();
+      this.setSpecData(this.props.universal.counterAgentData);
     });
 
   };

@@ -808,7 +808,7 @@ class SpecPage extends Component {
                 // }
 
                 return <InputNumber
-                  defaultValue={defaultValue.hasOwnProperty('valueSection') ? defaultValue.valueSection : 0}
+                  defaultValue={defaultValue && defaultValue.hasOwnProperty('valueSection') ? defaultValue.valueSection : 0}
                   onChange={(e) => {
                     record['contractTimeItem'] = {
                       ...record['contractTimeItem'],
@@ -845,7 +845,7 @@ class SpecPage extends Component {
 
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
-                return <span>{defaultValue.hasOwnProperty('valueSection') ? defaultValue.sumSection : 0}</span>;
+                return <span>{defaultValue && defaultValue.hasOwnProperty('valueSection') ? defaultValue.sumSection : 0}</span>;
               },
             },
             {
@@ -862,7 +862,7 @@ class SpecPage extends Component {
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
                 return <InputNumber
-                  defaultValue={defaultValue.hasOwnProperty('sumAdvanceTakeout') ? defaultValue.sumAdvanceTakeout : 0}
+                  defaultValue={defaultValue && defaultValue.hasOwnProperty('sumAdvanceTakeout') ? defaultValue.sumAdvanceTakeout : 0}
                   onChange={(e) => {
 
                     record['contractTimeItem'] = {

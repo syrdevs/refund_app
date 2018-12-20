@@ -69,12 +69,19 @@ class ViewDocument extends Component {
 
   }
 
-  getIconStep=(index)=>{
+  getIconStep=(value,index)=>{
     if(index===0){
       return <Icon><FontAwesomeIcon icon={faEnvelope}/></Icon>
-    }else{
-      return <Icon><FontAwesomeIcon icon={faCheck}/></Icon>
     }
+    if(value===0){
+      return  <Icon type="clock-circle" />
+    }
+    if(value===2){
+      return <Icon type="exclamation-circle" />
+    }
+
+    return <Icon><FontAwesomeIcon icon={faCheck}/></Icon>
+
   }
 
   stepDescr=(value,index)=>{
@@ -258,7 +265,7 @@ class ViewDocument extends Component {
                 >
                   {/*current={this.state.dataRoutePath}*/}
                   <Steps direction="vertical">
-                    {this.state.dataRoutePath.map((item,index )=> <Step key={item.stepName} title={item.stepName} description={this.stepDescr(item.stepStatus,index)} status="finish" icon={this.getIconStep(index)} />)}
+                    {this.state.dataRoutePath.map((item,index )=> <Step key={item.stepName} title={item.stepName} description={this.stepDescr(item.stepStatus,index)} status="finish" icon={this.getIconStep(item.stepStatus,index)} />)}
                   </Steps>
                   {/*<Steps direction="vertical">
                     <p>Сегодня</p>

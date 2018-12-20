@@ -199,7 +199,7 @@ export default class DogovorModal extends Component {
               });
             }}
             onShowSizeChange={(pageNumber, pageSize) => {
-              console.log('on paging');
+              this.onShowSizeChange(pageNumber, pageSize);
             }}
             onRefresh={() => {
               console.log('onRefresh');

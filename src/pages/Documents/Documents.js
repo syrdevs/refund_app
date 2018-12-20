@@ -454,8 +454,8 @@ class Documents extends Component {
                     {/*<SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faFolderOpen}/></Icon><span>Документы</span></span>}>*/}
                       <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faEnvelope}/></Icon><span>Входящие</span></span>}  >
                         <Menu.Item key="3"><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
-                        <Menu.Item key="1"><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Исполненные</span></Menu.Item>
-                        <Menu.Item key="2"><span><Icon><FontAwesomeIcon icon={faClock}/></Icon>На исполнение</span></Menu.Item>
+                        <Menu.Item key="1"><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
+                        <Menu.Item key="2"><span><Icon><FontAwesomeIcon icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
                       </SubMenu>
                       {/*<Menu.Item key="4"><span><Icon><FontAwesomeIcon icon={faReply}/></Icon>Исходящие</span></Menu.Item>*/}
                     {/*</SubMenu>*/}

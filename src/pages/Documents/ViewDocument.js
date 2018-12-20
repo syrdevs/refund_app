@@ -95,7 +95,7 @@ class ViewDocument extends Component {
       return 'Подписал'
     }
     if(value===2){
-      Отклонил
+      return 'Отклонил';
     }
 
 

@@ -1,26 +1,26 @@
-import React, {Component} from 'react';
-import {Card, Row, Menu, Icon, Col, Layout, Button, Dropdown, Spin,Progress, Badge} from "antd";
+import React, { Component } from 'react';
+import { Card, Row, Menu, Icon, Col, Layout, Button, Dropdown, Spin, Progress, Badge } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import {formatMessage, FormattedMessage} from 'umi/locale';
-import {Animated} from 'react-animated-css';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faFolderOpenpen} from "@fortawesome/free-solid-svg-icons";
+import { formatMessage, FormattedMessage } from 'umi/locale';
+import { Animated } from 'react-animated-css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderOpenpen } from '@fortawesome/free-solid-svg-icons';
 import GridFilter from '@/components/GridFilter';
 import SmartGridView from '@/components/SmartGridView';
-import {connect} from "dva";
-import saveAs from "file-saver";
-import moment from "moment";
-import router from "umi/router";
-import documentStyle from "./Documents.less";
-import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
-import {faReply} from "@fortawesome/free-solid-svg-icons/faReply";
-import {faFolderOpen} from "@fortawesome/free-solid-svg-icons/faFolderOpen";
-import {faFolder} from "@fortawesome/free-solid-svg-icons/faFolder";
-import {faCheckSquare} from "@fortawesome/free-solid-svg-icons/faCheckSquare";
-import {faClock} from "@fortawesome/free-solid-svg-icons/faClock";
+import { connect } from 'dva';
+import saveAs from 'file-saver';
+import moment from 'moment';
+import router from 'umi/router';
+import documentStyle from './Documents.less';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope';
+import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons/faFolderOpen';
+import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
+import { faCheckSquare } from '@fortawesome/free-solid-svg-icons/faCheckSquare';
+import { faClock } from '@fortawesome/free-solid-svg-icons/faClock';
 
 const SubMenu = Menu.SubMenu;
-const {Header, Sider, Content} = Layout;
+const { Header, Sider, Content } = Layout;
 
 
 @connect(({ universal, loading }) => {
@@ -39,26 +39,27 @@ class Documents extends Component {
   state = {
     collapsed: false,
     openKeys: ['sub1'],
-    selectedRow :{},
+    selectedRow: {},
     fcolumn:
       [
-      //   {
-      //   'title': '',
-      //   isVisible: true,
-      //
-      //   'dataIndex': 'progressStst',
-      //   order: 0,
-      //   render: (record, value) => <a
-      //     href="#"> <Progress type="circle" percent={this.setPercent(value.status)} status={this.setStatusProg(value.status)} width={29} /></a> ,
-      // },
+        //   {
+        //   'title': '',
+        //   isVisible: true,
+        //
+        //   'dataIndex': 'progressStst',
+        //   order: 0,
+        //   render: (record, value) => <a
+        //     href="#"> <Progress type="circle" percent={this.setPercent(value.status)} status={this.setStatusProg(value.status)} width={29} /></a> ,
+        // },
         {
-        'title': 'Статус',
-        isVisible: true,
-        'dataIndex': 'status.statusName',
-        order: 1,
-        render: (record, value) => <a
-          href="#"> <span><Badge status={this.setBadgeStatus(value.status.result)} /></span> {value.status.statusName} </a> ,
-      }],
+          'title': 'Статус',
+          isVisible: true,
+          'dataIndex': 'status.statusName',
+          order: 1,
+          render: (record, value) => <a
+            href="#"> <span><Badge status={this.setBadgeStatus(value.status.result)}/></span> {value.status.statusName}
+          </a>,
+        }],
     columns: [
       {
         dataIndex: '102',
@@ -105,10 +106,13 @@ class Documents extends Component {
     },
     ShowModal: false,
     parameters: {
-      start: 0,
-      length: 20,
-      entity: 'documentToSign',
-      alias:'routes'
+      'start': 0,
+      'length': 20,
+      'entity': 'correspondence',
+      'alias': 'routes',
+      'filter': {
+        'documentIn': true,
+      },
     },
     // searchButton: false,
     serverFileList: [],
@@ -125,16 +129,16 @@ class Documents extends Component {
 
   };
 
-  setStatusProg=(value)=>{
-    if(value==='Отклонен'){
-      return 'exception'
-    }else if(value==='Подписан'){
-      return 'success'
+  setStatusProg = (value) => {
+    if (value === 'Отклонен') {
+      return 'exception';
+    } else if (value === 'Подписан') {
+      return 'success';
     }
   };
 
-  setPercent=(value)=>{
-    if (value==='Подписан') {
+  setPercent = (value) => {
+    if (value === 'Подписан') {
       return '100';
     }
     else if (value === 'На подписании') {
@@ -146,7 +150,7 @@ class Documents extends Component {
   };
 
   setBadgeStatus = (value) => {
-    if (value===0) {
+    if (value === 0) {
       return 'success';
     }
     else if (value === 1) {
@@ -163,7 +167,7 @@ class Documents extends Component {
     dispatch({
       type: 'universal/paymentsData',
       payload: this.state.parameters,
-    }).then(()=>{console.log(this.props.universal)});
+    });
   };
 
   hideleft() {
@@ -184,12 +188,28 @@ class Documents extends Component {
   onOpenChange = (openKeys) => {
     const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
     if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      this.setState({openKeys});
+      this.setState({ openKeys });
     } else {
       this.setState({
         openKeys: latestOpenKey ? [latestOpenKey] : [],
       });
     }
+  };
+
+
+  //***//
+  getDocumentList = (filterParams) => {
+
+    this.setState(prevState => ({
+      parameters: {
+        ...prevState.parameters,
+        filter: {
+          'documentIn': true,
+          ...filterParams,
+        },
+      },
+    }), this.loadDocument);
+
   };
 
   // componentWillUnmount() {
@@ -203,7 +223,7 @@ class Documents extends Component {
   // }
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     this.loadDocument();
 
     // this.setState({
@@ -257,7 +277,7 @@ class Documents extends Component {
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'universal/paymentsData',
       payload: {
@@ -355,12 +375,12 @@ class Documents extends Component {
         method: 'post',
         body: JSON.stringify({
           'entityClass': 'application',
-          'fileName': formatMessage({id: 'menu.refunds.requests'}),
+          'fileName': formatMessage({ id: 'menu.refunds.requests' }),
           'src': {
             'searched': true,
             'data': this.state.pagingConfig.src.data,
           },
-          'columns': columns.filter(column => column.isVisible).map(x => ({dataIndex: x.dataIndex, title: x.title})),
+          'columns': columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title })),
         }),
       })
       .then(response => {
@@ -382,11 +402,8 @@ class Documents extends Component {
   };
 
 
-
-
   render() {
-    let {documentToSign} = this.props.universal.paymentsData;
-
+    let { correspondence } = this.props.universal.paymentsData;
 
 
     let columns = [
@@ -397,7 +414,7 @@ class Documents extends Component {
       // },
       {
         'title': 'Тип документа',
-        'width':200,
+        'width': 200,
         'isVisible': true,
         'dataIndex': 'documentType.entDesc',
 
@@ -421,7 +438,7 @@ class Documents extends Component {
       {
         'title': 'Дата подписания',
         'isVisible': true,
-        'dataIndex':  'status.statusDate',
+        'dataIndex': 'status.statusDate',
       },
       {
         'title': 'Загаловок',
@@ -431,16 +448,15 @@ class Documents extends Component {
     ];
 
 
-
-    return (<PageHeaderWrapper title={formatMessage({id: 'menu.documents'})}>
-        <Card style={{borderRadius: '5px', marginBottom: '10px'}} bodyStyle={{padding: 0}} bordered={true}>
+    return (<PageHeaderWrapper title={formatMessage({ id: 'menu.documents' })}>
+        <Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>
           <Row>
             <Col sm={24}>
               <Layout>
                 <Sider style={{ background: '#fff', padding: 0 }}
-                  trigger={null}
-                  collapsible
-                  collapsed={this.state.collapsed}
+                       trigger={null}
+                       collapsible
+                       collapsed={this.state.collapsed}
                 >
 
                   <Menu
@@ -452,17 +468,25 @@ class Documents extends Component {
 
                   >
                     {/*<SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faFolderOpen}/></Icon><span>Документы</span></span>}>*/}
-                      <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon icon={faEnvelope}/></Icon><span>Входящие</span></span>}  >
-                        <Menu.Item key="3"><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
-                        <Menu.Item key="1"><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
-                        <Menu.Item key="2"><span><Icon><FontAwesomeIcon icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
-                      </SubMenu>
-                      {/*<Menu.Item key="4"><span><Icon><FontAwesomeIcon icon={faReply}/></Icon>Исходящие</span></Menu.Item>*/}
+                    <SubMenu key="sub1" title={<span><Icon><FontAwesomeIcon
+                      icon={faEnvelope}/></Icon><span>Входящие</span></span>}>
+                      <Menu.Item key="3" onClick={() => {
+                        this.getDocumentList();
+                      }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
+                      <Menu.Item key="1" onClick={() => {
+                        this.getDocumentList({ 'documentSigned': true });
+                      }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
+                      <Menu.Item key="2" onClick={() => {
+                        this.getDocumentList({ 'documentNeedToSign': true });
+                      }}><span><Icon><FontAwesomeIcon
+                        icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
+                    </SubMenu>
+                    {/*<Menu.Item key="4"><span><Icon><FontAwesomeIcon icon={faReply}/></Icon>Исходящие</span></Menu.Item>*/}
                     {/*</SubMenu>*/}
                   </Menu>
                 </Sider>
                 <Layout>
-                  <Header style={{background: '#fff', padding: '0'}}>
+                  <Header style={{ background: '#fff', padding: '0' }}>
                     <Icon
                       className={documentStyle.trigger}
                       type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
@@ -473,14 +497,14 @@ class Documents extends Component {
                     margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280,
                   }}
                   >
-                    <Card bodyStyle={{padding: 5}}>
+                    <Card bodyStyle={{ padding: 5 }}>
                       <Row>
 
                         <Col sm={24} md={this.state.tablecont}>
-                          <Spin tip={formatMessage({id: 'system.loading'})} spinning={this.props.loadingData}>
-                            <div className={documentStyle.documentTable}> <SmartGridView
+                          <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
+                            <div className={documentStyle.documentTable}><SmartGridView
                               name='DocumentPage'
-                             // searchButton={false}
+                              // searchButton={false}
                               hideFilterBtn={true}
                               fixedBody={true}
                               rowKey={'id'}
@@ -489,16 +513,16 @@ class Documents extends Component {
                               rowSelection={true}
                               actionColumns={this.state.fcolumn}
                               columns={columns}
-                               sorted={true}
-                                sortedInfo={this.state.sortedInfo}
+                              sorted={true}
+                              sortedInfo={this.state.sortedInfo}
                               showTotal={true}
                               showExportBtn={true}
 
                               dataSource={{
-                                total: documentToSign?documentToSign.totalElements:0,
+                                total: correspondence ? correspondence.totalElements : 0,
                                 pageSize: this.state.pagingConfig.length,
                                 page: this.state.pagingConfig.start + 1,
-                                data: documentToSign?documentToSign.content:null,
+                                data: correspondence ? correspondence.content : null,
                               }}
                               actionExport={() => this.exportToExcel()}
                               onShowSizeChange={(pageNumber, pageSize) => {
@@ -524,7 +548,7 @@ class Documents extends Component {
                                   sortedInfo: column,
                                   pagingConfig: {
                                     ...prevState.pagingConfig,
-                                    sort: [{field: column.field, 'desc': column.order === 'descend'}],
+                                    sort: [{ field: column.field, 'desc': column.order === 'descend' }],
                                   },
                                 }), () => {
                                   this.loadMainGridData();
@@ -544,7 +568,7 @@ class Documents extends Component {
                                   },
                                 })*/
 
-                               router.push('/documents/view?id='+record.id);
+                                router.push('/documents/view?id=' + record.id);
 
                               }}
                               onFilter={(filters) => {

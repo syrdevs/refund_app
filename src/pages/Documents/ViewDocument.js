@@ -128,7 +128,7 @@ class ViewDocument extends Component {
           })
         }}
         onOk={() => {
-          console.log("ok")
+
         }}
         onCancel={() => {
           this.setState({
@@ -203,8 +203,8 @@ class ViewDocument extends Component {
                 >
 
 
-                  <p style={{marginTop: '10px'}}><h3>Заголовок письма</h3></p>
-                  <p>Отправитель: {this.state.data.initiatorUser ?this.state.data.initiatorUser.userName : ''}</p>
+                  <p style={{marginTop: '10px'}}><h3>{this.state.data.descr ?this.state.data.descr : ''}</h3></p>
+                  <p>Опубликовал: {this.state.data.initiatorUser ?this.state.data.initiatorUser.userName : ''}</p>
                   <p>Тип документа: Договор</p>
                   <p>{this.state.data.status?this.state.data.status.statusDate:''}</p>
 
@@ -231,7 +231,7 @@ class ViewDocument extends Component {
                 >
                   {/*current={this.state.dataRoutePath}*/}
                   <Steps direction="vertical">
-                    {this.state.dataRoutePath.map(item => <Step key={item.stepName} title={item.stepName} description={item.completeText} />)}
+                    {this.state.dataRoutePath.map(item => <Step key={item.stepName} title={item.stepName} description={item.stepDescr} />)}
                   </Steps>
                   {/*<Steps direction="vertical">
                     <p>Сегодня</p>

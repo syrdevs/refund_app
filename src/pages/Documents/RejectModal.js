@@ -48,7 +48,13 @@ export default class RejectModal extends Component {
           .then(response => response.json())
           .then(data => {
             this.props.onCancel();
+            Modal.info({
+              title: 'Информация',
+              content: 'Документ отклонен',
+            });
           })
+
+
 
 
 

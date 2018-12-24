@@ -18,7 +18,7 @@ export default {
       const response = yield call(LoginUser, payload);
       // Login successfully
 
-      if (response) {
+      if (response.token) {
 
         yield put({
           type: 'changeLoginStatus',
@@ -27,7 +27,6 @@ export default {
             currentAuthority: ['ADMIN'],
           },
         });
-
         localStorage.setItem('token', response.token);
         setAuthToken();
         reloadAuthorized();

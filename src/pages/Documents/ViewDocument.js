@@ -50,7 +50,7 @@ class ViewDocument extends Component {
     this.props.dispatch({
       type: 'universal/getobject',
       payload: {
-        "entity": "documentToSign",
+        "entity": "correspondence",
         "alias": "routes",
         "id": id //'this.props.location.query.id'
       },
@@ -66,7 +66,6 @@ class ViewDocument extends Component {
     const { dispatch } = this.props;
     this.loadActData(this.props.location.query.id);
     this.loadDocRoutePath();
-
   }
 
   getIconStep=(value,index)=>{

@@ -20,6 +20,10 @@ export default class CounterAgentMain extends Component {
 
   };
 
+  setTitleHeader = (title) => {
+    console.log(title);
+  };
+
   getCardTitle = () => {
 
     if (this.props.location.state && this.props.location.state.data.title) {

@@ -181,24 +181,26 @@ class SpecPage extends Component {
 
           if (record.key === 'total') {
             return <span><b>{record.activity.code}</b></span>;
+          } else {
+            return <span>{record.activity.code}</span>;
           }
-
-          return (
-            <FormItem>
-              {this.props.form.getFieldDecorator('spespage.code' + record.key, {
-                rules: [{
-                  required: false,
-                  message: this.state.validatemessage,
-                }],
-                initialValue: text,
-              })(
-                <Input readOnly={true} style={{ width: 150 }} name={'code' + record.key}
-                       onChange={(e) => {
-                         //this.identValue(e.target.value, record, 'code', 'identities');
-                       }
-
-                       }/>)}
-            </FormItem>);
+          //
+          // return (
+          //   <FormItem>
+          //     {this.props.form.getFieldDecorator('spespage.code' + record.key, {
+          //       rules: [{
+          //         required: false,
+          //         message: this.state.validatemessage,
+          //       }],
+          //       initialValue: text,
+          //     })(
+          //       <Input readOnly={true} style={{ width: 150 }} name={'code' + record.key}
+          //              onChange={(e) => {
+          //                //this.identValue(e.target.value, record, 'code', 'identities');
+          //              }
+          //
+          //              }/>)}
+          //   </FormItem>);
         },
       },
       {
@@ -210,38 +212,40 @@ class SpecPage extends Component {
 
           if (record.key === 'total') {
             return '';
+          } else {
+            return <div style={{ width: 350 }}>{record.activity.name}</div>;
           }
 
-          return (
-            <FormItem>
-              {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
-                initialValue: record.id ? record.id : null,
-                rules: [{
-                  required: false,
-                  message: this.state.validatemessage,
-                }],
-              })(
-                <Select
-                  name={'activity' + record.key}
-                  style={{ width: 350 }}
-                  onChange={(e, option) => {
-                    record['activity'] = {
-                      prop: option.props.prop,
-                      code: option.props.prop.activity.code,
-                      id: option.props.prop.activity.id,
-                      name: option.props.prop.activity.name,
-                    };
-
-                    this.changeContractType(record.key, e);
-
-                    // this.identValue(e, record, 'type_activities', 'identities');
-                  }}>
-                  {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
-                    <Option value={item.activity.id} prop={item}
-                            key={item.activity.id}>{item.activity.name}</Option>)}
-                </Select>,
-              )}
-            </FormItem>);
+          // return (
+          //   <FormItem>
+          //     {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
+          //       initialValue: record.id ? record.id : null,
+          //       rules: [{
+          //         required: false,
+          //         message: this.state.validatemessage,
+          //       }],
+          //     })(
+          //       <Select
+          //         name={'activity' + record.key}
+          //         style={{ width: 350 }}
+          //         onChange={(e, option) => {
+          //           record['activity'] = {
+          //             prop: option.props.prop,
+          //             code: option.props.prop.activity.code,
+          //             id: option.props.prop.activity.id,
+          //             name: option.props.prop.activity.name,
+          //           };
+          //
+          //           this.changeContractType(record.key, e);
+          //
+          //           // this.identValue(e, record, 'type_activities', 'identities');
+          //         }}>
+          //         {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
+          //           <Option value={item.activity.id} prop={item}
+          //                   key={item.activity.id}>{item.activity.name}</Option>)}
+          //       </Select>,
+          //     )}
+          //   </FormItem>);
         },
       },
       {
@@ -253,15 +257,17 @@ class SpecPage extends Component {
             return '';
           }
 
-          return (
-            <FormItem>
-              {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
-                rules: [{
-                  required: false,
-                  message: this.state.validatemessage,
-                }],
-              })(<span>{record.paymentType ? record.paymentType.nameRu : null}</span>)}
-            </FormItem>);
+          return <span>{record.paymentType ? record.paymentType.nameRu : null}</span>;
+
+          // return (
+          //   <FormItem>
+          //     {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
+          //       rules: [{
+          //         required: false,
+          //         message: this.state.validatemessage,
+          //       }],
+          //     })(<span>{record.paymentType ? record.paymentType.nameRu : null}</span>)}
+          //   </FormItem>);
         },
       },
       {
@@ -274,18 +280,22 @@ class SpecPage extends Component {
             return '';
           }
 
-          return (
-            <FormItem>
-              {this.props.form.getFieldDecorator('spespage.unit' + record.key, {
-                rules: [{
-                  required: false,
-                  message: this.state.validatemessage,
-                }],
-              })(
-                record.measureUnit ? <Tag style={{ fontSize: '14px' }} color="blue"
-                                          key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>,
-              )}
-            </FormItem>);
+
+          return record.measureUnit ? <Tag style={{ fontSize: '14px' }} color="blue"
+                                           key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>;
+
+          // return (
+          //   <FormItem>
+          //     {this.props.form.getFieldDecorator('spespage.unit' + record.key, {
+          //       rules: [{
+          //         required: false,
+          //         message: this.state.validatemessage,
+          //       }],
+          //     })(
+          //       record.measureUnit ? <Tag style={{ fontSize: '14px' }} color="blue"
+          //                                 key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>,
+          //     )}
+          //   </FormItem>);
         },
       },
       {
@@ -308,35 +318,39 @@ class SpecPage extends Component {
 
               record['percentAdvance'] = this.calculateAllMonthValue(record);
 
-              return (
-                <FormItem
-                >
-                  {this.props.form.getFieldDecorator('spespage.amount' + record.key, {
-                    rules: [{
-                      required: false,
-                      message: this.state.validatemessage,
-                    }],
-                    initialValue: record.value ? record.value : 0,
-                  })(
-                    <InputNumber
-                      style={{ width: 70 }}
-                      name={'amount' + record.key}
-                      onChange={(e) => {
-                        record['value'] = e;
-                        record['percentAdvance'] = this.calculateAllMonthValue(record);
 
-                        let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
-                        let countValue = record.value ? record.value : 0;
+              return (<InputNumber
+                defaultValue={record.value ? record.value : 0}
+                style={{ width: 70 }}
+                name={'amount' + record.key}
+                onChange={(e) => {
+                  record['value'] = e;
+                  record['percentAdvance'] = this.calculateAllMonthValue(record);
 
-                        record['valueSum'] = tariffValue * countValue;
+                  let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
+                  let countValue = record.value ? record.value : 0;
 
-                        this.setState(prevState => ({
-                          smarttabDataSource: prevState.smarttabDataSource,
-                        }));
+                  record['valueSum'] = tariffValue * countValue;
+
+                  this.setState(prevState => ({
+                    smarttabDataSource: prevState.smarttabDataSource,
+                  }));
 
 
-                      }}/>)}
-                </FormItem>);
+                }}/>);
+
+              // return (
+              //   <FormItem
+              //   >
+              //     {this.props.form.getFieldDecorator('spespage.amount' + record.key, {
+              //       rules: [{
+              //         required: false,
+              //         message: this.state.validatemessage,
+              //       }],
+              //       initialValue: record.value ? record.value : 0,
+              //     })(
+              //       )}
+              //   </FormItem>);
             },
           },
           {
@@ -359,14 +373,16 @@ class SpecPage extends Component {
                 return <span>{record.tariffItemTotal}</span>;
               }
 
-              return <FormItem>
-                {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
-                  rules: [{
-                    required: false,
-                    message: this.state.validatemessage,
-                  }],
-                })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
-              </FormItem>;
+              return <span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>;
+
+              // return <FormItem>
+              //   {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
+              //     rules: [{
+              //       required: false,
+              //       message: this.state.validatemessage,
+              //     }],
+              //   })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
+              // </FormItem>;
             },
           },
           {
@@ -389,17 +405,18 @@ class SpecPage extends Component {
                 return <span>{record.valueSumTotal}</span>;
               }
 
+              return <span>{record.valueSum ? record.valueSum : 0}</span>;
 
-              return <FormItem>
-                {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
-                  rules: [{
-                    required: false,
-                    message: this.state.validatemessage,
-                  }],
-                })(
-                  <span>{record.valueSum ? record.valueSum : 0}</span>,
-                )}
-              </FormItem>;
+              // return <FormItem>
+              //   {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
+              //     rules: [{
+              //       required: false,
+              //       message: this.state.validatemessage,
+              //     }],
+              //   })(
+              //     <span>{record.valueSum ? record.valueSum : 0}</span>,
+              //   )}
+              // </FormItem>;
             },
           },
           {
@@ -424,26 +441,37 @@ class SpecPage extends Component {
 
               record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
 
+              return (<InputNumber
+                defaultValue={record['percentAvance'] ? record['percentAvance'] : 0}
+                onChange={(e) => {
+                  record['percentAvance'] = e;
+                  record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
 
-              return <FormItem>
-                {this.props.form.getFieldDecorator('spespage.sumAvance' + record.key, {
-                  initialValue: record['percentAvance'] ? record['percentAvance'] : 0,
-                  rules: [{
-                    required: false,
-                    message: this.state.validatemessage,
-                  }],
-                })(
-                  <InputNumber onChange={(e) => {
-                    record['percentAvance'] = e;
-                    record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
+                  this.setState(prevState => ({
+                    smarttabDataSource: prevState.smarttabDataSource,
+                  }));
 
-                    this.setState(prevState => ({
-                      smarttabDataSource: prevState.smarttabDataSource,
-                    }));
+                }}/>);
 
-                  }}/>,
-                )}
-              </FormItem>;
+              // return (<FormItem>
+              //   {this.props.form.getFieldDecorator('spespage.sumAvance' + record.key, {
+              //     initialValue: record['percentAvance'] ? record['percentAvance'] : 0,
+              //     rules: [{
+              //       required: false,
+              //       message: this.state.validatemessage,
+              //     }],
+              //   })(
+              //     <InputNumber onChange={(e) => {
+              //       record['percentAvance'] = e;
+              //       record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
+              //
+              //       this.setState(prevState => ({
+              //         smarttabDataSource: prevState.smarttabDataSource,
+              //       }));
+              //
+              //     }}/>,
+              //   )}
+              // </FormItem>);
             },
           },
           {
@@ -537,6 +565,8 @@ class SpecPage extends Component {
       // },
     ],
 
+    activity_type: null,
+
     dataSource: [],
 
     smarttabDataSource: [],
@@ -572,7 +602,7 @@ class SpecPage extends Component {
     return value - allMonthSum;
   };
 
-  changeContractType = (key, contractId) => {
+  changeContractType = (contractId) => {
     const { dispatch } = this.props;
 
     dispatch({
@@ -589,18 +619,32 @@ class SpecPage extends Component {
     }).then(() => {
       if (this.props.universal2.references.activityMeasureUnit && this.props.universal2.references.activityMeasureUnit.content.length > 0) {
         /// todo check len
-        let contractTypeItem = this.props.universal2.references.activityMeasureUnit.content[0];
-        let smarttabDataSource = this.state.smarttabDataSource.map((item) => (item));
+        //let contractTypeItem = this.props.universal2.references.activityMeasureUnit.content[0];
+        // let smarttabDataSource = this.state.smarttabDataSource.map((item) => (item));
+        //
+        // smarttabDataSource[key] = {
+        //   ...smarttabDataSource[key],
+        //   paymentType: contractTypeItem.activity.paymentType,
+        //   measureUnit: contractTypeItem.measureUnit,
+        //   tariffItem: contractTypeItem.tariffItems,
+        // };
 
-        smarttabDataSource[key] = {
-          ...smarttabDataSource[key],
-          paymentType: contractTypeItem.activity.paymentType,
-          measureUnit: contractTypeItem.measureUnit,
-          tariffItem: contractTypeItem.tariffItems,
-        };
+        let data = [...this.state.smarttabDataSource, ...this.props.universal2.references.activityMeasureUnit.content.map((item) => {
+          if (item.activity && item.activity.paymentType)
+            item.paymentType = item.activity.paymentType;
+
+
+          if (item.tariffItems)
+            item.tariffItem = item.tariffItems;
+
+          return item;
+        })];
 
         this.setState(prevState => ({
-          smarttabDataSource: smarttabDataSource,
+          smarttabDataSource: data.map((item, idx) => {
+            item.key = idx;
+            return item;
+          }),
         }));
 
       }
@@ -1156,12 +1200,13 @@ class SpecPage extends Component {
   }
 
   remove = (table, key, count) => {
-    this.setState({
-      smarttabDataSource: [
-        ...this.state.smarttabDataSource.filter(item => key !== item.key),
-      ],
-      smarttabcount: this.state.smarttabcount - 1,
-    });
+    console.log(key);
+    // this.setState({
+    //   smarttabDataSource: [
+    //     ...this.state.smarttabDataSource.filter(item => key !== item.key),
+    //   ],
+    //   smarttabcount: this.state.smarttabcount - 1,
+    // });
   };
 
   identValue = (e, record, name, arrname) => {
@@ -1296,22 +1341,45 @@ class SpecPage extends Component {
 
     return (<Spin spinning={this.props.loadingData}>
       <Card bodyStyle={{ padding: 5 }} style={{ marginLeft: '-10px' }}>
-        <Button onClick={() => {
-          this.setState({
-            smarttabDataSource: [
-              ...this.state.smarttabDataSource,
-              {
-                ...this.state.smarttabcols,
-                key: this.state.smarttabcount,
-              },
-            ],
-            smarttabcount: this.state.smarttabcount + 1,
-          });
-        }} style={{ marginBottom: 16 }}>
-          Добавить
+        {/*<Button onClick={() => {*/}
+        {/*this.setState({*/}
+        {/*smarttabDataSource: [*/}
+        {/*...this.state.smarttabDataSource,*/}
+        {/*{*/}
+        {/*...this.state.smarttabcols,*/}
+        {/*key: this.state.smarttabcount,*/}
+        {/*},*/}
+        {/*],*/}
+        {/*smarttabcount: this.state.smarttabcount + 1,*/}
+        {/*});*/}
+        {/*}} style={{ marginBottom: 16 }}>*/}
+        {/*Добавить*/}
+        {/*</Button>*/}
+
+        <Select
+          name={'activity_types'}
+          style={{
+            width: 250,
+            marginRight: 5,
+            marginBottom: 16,
+          }}
+          placeholder={'Вид деятельности'}
+          onChange={(e, option) => {
+            this.setState({
+              activity_type: e,
+            });
+          }}>
+          {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
+            <Option value={item.activity.id} prop={item}
+                    key={item.activity.id}>{item.activity.name}</Option>)}
+        </Select>
+        <Button
+          disabled={this.state.activity_type === null}
+          onClick={() => {
+            this.changeContractType(this.state.activity_type);
+          }} style={{ marginBottom: 16 }}>
+          Загрузить
         </Button>
-
-
         <Button
           disabled={this.state.selectedRowKeys.length === 0}
           onClick={() => {
@@ -1321,9 +1389,17 @@ class SpecPage extends Component {
             this.setState({
               selectedRowKeys: [],
             }, () => {
-              selectedRowKeys.forEach((id) => {
-                this.remove(null, id);
+
+              let filteredData = this.state.smarttabDataSource.filter(item => selectedRowKeys.findIndex(x => x === item.key) === -1);
+
+              this.setState({
+                smarttabDataSource: filteredData,
+                smarttabcount: (filteredData.length) - 1,
               });
+
+              // selectedRowKeys.forEach((id) => {
+              //   this.remove(null, id);
+              // });
             });
           }} style={{
           marginLeft: 5,

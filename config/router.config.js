@@ -287,6 +287,34 @@ export default [
               },
             ],
           },
+          {
+            path: '/contract/bills',
+            name: 'bills',
+            icon: 'faFileInvoice',
+            component: './Bill/index',
+            hideChildrenInMenu: true,
+            authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+            routes: [
+              {
+                path: '/contract/bills',
+                redirect: '/contract/bills/table',
+              },
+              {
+                path: '/contract/bills/table',
+                component: './Bill/main',
+              },
+              {
+                path: '/contract/bills/add',
+                name: 'billadd',
+                component: './Bill/Billsadd',
+              },
+              {
+                path: '/contract/bills/viewBill',
+                name: 'billadd',
+                component: './Bill/ViewBill',
+              },
+            ],
+          },
         ]
       },
 

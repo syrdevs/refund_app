@@ -258,6 +258,14 @@ export default class GridFilter extends Component {
           filterData[field + 'End'] = fields[field].disabled ? null : formFilters[field][1];
           return;
         }
+        if (['listbetweenDate'].indexOf(fields[field].type) !== -1) {
+          filterData[field] = {
+            "from" : fields[field].disabled ? null : formFilters[field][0],
+            "to": fields[field].disabled ? null : formFilters[field][1]
+          };
+          return;
+        }
+        //
 
         if(fields[field].filterName)
         {
@@ -366,6 +374,58 @@ export default class GridFilter extends Component {
       }
 
       case 'betweenDate': {
+
+        let RangeDateProps = {
+          ref: React.createRef(),
+          /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
+          format: dateFormat,
+          onChange: (moment, dateString) => {
+            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
+          },
+        };
+
+        if (isClearFilter) {
+          RangeDateProps.value = null;
+          /*this.setState({
+            isClearFilter: false,
+          });*/
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+
+          <Row>
+            <Col md={22}>
+              <LocaleProvider locale={componentLocal}>
+                <RangePicker   {...RangeDateProps}
+                               format={'DD.MM.YYYY'}
+                               placeholder={[
+                                 formatMessage({ id: 'datepicker.start.label' }),
+                                 formatMessage({ id: 'datepicker.end.label' }),
+                               ]}
+                               disabledDate={this.disabledDate}
+                               disabled={fields[filterItem.name].disabled}/>
+              </LocaleProvider>
+            </Col>
+            {filterItem.nullBtn &&
+            <Col md={2}>
+              <div style={{ margin: '5px' }}>
+                <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
+                  fields[filterItem.name].disabled = e.target.checked;
+                  this.setState({
+                    fields: fields,
+                    formFilters: formFilters,
+                  });
+                }}></Checkbox>
+              </div>
+            </Col>
+            }
+
+          </Row>
+        </div>);
+      }
+
+
+      case 'listbetweenDate': {
 
         let RangeDateProps = {
           ref: React.createRef(),

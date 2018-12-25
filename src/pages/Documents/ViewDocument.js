@@ -48,7 +48,7 @@ class ViewDocument extends Component {
 
   loadActData=(id)=>{
     this.props.dispatch({
-      type: 'universal/getobject',
+      type: 'universal/getObjectByEntity',
       payload: {
         "entity": "correspondence",
         "alias": "routes",
@@ -56,9 +56,8 @@ class ViewDocument extends Component {
       },
     }).then(()=>{
       this.setState({
-        data: this.props.universal.getObjectData
+        data: this.props.universal.getObjectEntities["documentToSign"]
       });
-      console.log(this.state.data)
     })
   };
 
@@ -220,11 +219,11 @@ class ViewDocument extends Component {
                 {/*bodyStyle={{padding: 25}}*/}
                 {/*// title={<div>Информация о документе</div>}*/}
                 {/*>*/}
-                <Button style={{marginLeft: '10px'}} onClick={() => {
+                <Button type="primary" disabled={this.state.data.documentSigned==true} style={{marginLeft: '10px'}} onClick={() => {
                   this.viewKeyModal()
                 }}>Подписать
                 </Button>
-                <Button style={{marginLeft: '10px'}} onClick={() => {
+                <Button type="danger" disabled={this.state.data.documentSigned==true} style={{marginLeft: '10px'}} onClick={() => {
                   this.viewRejectModal()
                 }}>Отклонить
                 </Button>

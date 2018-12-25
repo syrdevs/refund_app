@@ -80,6 +80,7 @@ export default {
     legalForm: {},
     saveanswer: {},
     getObjectData: {},
+    getObjectEntities: {},
     counterAgentData: {},
     uploadanswer: {},
     commandResult: [],
@@ -370,6 +371,18 @@ export default {
       });
     },
 
+    * getObjectByEntity(payload, { call, put }) {
+      const response = yield call(getObject, payload);
+
+      yield put({
+        type: 'getObjectReducerByEntity',
+        payload: {
+          type: payload.payload.entity,
+          response: response || {},
+        },
+      });
+    },
+
     * getSubContract(payload, { call, put }) {
       const response = yield call(createSubContract, payload);
 
@@ -416,6 +429,17 @@ export default {
   },
 
   reducers: {
+
+    getObjectReducerByEntity(state,{payload}){
+      return {
+        ...state,
+        getObjectEntities: {
+          ...state.getObjectEntities,
+          [payload.type]: payload.response,
+        },
+      };
+    },
+
     getCommandResultReducer(state, { payload }) {
 
       return {

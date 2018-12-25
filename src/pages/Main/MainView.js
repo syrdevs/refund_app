@@ -51,10 +51,11 @@ function hasRole(roles) {
 }
 
 
-@connect(({ universal, references, loading }) => ({
+@connect(({ universal, universal2, references, loading }) => ({
   universal,
+  universal2,
   references,
-  loadingData: loading.effects['universal/mainviewtable'],
+  loadingData: loading.effects['universal2/getList'],
   rpmuLoading: loading.effects['universal/rpmuTable'],
 }))
 class MainView extends Component {
@@ -220,14 +221,11 @@ class MainView extends Component {
           'title': 'Веб-сервис (сообщение) ',
           'dataIndex': 'wsStatusMessage',
         }],
-      dataSource: [],
       isHidden: true,
       searchercont: 0,
       selectedRowKeys: [],
       tablecont: 24,
-      filterForm: [],
       xsize: 'auto',
-
       rpmu: {
         sortedInfo:{},
         pagingConfig: {
@@ -240,15 +238,12 @@ class MainView extends Component {
           },
         },
       },
-
       pagingConfig: {
+        "entity": "Refund",
         'start': 0,
         'length': 15,
         'sort': [],
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'filter': {},
       },
     };
   }
@@ -266,9 +261,9 @@ class MainView extends Component {
   loadMainGridData = () => {
 
     const { dispatch } = this.props;
-
+    //type: 'universal/mainviewtable',
     dispatch({
-      type: 'universal/mainviewtable',
+      type: 'universal2/getList',
       payload: this.state.pagingConfig,
     });
     /*.then(() => {
@@ -318,7 +313,7 @@ class MainView extends Component {
     const min = max - pageSize;
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal/mainviewtable',
+      type: 'universal2/getList',
       payload: {
         ...this.state.pagingConfig,
         start: current,
@@ -395,12 +390,10 @@ class MainView extends Component {
       sortedInfo:{},
       pagingConfig: {
         'start': 0,
+        "entity": "Refund",
         'length': 15,
         'sort': [],
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'filter': {},
       },
     }, () => {
       this.loadMainGridData();
@@ -413,11 +406,11 @@ class MainView extends Component {
       sortedInfo:{},
       pagingConfig: {
         'start': 0,
+        "entity": "Refund",
         'length': 15,
         'sort': [],
-        'src': {
-          'searched': true,
-          'data': filters,
+        'filter': {
+          ...filters,
         },
       },
     }, () => {
@@ -436,7 +429,7 @@ class MainView extends Component {
        },*/
     return [
       {
-        name: 'appNumber',
+        name: 'applicationId.appNumber',
         label: formatMessage({ id: 'menu.filter.numberrequest' }),
         type: 'text',
       },
@@ -454,27 +447,27 @@ class MainView extends Component {
       {
         name: 'appEndDate',
         label: formatMessage({ id: 'menu.filter.lastdate' }),
-        type: 'betweenDate',
+        type: 'listbetweenDate',
       },
       {
         name: 'appPayerDate',
         label: formatMessage({ id: 'menu.filter.payerdate' }),
-        type: 'betweenDate',
+        type: 'listbetweenDate',
       },
       {
         name: 'refundEntryDate',
         label: formatMessage({ id: 'menu.filter.RefundComeDate' }),
-        type: 'betweenDate',
+        type: 'listbetweenDate',
       },
       {
         name: 'refundEntryDate',
         label: formatMessage({ id: 'menu.filter.RefundFundDate' }),
-        type: 'betweenDate',
+        type: 'listbetweenDate',
       },
       {
         name: 'refundDate',
         label: formatMessage({ id: 'menu.filter.RefusalDate' }),
-        type: 'betweenDate',
+        type: 'listbetweenDate',
       },
       {
         name: 'knp',
@@ -527,7 +520,6 @@ class MainView extends Component {
       },
     ];
   };
-
   setStatusRecord = (statusCode, statusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
@@ -620,7 +612,6 @@ class MainView extends Component {
       });
     }
   };
-
   AppRefundStatusAuto = () => {
     const { dispatch } = this.props;
     if (this.state.selectedRowKeys.length > 0) {
@@ -635,7 +626,6 @@ class MainView extends Component {
       });
     }
   };
-
   disableBtnIsReceiptDateNull = () => {
 
 
@@ -648,7 +638,6 @@ class MainView extends Component {
     }
     return false;
   };
-
   checkStatus = (selectedRowKeys) => {
     this.setState({
       btnhide: false,
@@ -667,7 +656,6 @@ class MainView extends Component {
       selectedRowKeys: selectedRowKeys,
     });
   };
-
   refundsReceiver = () => {
     confirm({
       title: 'Подтверждение',
@@ -698,11 +686,9 @@ class MainView extends Component {
       },
     });
   };
-
   btnIsDisabled = (isRole, args) => {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
-
   loadRpmuData = (recordId) => {
 
     const { dispatch } = this.props;
@@ -718,8 +704,6 @@ class MainView extends Component {
       },
     });
   };
-
-
   exportToExcel = () => {
 
     let authToken = localStorage.getItem('token');
@@ -792,10 +776,13 @@ class MainView extends Component {
   };
 
   render() {
-
+    const universal = {
+      table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
+    }
     const dateFormat = 'DD.MM.YYYY';
-
-    const { universal } = this.props;
+    console.log(universal);
+    /*const { universal } = this.props;
+    console.log(universal);*/
 
     const rpmuColumns = this.rpmuColumn();
     const GridFilterData = this.stateFilter();
@@ -985,7 +972,7 @@ class MainView extends Component {
                     total: universal.table.totalElements,
                     pageSize: this.state.pagingConfig.length,
                     page: this.state.pagingConfig.start + 1,
-                    data: this.props.universal.table.content,
+                    data: universal.table.content,
                   }}
                   addonButtons={[
                     <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: 'menu.mainview.approveBtn' }))}

@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Tabs,
+  Badge,
   Card,
   Modal,
   Spin,
@@ -335,6 +336,8 @@ export default class CounterAgentEdit extends Component {
 
   render = () => {
 
+    console.log(this.props);
+
     const { dispatch } = this.props;
     const documentStatus = this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
     // console.log((documentStatus ? ((documentStatus!==null && documentStatus.result === 2) ? true : false ) :false));
@@ -433,7 +436,7 @@ export default class CounterAgentEdit extends Component {
                 className={styles.stepFormText}
                 defaultActiveKey="main"
                 tabPosition={'left'}>
-                <TabPane tab="Титульная часть" key="main">
+                <TabPane tab={'Титульная часть'} key="main">
                   <InfoPage
                     getSubContractById={this.getSubContractById}
                     setSpecData={this.setSpecData}
@@ -446,7 +449,10 @@ export default class CounterAgentEdit extends Component {
                 {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
                 {/*<DogovorPage/>*/}
                 {/*</TabPane>*/}
-                <TabPane tab="Спецификация" key="specification">
+                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
+                  <div><span style={{ paddingRight: '15px' }}> Спецификация</span></div>
+                </Badge>}
+                         key="specification">
                   {Object.keys(this.state.SpecData).length > 0 ?
                     <SpecPage
                       dataGuid={this.state.dataStoreGuid}
@@ -475,12 +481,16 @@ export default class CounterAgentEdit extends Component {
 
 
                 </TabPane>
-                <TabPane tab="Контрагенты" key="counteragents">
+                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
+                  <div><span style={{ paddingRight: '15px' }}> Контрагенты</span></div>
+                </Badge>} key="counteragents">
                   <ContragentsPage
                     gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
                     selectedData={this.props.location.state}/>
                 </TabPane>
-                <TabPane tab={'Приложения'} key="attachments">
+                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
+                  <div><span style={{ paddingRight: '15px' }}> Приложения</span></div>
+                </Badge>} key="attachments">
                   <AttachmentPage
                     getContractData={this.getContractData}
                     filesData={this.props.universal.getObjectData}

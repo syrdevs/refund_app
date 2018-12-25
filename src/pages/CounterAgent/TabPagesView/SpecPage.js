@@ -54,6 +54,31 @@ export default class SpecPage extends Component {
             key: 'valueSum',
           },
           {
+            title: '% Аванса',
+            dataIndex: 'percentAvance',
+            isVisible: true,
+            order: 2,
+            width: '20%',
+            key: 'percentAvance',
+            onCell: record => {
+              return {
+                onClick: () => {
+
+                },
+              };
+            },
+            render: (text, record) => {
+
+              if (record.key === 'total') {
+                return <span>{record.percentAvanceTotal ? record.percentAvanceTotal : 0}</span>;
+              }
+
+              record['valueSum'] = record['value'] * record.tariffItem.tariffValue / 100;
+
+              return record['percentAvance'] ? record['percentAvance'] : 0;
+            },
+          },
+          {
             title: 'Аванс (₸)',
             dataIndex: 'sumAdvance',
             isVisible: true,

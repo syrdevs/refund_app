@@ -37,6 +37,7 @@ class ViewDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      buttonShow:true,
       ShowSign: false,
       rejectModal: {
         visible: false,
@@ -50,7 +51,7 @@ class ViewDocument extends Component {
     this.props.dispatch({
       type: 'universal/getObjectByEntity',
       payload: {
-        "entity": "correspondence",
+        "entity": "documentToSign",
         "alias": "routes",
         "id": id //'this.props.location.query.id'
       },
@@ -63,6 +64,7 @@ class ViewDocument extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    console.log(this.props.location.query.id);
     this.loadActData(this.props.location.query.id);
     this.loadDocRoutePath();
   }
@@ -195,9 +197,13 @@ class ViewDocument extends Component {
             .then(data => {
               console.log(data);
               this.setState({
-                ShowSign: false
+                ShowSign: false,
+                 buttonShow:false
               }, () => {
-                router.push('/documents');
+                // router.push('/documents');
+                Modal.info({
+                  content: 'Документ подписан',
+                });
                 console.log(e);
               })
             })
@@ -219,14 +225,16 @@ class ViewDocument extends Component {
                 {/*bodyStyle={{padding: 25}}*/}
                 {/*// title={<div>Информация о документе</div>}*/}
                 {/*>*/}
-                <Button type="primary" disabled={this.state.data.documentSigned==true} style={{marginLeft: '10px'}} onClick={() => {
+                {this.state.buttonShow &&<Button type="primary" disabled={this.state.data?this.state.data.documentSigned===true:false} style={{marginLeft: '10px'}} onClick={() => {
                   this.viewKeyModal()
                 }}>Подписать
-                </Button>
-                <Button type="danger" disabled={this.state.data.documentSigned==true} style={{marginLeft: '10px'}} onClick={() => {
+                </Button>}
+                {this.state.buttonShow && <Button type="danger" disabled={this.state.data?this.state.data.documentSigned===true:false} style={{marginLeft: '10px'}} onClick={() => {
                   this.viewRejectModal()
                 }}>Отклонить
-                </Button>
+                  </Button>
+                }
+
                 <Card
                   style={{margin: '10px'}}
                   type="inner"
@@ -235,10 +243,10 @@ class ViewDocument extends Component {
                 >
 
 
-                  <p style={{marginTop: '10px'}}><h3>{this.state.data.descr ?this.state.data.descr : ''}</h3></p>
-                  <p>Опубликовал: {this.state.data.initiatorUser ?this.state.data.initiatorUser.userName : ''}</p>
+                  <p style={{marginTop: '10px'}}><h3>{this.state.data ?this.state.data.descr : ''}</h3></p>
+                  <p>Опубликовал: {this.state.data ?this.state.data.initiatorUser? this.state.data.initiatorUser.userName : '':''}</p>
                   <p>Тип документа: Договор</p>
-                  <p>{this.state.data.status?this.state.data.status.statusDate:''}</p>
+                  <p>{this.state.data?this.state.data.statusDate?this.state.data.status.statusDate:'':''}</p>
 
 
                 </Card>

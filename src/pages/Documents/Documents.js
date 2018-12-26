@@ -551,7 +551,7 @@ class Documents extends Component {
                                     sort: [{ field: column.field, 'desc': column.order === 'descend' }],
                                   },
                                 }), () => {
-                                  this.loadMainGridData();
+                                  this.loadDocument();
                                 });
 
                               }}

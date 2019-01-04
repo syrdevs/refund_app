@@ -270,15 +270,10 @@ class ShowAct extends Component {
         width: '10%',
         render: ((item) => {return <a onClick={()=>{this.downloadFile(item)}}>{item.name}</a>;}),
       },
-      /*{
-        title: 'Действие',
-        width: '10%',
-        render: ((item) => {return <a onClick={()=>{this.removeFile(item)}}>Удалить</a>;}),
-      }*/
     ];
     const data = this.props.universal.getObjectData ? (this.props.universal.getObjectData.documentAttachments ? this.props.universal.getObjectData.documentAttachments : []) : []
-    const { form } = this.props;
     const {getObjectData} =  this.props.universal;
+    console.log(getObjectData);
     const tablecolumns = [{
       title: 'Наименование',
       dataIndex: 'name',
@@ -363,40 +358,6 @@ class ShowAct extends Component {
                   >
                     <Card style={{marginLeft: '-10px'}}>
                       <div style={{margin:'10px 0', maxWidth:'70%'}}>
-                        {/*{this.props.location.state && <div>
-                          {this.props.location.state &&
-                          <Link
-                            to={'/contract/contracts/acts/add/viewcontract?id='+this.props.location.state.data.id}
-                          >Договор №{this.props.location.state.data.number}</Link>}
-
-                        </div>}*/}
-                        {/*<Form.Item {...formItemLayout} label="Подразделение">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.division ? getObjectData.contract.division.name : null : null) : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Контрагент">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contragent.organization : "") : ""}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Учетный период: год">
-                          <p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Учетный период: месяц">
-                          <p>{getObjectData ? (getObjectData.periodSection ? getObjectData.periodSection.id : null) : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Договор">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType+" №"+getObjectData.contract.number+" от "+getObjectData.contract.documentDate : ""): ""}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Протокол исполнения договора">
-                          <p>Протокол 1</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Номер">
-                          <p>{getObjectData ? getObjectData.number : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Дата">
-                          <p>{getObjectData ? getObjectData.documentDate : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Комментарий">
-                          <p>{getObjectData ? getObjectData.descr : null}</p>
-                        </Form.Item>*/}
                         <Table
                           columns={tablecolumns}
                           dataSource={tabledata}
@@ -425,7 +386,7 @@ class ShowAct extends Component {
                   >
                     <Card style={{marginLeft: '-10px'}}>
                       <SmartGridView
-                        name={'specform'}
+                        name={'specactform'}
                         scroll={{ x: 'auto' }}
                         searchButton={false}
                         fixedBody={true}
@@ -448,10 +409,10 @@ class ShowAct extends Component {
                           //console.log(record)
                         }}
                         dataSource={{
-                          total: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length: 0) :0,
-                          pageSize: getObjectData ? (getObjectData.actItemValues ? getObjectData.actItemValues.length : 15) :15,
+                          total: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length: 0) :0,
+                          pageSize: getObjectData ? (getObjectData._actItemValues ? getObjectData._actItemValues.length : 15) :15,
                           page: 1,
-                          data: getObjectData ? getObjectData.actItemValues  :[] ,
+                          data: getObjectData ? getObjectData._actItemValues  :[] ,
                         }}
                         onShowSizeChange={(pageNumber, pageSize) => {}}
                         onRefresh={() => {

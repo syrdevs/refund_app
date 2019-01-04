@@ -204,35 +204,43 @@ export default class JournalPage extends Component {
   };
 
   exportToExcel = () => {
-    let filename = "";
-    let authToken = localStorage.getItem('token');
+
+    let authToken = localStorage.getItem("AUTH_TOKEN");
     let columns = JSON.parse(localStorage.getItem('journalPageColumns'));
 
-    fetch('/api/refund/exportToExcel',
+    fetch("/api/refund/exportToExcel",
       {
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          Authorization: 'Bearer ' + authToken,
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + authToken
         },
-        method: 'post',
+        method: "post",
         body: JSON.stringify({
-          'entityClass': 'refund_history',
+          "entityClass": 'refund_history',
           'fileName':'Журнал действий',
-          'src': {
-            'searched': true,
-            'data': this.state.pagingConfig.src.data,
-          },
+          "filter": this.state.pagingConfig.filter,
           'columns': [].concat(columns.filter(column => column.isVisible)),
-        }),
+        })
       })
-      .then(response => {if(response.ok){
-        let disposition = response.headers.get("content-disposition");
-
-        filename = this.getFileNameByContentDisposition(disposition);
-        return response.blob();
-      }})
-      .then(responseBlob => {saveAs(responseBlob, moment().format('DDMMYYYY')+filename);});
+      .then(response => {
+        if (response.ok) {
+          return response.blob().then(blob => {
+            let disposition = response.headers.get("content-disposition");
+            return {
+              fileName: this.getFileNameByContentDisposition(disposition),
+              raw: blob
+            };
+          });
+        }
+      })
+      .then(data => {
+        if (data) {
+          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+        }
+      });
   };
+
+
   getFileNameByContentDisposition(contentDisposition){
     var regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     var matches = regex.exec(contentDisposition);

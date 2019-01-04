@@ -9,7 +9,7 @@ import {
   Col,
   Card,
   Row,
-  InputNumber,
+  //InputNumber,
   Select,
   Input,
   Table,
@@ -26,6 +26,7 @@ import { connect } from 'dva/index';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TabPageStyle from './TabPages.less';
+import InputNumber from '@/components/NumberInput';
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -317,7 +318,7 @@ class SpecPage extends Component {
               }
 
               record['percentAdvance'] = this.calculateAllMonthValue(record);
-
+              record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
 
               return (<InputNumber
                 defaultValue={record.value ? record.value : 0}
@@ -331,6 +332,7 @@ class SpecPage extends Component {
                   let countValue = record.value ? record.value : 0;
 
                   record['valueSum'] = tariffValue * countValue;
+                  record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
 
                   this.setState(prevState => ({
                     smarttabDataSource: prevState.smarttabDataSource,
@@ -595,7 +597,7 @@ class SpecPage extends Component {
 
       Object.keys(record.contractTimeItem).map((key) => {
         if (record.contractTimeItem[key].valueSection || record.contractTimeItem[key].valueSection === 0) {
-          allMonthSum += record.contractTimeItem[key].valueSection;
+          allMonthSum += parseFloat(record.contractTimeItem[key].valueSection);
         }
       });
 
@@ -643,6 +645,7 @@ class SpecPage extends Component {
         this.setState(prevState => ({
           smarttabDataSource: data.map((item, idx) => {
             item.key = idx;
+            item.contractTimeItem = this.state.smarttabcols.contractTimeItem;
             return item;
           }),
         }));
@@ -689,6 +692,10 @@ class SpecPage extends Component {
       }, () => {
         this.renderData();
       });
+    }
+
+    if (this.props.setTabCount) {
+      this.props.setTabCount(this.state.smarttabDataSource.length, 'spes');
     }
 
   }
@@ -978,6 +985,7 @@ class SpecPage extends Component {
                 return <InputNumber
                   defaultValue={defaultValue && defaultValue.hasOwnProperty('valueSection') ? defaultValue.valueSection : 0}
                   onChange={(e) => {
+
                     record['contractTimeItem'] = {
                       ...record['contractTimeItem'],
 
@@ -1059,8 +1067,13 @@ class SpecPage extends Component {
 
 
     data.contractTimeTables.forEach((item) => {
-      smartdataColumns[item.periodSection.index] = {};
+      smartdataColumns[item.periodSection.index] = {
+        valueSection: 0,
+        sumSection: 0,
+        sumAdvanceTakeout: 0,
+      };
     });
+
 
     this.setState(prevState => ({
       smarttabcols: {
@@ -1090,6 +1103,8 @@ class SpecPage extends Component {
 
       let specifyKeys = {};
       let specifyData = this.state.smarttabDataSource;
+
+      console.log(specifyData);
 
       specifyData.forEach((item) => {
 
@@ -1238,37 +1253,37 @@ class SpecPage extends Component {
 
       if (columnName === 'tariff') {
         if (item.tariffItem && item.tariffItem.tariffValue) {
-          result += item.tariffItem.tariffValue;
+          result += parseFloat(item.tariffItem.tariffValue);
         }
       }
 
       if (columnName === 'sumAdvance') {
         if (item.sumAdvance) {
-          result += item.sumAdvance;
+          result +=  parseFloat(item.sumAdvance);
         }
       }
 
       if (columnName === 'valueSum') {
         if (item.valueSum) {
-          result += item.valueSum;
+          result += parseFloat(item.valueSum);
         }
       }
 
       if (columnName === 'value') {
         if (item.value) {
-          result += item.value;
+          result += parseFloat(item.value);
         }
       }
 
       if (columnName === 'percentAdvance') {
         if (item.percentAdvance) {
-          result += item.percentAdvance;
+          result += parseFloat(item.percentAdvance);
         }
       }
 
       if (columnName === 'percentAvance') {
         if (item.percentAvance) {
-          result += item.percentAvance;
+          result += parseFloat(item.percentAvance);
         }
       }
 
@@ -1293,13 +1308,13 @@ class SpecPage extends Component {
             };
 
           if (item.contractTimeItem[monthIndex].valueSection)
-            contractTimeIndexKeys[monthIndex].valueSection += item.contractTimeItem[monthIndex].valueSection;
+            contractTimeIndexKeys[monthIndex].valueSection += parseFloat(item.contractTimeItem[monthIndex].valueSection);
 
           if (item.contractTimeItem[monthIndex].sumSection)
-            contractTimeIndexKeys[monthIndex].sumSection += item.contractTimeItem[monthIndex].sumSection;
+            contractTimeIndexKeys[monthIndex].sumSection += parseFloat(item.contractTimeItem[monthIndex].sumSection);
 
           if (item.contractTimeItem[monthIndex].sumAdvanceTakeout)
-            contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += item.contractTimeItem[monthIndex].sumAdvanceTakeout;
+            contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += parseFloat(item.contractTimeItem[monthIndex].sumAdvanceTakeout);
 
         });
       }
@@ -1336,6 +1351,7 @@ class SpecPage extends Component {
         percentAdvanceTotal: this.calculateMainSum('percentAdvance'),
         percentAvanceTotal: this.calculateMainSum('percentAvance'),
         total: this.calculateSum(),
+        contractTimeItem: this.state.smarttabcols.contractTimeItem,
       }]);
     }
 

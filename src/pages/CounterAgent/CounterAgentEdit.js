@@ -68,6 +68,12 @@ export default class CounterAgentEdit extends Component {
 
     dataStoreGuid: Guid.newGuid(),
 
+    tabRecordsCount: {
+      specCount: 0,
+      counterAgentsCount: 0,
+      documentsCount: 0,
+    },
+
     SpecData: {},
     SpecPageForceRendered: false,
     publish: true,
@@ -95,6 +101,10 @@ export default class CounterAgentEdit extends Component {
           //todo get object
           'id': this.props.location.state.data.id,
         },
+      }).then(() => {
+        this.setState({
+          dataStoreGuid: Guid.newGuid(),
+        });
       });
     } else {
       reduxRouter.push('main');
@@ -334,9 +344,18 @@ export default class CounterAgentEdit extends Component {
     });
   };
 
-  render = () => {
+  setTabCount = (count, tabKey) => {
+    if (tabKey === 'spes' && this.state.tabRecordsCount.specCount !== count) {
+      this.setState(prevState => ({
+        tabRecordsCount: {
+          ...prevState.tabRecordsCount,
+          specCount: count,
+        },
+      }));
+    }
+  };
 
-    console.log(this.props);
+  render = () => {
 
     const { dispatch } = this.props;
     const documentStatus = this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
@@ -449,12 +468,14 @@ export default class CounterAgentEdit extends Component {
                 {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
                 {/*<DogovorPage/>*/}
                 {/*</TabPane>*/}
-                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
+                <TabPane forceRender={true} tab={<Badge count={this.state.tabRecordsCount.specCount}
+                                                        style={{ backgroundColor: '#1990FF' }}>
                   <div><span style={{ paddingRight: '15px' }}> Спецификация</span></div>
                 </Badge>}
                          key="specification">
                   {Object.keys(this.state.SpecData).length > 0 ?
                     <SpecPage
+                      setTabCount={this.setTabCount}
                       dataGuid={this.state.dataStoreGuid}
                       setForceRender={() => {
                         this.setState({
@@ -467,6 +488,7 @@ export default class CounterAgentEdit extends Component {
                       form={this.props.form}
                       gridData={this.state.SpecData}/>
                     : <SpecPage
+                      setTabCount={this.setTabCount}
                       dataGuid={this.state.dataStoreGuid}
                       setForceRender={() => {
                         this.setState({
@@ -481,16 +503,18 @@ export default class CounterAgentEdit extends Component {
 
 
                 </TabPane>
-                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
+                <TabPane tab={<Badge count={this.state.tabRecordsCount.counterAgentsCount}
+                                     style={{ backgroundColor: '#1990FF' }}>
                   <div><span style={{ paddingRight: '15px' }}> Контрагенты</span></div>
                 </Badge>} key="counteragents">
                   <ContragentsPage
                     gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
                     selectedData={this.props.location.state}/>
                 </TabPane>
-                <TabPane tab={<Badge count={5} style={{ backgroundColor: '#1990FF' }}>
-                  <div><span style={{ paddingRight: '15px' }}> Приложения</span></div>
-                </Badge>} key="attachments">
+                <TabPane
+                  tab={<Badge count={this.state.tabRecordsCount.documentsCount} style={{ backgroundColor: '#1990FF' }}>
+                    <div><span style={{ paddingRight: '15px' }}> Приложения</span></div>
+                  </Badge>} key="attachments">
                   <AttachmentPage
                     getContractData={this.getContractData}
                     filesData={this.props.universal.getObjectData}

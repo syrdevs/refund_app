@@ -631,7 +631,7 @@ class MainView extends Component {
 
     if (this.state.selectedRowKeys.length > 0) {
       let nullableDateRecords = this.state.selectedRowKeys
-        .map((selectKey) => this.props.universal.table.content.find(item => item.id === selectKey))
+        .map((selectKey) => this.props.universal2.references[this.state.pagingConfig.entity].content.find(item => item.id === selectKey))
         .filter((itemRecord) => itemRecord.applicationId.receiptAppdateToFsms === null);
 
       return nullableDateRecords.length > 0;
@@ -645,7 +645,7 @@ class MainView extends Component {
     if (selectedRowKeys.length > 0) {
       selectedRowKeys.map(select => {
 
-        if ([this.props.universal.table.content.find(item => item.id === select)].map(item => item.dappRefundStatusId.code === '00007' || item.dappRefundStatusId.code === '00008')[0]) {
+        if ([this.props.universal2.references[this.state.pagingConfig.entity].content.find(item => item.id === select)].map(item => item.dappRefundStatusId.code === '00007' || item.dappRefundStatusId.code === '00008')[0]) {
           this.setState({
             btnhide: true,
           });

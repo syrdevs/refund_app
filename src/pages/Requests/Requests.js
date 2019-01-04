@@ -24,7 +24,7 @@ import moment from 'moment';
 @connect(({ universal2, universal, loading }) => ({
   universal2,
   universal,
-  loadingData: loading.effects['universal2/data'],
+  loadingData: loading.effects['universal2/getList'],
 }))
 class Requests extends Component {
   constructor(props) {
@@ -81,11 +81,9 @@ class Requests extends Component {
       pagingConfig: {
         'start': 0,
         'length': 10,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'entity': "application",
         'sort': [],
+        filter: {}
       },
     };
   }
@@ -105,11 +103,8 @@ class Requests extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'universal2/data',
-      payload: {
-        table: 'getApplicationPage',
-        ...this.state.pagingConfig,
-      },
+      type: 'universal2/getList',
+      payload: this.state.pagingConfig,
     });
   };
 
@@ -124,15 +119,28 @@ class Requests extends Component {
       pagingConfig: {
         'start': 0,
         'length': 10,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'entity': "application",
+        filter: {},
         'sort': [],
       },
     }, () => {
       this.loadMainGridData();
     });
+  };
+  applyFilter = (filters) => {
+    this.setState({
+      pagingConfig: {
+        start: 0,
+        length: 15,
+        entity: "application",
+        filter: filters,
+        sort: [],
+      },
+    }, () => {
+      this.loadMainGridData();
+    });
+
+
   };
 
   setFilter = (filters) => {
@@ -140,12 +148,10 @@ class Requests extends Component {
     this.setState(prevState => ({
       sortedInfo: {},
       pagingConfig: {
+        'entity': "application",
         'start': 0,
         'length': 10,
-        'src': {
-          'searched': true,
-          'data': filters,
-        },
+        filter: filters,
         sort: [],
       },
     }), () => {
@@ -174,7 +180,7 @@ class Requests extends Component {
         {
           name: 'appDate',
           label: 'Дата заявки',
-          type: 'betweenDate',
+          type: 'listbetweenDate',
         },
         {
           name: 'reference',
@@ -189,15 +195,15 @@ class Requests extends Component {
         {
           name: 'payOrderDate',
           label: formatMessage({ id: 'menu.filter.payment.date' }),
-          type: 'betweenDate',
+          type: 'listbetweenDate',
         },
         {
           name: 'receiptAppdateToFsms',
           label: formatMessage({ id: 'menu.filter.refundadd' }),
-          type: 'betweenDate',
+          type: 'listbetweenDate',
         },
         {
-          name: 'knp',
+          name: 'dknpId',
           label: formatMessage({ id: 'menu.filter.knp' }),
           type: 'multibox',
         },
@@ -213,10 +219,9 @@ class Requests extends Component {
     const min = max - pageSize;
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal2/data',
+      type: 'universal2/getList',
       payload: {
         ...this.state.pagingConfig,
-        table: 'getApplicationPage',
         start: current,
         length: pageSize,
       },
@@ -320,10 +325,7 @@ class Requests extends Component {
         body: JSON.stringify({
           'entityClass': 'application',
           'fileName':formatMessage({ id: 'menu.refunds.requests' }),
-          'src': {
-            'searched': true,
-            'data': this.state.pagingConfig.src.data,
-          },
+          filter: {},
           'columns': columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title })),
         }),
       })
@@ -391,6 +393,8 @@ class Requests extends Component {
   render() {
     const dateFormat = 'DD.MM.YYYY';
     let { columns, dataStore } = this.props.universal2;
+    const { universal2 } = this.props;
+    const request = universal2.references[this.state.pagingConfig.entity];
 
     columns = [
       {
@@ -579,10 +583,10 @@ class Requests extends Component {
                   showExportBtn={true}
 
                   dataSource={{
-                    total: dataStore.totalElements,
+                    total: request ? request.totalElements : 0,
                     pageSize: this.state.pagingConfig.length,
                     page: this.state.pagingConfig.start + 1,
-                    data: dataStore.content,
+                    data: request ? request.content : [],
                   }}
                   actionExport={() => this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {

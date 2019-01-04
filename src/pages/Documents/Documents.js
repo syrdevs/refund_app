@@ -534,8 +534,8 @@ class Documents extends Component {
                                 if (Object.keys(column).length === 0) {
                                   this.setState(prevState => ({
                                     sortedInfo: {},
-                                    pagingConfig: {
-                                      ...prevState.pagingConfig,
+                                    parameters: {
+                                      ...prevState.parameters,
                                       sort: [],
                                     },
                                   }), () => {
@@ -546,12 +546,12 @@ class Documents extends Component {
 
                                 this.setState(prevState => ({
                                   sortedInfo: column,
-                                  pagingConfig: {
-                                    ...prevState.pagingConfig,
+                                  parameters: {
+                                    ...prevState.parameters,
                                     sort: [{ field: column.field, 'desc': column.order === 'descend' }],
                                   },
                                 }), () => {
-                                  this.loadMainGridData();
+                                  this.loadDocument();
                                 });
 
                               }}

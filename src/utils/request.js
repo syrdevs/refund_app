@@ -41,7 +41,8 @@ const checkStatus = response => {
   if (response.status === 400 || (response.status >= 402 && response.status < 500)) {
 
     if (response.statusText !== 'Forbidden') {
-      response.clone().json().then((r) => {
+      console.log(response);
+      response.clone().then((r) => {
         notification.error({
           // message: `Ошибка ${response.status}: ${response.url}`,
           message: `Ошибка статус ${response.status}`,

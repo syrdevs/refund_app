@@ -37,6 +37,44 @@ class Documents extends Component {
   rootSubmenuKeys = ['sub1'];
 
   state = {
+    addAct:{
+        descr: "Проверка",
+        documentDate: "19.12.2018",
+        documentIn: true,
+        documentItems: [{id: "2f7fa072-0048-428c-94a0-b3cd5ccfc799"}],
+        documentNeedToSign: false,
+        documentOut: true,
+        documentSigned: true,
+        documentSigneds: [{id: "736763ef-15b1-435e-b31b-6a6e49646fc3"}],
+        documentStatuss: [{id: "9eab243f-e770-4bf6-8728-1000f378c1a8"}, {id: "3988042a-7d3e-47cc-870a-1a281bfdf64c"}],
+        documentType: {id: 2, entName: "act", entDesc: "АКТ"},
+        entryDateTime: "19.12.2018 00:00:00",
+        id: "832ae9cb-264c-47cd-a623-fdb1728d55fe",
+        number: "08-0118-00034",
+        signDateTime: "20.12.2018 03:09:53",
+        status:{result: 0,
+          statusDate: "20.12.2018 03:09",
+          statusName: "Согласование руководителем Филиала"},
+        result: 0},
+    addPayment:{
+      descr: "Проверка",
+      documentDate: "19.12.2018",
+      documentIn: true,
+      documentItems: [{id: "2f7fa072-0048-428c-94a0-b3cd5ccfc799"}],
+      documentNeedToSign: false,
+      documentOut: true,
+      documentSigned: true,
+      documentSigneds: [{id: "736763ef-15b1-435e-b31b-6a6e49646fc3"}],
+      documentStatuss: [{id: "9eab243f-e770-4bf6-8728-1000f378c1a8"}, {id: "3988042a-7d3e-47cc-870a-1a281bfdf64c"}],
+      documentType: {id: 1, entName: "payment", entDesc: "Заявки"},
+      entryDateTime: "19.12.2018 00:00:00",
+      id: "27fe97f2-d808-458d-901c-00df25a2812e",
+      number: "08-0118-00034",
+      signDateTime: "20.12.2018 03:09:53",
+      status:{result: 0,
+        statusDate: "20.12.2018 03:09",
+        statusName: "Согласование руководителем Филиала"},
+      result: 0},
     collapsed: false,
     openKeys: ['sub1'],
     selectedRow: {},
@@ -167,7 +205,9 @@ class Documents extends Component {
     dispatch({
       type: 'universal/paymentsData',
       payload: this.state.parameters,
-    });
+    }).then(()=>{
+
+    })
   };
 
   hideleft() {
@@ -404,6 +444,11 @@ class Documents extends Component {
 
   render() {
     let { correspondence } = this.props.universal.paymentsData;
+    if (correspondence) {
+      correspondence.content.push(this.state.addAct);
+      correspondence.content.push(this.state.addPayment);
+    }
+
 
 
     let columns = [
@@ -559,16 +604,7 @@ class Documents extends Component {
 
                               }}
                               onSelectRow={(record) => {
-
-
-                                /*this.props.history.push({
-                                  pathname: '/documents/view?id='+record.id,
-                                  state: {
-                                    data: record,
-                                  },
-                                })*/
-
-                                router.push('/documents/view?id=' + record.id);
+                                router.push('/documents/view?id=' + record.id+'&type='+record.documentType.entName);
 
                               }}
                               onFilter={(filters) => {

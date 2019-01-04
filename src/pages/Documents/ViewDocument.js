@@ -19,6 +19,7 @@ import RejectModal from "./RejectModal";
 import CounterAgentView from "../CounterAgent/CounterAgentView";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
+import ShowPayment from "../ContractRequests/ShowPayment";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -88,18 +89,15 @@ class ViewDocument extends Component {
     if(index===0){
       return 'Опубликовал документ'
     }
-    if(value===0){
-      return 'На рассмотрении'
+    switch (index) {
+      case 0:return 'Опубликовал документ'
     }
-    if(value===1){
-      return 'Подписал'
+    switch (value) {
+      case 0:return 'На рассмотрении';
+      case 1:return 'Подписал';
+      case 2:return 'Отклонил'
     }
-    if(value===2){
-      return 'Отклонил';
-    }
-
-
-  }
+  };
 
   viewKeyModal = () => {
     this.setState({
@@ -150,6 +148,7 @@ class ViewDocument extends Component {
       display: 'inline-block',
       float: 'right'
     };
+    console.log(this.props.location.query);
 
 
     const CardHeight = {height: 'auto', marginBottom: '10px'};
@@ -256,12 +255,15 @@ class ViewDocument extends Component {
                   bodyStyle={{padding: 25}}
                   title={<div>Документ № {this.state.data?this.state.data.number:''} от {this.state.data?this.state.data.documentDate:''}</div>}
                 >
-                  <CounterAgentView contractId={this.props.location.query.id}/>
+                  {this.props.location.query.type==="act" && <ShowAct actid={this.props.location.query.id} />}
+                  {this.props.location.query.type==="CONTRACT" && <CounterAgentView contractId={this.props.location.query.id}/>}
+                  {this.props.location.query.type==="payment" && <ShowPayment id={this.props.location.query.id}/>}
+
                 </Card>
                 {/*</Card>*/}
               </div>
             </TabPane>
-            <TabPane tab="Ход исполнения" key="2">
+            {this.props.location.query.type==="CONTRACT" &&  <TabPane tab="Ход исполнения" key="2">
               <div style={CardHeight}>
                 <Card
                   style={{margin: '10px'}}
@@ -290,7 +292,8 @@ class ViewDocument extends Component {
                   </Steps>*/}
                 </Card>
               </div>
-            </TabPane>
+            </TabPane>}
+
           </Tabs>
 
         </Row>

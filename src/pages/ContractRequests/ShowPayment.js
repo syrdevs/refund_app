@@ -400,11 +400,6 @@ class ShowPayment extends Component {
           headStyle={{ padding: 0 }}
           style={{padding:'10px'}}
           className={styles.headPanel}
-          extra={[<DropDownAction
-              disabled={!this.props.location.query}
-              contractId={this.props.location.query.id}
-              entity={'paymentRequest'}
-              type={2}/>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
           <Spin spinning={this.state.loadData}>
